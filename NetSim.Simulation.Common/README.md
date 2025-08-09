@@ -171,13 +171,12 @@ All protocol implementations follow a consistent state management pattern:
 // Example state class structure
 public class ProtocolState
 {
-    // Change tracking
-    public bool StateChanged { get; set; } = true;
-    public bool TopologyChanged { get; set; } = false;
-    public bool RoutesChanged { get; set; } = false;
-    
-    // Neighbor management
-    public Dictionary<string, Neighbor> Neighbors { get; set; } = new();
+  // Change tracking
+  public bool StateChanged { get; set; } = true;
+  public bool TopologyChanged { get; set; } = false;
+  public bool RoutesChanged { get; set; } = false;
+  // Neighbor management
+  public Dictionary<string, Neighbor> Neighbors { get; set; } = new();
     public List<string> GetStaleNeighbors(int timeout = 180);
     public void RemoveNeighbor(string id);
     

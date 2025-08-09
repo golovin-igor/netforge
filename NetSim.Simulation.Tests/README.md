@@ -76,7 +76,7 @@ Network protocol implementation validation with state management:
 
 ### 🏭 **Device & Factory Tests** (4 test files)
 Device creation patterns and vendor-specific implementations:
-- **DeviceFactory**: Multi-vendor device instantiation
+- **DeviceFactory**: Multi-vendor device instantiation (async command execution via ProcessCommandAsync)
 - **Vendor detection**: Automatic vendor identification
 - **Device modes**: User/privileged/configuration mode handling
 - **Anira device specialization**: Custom device implementation testing

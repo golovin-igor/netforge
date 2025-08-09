@@ -36,7 +36,8 @@ namespace NetSim.Simulation.Tests.CounterTests
 
             Assert.Equal(txPacketsBefore + 5, intfR1After.TxPackets);
             Assert.Equal(rxPacketsBefore + 5, intfR2After.RxPackets);
-            Assert.Equal(320, intfR1After.TxBytes - intfR1Before.TxBytes);
+            var initialTxBytes = intfR1Before.TxBytes;
+            Assert.Equal(initialTxBytes + 320, intfR1After.TxBytes);
         }
 
         [Fact]

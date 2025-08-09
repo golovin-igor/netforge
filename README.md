@@ -1,33 +1,63 @@
 # NetSim - Network Device Simulation Framework
 
-A comprehensive C# .NET framework for simulating network devices with realistic CLI behavior, protocol implementations, and network topology management.
 
-## Overview
+NetSim is a modular C# .NET framework for simulating network devices with realistic CLI behavior, protocol implementations, and network topology management. It supports 15+ vendors and advanced protocol/state simulation for education, testing, and automation.
 
-NetSim is a powerful network simulation platform that provides:
 
-- **Multi-vendor CLI simulation** supporting 15+ network equipment vendors
-- **Protocol models** for routing, switching, and discovery features
-- **Realistic device behavior** with vendor-specific command syntax and responses
-- **Physical layer simulation** with connection quality modeling
-- **Modular architecture** for easy extensibility and testing
+## Features
 
-## Architecture
+- **Multi-vendor CLI simulation**: 15+ network equipment vendors (Cisco, Juniper, Arista, Huawei, Fortinet, Nokia, Dell, Extreme, Broadcom, MikroTik, Alcatel, Anira, Linux, F5, Aruba)
+- **Protocol models**: Layer 2 (VLAN, STP/RSTP, LACP, CDP, LLDP), Layer 3 (Static, OSPF, BGP, RIP, EIGRP, IS-IS, IGRP), Security (ACLs)
+- **Realistic device behavior**: Vendor-specific command syntax, prompts, error messages, and help systems
+- **Physical layer simulation**: Bandwidth, latency, packet loss, link state, and protocol-aware connectivity
+- **Device factory pattern**: Easy device creation and extensibility
+- **Event-driven architecture**: Realistic protocol and topology updates
+- **Remote access**: Socket and WebSocket terminal servers for integration/testing
 
-The NetSim solution consists of several key components:
+
+## Solution Architecture
 
 ### Core Libraries
-- **NetSim.Simulation.Common** - Core networking protocols, device models, and shared infrastructure
-- **NetSim.Simulation.Core** - Device implementations, factories, and simulation engine
+- **NetSim.Simulation.Common**: Core protocols, device models, shared infrastructure ([details](NetSim.Simulation.Common/README.md))
+- **NetSim.Simulation.Core**: Device implementations, factories, simulation engine ([details](NetSim.Simulation.Core/README.md))
 
 ### CLI Handler Libraries
-- **Vendor-specific CLI handlers** for Cisco, Juniper, Arista, Huawei, Fortinet, Nokia, Dell, Extreme, Broadcom, MikroTik, Alcatel, Anira, Linux, F5, and Aruba
-- **Common CLI handlers** for shared functionality across vendors
-- **Comprehensive test suite** validating all CLI implementations
+- **NetSim.Simulation.CliHandlers**: Vendor-specific CLI handlers for Cisco, Juniper, Arista, Huawei, Fortinet, Nokia, Dell, Extreme, Broadcom, MikroTik, Alcatel, Anira, Linux, F5, Aruba ([details](NetSim.Simulation.CliHandlers/README.md))
+- **NetSim.Simulation.CliHandlers.Common**: Shared CLI logic
 
 ### Test Projects
-- **NetSim.Simulation.Tests** - Validates network simulation and protocol behavior
-- **NetSim.Simulation.CliHandlers.Tests** - Ensures vendor CLI parity
+- **NetSim.Simulation.Tests**: Validates simulation, protocols, and device behaviors ([details](NetSim.Simulation.Tests/README.md))
+
+## Supported Vendors
+
+| Vendor     | Module                                    |
+|------------|-------------------------------------------|
+| Alcatel    | NetSim.Simulation.CliHandlers.Alcatel     |
+| Anira      | NetSim.Simulation.CliHandlers.Anira       |
+| Arista     | NetSim.Simulation.CliHandlers.Arista      |
+| Aruba      | NetSim.Simulation.CliHandlers.Aruba       |
+| Broadcom   | NetSim.Simulation.CliHandlers.Broadcom    |
+| Cisco      | NetSim.Simulation.CliHandlers.Cisco       |
+| Dell       | NetSim.Simulation.CliHandlers.Dell        |
+| Extreme    | NetSim.Simulation.CliHandlers.Extreme     |
+| F5         | NetSim.Simulation.CliHandlers.F5          |
+| Fortinet   | NetSim.Simulation.CliHandlers.Fortinet    |
+| Huawei     | NetSim.Simulation.CliHandlers.Huawei      |
+| Juniper    | NetSim.Simulation.CliHandlers.Juniper     |
+| Linux      | NetSim.Simulation.CliHandlers.Linux       |
+| MikroTik   | NetSim.Simulation.CliHandlers.MikroTik    |
+| Nokia      | NetSim.Simulation.CliHandlers.Nokia       |
+
+## Protocol Support
+
+- **Layer 2**: VLAN, STP/RSTP, LACP, CDP, LLDP
+- **Layer 3**: Static, OSPF, BGP, RIP, EIGRP, IS-IS, IGRP
+- **Security**: ACLs
+
+## Physical & Event Simulation
+
+- Bandwidth, latency, packet loss, link state (up/down/degraded)
+- Protocol-aware connectivity and event-driven updates
 
 ## Key Features
 
@@ -56,6 +86,7 @@ The NetSim solution consists of several key components:
 
 ## Quick Start
 
+## Quick Start Example
 ```csharp
 using NetSim.Simulation.Core;
 using NetSim.Simulation.Common;
@@ -71,27 +102,31 @@ await network.AddDeviceAsync(juniper);
 await network.AddLinkAsync("Router1", "GigabitEthernet0/0", "Router2", "ge-0/0/0");
 
 // Configure devices
-cisco.ProcessCommand("enable");
-cisco.ProcessCommand("configure terminal");
-cisco.ProcessCommand("interface GigabitEthernet0/0");
-cisco.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
-cisco.ProcessCommand("no shutdown");
-cisco.ProcessCommand("exit");
+	await cisco.ProcessCommandAsync("enable");
+	await cisco.ProcessCommandAsync("configure terminal");
+	await cisco.ProcessCommandAsync("interface GigabitEthernet0/0");
+	await cisco.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
+	await cisco.ProcessCommandAsync("no shutdown");
+	await cisco.ProcessCommandAsync("exit");
 
-juniper.ProcessCommand("configure");
-juniper.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/24");
-juniper.ProcessCommand("commit");
+	await juniper.ProcessCommandAsync("configure");
+	await juniper.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/24");
+	await juniper.ProcessCommandAsync("commit");
 
 // Test connectivity (protocols update automatically)
-var result = cisco.ProcessCommand("ping 10.0.0.2");
+var result = await cisco.ProcessCommandAsync("ping 10.0.0.2");
+```
 ```
 
 ## Project Structure
 
-See individual component READMEs for detailed information:
-- [NetSim.Simulation.Common](NetSim.Simulation.Common/README.md) - Core protocols and infrastructure
-- [NetSim.Simulation.Core](NetSim.Simulation.Core/README.md) - Device implementations and simulation engine
-- [CLI Handlers](NetSim.Simulation.CliHandlers/) - Vendor-specific command line interfaces
+
+## Project Structure
+
+- [NetSim.Simulation.Common](NetSim.Simulation.Common/README.md): Core protocols, device models, and infrastructure
+- [NetSim.Simulation.Core](NetSim.Simulation.Core/README.md): Device implementations, factories, simulation engine
+- [NetSim.Simulation.CliHandlers](NetSim.Simulation.CliHandlers/README.md): Vendor-specific CLI handlers
+
 
 ## Development
 
@@ -99,16 +134,17 @@ See individual component READMEs for detailed information:
 - .NET 9.0 or later
 - Visual Studio 2022 or VS Code
 
-### Building
-```bash
+### Build
+```pwsh
 dotnet build NetSim.sln
 ```
 
-### Testing
-```bash
+### Test
+```pwsh
 dotnet test
 ```
 
+
 ## License
 
-This project is for educational and testing purposes.
+This project is for educational and testing purposes only.

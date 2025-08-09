@@ -44,6 +44,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             var intfR2Before = r2.GetInterface("GigabitEthernet0/0");
             var txPacketsBefore = intfR1Before.TxPackets;
             var rxPacketsBefore = intfR2Before.RxPackets;
+            var txBytesBefore = intfR1Before.TxBytes;
 
             SimulatePingWithCounters(r1, r2, "GigabitEthernet0/0", "GigabitEthernet0/0");
 
@@ -52,7 +53,7 @@ namespace NetSim.Simulation.Tests.CounterTests
 
             Assert.Equal(txPacketsBefore + 5, intfR1After.TxPackets);
             Assert.Equal(rxPacketsBefore + 5, intfR2After.RxPackets);
-            Assert.Equal(320, intfR1After.TxBytes - intfR1Before.TxBytes);
+            Assert.Equal(txBytesBefore + 320, intfR1After.TxBytes);
         }
 
         /// <summary>

@@ -86,16 +86,22 @@ NetSim.Simulation.CliHandlers.{Vendor}/
 // Create a Cisco device with CLI handlers
 var cisco = new CiscoDevice("Router1");
 
-// Process commands through CLI handlers  
-cisco.ProcessCommand("enable");
 cisco.ProcessCommand("configure terminal");
 cisco.ProcessCommand("interface GigabitEthernet0/0");
 cisco.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
 cisco.ProcessCommand("no shutdown");
 cisco.ProcessCommand("exit");
 
+// Process commands through CLI handlers (async)
+await cisco.ProcessCommandAsync("enable");
+await cisco.ProcessCommandAsync("configure terminal");
+await cisco.ProcessCommandAsync("interface GigabitEthernet0/0");
+await cisco.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+await cisco.ProcessCommandAsync("no shutdown");
+await cisco.ProcessCommandAsync("exit");
+
 // Display configuration
-var config = cisco.ProcessCommand("show running-config");
+var config = await cisco.ProcessCommandAsync("show running-config");
 Console.WriteLine(config);
 ```
 

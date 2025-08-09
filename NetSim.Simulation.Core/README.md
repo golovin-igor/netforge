@@ -537,17 +537,18 @@ network.AddLink("Router2", "ge-0/0/1", "Switch1", "Ethernet1");
 ### Configuring Devices
 
 ```csharp
-// Cisco configuration
-cisco.ProcessCommand("enable");
-cisco.ProcessCommand("configure terminal");
-cisco.ProcessCommand("interface GigabitEthernet0/0");
-cisco.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
-cisco.ProcessCommand("no shutdown");
 
-// Juniper configuration
-juniper.ProcessCommand("configure");
-juniper.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/24");
-juniper.ProcessCommand("commit");
+// Cisco configuration (async)
+await cisco.ProcessCommandAsync("enable");
+await cisco.ProcessCommandAsync("configure terminal");
+await cisco.ProcessCommandAsync("interface GigabitEthernet0/0");
+await cisco.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
+await cisco.ProcessCommandAsync("no shutdown");
+
+// Juniper configuration (async)
+await juniper.ProcessCommandAsync("configure");
+await juniper.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/24");
+await juniper.ProcessCommandAsync("commit");
 ```
 
 ### Testing Connectivity
@@ -557,7 +558,7 @@ juniper.ProcessCommand("commit");
 network.UpdateProtocols();
 
 // Test ping
-var result = cisco.ProcessCommand("ping 10.0.0.2");
+var result = await cisco.ProcessCommandAsync("ping 10.0.0.2");
 Console.WriteLine(result);
 ```
 
