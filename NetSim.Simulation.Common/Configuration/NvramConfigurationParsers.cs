@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Core
     /// </summary>
     public interface INvramConfigurationParser
     {
-        void Apply(string nvramContent, NetworkDevice device);
+    Task Apply(string nvramContent, NetworkDevice device);
     }
 
     /// <summary>
@@ -16,47 +16,47 @@ namespace NetSim.Simulation.Core
     /// </summary>
     public abstract class LineFeedParserBase : INvramConfigurationParser
     {
-        protected abstract void PreConfig(NetworkDevice device);
-        protected virtual void PostConfig(NetworkDevice device) { }
+        protected abstract Task PreConfig(NetworkDevice device);
+        protected virtual Task PostConfig(NetworkDevice device) { return Task.CompletedTask; }
 
-        public void Apply(string nvramContent, NetworkDevice device)
+        public async Task Apply(string nvramContent, NetworkDevice device)
         {
-            PreConfig(device);
+            await PreConfig(device);
             var lines = nvramContent.Replace("\r", "").Split('\n');
             foreach (var raw in lines)
             {
                 var line = raw.Trim();
                 if (string.IsNullOrEmpty(line)) continue;
                 if (line.StartsWith("!") || line.StartsWith("#")) continue;
-                device.ProcessCommand(line);
+                await device.ProcessCommandAsync(line);
             }
-            PostConfig(device);
+            await PostConfig(device);
         }
     }
 
     public class CiscoNvramConfigurationParser : LineFeedParserBase
     {
-        protected override void PreConfig(NetworkDevice device)
+        protected override async Task PreConfig(NetworkDevice device)
         {
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
         }
-        protected override void PostConfig(NetworkDevice device)
+        protected override async Task PostConfig(NetworkDevice device)
         {
-            device.ProcessCommand("end");
+            await device.ProcessCommandAsync("end");
         }
     }
 
     public class JuniperNvramConfigurationParser : LineFeedParserBase
     {
-        protected override void PreConfig(NetworkDevice device)
+        protected override async Task PreConfig(NetworkDevice device)
         {
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
         }
-        protected override void PostConfig(NetworkDevice device)
+        protected override async Task PostConfig(NetworkDevice device)
         {
-            device.ProcessCommand("commit");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("commit");
+            await device.ProcessCommandAsync("exit");
         }
     }
 
@@ -67,37 +67,37 @@ namespace NetSim.Simulation.Core
 
     public class NokiaNvramConfigurationParser : LineFeedParserBase
     {
-        protected override void PreConfig(NetworkDevice device)
+        protected override async Task PreConfig(NetworkDevice device)
         {
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
         }
-        protected override void PostConfig(NetworkDevice device)
+        protected override async Task PostConfig(NetworkDevice device)
         {
-            device.ProcessCommand("commit");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("commit");
+            await device.ProcessCommandAsync("exit");
         }
     }
 
     public class HuaweiNvramConfigurationParser : LineFeedParserBase
     {
-        protected override void PreConfig(NetworkDevice device)
+        protected override async Task PreConfig(NetworkDevice device)
         {
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
         }
-        protected override void PostConfig(NetworkDevice device)
+        protected override async Task PostConfig(NetworkDevice device)
         {
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("quit");
         }
     }
 
     public class FortinetNvramConfigurationParser : LineFeedParserBase
     {
-        protected override void PreConfig(NetworkDevice device) { }
+    protected override Task PreConfig(NetworkDevice device) { return Task.CompletedTask; }
     }
 
     public class MikroTikNvramConfigurationParser : LineFeedParserBase
     {
-        protected override void PreConfig(NetworkDevice device) { }
+    protected override Task PreConfig(NetworkDevice device) { return Task.CompletedTask; }
     }
 
     /// <summary>

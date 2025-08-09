@@ -9,7 +9,7 @@ namespace NetSim.Simulation.CliHandlers.Common.Common
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace NetSim.Simulation.CliHandlers.Common.Common
                 }
                 
                 // Process the recalled command
-                var result = context.Device.ProcessCommand(lastCommand);
+                var result = await context.Device.ProcessCommandAsync(lastCommand);
                 
                 return Success(result);
             }
@@ -53,7 +53,7 @@ namespace NetSim.Simulation.CliHandlers.Common.Common
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -88,7 +88,7 @@ namespace NetSim.Simulation.CliHandlers.Common.Common
                 }
                 
                 // Process the recalled command
-                var result = context.Device.ProcessCommand(command);
+                var result = await context.Device.ProcessCommandAsync(command);
                 
                 return Success(result);
             }

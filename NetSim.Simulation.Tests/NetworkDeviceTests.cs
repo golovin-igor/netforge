@@ -27,7 +27,7 @@ namespace NetSim.Simulation.Tests
         public async Task SetOspfConfiguration_WhenCalled_ShouldPublishProtocolConfigChangedEvent()
         {
             // Arrange
-            ProtocolConfigChangedEventArgs receivedArgs = null;
+            ProtocolConfigChangedEventArgs? receivedArgs = null;
             _eventBus.Subscribe<ProtocolConfigChangedEventArgs>(args => 
             {
                 if (args.DeviceName == _testDevice.Name && args.ProtocolType == ProtocolType.OSPF)
@@ -55,7 +55,7 @@ namespace NetSim.Simulation.Tests
         public async Task SetBgpConfiguration_WhenCalled_ShouldPublishProtocolConfigChangedEvent()
         {
             // Arrange
-            ProtocolConfigChangedEventArgs receivedArgs = null;
+            ProtocolConfigChangedEventArgs? receivedArgs = null;
             _eventBus.Subscribe<ProtocolConfigChangedEventArgs>(args => 
             {
                 if (args.DeviceName == _testDevice.Name && args.ProtocolType == ProtocolType.BGP)
@@ -105,8 +105,8 @@ namespace NetSim.Simulation.Tests
         public bool InitializeCalled { get; private set; } = false;
         public bool UpdateStateCalled { get; private set; } = false;
         public bool SubscribeToEventsCalled { get; private set; } = false;
-        public NetworkEventBus SubscribedEventBus { get; private set; }
-        public NetworkDevice SubscribedDevice { get; private set; }
+    public NetworkEventBus? SubscribedEventBus { get; private set; }
+    public NetworkDevice? SubscribedDevice { get; private set; }
 
         public void Initialize(NetworkDevice device)
         {

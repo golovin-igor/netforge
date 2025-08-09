@@ -90,10 +90,7 @@ namespace NetSim.Simulation.CliHandlers
             }
         }
 
-        protected abstract CliResult ExecuteCommand(CliContext context);
-
-        protected virtual Task<CliResult> ExecuteCommandAsync(CliContext context)
-            => Task.FromResult(ExecuteCommand(context));
+        protected abstract Task<CliResult> ExecuteCommandAsync(CliContext context);
 
         public virtual string GetHelp()
         {
