@@ -98,7 +98,7 @@ See individual component READMEs for detailed information:
 ## Development
 
 ### Prerequisites
-- .NET 6.0 or later
+- .NET 9.0 or later
 - Visual Studio 2022 or VS Code
 
 ### Building

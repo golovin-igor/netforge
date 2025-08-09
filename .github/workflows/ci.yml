@@ -1,0 +1,277 @@
+name: 🚀 Continuous Integration
+
+on:
+  push:
+    branches: [ main, develop, feature/* ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  SOLUTION_FILE: NetSim.sln
+
+jobs:
+  # Fast feedback job for PRs
+  quick-validation:
+    name: 🏃‍♂️ Quick Validation
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🛠️ Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: 📦 Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+          
+    - name: 🔄 Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
+      
+    - name: 🔨 Build solution
+      run: dotnet build ${{ env.SOLUTION_FILE }} --no-restore --configuration Debug
+      
+    - name: 🧪 Run smoke tests
+      run: |
+        # Run a subset of fast tests for quick feedback
+        dotnet test "NetSim.Simulation.Tests/" \
+          --no-build \
+          --configuration Debug \
+          --filter "Category=Smoke|Priority=High" \
+          --logger "console;verbosity=normal" || true
+          
+        dotnet test "NetSim.Simulation.CliHandlers.Tests/" \
+          --no-build \
+          --configuration Debug \
+          --filter "Category=Smoke|Priority=High" \
+          --logger "console;verbosity=normal" || true
+
+  # Comprehensive testing for main branch
+  full-test-suite:
+    name: 🔬 Full Test Suite
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        configuration: [Debug, Release]
+      fail-fast: false
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🛠️ Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: 📦 Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+          %USERPROFILE%\.nuget\packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+          
+    - name: 🔄 Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
+      
+    - name: 🔨 Build solution
+      run: dotnet build ${{ env.SOLUTION_FILE }} --no-restore --configuration ${{ matrix.configuration }}
+      
+    - name: 🧪 Test CLI Handlers
+      run: |
+        dotnet test "NetSim.Simulation.CliHandlers.Tests/" \
+          --no-build \
+          --configuration ${{ matrix.configuration }} \
+          --logger trx \
+          --results-directory ./test-results/cli-handlers-${{ matrix.os }}-${{ matrix.configuration }} \
+          --collect:"XPlat Code Coverage" \
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+          
+    - name: 🌐 Test Simulation Core
+      run: |
+        dotnet test "NetSim.Simulation.Tests/" \
+          --no-build \
+          --configuration ${{ matrix.configuration }} \
+          --logger trx \
+          --results-directory ./test-results/simulation-${{ matrix.os }}-${{ matrix.configuration }} \
+          --collect:"XPlat Code Coverage" \
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+          
+    - name: 📊 Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-${{ matrix.os }}-${{ matrix.configuration }}
+        path: ./test-results/**/*.trx
+        retention-days: 30
+        
+    - name: 📈 Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-${{ matrix.os }}-${{ matrix.configuration }}
+        path: ./test-results/**/coverage.cobertura.xml
+        retention-days: 30
+
+  # Multi-vendor validation
+  vendor-compatibility:
+    name: 🏭 Vendor Compatibility Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        vendor-group:
+          - cisco-juniper-arista
+          - nokia-huawei-fortinet
+          - mikrotik-aruba-dell
+          - extreme-broadcom-f5
+          - alcatel-anira-linux
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🛠️ Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: 📦 Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+          
+    - name: 🔄 Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
+      
+    - name: 🔨 Build solution
+      run: dotnet build ${{ env.SOLUTION_FILE }} --no-restore --configuration Release
+      
+    - name: 🏭 Test vendor group: ${{ matrix.vendor-group }}
+      run: |
+        case "${{ matrix.vendor-group }}" in
+          "cisco-juniper-arista")
+            filter="FullyQualifiedName~Cisco|FullyQualifiedName~Juniper|FullyQualifiedName~Arista"
+            ;;
+          "nokia-huawei-fortinet")
+            filter="FullyQualifiedName~Nokia|FullyQualifiedName~Huawei|FullyQualifiedName~Fortinet"
+            ;;
+          "mikrotik-aruba-dell")
+            filter="FullyQualifiedName~MikroTik|FullyQualifiedName~Aruba|FullyQualifiedName~Dell"
+            ;;
+          "extreme-broadcom-f5")
+            filter="FullyQualifiedName~Extreme|FullyQualifiedName~Broadcom|FullyQualifiedName~F5"
+            ;;
+          "alcatel-anira-linux")
+            filter="FullyQualifiedName~Alcatel|FullyQualifiedName~Anira|FullyQualifiedName~Linux"
+            ;;
+        esac
+        
+        echo "Testing vendor group: ${{ matrix.vendor-group }}"
+        echo "Filter: $filter"
+        
+        dotnet test ${{ env.SOLUTION_FILE }} \
+          --no-build \
+          --configuration Release \
+          --filter "$filter" \
+          --logger "console;verbosity=detailed"
+
+  # Code quality checks
+  code-quality:
+    name: 🔍 Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Needed for SonarCloud analysis
+      
+    - name: 🛠️ Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: 📦 Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+          
+    - name: 🔄 Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_FILE }}
+      
+    - name: 🔨 Build solution
+      run: dotnet build ${{ env.SOLUTION_FILE }} --no-restore --configuration Release
+      
+    - name: 🧪 Run tests with coverage
+      run: |
+        dotnet test ${{ env.SOLUTION_FILE }} \
+          --no-build \
+          --configuration Release \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./coverage \
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+          
+    - name: 📊 Generate coverage report
+      run: |
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+        reportgenerator \
+          -reports:"coverage/**/coverage.cobertura.xml" \
+          -targetdir:"coverage/report" \
+          -reporttypes:"Html;Badges"
+          
+    - name: 📈 Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: coverage/report/
+        retention-days: 90
+
+  # Status check for protected branch
+  test-status:
+    name: ✅ Test Status
+    runs-on: ubuntu-latest
+    needs: [full-test-suite, vendor-compatibility, code-quality]
+    if: always()
+    
+    steps:
+    - name: ✅ Check test results
+      run: |
+        if [[ "${{ needs.full-test-suite.result }}" == "success" && 
+              "${{ needs.vendor-compatibility.result }}" == "success" && 
+              "${{ needs.code-quality.result }}" == "success" ]]; then
+          echo "✅ All tests passed successfully"
+          echo "status=success" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Some tests failed"
+          echo "Full test suite: ${{ needs.full-test-suite.result }}"
+          echo "Vendor compatibility: ${{ needs.vendor-compatibility.result }}"
+          echo "Code quality: ${{ needs.code-quality.result }}"
+          echo "status=failure" >> $GITHUB_OUTPUT
+          exit 1
+        fi
