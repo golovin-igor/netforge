@@ -30,6 +30,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper
                 return interfaceName;
 
             // Map short Juniper aliases to canonical names (for test expectations)
+
             if (normalized.StartsWith("ge-"))
                 return $"GigabitEthernet-{input.Substring(3)}";
             if (normalized.StartsWith("xe-"))
@@ -39,7 +40,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             if (normalized.StartsWith("ae"))
                 return $"AggregatedEthernet{input.Substring(2)}";
             if (normalized.StartsWith("irb"))
-                return $"IRB{input.Substring(3)}";
+                return $"IRB{input.Substring(3)}".ToUpper();
             if (normalized.StartsWith("lo"))
                 return $"Loopback{input.Substring(2)}";
             if (normalized.StartsWith("me"))
@@ -49,9 +50,9 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             if (normalized.StartsWith("em"))
                 return $"Management{input.Substring(2)}";
             if (normalized.StartsWith("vlan."))
-                return $"VLAN.{input.Substring(5)}";
+                return $"VLAN.{input.Substring(5)}".ToUpper();
             if (normalized.StartsWith("vlan"))
-                return $"VLAN{input.Substring(4)}";
+                return $"VLAN{input.Substring(4)}".ToUpper();
             if (normalized.StartsWith("reth"))
                 return $"RedundantEthernet{input.Substring(4)}";
             if (normalized.StartsWith("gr-"))
@@ -104,7 +105,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             if (normalized.StartsWith("management"))
                 return $"me{input.Substring(10)}";
             if (normalized.StartsWith("vlan."))
-                return $"vlan.{input.Substring(5)}";
+                return $"vlan{input.Substring(5)}".Replace(".", "");
             if (normalized.StartsWith("vlan"))
                 return $"vlan{input.Substring(4)}";
             if (normalized.StartsWith("redundantethernet"))
@@ -325,10 +326,10 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             if (normalized.StartsWith("gigabitethernet-") || normalized.StartsWith("ge-")) return "GigabitEthernet";
             if (normalized.StartsWith("tengigabitethernet-") || normalized.StartsWith("xe-")) return "TenGigabitEthernet";
             if (normalized.StartsWith("ethernetinterface-") || normalized.StartsWith("et-")) return "EthernetInterface";
-            if (normalized.StartsWith("em") || normalized.StartsWith("fxp") || normalized.StartsWith("me")) return "Management";
+            if (normalized.StartsWith("em") || normalized.StartsWith("fxp") || normalized.StartsWith("me") || normalized.StartsWith("mgmt")) return "Management";
             if (normalized.StartsWith("lo")) return "Loopback";
-            if (normalized.StartsWith("ae")) return "AggregatedEthernet";
-            if (normalized.StartsWith("reth")) return "RedundantEthernet";
+            if (normalized.StartsWith("ae") || normalized.StartsWith("agg")) return "AggregatedEthernet";
+            if (normalized.StartsWith("reth") || normalized.StartsWith("redundant")) return "RedundantEthernet";
             if (normalized.StartsWith("irb")) return "IRB";
             if (normalized.StartsWith("vlan")) return "VLAN";
             if (normalized.StartsWith("stunnel") || normalized.StartsWith("st")) return "STunnel";
@@ -351,14 +352,14 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             var normalized = expanded.ToLower();
 
             // Use regex to extract the number part after the type prefix and optional dash
-            var match = Regex.Match(expanded, @"^(?:[a-zA-Z]+-?|[a-zA-Z]+)([0-9./]+|\.[0-9]+)");
+            var match = Regex.Match(expanded, @"^(?:[a-zA-Z]+-?)([0-9][0-9./]*)");
             if (match.Success)
-                return match.Groups[1].Value;
+                return match.Groups[1].Value.TrimStart('.', '/');
 
             // For IRB, VLAN, etc. (e.g., IRB0, VLAN.100)
             match = Regex.Match(expanded, @"^(?:[a-zA-Z]+)([0-9.]+)");
             if (match.Success)
-                return match.Groups[1].Value;
+                return match.Groups[1].Value.TrimStart('.', '/');
 
             return "";
         }
@@ -373,6 +374,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper
 
             var expanded = ExpandInterfaceAlias(interfaceName);
             var normalized = expanded.ToLower();
+
 
             if (normalized.StartsWith("twentyfivegigabitethernet-"))
                 return expanded;
@@ -417,11 +419,11 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             if (normalized.StartsWith("gr-"))
                 return $"GRE-{expanded.Substring(3)}";
             if (normalized.StartsWith("irb"))
-                return $"IRB{expanded.Substring(3)}";
+                return $"IRB{expanded.Substring(3)}".ToUpper();
             if (normalized.StartsWith("vlan."))
-                return $"VLAN.{expanded.Substring(5)}";
+                return $"VLAN.{expanded.Substring(5)}".ToUpper();
             if (normalized.StartsWith("vlan"))
-                return $"VLAN{expanded.Substring(4)}";
+                return $"VLAN{expanded.Substring(4)}".ToUpper();
 
             // Return the expanded form if no canonical mapping found
             return expanded;
