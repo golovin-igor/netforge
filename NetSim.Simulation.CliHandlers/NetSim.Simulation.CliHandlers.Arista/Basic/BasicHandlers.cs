@@ -67,18 +67,16 @@ namespace NetSim.Simulation.CliHandlers.Arista.Basic
                     $"% Invalid IP address: {targetIp}");
             }
             
-            // Simulate ping result (Arista style)
+            // Simulate ping result (Arista/Cisco-style hybrid)
+            var pingCount = 5;
+            var packetSize = 100;
+            
             var output = new StringBuilder();
-            output.AppendLine($"PING {targetIp} (56 data bytes)");
-            output.AppendLine($"64 bytes from {targetIp}: icmp_seq=1 time=1.2 ms");
-            output.AppendLine($"64 bytes from {targetIp}: icmp_seq=2 time=1.1 ms");
-            output.AppendLine($"64 bytes from {targetIp}: icmp_seq=3 time=1.0 ms");
-            output.AppendLine($"64 bytes from {targetIp}: icmp_seq=4 time=1.3 ms");
-            output.AppendLine($"64 bytes from {targetIp}: icmp_seq=5 time=1.1 ms");
-            output.AppendLine("");
-            output.AppendLine($"--- {targetIp} ping statistics ---");
-            output.AppendLine("5 packets transmitted, 5 received, 0% packet loss, time 4001ms");
-            output.AppendLine("rtt min/avg/max/mdev = 1.0/1.14/1.3/0.11 ms");
+            output.AppendLine($"Type escape sequence to abort.");
+            output.AppendLine($"Sending {pingCount}, {packetSize}-byte ICMP Echos to {targetIp}, timeout is 2 seconds:");
+            output.AppendLine("!!!!!");
+            output.AppendLine($"Success rate is 100 percent ({pingCount}/{pingCount}), round-trip min/avg/max = 1/1/4 ms");
+            output.AppendLine($"{pingCount} packets transmitted, {pingCount} packets received, 0% packet loss");
             
             return Success(output.ToString());
         }

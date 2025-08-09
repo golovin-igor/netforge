@@ -47,6 +47,8 @@ namespace NetSim.Simulation.CliHandlers.Fortinet
                 // Basic handlers
                 new Basic.EnableCommandHandler(),
                 new Basic.PingCommandHandler(),
+                new Basic.ExecuteCommandHandler(),
+                new Basic.ConfigCommandHandler(),
                 
                 // Show handlers
                 new Show.ShowCommandHandler()

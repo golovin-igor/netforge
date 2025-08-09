@@ -101,6 +101,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Basic
             output.AppendLine($"Sending {pingCount}, {packetSize}-byte ICMP Echos to {targetIp}, timeout is 2 seconds:");
             output.AppendLine("!!!!!");
             output.AppendLine($"Success rate is 100 percent ({pingCount}/{pingCount}), round-trip min/avg/max = 1/1/4 ms");
+            output.AppendLine($"{pingCount} packets transmitted, {pingCount} packets received, 0% packet loss");
             
             return Success(output.ToString());
         }
