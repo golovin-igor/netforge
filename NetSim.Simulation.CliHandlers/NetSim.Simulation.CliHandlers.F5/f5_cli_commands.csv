@@ -1,0 +1,54 @@
+Command,Description,Mode,Category
+enable,Enter privileged mode,user,Basic
+disable,Exit privileged mode,privileged,Basic
+exit,Exit current mode,all,Basic
+quit,Exit current mode,all,Basic
+help,Show help information,all,Basic
+?,Show help information,all,Basic
+ping,Send ping packets,all,Basic
+traceroute,Trace route to destination,all,Basic
+show,Show system information,all,Show
+show version,Show system version,all,Show
+show running-config,Show current configuration,all,Show
+show startup-config,Show startup configuration,all,Show
+show interfaces,Show interface status,all,Show
+show ip interface,Show IP interface information,all,Show
+show ip route,Show IP routing table,all,Show
+show arp,Show ARP table,all,Show
+show vlan,Show VLAN information,all,Show
+show trunk,Show trunk information,all,Show
+show spanning-tree,Show spanning tree information,all,Show
+show cdp,Show CDP information,all,Show
+configure,Enter configuration mode,privileged,Config
+configure terminal,Enter configuration mode,privileged,Config
+hostname,Set device hostname,config,Config
+interface,Configure interface,config,Config
+ip,Configure IP settings,config,Config
+no,Remove configuration,config,Config
+shutdown,Shutdown interface,config,Config
+description,Set interface description,config,Config
+ip address,Configure IP address,config,Config
+tmsh,Enter TMSH mode,all,F5
+bash,Enter bash shell,all,F5
+list,List objects,all,F5
+create,Create object,all,F5
+modify,Modify object,all,F5
+delete,Delete object,all,F5
+show ltm,Show LTM objects,all,F5
+show gtm,Show GTM objects,all,F5
+show asm,Show ASM objects,all,F5
+show apm,Show APM objects,all,F5
+show net,Show network configuration,all,F5
+show sys,Show system configuration,all,F5
+create ltm pool,Create LTM pool,all,F5
+create ltm virtual,Create LTM virtual server,all,F5
+create ltm node,Create LTM node,all,F5
+modify ltm pool,Modify LTM pool,all,F5
+modify ltm virtual,Modify LTM virtual server,all,F5
+modify ltm node,Modify LTM node,all,F5
+delete ltm pool,Delete LTM pool,all,F5
+delete ltm virtual,Delete LTM virtual server,all,F5
+delete ltm node,Delete LTM node,all,F5
+show ltm pool,Show LTM pools,all,F5
+show ltm virtual,Show LTM virtual servers,all,F5
+show ltm node,Show LTM nodes,all,F5 
