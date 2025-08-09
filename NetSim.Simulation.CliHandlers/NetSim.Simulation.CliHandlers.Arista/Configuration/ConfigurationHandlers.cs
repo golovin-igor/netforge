@@ -346,4 +346,99 @@ namespace NetSim.Simulation.CliHandlers.Arista.Configuration
             return Success("");
         }
     }
+
+    /// <summary>
+    /// Arista ip command handler for configuration mode
+    /// </summary>
+    public class IpCommandHandler : VendorAgnosticCliHandler
+    {
+        public IpCommandHandler() : base("ip", "IP configuration commands")
+        {
+        }
+        
+        protected override CliResult ExecuteCommand(CliContext context)
+        {
+            if (!IsVendor(context, "Arista"))
+            {
+                return RequireVendor(context, "Arista");
+            }
+            
+            if (!IsInMode(context, "config"))
+            {
+                return Error(CliErrorType.InvalidMode, 
+                    "% This command requires configuration mode");
+            }
+            
+            if (context.CommandParts.Length < 2)
+            {
+                return Error(CliErrorType.IncompleteCommand, 
+                    "% Incomplete command");
+            }
+            
+            var subCommand = context.CommandParts[1];
+            
+            if (subCommand.Equals("access-list", StringComparison.OrdinalIgnoreCase))
+            {
+                return HandleAccessList(context);
+            }
+            
+            if (subCommand.Equals("route", StringComparison.OrdinalIgnoreCase))
+            {
+                return HandleStaticRoute(context);
+            }
+            
+            return Error(CliErrorType.InvalidCommand, 
+                "% Invalid IP command");
+        }
+        
+        private CliResult HandleAccessList(CliContext context)
+        {
+            if (context.CommandParts.Length < 4)
+            {
+                return Error(CliErrorType.IncompleteCommand, 
+                    "% Incomplete command - need access list type and name");
+            }
+            
+            var aclType = context.CommandParts[2]; // standard or extended
+            var aclName = context.CommandParts[3];
+            
+            if (!aclType.Equals("standard", StringComparison.OrdinalIgnoreCase) && 
+                !aclType.Equals("extended", StringComparison.OrdinalIgnoreCase))
+            {
+                return Error(CliErrorType.InvalidParameter, 
+                    "% Invalid access list type");
+            }
+            
+            // Enter ACL configuration mode
+            SetMode(context, "acl");
+            
+            // Store ACL context
+            if (context.Device is NetworkDevice device)
+            {
+                device.AddLogEntry($"Entered {aclType} access list {aclName}");
+            }
+            
+            return Success("");
+        }
+        
+        private CliResult HandleStaticRoute(CliContext context)
+        {
+            if (context.CommandParts.Length < 5)
+            {
+                return Error(CliErrorType.IncompleteCommand, 
+                    "% Incomplete command - need network, mask, and next-hop");
+            }
+            
+            var network = context.CommandParts[2];
+            var mask = context.CommandParts[3];
+            var nextHop = context.CommandParts[4];
+            
+            if (context.Device is NetworkDevice device)
+            {
+                device.AddLogEntry($"Static route added: {network}/{mask} via {nextHop}");
+            }
+            
+            return Success("");
+        }
+    }
 }

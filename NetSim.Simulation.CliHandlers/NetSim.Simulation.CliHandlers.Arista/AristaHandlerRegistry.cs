@@ -26,6 +26,7 @@ public class AristaHandlerRegistry : IVendorHandlerRegistry
         manager.RegisterHandler(new Configuration.VlanCommandHandler());
         manager.RegisterHandler(new Configuration.NoCommandHandler());
         manager.RegisterHandler(new Configuration.ExitCommandHandler());
+        manager.RegisterHandler(new Configuration.IpCommandHandler());
         
         // Register Arista basic handlers
         manager.RegisterHandler(new Basic.EnableCommandHandler());

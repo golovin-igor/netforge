@@ -615,6 +615,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Basic
                 "arp" => HandleClearArp(context),
                 "ip" => HandleClearIp(context),
                 "interface" => HandleClearInterface(context),
+                "cdp" => HandleClearCdp(context),
                 _ => Error(CliErrorType.InvalidCommand, 
                     GetVendorError(context, "invalid_command"))
             };
@@ -682,6 +683,25 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Basic
             
             // Simulate clearing interface statistics
             return Success("");
+        }
+        
+        private CliResult HandleClearCdp(CliContext context)
+        {
+            // Check for subcommands
+            if (context.CommandParts.Length > 2)
+            {
+                var cdpSubCommand = context.CommandParts[2];
+                
+                return cdpSubCommand switch
+                {
+                    "table" => Success("CDP table cleared"),
+                    "counters" => Success("CDP counters cleared"),
+                    _ => Success("CDP information cleared") // For invalid subcommands, still clear CDP info
+                };
+            }
+            
+            // Default CDP clear
+            return Success("CDP information cleared");
         }
     }
 } 

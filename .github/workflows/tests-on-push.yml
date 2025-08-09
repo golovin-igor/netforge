@@ -38,7 +38,17 @@ jobs:
       
     - name: 🔨 Build
       run: dotnet build NetSim.sln --no-restore --configuration Release
-      
+            
+    - name: 🧪 Test Simulation Core  
+      run: |
+        echo "::group::🌐 Testing Simulation Core"
+        dotnet test NetSim.Simulation.Tests/ \
+          --no-build \
+          --configuration Release \
+          --logger "console;verbosity=normal"
+        echo "::endgroup::"
+
+
     - name: 🧪 Test CLI Handlers
       run: |
         echo "::group::🔧 Testing CLI Handlers"
@@ -48,14 +58,6 @@ jobs:
           --logger "console;verbosity=normal"
         echo "::endgroup::"
         
-    - name: 🧪 Test Simulation Core  
-      run: |
-        echo "::group::🌐 Testing Simulation Core"
-        dotnet test NetSim.Simulation.Tests/ \
-          --no-build \
-          --configuration Release \
-          --logger "console;verbosity=normal"
-        echo "::endgroup::"
         
     - name: 📊 Test Summary
       if: always()
@@ -63,8 +65,8 @@ jobs:
         echo "## 🧪 NetSim Test Results" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Test Projects" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ **NetSim.Simulation.CliHandlers.Tests**: Multi-vendor CLI command validation" >> $GITHUB_STEP_SUMMARY  
         echo "- ✅ **NetSim.Simulation.Tests**: Core simulation and protocol testing" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ **NetSim.Simulation.CliHandlers.Tests**: Multi-vendor CLI command validation" >> $GITHUB_STEP_SUMMARY  
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Coverage" >> $GITHUB_STEP_SUMMARY
         echo "- 🏭 **15 Network Vendors**: Cisco, Juniper, Arista, Nokia, Huawei, Fortinet, MikroTik, Aruba, Dell, F5, Extreme, Broadcom, Alcatel, Anira, Linux" >> $GITHUB_STEP_SUMMARY
