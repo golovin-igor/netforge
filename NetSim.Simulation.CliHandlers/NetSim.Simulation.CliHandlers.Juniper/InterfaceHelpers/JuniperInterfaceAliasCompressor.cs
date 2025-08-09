@@ -23,20 +23,20 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             }
 
             result = result
-                .Replace("HundredGigabitEthernet", "100ge", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("FortyGigabitEthernet", "40ge", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("TwentyFiveGigabitEthernet", "25ge", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("TenGigabitEthernet", "xe", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("GigabitEthernet", "ge", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("EthernetInterface", "et", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("AggregatedEthernet", "ae", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("RedundantEthernet", "reth", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("Loopback", "lo", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("Management", "mgmt", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("VLAN", "vlan", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("IRB", "irb", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("GRE", "gr", System.StringComparison.OrdinalIgnoreCase)
-                .Replace("STunnel", "st", System.StringComparison.OrdinalIgnoreCase);
+                .Replace("HundredGigabitEthernet", "100ge", StringComparison.OrdinalIgnoreCase)
+                .Replace("FortyGigabitEthernet", "40ge", StringComparison.OrdinalIgnoreCase)
+                .Replace("TwentyFiveGigabitEthernet", "25ge", StringComparison.OrdinalIgnoreCase)
+                .Replace("TenGigabitEthernet", "xe", StringComparison.OrdinalIgnoreCase)
+                .Replace("GigabitEthernet", "ge", StringComparison.OrdinalIgnoreCase)
+                .Replace("EthernetInterface", "et", StringComparison.OrdinalIgnoreCase)
+                .Replace("AggregatedEthernet", "ae", StringComparison.OrdinalIgnoreCase)
+                .Replace("RedundantEthernet", "reth", StringComparison.OrdinalIgnoreCase)
+                .Replace("Loopback", "lo", StringComparison.OrdinalIgnoreCase)
+                .Replace("Management", "mgmt", StringComparison.OrdinalIgnoreCase)
+                .Replace("VLAN", "vlan", StringComparison.OrdinalIgnoreCase)
+                .Replace("IRB", "irb", StringComparison.OrdinalIgnoreCase)
+                .Replace("GRE", "gr", StringComparison.OrdinalIgnoreCase)
+                .Replace("STunnel", "st", StringComparison.OrdinalIgnoreCase);
 
             return result.ToLower() + subInterface;
         }
