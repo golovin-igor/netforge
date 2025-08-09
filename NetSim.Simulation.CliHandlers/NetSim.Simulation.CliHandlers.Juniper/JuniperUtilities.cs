@@ -40,7 +40,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             if (normalized.StartsWith("ae"))
                 return $"AggregatedEthernet{input.Substring(2)}";
             if (normalized.StartsWith("irb"))
-                return $"IRB{input.Substring(3)}".ToUpper();
+                return $"IRB{input.Substring(3)}";
             if (normalized.StartsWith("lo"))
                 return $"Loopback{input.Substring(2)}";
             if (normalized.StartsWith("me"))
@@ -52,17 +52,11 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             if (normalized.StartsWith("mgmt"))
                 return $"Management{input.Substring(4)}";
             if (normalized.StartsWith("vlan."))
-                return $"VLAN.{input.Substring(5)}".ToUpper();
+                return $"VLAN.{input.Substring(5)}";
             if (normalized.StartsWith("vlan"))
-                return $"VLAN{input.Substring(4)}".ToUpper();
+                return $"VLAN{input.Substring(4)}";
             if (normalized.StartsWith("reth"))
                 return $"RedundantEthernet{input.Substring(4)}";
-            if (normalized.StartsWith("irb"))
-                return $"IRB{input.Substring(3)}".ToUpper();
-            if (normalized.StartsWith("vlan."))
-                return $"VLAN.{input.Substring(5)}".ToUpper();
-            if (normalized.StartsWith("vlan"))
-                return $"VLAN{input.Substring(4)}".ToUpper();
             if (normalized.StartsWith("100ge-"))
                 return $"HundredGigabitEthernet-{input.Substring(7)}";
             if (normalized.StartsWith("25ge-"))
@@ -88,6 +82,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             // Map canonical names to short aliases
             // Use GetInterfaceNumber for all high-speed and standard Ethernet types
             string number = GetInterfaceNumber(interfaceName);
+            // Always use the shortest, most common Juniper alias
             if ((normalized.StartsWith("twentyfivegigabitethernet-") || normalized.StartsWith("25ge-")) && !string.IsNullOrEmpty(number))
                 return $"25ge-{number}";
             if ((normalized.StartsWith("hundredgigabitethernet-") || normalized.StartsWith("100ge-")) && !string.IsNullOrEmpty(number))
@@ -101,27 +96,27 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             if ((normalized.StartsWith("ethernetinterface-") || normalized.StartsWith("et-")) && !string.IsNullOrEmpty(number))
                 return $"et-{number}";
             if (normalized.StartsWith("aggregatedethernet"))
-                return $"ae{input.Substring(18)}";
+                return $"ae{number}";
             if (normalized.StartsWith("agg"))
-                return $"ae{input.Substring(3)}";
-            if (normalized.StartsWith("mgmt"))
-                return $"me{input.Substring(4)}";
+                return $"ae{number}";
+            if (normalized.StartsWith("mgmt") || normalized.StartsWith("management"))
+                return $"me{number}";
             if (normalized.StartsWith("irb"))
-                return $"irb{input.Substring(3)}";
+                return $"irb{number}";
             if (normalized.StartsWith("loopback"))
-                return $"lo{input.Substring(8)}";
-            if (normalized.StartsWith("management"))
-                return $"me{input.Substring(10)}";
+                return $"lo{number}";
             if (normalized.StartsWith("vlan."))
-                return $"vlan{input.Substring(5)}".Replace(".", "");
+                return $"vlan{number}";
             if (normalized.StartsWith("vlan"))
-                return $"vlan{input.Substring(4)}";
+                return $"vlan{number}";
             if (normalized.StartsWith("redundantethernet"))
-                return $"reth{input.Substring(17)}";
-            if (normalized.StartsWith("gre-"))
-                return $"gr-{input.Substring(4)}";
-            if (normalized.StartsWith("stunnel"))
-                return $"st{input.Substring(7)}";
+                return $"reth{number}";
+            if (normalized.StartsWith("reth"))
+                return $"reth{number}";
+            if (normalized.StartsWith("gre-") || normalized.StartsWith("gr-"))
+                return $"gr-{number}";
+            if (normalized.StartsWith("stunnel") || normalized.StartsWith("st"))
+                return $"st{number}";
             // If already a short alias, return as-is
             if (normalized.StartsWith("ge-") || normalized.StartsWith("xe-") || normalized.StartsWith("et-") || normalized.StartsWith("ae") || normalized.StartsWith("lo") || normalized.StartsWith("me") || normalized.StartsWith("fxp") || normalized.StartsWith("em") || normalized.StartsWith("vlan") || normalized.StartsWith("reth") || normalized.StartsWith("gr-") || normalized.StartsWith("st") || normalized.StartsWith("100ge-") || normalized.StartsWith("25ge-") || normalized.StartsWith("40ge-"))
                 return interfaceName;
@@ -193,7 +188,6 @@ namespace NetSim.Simulation.CliHandlers.Juniper
         public static List<string> GetInterfaceAliases(string interfaceName)
         {
             var aliases = new List<string>();
-            
             if (string.IsNullOrEmpty(interfaceName))
             {
                 aliases.Add("");
@@ -203,55 +197,72 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             var canonical = GetCanonicalInterfaceName(interfaceName);
             var expanded = ExpandInterfaceAlias(interfaceName);
             var normalized = expanded.ToLower();
-            
+
             // Always include the original and canonical forms
             aliases.Add(interfaceName);
             aliases.Add(canonical);
-            
+
             // Generate all possible aliases based on interface type
             string number = GetInterfaceNumber(expanded);
+            string cleanNumber = number.TrimStart('/', '-');
+            // For high-speed interfaces, ensure cleanNumber is always x/y/z
+            if ((normalized.StartsWith("25ge-") || normalized.StartsWith("twentyfivegigabitethernet-") ||
+                 normalized.StartsWith("100ge-") || normalized.StartsWith("hundredgigabitethernet-") ||
+                 normalized.StartsWith("40ge-") || normalized.StartsWith("fortygigabitethernet-")) && cleanNumber.Count(c => c == '/') == 1)
+            {
+                // If only x/y, try to extract x/y/z from the original string
+                var m = System.Text.RegularExpressions.Regex.Match(expanded, @"([0-9]+/[0-9]+/[0-9]+)");
+                if (m.Success) cleanNumber = m.Groups[1].Value;
+            }
             // 25GE
             if (normalized.StartsWith("25ge-") || normalized.StartsWith("twentyfivegigabitethernet-"))
             {
-                aliases.Add($"25ge-{number}");
-                aliases.Add($"25g{number}");
-                aliases.Add($"TwentyFiveGigabitEthernet-{number}");
+                aliases.Add($"25ge-{cleanNumber}");
+                aliases.Add($"25g{cleanNumber}");
+                aliases.Add($"TwentyFiveGigabitEthernet-{cleanNumber}");
+                aliases.Add($"twentyfivegigabit-{cleanNumber}");
             }
             // 100GE
             if (normalized.StartsWith("100ge-") || normalized.StartsWith("hundredgigabitethernet-"))
             {
-                aliases.Add($"100ge-{number}");
-                aliases.Add($"100g{number}");
-                aliases.Add($"HundredGigabitEthernet-{number}");
+                aliases.Add($"100ge-{cleanNumber}");
+                aliases.Add($"100g{cleanNumber}");
+                aliases.Add($"HundredGigabitEthernet-{cleanNumber}");
+                aliases.Add($"hundredgigabit-{cleanNumber}");
             }
             // 40GE
             if (normalized.StartsWith("40ge-") || normalized.StartsWith("fortygigabitethernet-"))
             {
-                aliases.Add($"40ge-{number}");
-                aliases.Add($"40g{number}");
-                aliases.Add($"FortyGigabitEthernet-{number}");
+                aliases.Add($"40ge-{cleanNumber}");
+                aliases.Add($"40g{cleanNumber}");
+                aliases.Add($"FortyGigabitEthernet-{cleanNumber}");
+                aliases.Add($"fortygigabit-{cleanNumber}");
             }
             // GE
             if (normalized.StartsWith("ge-") || normalized.StartsWith("gigabitethernet-"))
             {
-                aliases.Add($"ge-{number}");
-                aliases.Add($"gig{number}");
-                aliases.Add($"GigabitEthernet-{number}");
+                aliases.Add($"ge-{cleanNumber}");
+                aliases.Add($"gig{cleanNumber}");
+                aliases.Add($"gig-{cleanNumber}");
+                aliases.Add($"GigabitEthernet-{cleanNumber}");
+                aliases.Add($"gigabit-{cleanNumber}");
             }
             // XE
             if (normalized.StartsWith("xe-") || normalized.StartsWith("tengigabitethernet-"))
             {
-                aliases.Add($"xe-{number}");
-                aliases.Add($"xge-{number}");
-                aliases.Add($"ten{number}");
-                aliases.Add($"TenGigabitEthernet-{number}");
+                aliases.Add($"xe-{cleanNumber}");
+                aliases.Add($"xge-{cleanNumber}");
+                aliases.Add($"ten{cleanNumber}");
+                aliases.Add($"tengig-{cleanNumber}");
+                aliases.Add($"TenGigabitEthernet-{cleanNumber}");
+                aliases.Add($"tengigabit-{cleanNumber}");
             }
             // ET
             if (normalized.StartsWith("et-") || normalized.StartsWith("ethernetinterface-"))
             {
-                aliases.Add($"et-{number}");
-                aliases.Add($"ether-{number}");
-                aliases.Add($"EthernetInterface-{number}");
+                aliases.Add($"et-{cleanNumber}");
+                aliases.Add($"ether-{cleanNumber}");
+                aliases.Add($"EthernetInterface-{cleanNumber}");
             }
             // Management
             if (normalized.StartsWith("em") || normalized.StartsWith("fxp") || normalized.StartsWith("me") || normalized.StartsWith("mgmt"))
@@ -274,6 +285,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             {
                 aliases.Add($"ae{number}");
                 aliases.Add($"agg{number}");
+                aliases.Add($"aggregated{number}");
                 aliases.Add($"AggregatedEthernet{number}");
             }
             // RedundantEthernet
@@ -293,7 +305,6 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             // GRE
             if (normalized.StartsWith("gr-") || normalized.StartsWith("gre-"))
             {
-                aliases.Add($"gr-{number}");
                 aliases.Add($"GRE-{number}");
             }
             // IRB
@@ -307,6 +318,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             {
                 aliases.Add($"vlan{number}");
                 aliases.Add($"VLAN{number}");
+                aliases.Add($"vl{number}");
             }
             // Ether short alias for et-
             if (normalized.StartsWith("et-"))
@@ -336,40 +348,56 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             return aliases.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         }
 
-        /// <summary>
-        /// Gets the interface type from the name
-        /// </summary>
-        public static string GetInterfaceType(string interfaceName)
+        public static string GetCanonicalInterfaceName(string interfaceName)
         {
             if (string.IsNullOrEmpty(interfaceName))
-                return "Unknown";
+                return "";
 
             var expanded = ExpandInterfaceAlias(interfaceName);
-            var normalized = expanded.ToLower();
+            var type = GetInterfaceType(expanded);
+            var number = GetInterfaceNumber(expanded); // Always cleaned
 
-            if (normalized.StartsWith("twentyfivegigabitethernet-") || normalized.StartsWith("25ge-")) return "TwentyFiveGigabitEthernet";
-            if (normalized.StartsWith("hundredgigabitethernet-") || normalized.StartsWith("100ge-")) return "HundredGigabitEthernet";
-            if (normalized.StartsWith("fortygigabitethernet-") || normalized.StartsWith("40ge-")) return "FortyGigabitEthernet";
-            if (normalized.StartsWith("gigabitethernet-") || normalized.StartsWith("ge-")) return "GigabitEthernet";
-            if (normalized.StartsWith("tengigabitethernet-") || normalized.StartsWith("xe-")) return "TenGigabitEthernet";
-            if (normalized.StartsWith("ethernetinterface-") || normalized.StartsWith("et-")) return "EthernetInterface";
-            if (normalized.StartsWith("em") || normalized.StartsWith("fxp") || normalized.StartsWith("me") || normalized.StartsWith("mgmt")) return "Management";
-            if (normalized.StartsWith("lo")) return "Loopback";
-            if (normalized.StartsWith("ae") || normalized.StartsWith("agg")) return "AggregatedEthernet";
-            if (normalized.StartsWith("reth") || normalized.StartsWith("redundant")) return "RedundantEthernet";
-            if (normalized.StartsWith("irb")) return "IRB";
-            if (normalized.StartsWith("vlan")) return "VLAN";
-            if (normalized.StartsWith("stunnel") || normalized.StartsWith("st")) return "STunnel";
-            if (normalized.StartsWith("gre-") || normalized.StartsWith("gr-")) return "GRE";
-            if (normalized.StartsWith("ip-")) return "IPTunnel";
-            if (normalized.StartsWith("lt-")) return "LogicalTunnel";
-
-            return "Unknown";
+            switch (type)
+            {
+                case "GigabitEthernet":
+                    return !string.IsNullOrEmpty(number) ? $"GigabitEthernet-{number}" : "GigabitEthernet";
+                case "TenGigabitEthernet":
+                    return !string.IsNullOrEmpty(number) ? $"TenGigabitEthernet-{number}" : "TenGigabitEthernet";
+                case "TwentyFiveGigabitEthernet":
+                    return !string.IsNullOrEmpty(number) ? $"TwentyFiveGigabitEthernet-{number}" : "TwentyFiveGigabitEthernet";
+                case "FortyGigabitEthernet":
+                    return !string.IsNullOrEmpty(number) ? $"FortyGigabitEthernet-{number}" : "FortyGigabitEthernet";
+                case "HundredGigabitEthernet":
+                    return !string.IsNullOrEmpty(number) ? $"HundredGigabitEthernet-{number}" : "HundredGigabitEthernet";
+                case "EthernetInterface":
+                    return !string.IsNullOrEmpty(number) ? $"EthernetInterface-{number}" : "EthernetInterface";
+                case "AggregatedEthernet":
+                    return !string.IsNullOrEmpty(number) ? $"AggregatedEthernet{number}" : "AggregatedEthernet";
+                case "Loopback":
+                    return !string.IsNullOrEmpty(number) ? $"Loopback{number}" : "Loopback";
+                case "Management":
+                    return !string.IsNullOrEmpty(number) ? $"Management{number}" : "Management";
+                case "VLAN":
+                    return !string.IsNullOrEmpty(number) ? $"VLAN{number}" : "VLAN";
+                case "IRB":
+                    return !string.IsNullOrEmpty(number) ? $"IRB{number}" : "IRB";
+                case "GRE":
+                    return !string.IsNullOrEmpty(number) ? $"gr-{number}" : "gr";
+                case "STunnel":
+                    return !string.IsNullOrEmpty(number) ? $"st{number}" : "st";
+                case "FXP":
+                    return !string.IsNullOrEmpty(number) ? $"FXP{number}" : "FXP";
+                case "ME":
+                    return !string.IsNullOrEmpty(number) ? $"ME{number}" : "ME";
+                case "EM":
+                    return !string.IsNullOrEmpty(number) ? $"EM{number}" : "EM";
+                case "RedundantEthernet":
+                    return !string.IsNullOrEmpty(number) ? $"reth{number}" : "reth";
+                default:
+                    return expanded;
+            }
         }
 
-        /// <summary>
-        /// Gets the interface number from the name
-        /// </summary>
         public static string GetInterfaceNumber(string interfaceName)
         {
             if (string.IsNullOrEmpty(interfaceName))
@@ -378,75 +406,87 @@ namespace NetSim.Simulation.CliHandlers.Juniper
             var expanded = ExpandInterfaceAlias(interfaceName);
             var normalized = expanded.ToLower();
 
-            // For types with dash and numbers (e.g., ge-0/0/0, xe-0/0/0, et-0/0/0, 25ge-0/0/0, 40ge-0/0/0, 100ge-0/0/0)
+            // For high-speed interfaces: ge-, xe-, et-, 25ge-, 40ge-, 100ge-, gr-
+            var m = System.Text.RegularExpressions.Regex.Match(expanded, @"(?:ge|xe|et|25ge|40ge|100ge|gr)-([0-9]+/[0-9]+/[0-9]+(?:\.[0-9]+)?)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (m.Success)
+                return m.Groups[1].Value;
+
+            // For high-speed interfaces, if only x/y is found, try to extract x/y/z from the original string
+            if (System.Text.RegularExpressions.Regex.IsMatch(expanded, @"(?:ge|xe|et|25ge|40ge|100ge|gr)-[0-9]+/[0-9]+$", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+            {
+                var m2 = System.Text.RegularExpressions.Regex.Match(interfaceName, @"([0-9]+/[0-9]+/[0-9]+)");
+                if (m2.Success) return m2.Groups[1].Value;
+            }
+
+            // For types with dash and numbers (fallback, e.g., st-, gre-)
             var dashIdx = expanded.IndexOf('-');
             if (dashIdx > 0 && dashIdx < expanded.Length - 1)
             {
                 var numPart = expanded.Substring(dashIdx + 1);
-                if (Regex.IsMatch(numPart, @"^\d+/\d+/\d+"))
+                numPart = System.Text.RegularExpressions.Regex.Replace(numPart, "^[^0-9]+", "");
+                if (System.Text.RegularExpressions.Regex.IsMatch(numPart, @"^\d+(/\d+){0,2}(\.\d+)?$"))
                     return numPart;
             }
 
-            // For types with no dash but numbers at the end (e.g., ae0, lo0, me0, em0, fxp0, IRB0, VLAN.100)
-            var m = Regex.Match(expanded, @"[a-zA-Z]+[.\-]?([0-9][0-9./]*)$");
+            // For types with no dash but numbers at the end (e.g., ae0, lo0, me0, em0, fxp0, IRB0, VLAN.100, st0, reth0)
+            m = System.Text.RegularExpressions.Regex.Match(expanded, @"[a-zA-Z]+[.\-]?([0-9][0-9./]*)$");
             if (m.Success)
                 return m.Groups[1].Value.TrimStart('.', '/');
+
+            // For VLAN.100 or similar
+            m = System.Text.RegularExpressions.Regex.Match(expanded, @"vlan[.](\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (m.Success)
+                return m.Groups[1].Value;
+
+            // For IRB.100 or similar
+            m = System.Text.RegularExpressions.Regex.Match(expanded, @"irb[.](\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (m.Success)
+                return m.Groups[1].Value;
 
             return "";
         }
 
-        /// <summary>
-        /// Gets the canonical interface name (expanded and normalized)
-        /// </summary>
-        public static string GetCanonicalInterfaceName(string interfaceName)
+        public static string GetInterfaceType(string interfaceName)
         {
             if (string.IsNullOrEmpty(interfaceName))
-                return interfaceName;
+                return "Unknown";
 
-            var expanded = ExpandInterfaceAlias(interfaceName);
-            var normalized = expanded.ToLower();
-
-            string number = GetInterfaceNumber(expanded);
-            // Remove any leading dots or slashes from number for all types except VLAN (which may have a dot)
-            string cleanNumber = number;
-            if (!normalized.StartsWith("vlan."))
-            {
-                cleanNumber = number.TrimStart('.', '/');
-            }
-
-            if ((normalized.StartsWith("twentyfivegigabitethernet-") || normalized.StartsWith("25ge-")) && !string.IsNullOrEmpty(cleanNumber))
-                return $"TwentyFiveGigabitEthernet-{cleanNumber.TrimStart('/')}";
-            if ((normalized.StartsWith("hundredgigabitethernet-") || normalized.StartsWith("100ge-")) && !string.IsNullOrEmpty(cleanNumber))
-                return $"HundredGigabitEthernet-{cleanNumber.TrimStart('/')}";
-            if ((normalized.StartsWith("fortygigabitethernet-") || normalized.StartsWith("40ge-")) && !string.IsNullOrEmpty(cleanNumber))
-                return $"FortyGigabitEthernet-{cleanNumber.TrimStart('/')}";
-            if ((normalized.StartsWith("gigabitethernet-") || normalized.StartsWith("ge-")) && !string.IsNullOrEmpty(cleanNumber))
-                return $"GigabitEthernet-{cleanNumber.TrimStart('/')}";
-            if ((normalized.StartsWith("tengigabitethernet-") || normalized.StartsWith("xe-")) && !string.IsNullOrEmpty(cleanNumber))
-                return $"TenGigabitEthernet-{cleanNumber.TrimStart('/')}";
-            if ((normalized.StartsWith("ethernetinterface-") || normalized.StartsWith("et-")) && !string.IsNullOrEmpty(cleanNumber))
-                return $"EthernetInterface-{cleanNumber.TrimStart('/')}";
-            if (normalized.StartsWith("em") || normalized.StartsWith("fxp") || normalized.StartsWith("me") || normalized.StartsWith("mgmt"))
-                return "Management" + cleanNumber;
-            if (normalized.StartsWith("lo"))
-                return "Loopback" + cleanNumber;
-            if (normalized.StartsWith("ae") || normalized.StartsWith("agg"))
-                return "AggregatedEthernet" + cleanNumber;
-            if (normalized.StartsWith("reth") || normalized.StartsWith("redundant"))
-                return "RedundantEthernet" + cleanNumber;
-            if (normalized.StartsWith("stunnel") || normalized.StartsWith("st"))
-                return "STunnel" + cleanNumber;
-            if (normalized.StartsWith("gr-"))
-                return "GRE-" + cleanNumber;
-            if (normalized.StartsWith("irb"))
-                return ("IRB" + cleanNumber).ToUpper();
-            if (normalized.StartsWith("vlan."))
-                return ("VLAN." + number).ToUpper();
+            var normalized = interfaceName.ToLower();
+            if (normalized.StartsWith("ge-") || normalized.StartsWith("gigabitethernet-"))
+                return "GigabitEthernet";
+            if (normalized.StartsWith("xe-") || normalized.StartsWith("tengigabitethernet-"))
+                return "TenGigabitEthernet";
+            if (normalized.StartsWith("25ge-") || normalized.StartsWith("twentyfivegigabitethernet-"))
+                return "TwentyFiveGigabitEthernet";
+            if (normalized.StartsWith("40ge-") || normalized.StartsWith("fortygigabitethernet-"))
+                return "FortyGigabitEthernet";
+            if (normalized.StartsWith("100ge-") || normalized.StartsWith("hundredgigabitethernet-"))
+                return "HundredGigabitEthernet";
+            if (normalized.StartsWith("et-") || normalized.StartsWith("ethernetinterface-"))
+                return "EthernetInterface";
+            if (normalized.StartsWith("ae") || normalized.StartsWith("aggregatedethernet"))
+                return "AggregatedEthernet";
+            if (normalized.StartsWith("lo") || normalized.StartsWith("loopback"))
+                return "Loopback";
+            if (normalized.StartsWith("me") || normalized.StartsWith("fxp") || normalized.StartsWith("em") || normalized.StartsWith("mgmt") || normalized.StartsWith("management"))
+                return "Management";
             if (normalized.StartsWith("vlan"))
-                return ("VLAN" + cleanNumber).ToUpper();
-
-            // Return the expanded form if no canonical mapping found
-            return expanded;
+                return "VLAN";
+            if (normalized.StartsWith("irb"))
+                return "IRB";
+            if (normalized.StartsWith("gr-") || normalized.StartsWith("gre-"))
+                return "GRE";
+            if (normalized.StartsWith("stunnel") || normalized.StartsWith("st"))
+                return "STunnel";
+            if (normalized.StartsWith("fxp"))
+                return "FXP";
+            if (normalized.StartsWith("me"))
+                return "ME";
+            if (normalized.StartsWith("em"))
+                return "EM";
+            if (normalized.StartsWith("reth") || normalized.StartsWith("redundantethernet"))
+                return "RedundantEthernet";
+            return "Unknown";
         }
     }
-} 
+}
