@@ -7,7 +7,7 @@ A comprehensive C# .NET framework for simulating network devices with realistic 
 NetSim is a powerful network simulation platform that provides:
 
 - **Multi-vendor CLI simulation** supporting 15+ network equipment vendors
-- **Comprehensive protocol implementations** including routing, switching, and discovery protocols  
+- **Protocol models** for routing, switching, and discovery features
 - **Realistic device behavior** with vendor-specific command syntax and responses
 - **Physical layer simulation** with connection quality modeling
 - **Modular architecture** for easy extensibility and testing
@@ -25,8 +25,9 @@ The NetSim solution consists of several key components:
 - **Common CLI handlers** for shared functionality across vendors
 - **Comprehensive test suite** validating all CLI implementations
 
-### Player Application  
-- **NetSim.Player** - Standalone application for running network simulations
+### Test Projects
+- **NetSim.Simulation.Tests** - Validates network simulation and protocol behavior
+- **NetSim.Simulation.CliHandlers.Tests** - Ensures vendor CLI parity
 
 ## Key Features
 
@@ -39,8 +40,7 @@ The NetSim solution consists of several key components:
 ### Network Protocols
 - **Layer 2**: VLANs, STP/RSTP, LACP, CDP, LLDP
 - **Layer 3**: Static routing, OSPF, BGP, RIP, EIGRP, IS-IS, IGRP
-- **Security**: Access Control Lists, security protocols
-- **Management**: SNMP, telnet/SSH simulation
+- **Security**: Access Control Lists and related security features
 
 ### Physical Layer Simulation
 - **Connection quality modeling** with bandwidth, latency, packet loss
@@ -50,10 +50,9 @@ The NetSim solution consists of several key components:
 
 ### Advanced Features
 - **Device factory pattern** for easy device creation
-- **Network topology management** with automatic protocol updates
+- **Network topology management** with event-driven protocol updates
 - **Configuration management** with NVRAM parsing
 - **Comprehensive event system** for monitoring network changes
-- **Terminal server support** for remote device access
 
 ## Quick Start
 
@@ -67,9 +66,9 @@ var juniper = DeviceFactory.CreateDevice("juniper", "Router2");
 
 // Build network
 var network = new Network();
-network.AddDevice(cisco);
-network.AddDevice(juniper);
-network.AddLink("Router1", "GigabitEthernet0/0", "Router2", "ge-0/0/0");
+await network.AddDeviceAsync(cisco);
+await network.AddDeviceAsync(juniper);
+await network.AddLinkAsync("Router1", "GigabitEthernet0/0", "Router2", "ge-0/0/0");
 
 // Configure devices
 cisco.ProcessCommand("enable");
@@ -83,8 +82,7 @@ juniper.ProcessCommand("configure");
 juniper.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/24");
 juniper.ProcessCommand("commit");
 
-// Update protocols and test connectivity
-network.UpdateProtocols();
+// Test connectivity (protocols update automatically)
 var result = cisco.ProcessCommand("ping 10.0.0.2");
 ```
 
