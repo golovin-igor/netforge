@@ -42,7 +42,7 @@ jobs:
     - name: 🧪 Test CLI Handlers
       run: |
         echo "::group::🔧 Testing CLI Handlers"
-        dotnet test NetSim.Simulation.CliHandlers.Tests/ \
+        dotnet test NetSim.Simulation.CliHandlers/NetSim.Simulation.CliHandlers.Tests/ \
           --no-build \
           --configuration Release \
           --logger "console;verbosity=normal"
