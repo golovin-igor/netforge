@@ -77,6 +77,11 @@ cisco.ProcessCommand("configure terminal");
 cisco.ProcessCommand("interface GigabitEthernet0/0");
 cisco.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
 cisco.ProcessCommand("no shutdown");
+cisco.ProcessCommand("exit");
+
+juniper.ProcessCommand("configure");
+juniper.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/24");
+juniper.ProcessCommand("commit");
 
 // Update protocols and test connectivity
 network.UpdateProtocols();
