@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Basic
             AddAlias("ena");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -41,7 +41,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -82,7 +82,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Basic
             AddAlias("dis");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -110,7 +110,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Basic
             AddAlias("trace");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -148,7 +148,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Basic
             AddAlias("wr");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -168,7 +168,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -189,7 +189,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Basic
             AddAlias("hist");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -210,7 +210,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Basic
             AddAlias("?");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -230,7 +230,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -250,7 +250,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {

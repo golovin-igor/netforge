@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Nokia.Show
             AddAlias("sho");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {

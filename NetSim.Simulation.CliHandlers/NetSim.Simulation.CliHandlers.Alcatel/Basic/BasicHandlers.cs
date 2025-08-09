@@ -14,7 +14,7 @@ namespace NetSim.Simulation.CliHandlers.Alcatel.Basic
             AddAlias("ena");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Alcatel"))
             {
@@ -40,7 +40,7 @@ namespace NetSim.Simulation.CliHandlers.Alcatel.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Alcatel"))
             {
@@ -81,7 +81,7 @@ namespace NetSim.Simulation.CliHandlers.Alcatel.Basic
             AddAlias("tracert");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Alcatel"))
             {
@@ -121,7 +121,7 @@ namespace NetSim.Simulation.CliHandlers.Alcatel.Basic
             AddAlias("copy running-config startup-config");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Alcatel"))
             {
@@ -143,7 +143,7 @@ namespace NetSim.Simulation.CliHandlers.Alcatel.Basic
             AddAlias("reboot");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Alcatel"))
             {
@@ -164,7 +164,7 @@ namespace NetSim.Simulation.CliHandlers.Alcatel.Basic
             AddAlias("hist");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Alcatel"))
             {
@@ -191,7 +191,7 @@ namespace NetSim.Simulation.CliHandlers.Alcatel.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Alcatel"))
             {
@@ -211,7 +211,7 @@ namespace NetSim.Simulation.CliHandlers.Alcatel.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Alcatel"))
             {

@@ -29,22 +29,22 @@ namespace NetSim.Simulation.Examples
 
             // Basic commands
             Console.WriteLine("Testing basic commands:");
-            Console.WriteLine(f5Device.ProcessCommand("help"));
-            Console.WriteLine(f5Device.ProcessCommand("show version"));
-            Console.WriteLine(f5Device.ProcessCommand("show running-config"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("help"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("show version"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("show running-config"));
 
             // TMSH commands
             Console.WriteLine("\nTesting TMSH commands:");
-            Console.WriteLine(f5Device.ProcessCommand("tmsh"));
-            Console.WriteLine(f5Device.ProcessCommand("list ltm pool"));
-            Console.WriteLine(f5Device.ProcessCommand("list ltm virtual"));
-            Console.WriteLine(f5Device.ProcessCommand("list ltm node"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("tmsh"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("list ltm pool"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("list ltm virtual"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("list ltm node"));
 
             // LTM configuration
             Console.WriteLine("\nTesting LTM configuration:");
-            Console.WriteLine(f5Device.ProcessCommand("create ltm pool web_pool"));
-            Console.WriteLine(f5Device.ProcessCommand("create ltm node web_server1 192.168.1.10"));
-            Console.WriteLine(f5Device.ProcessCommand("create ltm virtual web_vs 192.168.1.100:80"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("create ltm pool web_pool"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("create ltm node web_server1 192.168.1.10"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("create ltm virtual web_vs 192.168.1.100:80"));
 
             // Show interfaces
             Console.WriteLine("\n=== F5 Interfaces ===");
@@ -55,7 +55,7 @@ namespace NetSim.Simulation.Examples
 
             // Test connectivity
             Console.WriteLine("\n=== Testing Connectivity ===");
-            Console.WriteLine(f5Device.ProcessCommand("ping 192.168.1.1"));
+            Console.WriteLine(await f5Device.ProcessCommandAsync("ping 192.168.1.1"));
 
             // Show device capabilities
             Console.WriteLine("\n=== Device Capabilities ===");

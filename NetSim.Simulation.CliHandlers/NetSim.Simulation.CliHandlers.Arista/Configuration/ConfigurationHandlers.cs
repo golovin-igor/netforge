@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Arista.Configuration
             AddAlias("conf");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -49,7 +49,7 @@ namespace NetSim.Simulation.CliHandlers.Arista.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -83,7 +83,7 @@ namespace NetSim.Simulation.CliHandlers.Arista.Configuration
             AddAlias("int");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -135,7 +135,7 @@ namespace NetSim.Simulation.CliHandlers.Arista.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -193,7 +193,7 @@ namespace NetSim.Simulation.CliHandlers.Arista.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -250,7 +250,7 @@ namespace NetSim.Simulation.CliHandlers.Arista.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -356,7 +356,7 @@ namespace NetSim.Simulation.CliHandlers.Arista.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {

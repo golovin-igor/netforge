@@ -65,14 +65,14 @@ namespace NetSim.Simulation.Devices
             };
         }
 
-        public override string ProcessCommand(string command)
+        public override async Task<string> ProcessCommandAsync(string command)
         {
             if (string.IsNullOrWhiteSpace(command))
                 return GetPrompt();
 
             // Use the base class implementation for actual command processing
             // This will use the vendor discovery system to find appropriate handlers
-            return base.ProcessCommand(command);
+            return await base.ProcessCommandAsync(command);
         }
         
         // Additional methods needed by tests

@@ -26,13 +26,6 @@ namespace NetSim.Simulation.CliHandlers
         }
 
         /// <summary>
-        /// Processes a command using the registered handlers
-        /// </summary>
-        /// <returns>The command result</returns>
-        public CliResult ProcessCommand(string command)
-            => ProcessCommandAsync(command).GetAwaiter().GetResult();
-
-        /// <summary>
         /// Asynchronously processes a command using the registered handlers
         /// </summary>
         /// <returns>The command result</returns>

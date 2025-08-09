@@ -13,7 +13,7 @@ namespace NetSim.Simulation.CliHandlers.F5.Basic
             AddAlias("ena");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "F5"))
             {

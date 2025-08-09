@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("voice", new SwitchportVoiceHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -79,7 +79,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("dynamic", new SwitchportModeDynamicHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: access, trunk, dynamic");
@@ -92,7 +92,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -145,7 +145,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -200,7 +200,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("desirable", new SwitchportModeDynamicDesirableHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: auto, desirable");
@@ -213,7 +213,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -258,7 +258,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -307,7 +307,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("vlan", new SwitchportAccessVlanHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: vlan");
@@ -320,7 +320,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -452,7 +452,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("native", new SwitchportTrunkNativeHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: encapsulation, allowed, native");
@@ -467,7 +467,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("isl", new SwitchportTrunkEncapsulationIslHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: dot1q, isl");
@@ -480,7 +480,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -518,7 +518,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -557,7 +557,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("vlan", new SwitchportTrunkAllowedVlanHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: vlan");
@@ -570,7 +570,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -656,7 +656,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("vlan", new SwitchportTrunkNativeVlanHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: vlan");
@@ -669,7 +669,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -728,7 +728,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("vlan", new SwitchportVoiceVlanHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: vlan");
@@ -741,7 +741,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
             {

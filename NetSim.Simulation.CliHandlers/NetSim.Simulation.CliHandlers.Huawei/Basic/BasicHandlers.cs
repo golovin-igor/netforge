@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Huawei.Basic
             AddAlias("ena");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -41,7 +41,7 @@ namespace NetSim.Simulation.CliHandlers.Huawei.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -82,7 +82,7 @@ namespace NetSim.Simulation.CliHandlers.Huawei.Basic
             AddAlias("traceroute");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -123,7 +123,7 @@ namespace NetSim.Simulation.CliHandlers.Huawei.Basic
             AddAlias("wr");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -144,7 +144,7 @@ namespace NetSim.Simulation.CliHandlers.Huawei.Basic
             AddAlias("reload");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -164,7 +164,7 @@ namespace NetSim.Simulation.CliHandlers.Huawei.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -191,7 +191,7 @@ namespace NetSim.Simulation.CliHandlers.Huawei.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {

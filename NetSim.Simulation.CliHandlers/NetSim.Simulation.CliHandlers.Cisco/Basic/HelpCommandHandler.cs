@@ -13,7 +13,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Basic
             AddAlias("?");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var output = new StringBuilder();
             

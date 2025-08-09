@@ -22,7 +22,7 @@ namespace NetSim.Simulation.CliHandlers.Aruba.Show
                        string.Equals(context.CommandParts[0], "show", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override CliResult ExecuteCommand(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");

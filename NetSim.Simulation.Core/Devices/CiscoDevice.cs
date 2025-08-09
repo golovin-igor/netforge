@@ -106,7 +106,7 @@ namespace NetSim.Simulation.Devices
             return null;
         }
         
-        public override string ProcessCommand(string command)
+        public override async Task<string> ProcessCommandAsync(string command)
         {
             if (string.IsNullOrWhiteSpace(command))
                 return GetPrompt();
@@ -136,7 +136,7 @@ namespace NetSim.Simulation.Devices
             }
             
             // Use the base class implementation for actual command processing
-            return base.ProcessCommand(command);
+            return await base.ProcessCommandAsync(command);
         }
         
         protected string CidrToMask(int cidr)

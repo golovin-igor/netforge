@@ -13,7 +13,7 @@ public static class SystemHandlers
     {
         public IpLinkSetHandler() : base("ip", "IP configuration commands") { }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var args = context.CommandParts;
             
@@ -182,7 +182,7 @@ public static class SystemHandlers
                     string.Equals(context.CommandParts[1], "address", StringComparison.OrdinalIgnoreCase));
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 6)
                 return Error(CliErrorType.IncompleteCommand, "Usage: ip addr <add|del> <ip>/<cidr> dev <iface>");
@@ -242,7 +242,7 @@ public static class SystemHandlers
                    string.Equals(context.CommandParts[1], "route", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 3)
                 return Error(CliErrorType.IncompleteCommand, "Usage: ip route <show|add|del>");
@@ -320,7 +320,7 @@ public static class SystemHandlers
                    string.Equals(context.CommandParts[0], "ifconfig", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Success(ShowInterfaces(context));
         }
@@ -351,7 +351,7 @@ public static class SystemHandlers
                    string.Equals(context.CommandParts[0], "route", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Success(ShowRoutes(context));
         }
@@ -389,7 +389,7 @@ public static class SystemHandlers
             return false;
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Success(BuildArpOutput(context));
         }
@@ -418,7 +418,7 @@ public static class SystemHandlers
                    string.Equals(context.CommandParts[0], "ospf", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
                 return Error(CliErrorType.IncompleteCommand, "Usage: ospf <enable|disable>");
@@ -460,7 +460,7 @@ public static class SystemHandlers
                    string.Equals(context.CommandParts[0], "bgp", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
                 return Error(CliErrorType.IncompleteCommand, "Usage: bgp <enable|disable>");
@@ -502,7 +502,7 @@ public static class SystemHandlers
                    string.Equals(context.CommandParts[0], "rip", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
                 return Error(CliErrorType.IncompleteCommand, "Usage: rip <enable|disable>");
@@ -544,7 +544,7 @@ public static class SystemHandlers
                    string.Equals(context.CommandParts[0], "lsmod", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Success("Module                  Size  Used by\nip_tables              32768  0\nxt_conntrack           16384  0\nnf_conntrack          131072  1 xt_conntrack\n");
         }
@@ -563,7 +563,7 @@ public static class SystemHandlers
                    string.Equals(context.CommandParts[1], "link", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 3)
                 return Error(CliErrorType.IncompleteCommand, "Usage: ip link <show|set>");

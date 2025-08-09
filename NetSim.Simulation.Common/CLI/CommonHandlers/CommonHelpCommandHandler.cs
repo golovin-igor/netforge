@@ -9,7 +9,7 @@ namespace NetSim.Simulation.CliHandlers.Common
             AddAlias("?");
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Available commands:");

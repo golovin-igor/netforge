@@ -13,7 +13,7 @@ namespace NetSim.Simulation.CliHandlers.Common
             AddAlias("ena");
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var currentMode = context.Device.GetCurrentModeEnum();
             

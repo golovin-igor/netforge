@@ -14,7 +14,7 @@ namespace NetSim.Simulation.CliHandlers.Broadcom.Basic
             AddAlias("ena");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Broadcom"))
             {
@@ -40,7 +40,7 @@ namespace NetSim.Simulation.CliHandlers.Broadcom.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Broadcom"))
             {
@@ -82,7 +82,7 @@ namespace NetSim.Simulation.CliHandlers.Broadcom.Basic
             AddAlias("copy running-config startup-config");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Broadcom"))
             {
@@ -103,7 +103,7 @@ namespace NetSim.Simulation.CliHandlers.Broadcom.Basic
             AddAlias("restart");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Broadcom"))
             {
@@ -124,7 +124,7 @@ namespace NetSim.Simulation.CliHandlers.Broadcom.Basic
             AddAlias("hist");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Broadcom"))
             {
@@ -151,7 +151,7 @@ namespace NetSim.Simulation.CliHandlers.Broadcom.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Broadcom"))
             {
@@ -181,7 +181,7 @@ namespace NetSim.Simulation.CliHandlers.Broadcom.Basic
             AddAlias("tracert");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Broadcom"))
             {

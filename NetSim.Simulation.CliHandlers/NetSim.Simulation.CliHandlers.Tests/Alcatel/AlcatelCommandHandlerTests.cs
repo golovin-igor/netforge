@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
     public class AlcatelCommandHandlerTests
     {
         [Fact]
-        public void AlcatelHandler_Configure_ShouldEnterConfigMode()
+        public async Task AlcatelHandler_Configure_ShouldEnterConfigMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure");
+            var output = await device.ProcessCommandAsync("configure");
             
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
@@ -20,14 +20,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ConfigureSystemName_ShouldSetSystemName()
+        public async Task AlcatelHandler_ConfigureSystemName_ShouldSetSystemName()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("system name NewRouter");
+            var output = await device.ProcessCommandAsync("system name NewRouter");
             
             // Assert
             Assert.Equal("A:NewRouter>config#", device.GetPrompt());

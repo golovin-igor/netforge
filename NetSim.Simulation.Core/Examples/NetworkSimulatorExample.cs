@@ -37,172 +37,172 @@ namespace NetSim.Simulation.Examples
             
             // Configure Cisco Router
             Console.WriteLine("=== Configuring Cisco Router ===");
-            ConfigureCiscoRouter(ciscoRouter);
+            await ConfigureCiscoRouter(ciscoRouter);
             
             // Configure Juniper Router
             Console.WriteLine("\n=== Configuring Juniper Router ===");
-            ConfigureJuniperRouter(juniperRouter);
+            await ConfigureJuniperRouter(juniperRouter);
             
             // Configure Arista Switch
             Console.WriteLine("\n=== Configuring Arista Switch ===");
-            ConfigureAristaSwitch(aristaSwitch);
+            await ConfigureAristaSwitch(aristaSwitch);
             
             // Configure Nokia Router
             Console.WriteLine("\n=== Configuring Nokia Router ===");
-            ConfigureNokiaRouter(nokiaRouter);
+            await ConfigureNokiaRouter(nokiaRouter);
             
             // Update network protocols
             network.UpdateProtocols();
             
             // Show routing tables
             Console.WriteLine("\n=== Routing Tables ===");
-            ShowRoutingTables(ciscoRouter, juniperRouter, aristaSwitch, nokiaRouter);
+            await ShowRoutingTables(ciscoRouter, juniperRouter, aristaSwitch, nokiaRouter);
             
             // Test connectivity
             Console.WriteLine("\n=== Connectivity Tests ===");
-            TestConnectivity(ciscoRouter, juniperRouter, aristaSwitch, nokiaRouter);
+            await TestConnectivity(ciscoRouter, juniperRouter, aristaSwitch, nokiaRouter);
         }
         
-        private static void ConfigureCiscoRouter(NetworkDevice device)
+        private static async Task ConfigureCiscoRouter(NetworkDevice device)
         {
             // Enter privileged mode
-            ExecuteCommand(device, "enable");
-            ExecuteCommand(device, "configure terminal");
+            await ExecuteCommand(device, "enable");
+            await ExecuteCommand(device, "configure terminal");
             
             // Configure interfaces
-            ExecuteCommand(device, "interface GigabitEthernet0/0");
-            ExecuteCommand(device, "ip address 10.0.0.1 255.255.255.252");
-            ExecuteCommand(device, "no shutdown");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "interface GigabitEthernet0/0");
+            await ExecuteCommand(device, "ip address 10.0.0.1 255.255.255.252");
+            await ExecuteCommand(device, "no shutdown");
+            await ExecuteCommand(device, "exit");
             
-            ExecuteCommand(device, "interface GigabitEthernet0/1");
-            ExecuteCommand(device, "ip address 10.0.3.2 255.255.255.252");
-            ExecuteCommand(device, "no shutdown");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "interface GigabitEthernet0/1");
+            await ExecuteCommand(device, "ip address 10.0.3.2 255.255.255.252");
+            await ExecuteCommand(device, "no shutdown");
+            await ExecuteCommand(device, "exit");
             
             // Configure OSPF
-            ExecuteCommand(device, "router ospf 1");
-            ExecuteCommand(device, "network 10.0.0.0 0.0.0.3 area 0");
-            ExecuteCommand(device, "network 10.0.3.0 0.0.0.3 area 0");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "router ospf 1");
+            await ExecuteCommand(device, "network 10.0.0.0 0.0.0.3 area 0");
+            await ExecuteCommand(device, "network 10.0.3.0 0.0.0.3 area 0");
+            await ExecuteCommand(device, "exit");
             
             // Configure BGP
-            ExecuteCommand(device, "router bgp 65001");
-            ExecuteCommand(device, "neighbor 10.0.0.2 remote-as 65002");
-            ExecuteCommand(device, "network 192.168.1.0 mask 255.255.255.0");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "router bgp 65001");
+            await ExecuteCommand(device, "neighbor 10.0.0.2 remote-as 65002");
+            await ExecuteCommand(device, "network 192.168.1.0 mask 255.255.255.0");
+            await ExecuteCommand(device, "exit");
             
             // Add static route
-            ExecuteCommand(device, "ip route 192.168.1.0 255.255.255.0 Null0");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "ip route 192.168.1.0 255.255.255.0 Null0");
+            await ExecuteCommand(device, "exit");
         }
         
-        private static void ConfigureJuniperRouter(NetworkDevice device)
+        private static async Task ConfigureJuniperRouter(NetworkDevice device)
         {
             // Enter configuration mode
-            ExecuteCommand(device, "configure");
+            await ExecuteCommand(device, "configure");
             
             // Configure interfaces
-            ExecuteCommand(device, "set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/30");
-            ExecuteCommand(device, "set interfaces ge-0/0/1 unit 0 family inet address 10.0.1.1/30");
+            await ExecuteCommand(device, "set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/30");
+            await ExecuteCommand(device, "set interfaces ge-0/0/1 unit 0 family inet address 10.0.1.1/30");
             
             // Configure OSPF
-            ExecuteCommand(device, "set protocols ospf area 0.0.0.0 interface ge-0/0/0.0");
-            ExecuteCommand(device, "set protocols ospf area 0.0.0.0 interface ge-0/0/1.0");
+            await ExecuteCommand(device, "set protocols ospf area 0.0.0.0 interface ge-0/0/0.0");
+            await ExecuteCommand(device, "set protocols ospf area 0.0.0.0 interface ge-0/0/1.0");
             
             // Configure BGP
-            ExecuteCommand(device, "set routing-options autonomous-system 65002");
-            ExecuteCommand(device, "set protocols bgp group EBGP type external");
-            ExecuteCommand(device, "set protocols bgp group EBGP peer-as 65001");
-            ExecuteCommand(device, "set protocols bgp group EBGP neighbor 10.0.0.1");
+            await ExecuteCommand(device, "set routing-options autonomous-system 65002");
+            await ExecuteCommand(device, "set protocols bgp group EBGP type external");
+            await ExecuteCommand(device, "set protocols bgp group EBGP peer-as 65001");
+            await ExecuteCommand(device, "set protocols bgp group EBGP neighbor 10.0.0.1");
             
             // Add static route
-            ExecuteCommand(device, "set routing-options static route 192.168.2.0/24 discard");
+            await ExecuteCommand(device, "set routing-options static route 192.168.2.0/24 discard");
             
             // Commit configuration
-            ExecuteCommand(device, "commit");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "commit");
+            await ExecuteCommand(device, "exit");
         }
         
-        private static void ConfigureAristaSwitch(NetworkDevice device)
+        private static async Task ConfigureAristaSwitch(NetworkDevice device)
         {
             // Enter privileged mode
-            ExecuteCommand(device, "enable");
-            ExecuteCommand(device, "configure terminal");
+            await ExecuteCommand(device, "enable");
+            await ExecuteCommand(device, "configure terminal");
             
             // Configure interfaces
-            ExecuteCommand(device, "interface Ethernet1");
-            ExecuteCommand(device, "no switchport");
-            ExecuteCommand(device, "ip address 10.0.1.2/30");
-            ExecuteCommand(device, "no shutdown");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "interface Ethernet1");
+            await ExecuteCommand(device, "no switchport");
+            await ExecuteCommand(device, "ip address 10.0.1.2/30");
+            await ExecuteCommand(device, "no shutdown");
+            await ExecuteCommand(device, "exit");
             
-            ExecuteCommand(device, "interface Ethernet2");
-            ExecuteCommand(device, "no switchport");
-            ExecuteCommand(device, "ip address 10.0.2.1/30");
-            ExecuteCommand(device, "no shutdown");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "interface Ethernet2");
+            await ExecuteCommand(device, "no switchport");
+            await ExecuteCommand(device, "ip address 10.0.2.1/30");
+            await ExecuteCommand(device, "no shutdown");
+            await ExecuteCommand(device, "exit");
             
             // Configure OSPF
-            ExecuteCommand(device, "router ospf 1");
-            ExecuteCommand(device, "network 10.0.1.0/30 area 0");
-            ExecuteCommand(device, "network 10.0.2.0/30 area 0");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "router ospf 1");
+            await ExecuteCommand(device, "network 10.0.1.0/30 area 0");
+            await ExecuteCommand(device, "network 10.0.2.0/30 area 0");
+            await ExecuteCommand(device, "exit");
             
             // Configure VLANs
-            ExecuteCommand(device, "vlan 100");
-            ExecuteCommand(device, "name Management");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "vlan 100");
+            await ExecuteCommand(device, "name Management");
+            await ExecuteCommand(device, "exit");
             
-            ExecuteCommand(device, "vlan 200");
-            ExecuteCommand(device, "name Production");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "vlan 200");
+            await ExecuteCommand(device, "name Production");
+            await ExecuteCommand(device, "exit");
             
             // Add static route
-            ExecuteCommand(device, "ip route 192.168.3.0/24 Null0");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "ip route 192.168.3.0/24 Null0");
+            await ExecuteCommand(device, "exit");
         }
         
-        private static void ConfigureNokiaRouter(NetworkDevice device)
+        private static async Task ConfigureNokiaRouter(NetworkDevice device)
         {
             // Enter configuration mode
-            ExecuteCommand(device, "configure");
+            await ExecuteCommand(device, "configure");
             
             // Configure system
-            ExecuteCommand(device, "system");
-            ExecuteCommand(device, "name NokiaSR1-Core");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "system");
+            await ExecuteCommand(device, "name NokiaSR1-Core");
+            await ExecuteCommand(device, "exit");
             
             // Configure ports
-            ExecuteCommand(device, "port 1/1/1");
-            ExecuteCommand(device, "no shutdown");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "port 1/1/1");
+            await ExecuteCommand(device, "no shutdown");
+            await ExecuteCommand(device, "exit");
             
-            ExecuteCommand(device, "port 1/1/2");
-            ExecuteCommand(device, "no shutdown");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "port 1/1/2");
+            await ExecuteCommand(device, "no shutdown");
+            await ExecuteCommand(device, "exit");
             
             // Configure router interfaces
-            ExecuteCommand(device, "router");
-            ExecuteCommand(device, "interface \"to-arista\" address 10.0.2.2/30");
-            ExecuteCommand(device, "interface \"to-cisco\" address 10.0.3.1/30");
+            await ExecuteCommand(device, "router");
+            await ExecuteCommand(device, "interface \"to-arista\" address 10.0.2.2/30");
+            await ExecuteCommand(device, "interface \"to-cisco\" address 10.0.3.1/30");
             
             // Configure OSPF
-            ExecuteCommand(device, "ospf 1");
-            ExecuteCommand(device, "area 0.0.0.0 interface \"to-arista\"");
-            ExecuteCommand(device, "area 0.0.0.0 interface \"to-cisco\"");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "ospf 1");
+            await ExecuteCommand(device, "area 0.0.0.0 interface \"to-arista\"");
+            await ExecuteCommand(device, "area 0.0.0.0 interface \"to-cisco\"");
+            await ExecuteCommand(device, "exit");
             
             // Add static route
-            ExecuteCommand(device, "static-route 192.168.4.0/24 next-hop 10.0.3.2");
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "static-route 192.168.4.0/24 next-hop 10.0.3.2");
+            await ExecuteCommand(device, "exit");
             
-            ExecuteCommand(device, "exit");
+            await ExecuteCommand(device, "exit");
         }
         
-        private static void ExecuteCommand(NetworkDevice device, string command)
+        private static async Task ExecuteCommand(NetworkDevice device, string command)
         {
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             Console.WriteLine($"{device.Name}> {command}");
             if (output.Contains("Error"))
             {
@@ -210,7 +210,7 @@ namespace NetSim.Simulation.Examples
             }
         }
         
-        private static void ShowRoutingTables(params NetworkDevice[] devices)
+        private static async Task ShowRoutingTables(params NetworkDevice[] devices)
         {
             foreach (var device in devices)
             {
@@ -231,34 +231,34 @@ namespace NetSim.Simulation.Examples
                         break;
                 }
                 
-                var output = device.ProcessCommand(showCommand);
+                var output = await device.ProcessCommandAsync(showCommand);
                 Console.WriteLine(output);
             }
         }
         
-        private static void TestConnectivity(params NetworkDevice[] devices)
+        private static async Task TestConnectivity(params NetworkDevice[] devices)
         {
             // Test ping between devices
             Console.WriteLine("\n--- Ping Tests ---");
             
             // Cisco to Juniper
             Console.WriteLine("\nCisco to Juniper (10.0.0.2):");
-            var pingOutput = devices[0].ProcessCommand("ping 10.0.0.2");
+            var pingOutput = await devices[0].ProcessCommandAsync("ping 10.0.0.2");
             Console.WriteLine(pingOutput);
             
             // Juniper to Arista
             Console.WriteLine("\nJuniper to Arista (10.0.1.2):");
-            pingOutput = devices[1].ProcessCommand("ping 10.0.1.2");
+            pingOutput = await devices[1].ProcessCommandAsync("ping 10.0.1.2");
             Console.WriteLine(pingOutput);
             
             // Arista to Nokia
             Console.WriteLine("\nArista to Nokia (10.0.2.2):");
-            pingOutput = devices[2].ProcessCommand("ping 10.0.2.2");
+            pingOutput = await devices[2].ProcessCommandAsync("ping 10.0.2.2");
             Console.WriteLine(pingOutput);
             
             // Nokia to Cisco
             Console.WriteLine("\nNokia to Cisco (10.0.3.2):");
-            pingOutput = devices[3].ProcessCommand("ping 10.0.3.2");
+            pingOutput = await devices[3].ProcessCommandAsync("ping 10.0.3.2");
             Console.WriteLine(pingOutput);
         }
     }

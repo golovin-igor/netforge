@@ -13,7 +13,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
             {
@@ -43,7 +43,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
             {
@@ -90,7 +90,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
             {
@@ -140,7 +140,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
             {
@@ -178,7 +178,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
             {
@@ -230,7 +230,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
             {

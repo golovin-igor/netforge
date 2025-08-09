@@ -206,7 +206,7 @@ namespace NetSim.Simulation.Tests.VendorAgnostic
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Success("Test command executed");
         }

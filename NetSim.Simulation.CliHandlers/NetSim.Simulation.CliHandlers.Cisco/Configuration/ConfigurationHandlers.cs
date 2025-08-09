@@ -28,7 +28,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             return completions;
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -63,7 +63,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -142,7 +142,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             return interfaces;
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -190,7 +190,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -323,7 +323,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -520,7 +520,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -563,7 +563,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -618,7 +618,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("eigrp", new RouterEigrpHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -651,7 +651,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -688,7 +688,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -725,7 +725,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -748,7 +748,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -786,7 +786,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddAlias("addr");
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -870,7 +870,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -931,7 +931,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -973,7 +973,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1017,7 +1017,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("access-group", new IpAccessGroupCommandHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1046,7 +1046,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("ip", new NoIpHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1069,7 +1069,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("access-group", new NoIpAccessGroupHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1090,7 +1090,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1132,7 +1132,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1174,7 +1174,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1231,7 +1231,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             return IsInMode(context, "router");
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {

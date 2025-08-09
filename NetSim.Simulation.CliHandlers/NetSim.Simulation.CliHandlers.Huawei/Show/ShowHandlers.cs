@@ -16,7 +16,7 @@ namespace NetSim.Simulation.CliHandlers.Huawei.Show
             AddAlias("display"); // Huawei uses display instead of show
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {

@@ -12,7 +12,7 @@ namespace NetSim.Simulation.CliHandlers.Anira.Configuration
             AddAlias("conf");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {
@@ -52,7 +52,7 @@ namespace NetSim.Simulation.CliHandlers.Anira.Configuration
             AddAlias("int");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {
@@ -92,7 +92,7 @@ namespace NetSim.Simulation.CliHandlers.Anira.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {
@@ -130,7 +130,7 @@ namespace NetSim.Simulation.CliHandlers.Anira.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {
@@ -212,7 +212,7 @@ namespace NetSim.Simulation.CliHandlers.Anira.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {
@@ -250,7 +250,7 @@ namespace NetSim.Simulation.CliHandlers.Anira.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {

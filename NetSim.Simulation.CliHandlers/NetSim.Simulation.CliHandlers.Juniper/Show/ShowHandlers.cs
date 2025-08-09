@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Juniper.Show
             AddAlias("sho");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
             {

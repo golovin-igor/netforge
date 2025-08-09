@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("priority", new SpanningTreePriorityHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -41,7 +41,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("mst", new SpanningTreeModeMstHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, "% Incomplete command");
         }
@@ -53,7 +53,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -80,7 +80,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -107,7 +107,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -134,7 +134,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -202,7 +202,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("bpduguard", new SpanningTreePortfastBpduguardHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -238,7 +238,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -266,7 +266,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("default", new SpanningTreePortfastBpduguardDefaultHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -301,7 +301,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -328,7 +328,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
             {

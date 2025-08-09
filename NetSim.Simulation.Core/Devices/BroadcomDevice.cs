@@ -42,12 +42,12 @@ namespace NetSim.Simulation.Devices
             return CurrentMode == DeviceMode.Privileged ? $"{Hostname}#" : $"{Hostname}>";
         }
 
-        public override string ProcessCommand(string command)
+        public override async Task<string> ProcessCommandAsync(string command)
         {
             if (string.IsNullOrWhiteSpace(command))
                 return GetPrompt();
 
-            var result = CommandManager.ProcessCommand(command);
+            var result = await CommandManager.ProcessCommandAsync(command);
             if (result != null)
             {
                 var output = result.Output;

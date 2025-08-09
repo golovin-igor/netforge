@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
             AddAlias("ena");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
             {
@@ -41,7 +41,7 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
             {
@@ -83,7 +83,7 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
             {
@@ -142,7 +142,7 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
             {
@@ -234,7 +234,7 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
             {
@@ -274,7 +274,7 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
             {

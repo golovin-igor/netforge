@@ -51,14 +51,15 @@ namespace NetSim.Simulation.Devices
             return mode == "root" ? $"{Hostname}# " : $"{Hostname}$";
         }
 
-        public override string ProcessCommand(string command)
+        public override async Task<string> ProcessCommandAsync(string command)
         {
             if (string.IsNullOrWhiteSpace(command))
                 return GetPrompt();
 
             // Process command using vendor-aware handler manager
-            var result = _vendorHandlerManager?.ProcessCommandAsync(command).Result ?? 
-                        CommandManager.ProcessCommand(command);
+            var result = _vendorHandlerManager != null ? 
+                        await _vendorHandlerManager.ProcessCommandAsync(command) : 
+                        await CommandManager.ProcessCommandAsync(command);
             
             if (result != null)
             {

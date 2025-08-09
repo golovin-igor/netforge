@@ -246,7 +246,7 @@ namespace NetSim.Simulation.Tests.Integration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var vendorContext = GetVendorContext(context);
             var vendorName = vendorContext?.VendorName ?? "Unknown";
@@ -264,7 +264,7 @@ namespace NetSim.Simulation.Tests.Integration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var vendorCheck = RequireVendor(context, "Cisco");
             if (!vendorCheck.Success)
@@ -283,7 +283,7 @@ namespace NetSim.Simulation.Tests.Integration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var errorMessage = GetVendorError(context, "invalid_command");
             return Error(CliErrorType.InvalidCommand, errorMessage);

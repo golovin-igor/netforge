@@ -13,7 +13,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -40,7 +40,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -154,7 +154,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Configuration
             return IsInMode(context, "interface");
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -424,7 +424,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -455,7 +455,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -511,7 +511,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -591,7 +591,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Configuration
             return IsInMode(context, "router");
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -704,7 +704,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Configuration
             return context.CommandParts.Length > 1 && context.CommandParts[1] == "route";
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -753,7 +753,7 @@ namespace NetSim.Simulation.CliHandlers.Dell.Configuration
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {

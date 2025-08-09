@@ -12,7 +12,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -256,7 +256,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("extended", new IpAccessListExtendedHandler());
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -280,7 +280,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -342,7 +342,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -407,7 +407,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -571,7 +571,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Configuration
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {

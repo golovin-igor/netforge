@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Anira.Basic
             AddAlias("ena");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {
@@ -41,7 +41,7 @@ namespace NetSim.Simulation.CliHandlers.Anira.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {
@@ -67,7 +67,7 @@ namespace NetSim.Simulation.CliHandlers.Anira.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {
@@ -108,7 +108,7 @@ namespace NetSim.Simulation.CliHandlers.Anira.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {

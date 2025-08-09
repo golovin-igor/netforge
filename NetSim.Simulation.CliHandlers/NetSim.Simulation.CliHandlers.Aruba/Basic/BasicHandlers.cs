@@ -19,7 +19,7 @@ namespace NetSim.Simulation.CliHandlers.Aruba.Basic
                        string.Equals(context.CommandParts[0], "ping", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override CliResult ExecuteCommand(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -154,7 +154,7 @@ namespace NetSim.Simulation.CliHandlers.Aruba.Basic
                        string.Equals(context.CommandParts[0], "hostname", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override CliResult ExecuteCommand(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -195,7 +195,7 @@ namespace NetSim.Simulation.CliHandlers.Aruba.Basic
                        string.Equals(context.CommandParts[0], "write", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override CliResult ExecuteCommand(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -223,7 +223,7 @@ namespace NetSim.Simulation.CliHandlers.Aruba.Basic
                        string.Equals(context.CommandParts[0], "reload", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override CliResult ExecuteCommand(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -248,7 +248,7 @@ namespace NetSim.Simulation.CliHandlers.Aruba.Basic
                        string.Equals(context.CommandParts[0], "enable", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override CliResult ExecuteCommand(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");

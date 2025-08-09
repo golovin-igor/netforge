@@ -11,7 +11,7 @@ namespace NetSim.Simulation.CliHandlers.Common
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var currentMode = context.Device.GetCurrentModeEnum();
             

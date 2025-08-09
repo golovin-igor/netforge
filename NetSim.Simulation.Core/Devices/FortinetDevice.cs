@@ -72,12 +72,12 @@ namespace NetSim.Simulation.Devices
             };
         }
 
-        public override string ProcessCommand(string command)
+        public override async Task<string> ProcessCommandAsync(string command)
         {
             // Use the command handler manager for all command processing
             if (CommandManager != null)
             {
-                var result = CommandManager.ProcessCommand(command);
+                var result = await CommandManager.ProcessCommandAsync(command);
                 
                 // If command was handled, return the result 
                 if (result != null)

@@ -100,7 +100,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             return interfaces;
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -130,7 +130,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddAlias("run");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -152,7 +152,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -191,7 +191,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("status", new ShowInterfacesStatusHandler());
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -252,7 +252,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
     /// </summary>
     public class ShowInterfacesStatusHandler() : VendorAgnosticCliHandler("status", "Display interface status summary")
     {
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -279,7 +279,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("brief", new ShowVlanBriefHandler());
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -308,7 +308,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -386,7 +386,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("ospf", new ShowIpOspfHandler());
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -407,7 +407,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -455,7 +455,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("brief", new ShowIpInterfaceBriefHandler());
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -483,7 +483,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -520,7 +520,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("interface", new ShowIpOspfInterfaceHandler());
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -541,7 +541,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -568,7 +568,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -597,7 +597,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -636,7 +636,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
     /// </summary>
     public class ShowArpHandler() : VendorAgnosticCliHandler("arp", "Display ARP table")
     {
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -667,7 +667,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("entry", new ShowCdpEntryHandler());
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -690,7 +690,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("detail", new ShowCdpNeighborsDetailHandler());
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -731,7 +731,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -770,7 +770,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -797,7 +797,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -833,7 +833,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("address-table", new ShowMacAddressTableHandler());
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -850,7 +850,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
     /// </summary>
     public class ShowMacAddressTableHandler() : VendorAgnosticCliHandler("address-table", "Display MAC address table")
     {
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -876,7 +876,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
     /// </summary>
     public class ShowSpanningTreeHandler() : VendorAgnosticCliHandler("spanning-tree", "Display spanning tree information")
     {
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -905,7 +905,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
     /// </summary>
     public class ShowFlashHandler() : VendorAgnosticCliHandler("flash", "Display flash file system")
     {
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -929,7 +929,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
     /// </summary>
     public class ShowMemoryHandler() : VendorAgnosticCliHandler("memory", "Display memory information")
     {
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -950,7 +950,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
     /// </summary>
     public class ShowProcessesHandler() : VendorAgnosticCliHandler("processes", "Display process information")
     {
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -973,7 +973,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
     /// </summary>
     public class ShowClockHandler() : VendorAgnosticCliHandler("clock", "Display system clock")
     {
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -992,7 +992,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
     /// </summary>
     public class ShowEnvironmentHandler() : VendorAgnosticCliHandler("environment", "Display environmental information")
     {
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1017,7 +1017,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
     /// </summary>
     public class ShowInventoryHandler() : VendorAgnosticCliHandler("inventory", "Display hardware inventory")
     {
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {

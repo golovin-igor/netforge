@@ -34,7 +34,7 @@ namespace NetSim.Simulation.Examples
             
             // Configure Cisco device
             Console.WriteLine("=== Configuring Cisco Router ===");
-            ExecuteCommands(cisco1, new[]
+            await ExecuteCommandsAsync(cisco1, new[]
             {
                 "enable",
                 "configure terminal",
@@ -55,7 +55,7 @@ namespace NetSim.Simulation.Examples
             
             // Configure Juniper device
             Console.WriteLine("\n=== Configuring Juniper Router ===");
-            ExecuteCommands(juniper1, new[]
+            await ExecuteCommandsAsync(juniper1, new[]
             {
                 "configure",
                 "set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/24",
@@ -68,7 +68,7 @@ namespace NetSim.Simulation.Examples
             
             // Configure Arista switch
             Console.WriteLine("\n=== Configuring Arista Switch ===");
-            ExecuteCommands(arista1, new[]
+            await ExecuteCommandsAsync(arista1, new[]
             {
                 "enable",
                 "configure",
@@ -91,7 +91,7 @@ namespace NetSim.Simulation.Examples
             
             // Configure Nokia router
             Console.WriteLine("\n=== Configuring Nokia Router ===");
-            ExecuteCommands(nokia1, new[]
+            await ExecuteCommandsAsync(nokia1, new[]
             {
                 "configure",
                 "port 1/1/1",
@@ -124,18 +124,18 @@ namespace NetSim.Simulation.Examples
             // Test connectivity
             Console.WriteLine("\n=== Testing Connectivity ===");
             Console.WriteLine("Ping from Cisco to Juniper:");
-            Console.WriteLine(cisco1.ProcessCommand("ping 10.0.0.2"));
+            Console.WriteLine(await cisco1.ProcessCommandAsync("ping 10.0.0.2"));
             
             Console.WriteLine("\nPing from Arista to Nokia:");
-            Console.WriteLine(arista1.ProcessCommand("ping 10.0.2.2"));
+            Console.WriteLine(await arista1.ProcessCommandAsync("ping 10.0.2.2"));
             
             // Show routing tables
             Console.WriteLine("\n=== Routing Tables ===");
             Console.WriteLine("Cisco routing table:");
-            Console.WriteLine(cisco1.ProcessCommand("show ip route"));
+            Console.WriteLine(await cisco1.ProcessCommandAsync("show ip route"));
             
             Console.WriteLine("\nJuniper routing table:");
-            Console.WriteLine(juniper1.ProcessCommand("show route"));
+            Console.WriteLine(await juniper1.ProcessCommandAsync("show route"));
             
             // Demonstrate vendor diversity
             Console.WriteLine("\n=== Supported Vendors ===");
@@ -147,12 +147,12 @@ namespace NetSim.Simulation.Examples
             Console.WriteLine("\n=== Simulation Complete ===");
         }
         
-        static void ExecuteCommands(NetworkDevice device, string[] commands)
+        static async Task ExecuteCommandsAsync(NetworkDevice device, string[] commands)
         {
             foreach (var cmd in commands)
             {
                 Console.WriteLine($"{device.GetCurrentPrompt()}{cmd}");
-                var output = device.ProcessCommand(cmd);
+                var output = await device.ProcessCommandAsync(cmd);
                 if (!string.IsNullOrWhiteSpace(output) && !output.Equals(device.GetCurrentPrompt()))
                 {
                     Console.Write(output);

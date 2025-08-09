@@ -57,7 +57,7 @@ namespace NetSim.Simulation.Devices
             return $"[{Hostname}] > ";
         }
 
-        public override string ProcessCommand(string command)
+        public override async Task<string> ProcessCommandAsync(string command)
         {
             if (string.IsNullOrWhiteSpace(command))
                 return GetPrompt();

@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Extreme.Basic
             AddAlias("ena");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Extreme"))
             {
@@ -41,7 +41,7 @@ namespace NetSim.Simulation.CliHandlers.Extreme.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Extreme"))
             {
@@ -82,7 +82,7 @@ namespace NetSim.Simulation.CliHandlers.Extreme.Basic
             AddAlias("tracert");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Extreme"))
             {
@@ -123,7 +123,7 @@ namespace NetSim.Simulation.CliHandlers.Extreme.Basic
             AddAlias("copy running-config startup-config");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Extreme"))
             {
@@ -144,7 +144,7 @@ namespace NetSim.Simulation.CliHandlers.Extreme.Basic
             AddAlias("reboot");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Extreme"))
             {
@@ -164,7 +164,7 @@ namespace NetSim.Simulation.CliHandlers.Extreme.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Extreme"))
             {
@@ -191,7 +191,7 @@ namespace NetSim.Simulation.CliHandlers.Extreme.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Extreme"))
             {

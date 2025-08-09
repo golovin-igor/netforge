@@ -15,7 +15,7 @@ namespace NetSim.Simulation.CliHandlers.Nokia.Basic
             AddAlias("ena");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -41,7 +41,7 @@ namespace NetSim.Simulation.CliHandlers.Nokia.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -82,7 +82,7 @@ namespace NetSim.Simulation.CliHandlers.Nokia.Basic
             AddAlias("tracert");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -123,7 +123,7 @@ namespace NetSim.Simulation.CliHandlers.Nokia.Basic
             AddAlias("save");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -149,7 +149,7 @@ namespace NetSim.Simulation.CliHandlers.Nokia.Basic
             AddAlias("reboot");
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -169,7 +169,7 @@ namespace NetSim.Simulation.CliHandlers.Nokia.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -196,7 +196,7 @@ namespace NetSim.Simulation.CliHandlers.Nokia.Basic
         {
         }
         
-        protected override CliResult ExecuteCommand(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {

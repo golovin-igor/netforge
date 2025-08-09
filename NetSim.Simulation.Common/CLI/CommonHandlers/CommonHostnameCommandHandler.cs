@@ -9,7 +9,7 @@ namespace NetSim.Simulation.CliHandlers.Common
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
             {

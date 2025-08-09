@@ -9,7 +9,7 @@ namespace NetSim.Simulation.CliHandlers.Common
         {
         }
 
-        protected override CliResult ExecuteCommand(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             // Simply acknowledge the reload request
             return Success("System configuration has been modified. Save? [yes/no]: ");
