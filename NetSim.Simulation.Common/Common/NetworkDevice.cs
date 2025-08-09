@@ -89,8 +89,7 @@ namespace NetSim.Simulation.Common
         /// <summary>
         /// Process a command and return the output
         /// </summary>
-        public virtual string ProcessCommand(string command)
-            => ProcessCommandAsync(command).GetAwaiter().GetResult();
+    // Synchronous ProcessCommand removed. Use ProcessCommandAsync instead.
 
         /// <summary>
         /// Asynchronously process a command and return the output

@@ -16,53 +16,26 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Verifies counters increment on all intermediate interfaces
         /// </summary>
         [Fact]
-        public void MultiVendor_CrossVendorPingCounters_ShouldIncrementCorrectly()
+        public async System.Threading.Tasks.Task MultiVendor_CrossVendorPingCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new JuniperDevice("R2");
             var r3 = new HuaweiDevice("R3");
-            
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddDeviceAsync(r3).Wait();
-
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "ge-0/0/0").Wait();
-            network.AddLinkAsync("R2", "ge-0/0/1", "R3", "GigabitEthernet0/0/0").Wait();
-
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddDeviceAsync(r3);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "ge-0/0/0");
+            await network.AddLinkAsync("R2", "ge-0/0/1", "R3", "GigabitEthernet0/0/0");
             ConfigureMultiVendorPath(r1, r2, r3);
-
             var r1_before = r1.GetInterface("GigabitEthernet0/0");
             var r3_before = r3.GetInterface("GigabitEthernet0/0/0");
-
-            SimulateCrossVendorPing(r1, r2, r3);
-
-            var r1_after = r1.GetInterface("GigabitEthernet0/0");
-            var r3_after = r3.GetInterface("GigabitEthernet0/0/0");
-
-            Assert.Equal(r1_before.TxPackets + 5, r1_after.TxPackets);
-            Assert.Equal(r3_before.RxPackets + 5, r3_after.RxPackets);
+            SimulateCrossVendorPing(r1, r2, r3, "192.168.2.2");
+            var r1_after = r1.GetInterface("GigabitEthernet0/0")!;
+            var r3_after = r3.GetInterface("GigabitEthernet0/0/0")!;
+            Assert.Equal(r1_before!.TxPackets + 5, r1_after.TxPackets);
+            Assert.Equal(r3_before!.RxPackets + 5, r3_after.RxPackets);
             Assert.Equal(320, r1_after.TxBytes - r1_before.TxBytes);
-        }
-
-        private void SimulateCrossVendorPing(CiscoDevice r1, JuniperDevice r2, HuaweiDevice r3)
-        {
-            var r1Intf = r1.GetInterface("GigabitEthernet0/0");
-            var r2Intf0 = r2.GetInterface("ge-0/0/0");
-            var r2Intf1 = r2.GetInterface("ge-0/0/1");
-            var r3Intf = r3.GetInterface("GigabitEthernet0/0/0");
-
-            if (r1Intf?.IsUp == true && r3Intf?.IsUp == true)
-            {
-                r1Intf.TxPackets += 5;
-                r1Intf.TxBytes += 320;
-                r2Intf0.RxPackets += 5;
-                r2Intf0.RxBytes += 320;
-                r2Intf1.TxPackets += 5;
-                r2Intf1.TxBytes += 320;
-                r3Intf.RxPackets += 5;
-                r3Intf.RxBytes += 320;
-            }
         }
 
         /// <summary>
@@ -70,35 +43,28 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Verifies no counter increments beyond the failed link
         /// </summary>
         [Fact]
-        public void MultiVendor_PingWithIntermediateInterfaceDown_ShouldStopCounterIncrements()
+        public async System.Threading.Tasks.Task MultiVendor_PingWithIntermediateInterfaceDown_ShouldStopCounterIncrements()
         {
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new JuniperDevice("R2");
             var r3 = new HuaweiDevice("R3");
-            
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddDeviceAsync(r3).Wait();
-
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "ge-0/0/0").Wait();
-            network.AddLinkAsync("R2", "ge-0/0/1", "R3", "GigabitEthernet0/0/0").Wait();
-
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddDeviceAsync(r3);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "ge-0/0/0");
+            await network.AddLinkAsync("R2", "ge-0/0/1", "R3", "GigabitEthernet0/0/0");
             ConfigureBasicMultiVendorPath(r1, r2, r3);
-
             // Initial successful ping to establish baseline
             SimulateCrossVendorPing(r1, r2, r3, "192.168.2.2");
-            var r3_initial_counters = r3.GetInterface("GigabitEthernet0/0/0").RxPackets;
-
+            var r3_initial_counters = r3.GetInterface("GigabitEthernet0/0/0")!.RxPackets;
             // Shutdown intermediate interface on R2 (Juniper style)
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("set interfaces ge-0/0/1 disable");
-            r2.ProcessCommand("commit");
-
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("set interfaces ge-0/0/1 disable");
+            await r2.ProcessCommandAsync("commit");
             // Attempt ping (should fail)
-            var pingResult = r1.ProcessCommand("ping 192.168.2.2");
-            var r3_final_counters = r3.GetInterface("GigabitEthernet0/0/0").RxPackets;
-
+            var pingResult = await r1.ProcessCommandAsync("ping 192.168.2.2");
+            var r3_final_counters = r3.GetInterface("GigabitEthernet0/0/0")!.RxPackets;
             // R3 should not receive any new packets
             Assert.Equal(r3_initial_counters, r3_final_counters);
             Assert.Contains("No response", pingResult);
@@ -109,52 +75,33 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// OSPF between Cisco and Huawei, BGP between Juniper and MikroTik
         /// </summary>
         [Fact]
-        public void MultiVendor_MixedProtocolCounters_ShouldIncrementCorrectly()
+        public async System.Threading.Tasks.Task MultiVendor_MixedProtocolCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new CiscoDevice("R1");      // OSPF peer
             var r2 = new JuniperDevice("R2");    // BGP peer
             var r3 = new HuaweiDevice("R3");     // OSPF peer
             var r4 = new MikroTikDevice("R4");   // BGP peer
-            
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddDeviceAsync(r3).Wait();
-            network.AddDeviceAsync(r4).Wait();
-
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddDeviceAsync(r3);
+            await network.AddDeviceAsync(r4);
             // OSPF link: Cisco-Huawei
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R3", "GigabitEthernet0/0/0").Wait();
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R3", "GigabitEthernet0/0/0");
             // BGP link: Juniper-MikroTik
-            network.AddLinkAsync("R2", "ge-0/0/0", "R4", "ether1").Wait();
-
-            // Configure OSPF between Cisco and Huawei
+            await network.AddLinkAsync("R2", "ge-0/0/0", "R4", "ether1");
             ConfigureCiscoHuaweiOspf(r1, r3);
-            
-            // Configure BGP between Juniper and MikroTik
             ConfigureJuniperMikroTikBgp(r2, r4);
-
-            // Get initial counters
             var r1_ospf_before = r1.GetInterface("GigabitEthernet0/0");
             var r2_bgp_before = r2.GetInterface("ge-0/0/0");
-
-            // Simulate protocol traffic
             SimulateOspfHelloExchange(r1, r3, "GigabitEthernet0/0", "GigabitEthernet0/0/0", 3);
             SimulateBgpUpdateExchange(r2, r4, "ge-0/0/0", "ether1", 2);
-
-            // Verify protocol-specific counters
             var r1_ospf_after = r1.GetInterface("GigabitEthernet0/0");
             var r2_bgp_after = r2.GetInterface("ge-0/0/0");
-
-            // OSPF: 3 hellos * 40 bytes = 120 bytes
-            Assert.Equal(r1_ospf_before.TxBytes + 120, r1_ospf_after.TxBytes);
-            
-            // BGP: 2 updates * 48 bytes = 96 bytes
-            Assert.Equal(r2_bgp_before.TxBytes + 96, r2_bgp_after.TxBytes);
-
-            // Verify protocols are active
-            var ospfNeighbors = r1.ProcessCommand("show ip ospf neighbor");
-            var bgpPeers = r2.ProcessCommand("show bgp summary");
-            
+            Assert.Equal(r1_ospf_before!.TxBytes + 120, r1_ospf_after!.TxBytes);
+            Assert.Equal(r2_bgp_before!.TxBytes + 96, r2_bgp_after!.TxBytes);
+            var ospfNeighbors = await r1.ProcessCommandAsync("show ip ospf neighbor");
+            var bgpPeers = await r2.ProcessCommandAsync("show bgp summary");
             Assert.Contains("OSPF", ospfNeighbors);
             Assert.Contains("BGP", bgpPeers);
         }
@@ -163,37 +110,25 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Test VLAN traffic counters across multiple vendors
         /// </summary>
         [Fact]
-        public void MultiVendor_VlanTrafficCounters_ShouldIncrementCorrectly()
+        public async System.Threading.Tasks.Task MultiVendor_VlanTrafficCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new JuniperDevice("R2");
-            
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "ge-0/0/0").Wait();
-
-            // Configure VLAN 20 on both devices
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "ge-0/0/0");
             ConfigureVlan20CrossVendor(r1, r2);
-
             var r1_before = r1.GetInterface("GigabitEthernet0/0");
             var r2_before = r2.GetInterface("ge-0/0/0");
-
-            // Simulate VLAN 20 ping traffic
             SimulateVlanPing(r1, r2, "GigabitEthernet0/0", "ge-0/0/0", 20);
-
             var r1_after = r1.GetInterface("GigabitEthernet0/0");
             var r2_after = r2.GetInterface("ge-0/0/0");
-
-            // Verify VLAN traffic counters (accounting for VLAN tag overhead: 4 bytes)
-            Assert.Equal(r1_before.TxPackets + 5, r1_after.TxPackets);
-            Assert.Equal(r2_before.RxPackets + 5, r2_after.RxPackets);
+            Assert.Equal(r1_before!.TxPackets + 5, r1_after.TxPackets);
+            Assert.Equal(r2_before!.RxPackets + 5, r2_after.RxPackets);
             Assert.Equal(324, r1_after.TxBytes - r1_before.TxBytes); // 64 + 4 bytes VLAN tag * 5
-
-            // Verify VLAN configuration
-            var ciscoVlan = r1.ProcessCommand("show vlan brief");
-            var juniperVlan = r2.ProcessCommand("show vlans");
-            
+            var ciscoVlan = await r1.ProcessCommandAsync("show vlan brief");
+            var juniperVlan = await r2.ProcessCommandAsync("show vlans");
             Assert.Contains("20", ciscoVlan);
             Assert.Contains("20", juniperVlan);
         }
@@ -202,54 +137,38 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Complete multi-vendor scenario with ping and OSPF counters as per requirements example
         /// </summary>
         [Fact]
-        public void MultiVendor_PingAndOspfCounters_ShouldIncrementCorrectly()
+        public async System.Threading.Tasks.Task MultiVendor_PingAndOspfCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new JuniperDevice("R2");
             var r3 = new HuaweiDevice("R3");
-            
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddDeviceAsync(r3).Wait();
-
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "ge-0/0/0").Wait();
-            network.AddLinkAsync("R2", "ge-0/0/1", "R3", "GigabitEthernet0/0/0").Wait();
-
-            // Configure interfaces and OSPF as per example
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddDeviceAsync(r3);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "ge-0/0/0");
+            await network.AddLinkAsync("R2", "ge-0/0/1", "R3", "GigabitEthernet0/0/0");
             ConfigureExampleScenario(r1, r2, r3);
-
-            // Initial OSPF hello counters
             var intfR1Before = r1.GetInterface("GigabitEthernet0/0");
             var intfR2Before = r2.GetInterface("ge-0/0/0");
-
-            // Trigger ping
             var pingOutput = SimulatePingAcrossVendors(r1, r3, "192.168.2.2");
-
-            // Post-ping counters
             var intfR1After = r1.GetInterface("GigabitEthernet0/0");
             var intfR2After = r2.GetInterface("ge-0/0/0");
             var intfR3After = r3.GetInterface("GigabitEthernet0/0/0");
-
-            // Shutdown and retest
-            r3.ProcessCommand("system-view");
-            r3.ProcessCommand("interface GigabitEthernet0/0/0");
-            r3.ProcessCommand("shutdown");
-            r3.ProcessCommand("quit");
-            r3.ProcessCommand("quit");
-
-            var pingOutputFail = r1.ProcessCommand("ping 192.168.2.2");
+            await r3.ProcessCommandAsync("system-view");
+            await r3.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r3.ProcessCommandAsync("shutdown");
+            await r3.ProcessCommandAsync("quit");
+            await r3.ProcessCommandAsync("quit");
+            var pingOutputFail = await r1.ProcessCommandAsync("ping 192.168.2.2");
             var intfR3Shutdown = r3.GetInterface("GigabitEthernet0/0/0");
-
-            // Assertions as per requirements example
             Assert.Contains("Success rate is 100 percent", pingOutput);
-            Assert.Equal(intfR1Before.TxPackets + 5, intfR1After.TxPackets); // 5 ping packets
-            Assert.Equal(intfR2Before.RxPackets + 5, intfR2After.RxPackets); // 5 ping packets
-            Assert.Equal(intfR3After.RxPackets, intfR3After.RxPackets); // 5 ping packets
-            Assert.Equal(320, intfR1After.TxBytes - intfR1Before.TxBytes); // 5 * 64 bytes
+            Assert.Equal(intfR1Before!.TxPackets + 5, intfR1After!.TxPackets); // 5 ping packets
+            Assert.Equal(intfR2Before!.RxPackets + 5, intfR2After!.RxPackets); // 5 ping packets
+            Assert.Equal(intfR3After!.RxPackets, intfR3After!.RxPackets); // 5 ping packets
+            Assert.Equal(320, intfR1After!.TxBytes - intfR1Before!.TxBytes); // 5 * 64 bytes
             Assert.Contains("No response", pingOutputFail);
-            // No increment after shutdown - counters remain same
-            Assert.Equal(intfR3After.RxPackets, intfR3Shutdown.RxPackets);
+            Assert.Equal(intfR3After!.RxPackets, intfR3Shutdown!.RxPackets);
         }
 
         #region Helper Methods
@@ -550,4 +469,4 @@ namespace NetSim.Simulation.Tests.CounterTests
 
         #endregion
     }
-} 
+}

@@ -6,15 +6,9 @@ namespace NetSim.Simulation.Core
     public interface ICommandProcessor
     {
         /// <summary>
-        /// Process a command and return the output
-        /// </summary>
-        string ProcessCommand(string command);
-
-        /// <summary>
         /// Asynchronously process a command and return the output
         /// </summary>
-        async Task<string> ProcessCommandAsync(string command)
-            => await Task.FromResult(ProcessCommand(command));
+        Task<string> ProcessCommandAsync(string command);
         
         /// <summary>
         /// Get the current prompt
