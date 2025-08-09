@@ -48,7 +48,7 @@ namespace NetSim.Simulation.Devices
         {
             // Use vendor-specific prompt format
             var mode = CurrentMode == DeviceMode.Privileged ? "root" : "user";
-            return mode == "root" ? $"{Hostname}# " : $"{Hostname}$ ";
+            return mode == "root" ? $"{Hostname}# " : $"{Hostname}$";
         }
 
         public override string ProcessCommand(string command)
