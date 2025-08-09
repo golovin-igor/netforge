@@ -6,16 +6,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
     public class CiscoCommandHandlerCompleteTests
     {
         [Fact]
-        public void RouterModeNetworkCommand_ShouldAddOspfNetwork()
+        public async Task RouterModeNetworkCommand_ShouldAddOspfNetwork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("router ospf 1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("router ospf 1");
             
             // Act
-            var output = device.ProcessCommand("network 10.0.0.0 0.0.0.255 area 0");
+            var output = await device.ProcessCommandAsync("network 10.0.0.0 0.0.0.255 area 0");
             
             // Assert
             Assert.Equal("TestRouter(config-router)#", output);
@@ -25,17 +25,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public void BgpNeighborCommand_ShouldConfigureBgpPeer()
+        public async Task BgpNeighborCommand_ShouldConfigureBgpPeer()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("router bgp 65001");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("router bgp 65001");
             
             // Act
-            var output1 = device.ProcessCommand("neighbor 192.168.1.2 remote-as 65002");
-            var output2 = device.ProcessCommand("neighbor 192.168.1.2 description ISP-Link");
+            var output1 = await device.ProcessCommandAsync("neighbor 192.168.1.2 remote-as 65002");
+            var output2 = await device.ProcessCommandAsync("neighbor 192.168.1.2 description ISP-Link");
             
             // Assert
             Assert.Equal("TestRouter(config-router)#", output1);
@@ -47,15 +47,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public void AccessListCommand_ShouldCreateAcl()
+        public async Task AccessListCommand_ShouldCreateAcl()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("access-list 10 permit host 192.168.1.1");
+            var output = await device.ProcessCommandAsync("access-list 10 permit host 192.168.1.1");
             
             // Assert
             Assert.Equal("TestRouter(config)#", output);
@@ -63,16 +63,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public void SpanningTreeCommand_ShouldConfigureStp()
+        public async Task SpanningTreeCommand_ShouldConfigureStp()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output1 = device.ProcessCommand("spanning-tree mode rapid-pvst");
-            var output2 = device.ProcessCommand("spanning-tree vlan 10 priority 24576");
+            var output1 = await device.ProcessCommandAsync("spanning-tree mode rapid-pvst");
+            var output2 = await device.ProcessCommandAsync("spanning-tree vlan 10 priority 24576");
             
             // Assert
             Assert.Equal("TestSwitch(config)#", output1);
@@ -82,17 +82,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public void CdpCommand_ShouldConfigureCdp()
+        public async Task CdpCommand_ShouldConfigureCdp()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output1 = device.ProcessCommand("cdp run");
-            var output2 = device.ProcessCommand("cdp timer 90");
-            var output3 = device.ProcessCommand("cdp holdtime 270");
+            var output1 = await device.ProcessCommandAsync("cdp run");
+            var output2 = await device.ProcessCommandAsync("cdp timer 90");
+            var output3 = await device.ProcessCommandAsync("cdp holdtime 270");
             
             // Assert
             Assert.Equal("TestRouter(config)#", output1);
@@ -100,19 +100,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
             Assert.Equal("TestRouter(config)#", output3);
             
             // Test CDP status
-            var cdpStatus = device.ProcessCommand("show cdp");
+            var cdpStatus = await device.ProcessCommandAsync("show cdp");
             Assert.Contains("Sending CDP packets every 90 seconds", cdpStatus);
             Assert.Contains("holdtime value of 270 seconds", cdpStatus);
         }
         
         [Fact]
-        public void ShowCdpNeighbors_ShouldDisplayCdpInfo()
+        public async Task ShowCdpNeighbors_ShouldDisplayCdpInfo()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show cdp neighbors");
+            var output = await device.ProcessCommandAsync("show cdp neighbors");
             
             // Assert
             Assert.Contains("Capability Codes:", output);
@@ -122,16 +122,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public void ClearCommands_ShouldClearVariousInfo()
+        public async Task ClearCommands_ShouldClearVariousInfo()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output1 = device.ProcessCommand("clear counters");
-            var output2 = device.ProcessCommand("clear ip route *");
-            var output3 = device.ProcessCommand("clear cdp table");
+            var output1 = await device.ProcessCommandAsync("clear counters");
+            var output2 = await device.ProcessCommandAsync("clear ip route *");
+            var output3 = await device.ProcessCommandAsync("clear cdp table");
             
             // Assert
             Assert.Equal("TestRouter#", output1);
@@ -140,16 +140,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public void InterfaceCdpCommand_ShouldConfigureCdpOnInterface()
+        public async Task InterfaceCdpCommand_ShouldConfigureCdpOnInterface()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface GigabitEthernet0/0");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Act
-            var output = device.ProcessCommand("cdp enable");
+            var output = await device.ProcessCommandAsync("cdp enable");
             
             // Assert
             Assert.Equal("TestRouter(config-if)#", output);
@@ -157,18 +157,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public void IpAccessListCommand_ShouldCreateNamedAcl()
+        public async Task IpAccessListCommand_ShouldCreateNamedAcl()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output1 = device.ProcessCommand("ip access-list standard MGMT-ACCESS");
-            var output2 = device.ProcessCommand("permit host 10.1.1.1");
-            var output3 = device.ProcessCommand("deny any");
-            var output4 = device.ProcessCommand("exit");
+            var output1 = await device.ProcessCommandAsync("ip access-list standard MGMT-ACCESS");
+            var output2 = await device.ProcessCommandAsync("permit host 10.1.1.1");
+            var output3 = await device.ProcessCommandAsync("deny any");
+            var output4 = await device.ProcessCommandAsync("exit");
             
             // Assert
             Assert.Equal("TestRouter(config-std-nacl)#", output1);
@@ -179,17 +179,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public void RipVersionCommand_ShouldConfigureRipVersion()
+        public async Task RipVersionCommand_ShouldConfigureRipVersion()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("router rip");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("router rip");
             
             // Act
-            var output1 = device.ProcessCommand("version 2");
-            var output2 = device.ProcessCommand("network 10.0.0.0");
+            var output1 = await device.ProcessCommandAsync("version 2");
+            var output2 = await device.ProcessCommandAsync("network 10.0.0.0");
             
             // Assert
             Assert.Equal("TestRouter(config-router)#", output1);
@@ -201,26 +201,26 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public void ComplexConfigSequence_ShouldWorkCorrectly()
+        public async Task ComplexConfigSequence_ShouldWorkCorrectly()
         {
             // Arrange
             var device = new CiscoDevice("CoreSwitch");
             
             // Act - Build a complex configuration
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("hostname CoreSwitch01");
-            device.ProcessCommand("vlan 100");
-            device.ProcessCommand("name Management");
-            device.ProcessCommand("exit");
-            device.ProcessCommand("interface GigabitEthernet0/1");
-            device.ProcessCommand("switchport mode access");
-            device.ProcessCommand("switchport access vlan 100");
-            device.ProcessCommand("spanning-tree portfast");
-            device.ProcessCommand("exit");
-            device.ProcessCommand("spanning-tree mode rapid-pvst");
-            device.ProcessCommand("cdp run");
-            device.ProcessCommand("ip route 0.0.0.0 0.0.0.0 10.1.1.1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("hostname CoreSwitch01");
+            await device.ProcessCommandAsync("vlan 100");
+            await device.ProcessCommandAsync("name Management");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/1");
+            await device.ProcessCommandAsync("switchport mode access");
+            await device.ProcessCommandAsync("switchport access vlan 100");
+            await device.ProcessCommandAsync("spanning-tree portfast");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("spanning-tree mode rapid-pvst");
+            await device.ProcessCommandAsync("cdp run");
+            await device.ProcessCommandAsync("ip route 0.0.0.0 0.0.0.0 10.1.1.1");
             
             // Assert
             var config = device.ShowRunningConfig();

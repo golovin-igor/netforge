@@ -22,43 +22,43 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
             // Configure R1 with detailed debugging
             System.Console.WriteLine("=== Starting R1 Configuration ===");
             
-            var result1 = r1.ProcessCommand("enable");
+            var result1 = await r1.ProcessCommandAsync("enable");
             System.Console.WriteLine($"enable result: '{result1}'");
             
-            var result2 = r1.ProcessCommand("configure terminal");
+            var result2 = await r1.ProcessCommandAsync("configure terminal");
             System.Console.WriteLine($"configure terminal result: '{result2}'");
             
-            var result3 = r1.ProcessCommand("interface GigabitEthernet0/0");
+            var result3 = await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
             System.Console.WriteLine($"interface GigabitEthernet0/0 result: '{result3}'");
             
             // Check mode after interface command
             System.Console.WriteLine($"Current mode after interface command: {r1.GetModeEnum()}");
             System.Console.WriteLine($"Current interface: {r1.GetCurrentInterface()}");
             
-            var result4 = r1.ProcessCommand("ip address 10.0.0.1 255.255.255.252");
+            var result4 = await r1.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.252");
             System.Console.WriteLine($"ip address command result: '{result4}'");
             
             // Check interface after IP command
             var r1Interface = r1.GetInterface("GigabitEthernet0/0");
             System.Console.WriteLine($"Interface after IP command - IP: {r1Interface?.IpAddress}, Mask: {r1Interface?.SubnetMask}");
             
-            var result5 = r1.ProcessCommand("no shutdown");
+            var result5 = await r1.ProcessCommandAsync("no shutdown");
             System.Console.WriteLine($"no shutdown result: '{result5}'");
             
-            var result6 = r1.ProcessCommand("exit");
+            var result6 = await r1.ProcessCommandAsync("exit");
             System.Console.WriteLine($"exit from interface result: '{result6}'");
             
-            var result7 = r1.ProcessCommand("exit");
+            var result7 = await r1.ProcessCommandAsync("exit");
             System.Console.WriteLine($"exit from config result: '{result7}'");
 
             // Configure R2
-            r2.ProcessCommand("enable");
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 10.0.0.2 255.255.255.252");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("enable");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 10.0.0.2 255.255.255.252");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
             // Debug: Check if IP addresses are actually set
             var r2Interface = r2.GetInterface("GigabitEthernet0/0");
@@ -75,13 +75,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
             {
                 System.Console.WriteLine("ERROR: R1 IP address is null!");
                 // Let's try again with more debugging
-                r1.ProcessCommand("configure terminal");
-                r1.ProcessCommand("interface GigabitEthernet0/0");
-                var ipResult = r1.ProcessCommand("ip address 10.0.0.1 255.255.255.252");
+                await r1.ProcessCommandAsync("configure terminal");
+                await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+                var ipResult = await r1.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.252");
                 System.Console.WriteLine($"Second attempt IP command result: '{ipResult}'");
                 System.Console.WriteLine($"Interface after second attempt: {r1Interface.IpAddress}");
-                r1.ProcessCommand("exit");
-                r1.ProcessCommand("exit");
+                await r1.ProcessCommandAsync("exit");
+                await r1.ProcessCommandAsync("exit");
             }
             
             Assert.Equal("10.0.0.1", r1Interface.IpAddress);
@@ -89,18 +89,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public void Debug_CommandHandlerRegistration()
+        public async Task Debug_CommandHandlerRegistration()
         {
             var device = new CiscoDevice("TEST");
             
             // Test if basic commands work
-            var enableResult = device.ProcessCommand("enable");
+            var enableResult = await device.ProcessCommandAsync("enable");
             System.Console.WriteLine($"Enable result: '{enableResult}'");
             
-            var configResult = device.ProcessCommand("configure terminal");
+            var configResult = await device.ProcessCommandAsync("configure terminal");
             System.Console.WriteLine($"Config result: '{configResult}'");
             
-            var interfaceResult = device.ProcessCommand("interface GigabitEthernet0/0");
+            var interfaceResult = await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             System.Console.WriteLine($"Interface result: '{interfaceResult}'");
             
             // Check if we're in the right mode
@@ -108,7 +108,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
             System.Console.WriteLine($"Current interface: {device.GetCurrentInterface()}");
             
             // Test IP command
-            var ipResult = device.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
+            var ipResult = await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
             System.Console.WriteLine($"IP command result: '{ipResult}'");
             
             // Check if IP was set

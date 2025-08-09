@@ -6,39 +6,39 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
     public class HuaweiDeviceConfigurationTests
     {
         [Fact]
-        public void Huawei_SystemView_ShouldEnterConfigMode()
+        public async Task Huawei_SystemView_ShouldEnterConfigMode()
         {
             var device = new HuaweiDevice("SW1");
-            var output = device.ProcessCommand("system-view");
+            var output = await device.ProcessCommandAsync("system-view");
             Assert.Contains("[SW1]", output);
 
-            output = device.ProcessCommand("interface GigabitEthernet0/0/1");
+            output = await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
             Assert.Contains("[SW1-GigabitEthernet0/0/1]", output);
 
-            output = device.ProcessCommand("quit");
+            output = await device.ProcessCommandAsync("quit");
             Assert.Contains("[SW1]", output);
 
-            output = device.ProcessCommand("vlan 10");
+            output = await device.ProcessCommandAsync("vlan 10");
             Assert.Contains("[SW1-vlan10]", output);
         }
 
         [Fact]
-        public void Huawei_InterfaceConfiguration_ShouldApplySettings()
+        public async Task Huawei_InterfaceConfiguration_ShouldApplySettings()
         {
             var device = new HuaweiDevice("SW1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("description Server Connection");
-            device.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            device.ProcessCommand("speed 1000");
-            device.ProcessCommand("duplex full");
-            device.ProcessCommand("undo shutdown");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("interface Vlanif10");
-            device.ProcessCommand("ip address 10.10.10.1 255.255.255.0");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("description Server Connection");
+            await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await device.ProcessCommandAsync("speed 1000");
+            await device.ProcessCommandAsync("duplex full");
+            await device.ProcessCommandAsync("undo shutdown");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("interface Vlanif10");
+            await device.ProcessCommandAsync("ip address 10.10.10.1 255.255.255.0");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display current-configuration");
+            var output = await device.ProcessCommandAsync("display current-configuration");
             Assert.Contains("interface GigabitEthernet0/0/1", output);
             Assert.Contains("description Server Connection", output);
             Assert.Contains("ip address 192.168.1.1 255.255.255.0", output);
@@ -46,53 +46,53 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_ShutdownUndoShutdown_ShouldToggleInterface()
+        public async Task Huawei_ShutdownUndoShutdown_ShouldToggleInterface()
         {
             var device = new HuaweiDevice("SW1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
-            device.ProcessCommand("undo shutdown");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
+            await device.ProcessCommandAsync("undo shutdown");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display interface brief");
+            var output = await device.ProcessCommandAsync("display interface brief");
             Assert.Contains("GigabitEthernet0/0/1", output);
             Assert.Contains("up", output);
 
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("shutdown");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("shutdown");
+            await device.ProcessCommandAsync("quit");
 
-            output = device.ProcessCommand("display interface brief");
+            output = await device.ProcessCommandAsync("display interface brief");
             Assert.Contains("down", output);
         }
 
         [Fact]
-        public void Huawei_Save_ShouldPersistConfiguration()
+        public async Task Huawei_Save_ShouldPersistConfiguration()
         {
             var device = new HuaweiDevice("SW1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("sysname Huawei-Test");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("sysname Huawei-Test");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("save");
+            var output = await device.ProcessCommandAsync("save");
             Assert.Contains("Are you sure to continue?", output);
 
-            output = device.ProcessCommand("y");
+            output = await device.ProcessCommandAsync("y");
             Assert.Contains("successfully", output);
         }
 
         [Fact]
-        public void Huawei_AclConfiguration_ShouldCreateAccessList()
+        public async Task Huawei_AclConfiguration_ShouldCreateAccessList()
         {
             var device = new HuaweiDevice("R1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("acl 2001");
-            device.ProcessCommand("rule 5 deny source 192.168.1.0 0.0.0.255");
-            device.ProcessCommand("rule 10 permit");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("acl 2001");
+            await device.ProcessCommandAsync("rule 5 deny source 192.168.1.0 0.0.0.255");
+            await device.ProcessCommandAsync("rule 10 permit");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display acl 2001");
+            var output = await device.ProcessCommandAsync("display acl 2001");
             Assert.Contains("Basic ACL 2001", output);
             Assert.Contains("rule 5 deny", output);
             Assert.Contains("192.168.1.0", output);
@@ -100,10 +100,10 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_Reboot_ShouldPromptConfirmation()
+        public async Task Huawei_Reboot_ShouldPromptConfirmation()
         {
             var device = new HuaweiDevice("SW1");
-            var output = device.ProcessCommand("reboot");
+            var output = await device.ProcessCommandAsync("reboot");
 
             Assert.Contains("Continue?", output);
             Assert.Contains("[Y/N]", output);

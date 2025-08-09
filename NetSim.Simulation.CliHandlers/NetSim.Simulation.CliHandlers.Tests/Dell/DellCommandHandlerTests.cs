@@ -6,14 +6,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
     public class DellCommandHandlerTests
     {
         [Fact]
-        public void DellOperationalHandler_RequestCommand_ShouldProcessRequest()
+        public async Task DellOperationalHandler_RequestCommand_ShouldProcessRequest()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("request system reload");
+            var output = await device.ProcessCommandAsync("request system reload");
             
             // Assert
             Assert.Contains("System will be reloaded", output);
@@ -21,14 +21,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellOperationalHandler_RequestCommand_WithoutParameters_ShouldReturnError()
+        public async Task DellOperationalHandler_RequestCommand_WithoutParameters_ShouldReturnError()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("request");
+            var output = await device.ProcessCommandAsync("request");
             
             // Assert
             Assert.Contains("Incomplete command", output);
@@ -36,14 +36,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellOperationalHandler_FileCommand_ShouldProcessFile()
+        public async Task DellOperationalHandler_FileCommand_ShouldProcessFile()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("file show running-config");
+            var output = await device.ProcessCommandAsync("file show running-config");
             
             // Assert
             Assert.Contains("Current configuration", output);
@@ -51,14 +51,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellOperationalHandler_BootCommand_ShouldProcessBoot()
+        public async Task DellOperationalHandler_BootCommand_ShouldProcessBoot()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("boot system");
+            var output = await device.ProcessCommandAsync("boot system");
             
             // Assert
             Assert.Contains("System boot information", output);
@@ -66,14 +66,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellOperationalHandler_SystemCommand_ShouldProcessSystem()
+        public async Task DellOperationalHandler_SystemCommand_ShouldProcessSystem()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("system show");
+            var output = await device.ProcessCommandAsync("system show");
             
             // Assert
             Assert.Contains("System information", output);
@@ -81,13 +81,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellOperationalHandler_WhenNotPrivileged_ShouldReturnError()
+        public async Task DellOperationalHandler_WhenNotPrivileged_ShouldReturnError()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("request system reload");
+            var output = await device.ProcessCommandAsync("request system reload");
             
             // Assert
             Assert.Contains("Invalid mode", output);
@@ -95,13 +95,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellPingHandler_ShouldExecutePing()
+        public async Task DellPingHandler_ShouldExecutePing()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("ping 192.168.1.1");
+            var output = await device.ProcessCommandAsync("ping 192.168.1.1");
             
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
@@ -110,13 +110,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellPingHandler_WithCount_ShouldUseSpecifiedCount()
+        public async Task DellPingHandler_WithCount_ShouldUseSpecifiedCount()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("ping 192.168.1.1 -c 3");
+            var output = await device.ProcessCommandAsync("ping 192.168.1.1 -c 3");
             
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
@@ -125,13 +125,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellPingHandler_WithSize_ShouldUseSpecifiedSize()
+        public async Task DellPingHandler_WithSize_ShouldUseSpecifiedSize()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("ping 192.168.1.1 -s 100");
+            var output = await device.ProcessCommandAsync("ping 192.168.1.1 -s 100");
             
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
@@ -140,13 +140,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellPingHandler_WithInvalidIp_ShouldReturnError()
+        public async Task DellPingHandler_WithInvalidIp_ShouldReturnError()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("ping invalid-ip");
+            var output = await device.ProcessCommandAsync("ping invalid-ip");
             
             // Assert
             Assert.Contains("Invalid IP address", output);
@@ -154,13 +154,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellPingHandler_WithoutDestination_ShouldReturnError()
+        public async Task DellPingHandler_WithoutDestination_ShouldReturnError()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("ping");
+            var output = await device.ProcessCommandAsync("ping");
             
             // Assert
             Assert.Contains("Incomplete command", output);

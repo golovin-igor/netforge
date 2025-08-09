@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Tests.CounterTests
     public class AristaCounterTests
     {
         [Fact]
-        public void Arista_PingCounters_ShouldIncrementCorrectly()
+        public async Task Arista_PingCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new AristaDevice("R1");
@@ -17,7 +17,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "Ethernet1", "R2", "Ethernet1").Wait();
 
-            ConfigureBasicInterfaces(r1, r2);
+            await ConfigureBasicInterfaces(r1, r2);
 
             var intfR1Before = r1.GetInterface("Ethernet1");
             var intfR2Before = r2.GetInterface("Ethernet1");
@@ -33,7 +33,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void Arista_OspfHelloCounters_ShouldIncrementCorrectly()
+        public async Task Arista_OspfHelloCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new AristaDevice("R1");
@@ -43,7 +43,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "Ethernet1", "R2", "Ethernet1").Wait();
 
-            ConfigureOspfDevices(r1, r2);
+            await ConfigureOspfDevices(r1, r2);
 
             var intfR1Before = r1.GetInterface("Ethernet1");
             var initialTxBytes = intfR1Before.TxBytes;
@@ -53,7 +53,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             var intfR1After = r1.GetInterface("Ethernet1");
             Assert.Equal(initialTxBytes + 120, intfR1After.TxBytes);
 
-            var ospfNeighbors = r1.ProcessCommand("show ip ospf neighbor");
+            var ospfNeighbors = await r1.ProcessCommandAsync("show ip ospf neighbor");
             Assert.Contains("192.168.1.2", ospfNeighbors);
         }
 
@@ -73,40 +73,40 @@ namespace NetSim.Simulation.Tests.CounterTests
             }
         }
 
-        private void ConfigureBasicInterfaces(AristaDevice r1, AristaDevice r2)
+        private async Task ConfigureBasicInterfaces(AristaDevice r1, AristaDevice r2)
         {
-            r1.ProcessCommand("configure");
-            r1.ProcessCommand("interface Ethernet1");
-            r1.ProcessCommand("ip address 192.168.1.1/24");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure");
+            await r1.ProcessCommandAsync("interface Ethernet1");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1/24");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("interface Ethernet1");
-            r2.ProcessCommand("ip address 192.168.1.2/24");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("interface Ethernet1");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2/24");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
         }
 
-        private void ConfigureOspfDevices(AristaDevice r1, AristaDevice r2)
+        private async Task ConfigureOspfDevices(AristaDevice r1, AristaDevice r2)
         {
-            r1.ProcessCommand("configure");
-            r1.ProcessCommand("interface Ethernet1");
-            r1.ProcessCommand("ip address 192.168.1.1/24");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("router ospf 1");
-            r1.ProcessCommand("network 192.168.1.0/24 area 0");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure");
+            await r1.ProcessCommandAsync("interface Ethernet1");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1/24");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("router ospf 1");
+            await r1.ProcessCommandAsync("network 192.168.1.0/24 area 0");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("interface Ethernet1");
-            r2.ProcessCommand("ip address 192.168.1.2/24");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("router ospf 1");
-            r2.ProcessCommand("network 192.168.1.0/24 area 0");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("interface Ethernet1");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2/24");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("router ospf 1");
+            await r2.ProcessCommandAsync("network 192.168.1.0/24 area 0");
+            await r2.ProcessCommandAsync("exit");
         }
 
         private void SimulateOspfHelloExchange(AristaDevice r1, AristaDevice r2, 

@@ -6,26 +6,26 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
     public class NokiaCommandHandlerComprehensiveTests
     {
         [Fact]
-        public void NokiaHandler_ConfigureSystemName_ShouldSetSystemName()
+        public async Task NokiaHandler_ConfigureSystemName_ShouldSetSystemName()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure system name NewRouter");
+            var output = await device.ProcessCommandAsync("configure system name NewRouter");
             
             // Assert
             Assert.Equal("NewRouter# ", device.GetPrompt());
         }
 
         [Fact]
-        public void NokiaHandler_ConfigurePortDescription_ShouldSetPortDescription()
+        public async Task NokiaHandler_ConfigurePortDescription_ShouldSetPortDescription()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure port 1/1/1 description \"Test Port\"");
+            var output = await device.ProcessCommandAsync("configure port 1/1/1 description \"Test Port\"");
             
             // Assert
             Assert.Contains("description", output);
@@ -33,13 +33,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigurePortAdminState_ShouldSetPortState()
+        public async Task NokiaHandler_ConfigurePortAdminState_ShouldSetPortState()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure port 1/1/1 admin-state enable");
+            var output = await device.ProcessCommandAsync("configure port 1/1/1 admin-state enable");
             
             // Assert
             Assert.Contains("admin-state", output);
@@ -47,13 +47,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureRouterIpAddress_ShouldSetIpAddress()
+        public async Task NokiaHandler_ConfigureRouterIpAddress_ShouldSetIpAddress()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure router interface \"system\" address 192.168.1.1/24");
+            var output = await device.ProcessCommandAsync("configure router interface \"system\" address 192.168.1.1/24");
             
             // Assert
             Assert.Contains("address", output);
@@ -61,13 +61,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureRouterOspf_ShouldConfigureOspf()
+        public async Task NokiaHandler_ConfigureRouterOspf_ShouldConfigureOspf()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure router ospf area 0.0.0.0 interface \"system\"");
+            var output = await device.ProcessCommandAsync("configure router ospf area 0.0.0.0 interface \"system\"");
             
             // Assert
             Assert.Contains("OSPF", output);
@@ -75,13 +75,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureRouterBgp_ShouldConfigureBgp()
+        public async Task NokiaHandler_ConfigureRouterBgp_ShouldConfigureBgp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure router bgp autonomous-system 65001");
+            var output = await device.ProcessCommandAsync("configure router bgp autonomous-system 65001");
             
             // Assert
             Assert.Contains("BGP", output);
@@ -89,13 +89,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureServiceVpls_ShouldConfigureVpls()
+        public async Task NokiaHandler_ConfigureServiceVpls_ShouldConfigureVpls()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure service vpls 100 customer 1 mesh-sdp 1:100");
+            var output = await device.ProcessCommandAsync("configure service vpls 100 customer 1 mesh-sdp 1:100");
             
             // Assert
             Assert.Contains("VPLS", output);
@@ -103,13 +103,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureServiceVprn_ShouldConfigureVprn()
+        public async Task NokiaHandler_ConfigureServiceVprn_ShouldConfigureVprn()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure service vprn 100 customer 1 route-distinguisher 65001:100");
+            var output = await device.ProcessCommandAsync("configure service vprn 100 customer 1 route-distinguisher 65001:100");
             
             // Assert
             Assert.Contains("VPRN", output);
@@ -117,13 +117,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureServiceSdp_ShouldConfigureSdp()
+        public async Task NokiaHandler_ConfigureServiceSdp_ShouldConfigureSdp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure service sdp 1 mpls lsp \"test-lsp\"");
+            var output = await device.ProcessCommandAsync("configure service sdp 1 mpls lsp \"test-lsp\"");
             
             // Assert
             Assert.Contains("SDP", output);
@@ -131,13 +131,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureMplsLsp_ShouldConfigureLsp()
+        public async Task NokiaHandler_ConfigureMplsLsp_ShouldConfigureLsp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure router mpls lsp \"test-lsp\" to 192.168.1.2");
+            var output = await device.ProcessCommandAsync("configure router mpls lsp \"test-lsp\" to 192.168.1.2");
             
             // Assert
             Assert.Contains("LSP", output);
@@ -145,13 +145,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureRouterRsvp_ShouldConfigureRsvp()
+        public async Task NokiaHandler_ConfigureRouterRsvp_ShouldConfigureRsvp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure router rsvp interface \"system\"");
+            var output = await device.ProcessCommandAsync("configure router rsvp interface \"system\"");
             
             // Assert
             Assert.Contains("RSVP", output);
@@ -159,13 +159,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureRouterLdp_ShouldConfigureLdp()
+        public async Task NokiaHandler_ConfigureRouterLdp_ShouldConfigureLdp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure router ldp interface-parameters interface \"system\"");
+            var output = await device.ProcessCommandAsync("configure router ldp interface-parameters interface \"system\"");
             
             // Assert
             Assert.Contains("LDP", output);
@@ -173,13 +173,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureQosPolicyMap_ShouldConfigureQos()
+        public async Task NokiaHandler_ConfigureQosPolicyMap_ShouldConfigureQos()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure qos network-policy \"test-policy\" queue 1");
+            var output = await device.ProcessCommandAsync("configure qos network-policy \"test-policy\" queue 1");
             
             // Assert
             Assert.Contains("QoS", output);
@@ -187,13 +187,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureFilterIpFilter_ShouldConfigureFilter()
+        public async Task NokiaHandler_ConfigureFilterIpFilter_ShouldConfigureFilter()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure filter ip-filter 10 entry 1 match src-ip 192.168.1.0/24");
+            var output = await device.ProcessCommandAsync("configure filter ip-filter 10 entry 1 match src-ip 192.168.1.0/24");
             
             // Assert
             Assert.Contains("filter", output);
@@ -201,13 +201,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureLogSyslog_ShouldConfigureLogging()
+        public async Task NokiaHandler_ConfigureLogSyslog_ShouldConfigureLogging()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure log syslog 1 address 192.168.1.100");
+            var output = await device.ProcessCommandAsync("configure log syslog 1 address 192.168.1.100");
             
             // Assert
             Assert.Contains("syslog", output);
@@ -215,13 +215,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ShowRouter_ShouldDisplayRouterInfo()
+        public async Task NokiaHandler_ShowRouter_ShouldDisplayRouterInfo()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show router interface");
+            var output = await device.ProcessCommandAsync("show router interface");
             
             // Assert
             Assert.Contains("Router", output);
@@ -229,13 +229,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ShowService_ShouldDisplayServiceInfo()
+        public async Task NokiaHandler_ShowService_ShouldDisplayServiceInfo()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show service service-using");
+            var output = await device.ProcessCommandAsync("show service service-using");
             
             // Assert
             Assert.Contains("Service", output);
@@ -265,14 +265,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         [InlineData("show system uptime")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public void NokiaHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task NokiaHandler_AllShowCommands_ShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("enable"); // Enter privileged mode
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -296,13 +296,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         [InlineData("configure qos network-policy \"test-policy\" queue 1")]
         [InlineData("configure filter ip-filter 10 entry 1")]
         [InlineData("configure log syslog 1 address 192.168.1.100")]
-        public void NokiaHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task NokiaHandler_ConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -327,13 +327,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         [InlineData("show card state detail")]
         [InlineData("show mda detail")]
         [InlineData("show chassis detail")]
-        public void NokiaHandler_DetailedShowCommands_ShouldWork(string command)
+        public async Task NokiaHandler_DetailedShowCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -350,14 +350,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         [InlineData("show service vprn 100 route-table")]
         [InlineData("show service vprn 100 ospf neighbor")]
         [InlineData("show service vprn 100 bgp summary")]
-        public void NokiaHandler_VrfCommands_ShouldWork(string command)
+        public async Task NokiaHandler_VrfCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure service vprn 100 customer 1 route-distinguisher 65001:100");
+            await device.ProcessCommandAsync("configure service vprn 100 customer 1 route-distinguisher 65001:100");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -374,13 +374,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         [InlineData("configure router ldp targeted-session peer 192.168.1.2")]
         [InlineData("configure router mpls static-lsp \"test-lsp\" ingress")]
         [InlineData("configure router rsvp interface \"system\" bandwidth 1000000")]
-        public void NokiaHandler_AdvancedRoutingCommands_ShouldWork(string command)
+        public async Task NokiaHandler_AdvancedRoutingCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -389,7 +389,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ComplexServiceConfiguration_ShouldWork()
+        public async Task NokiaHandler_ComplexServiceConfiguration_ShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -409,7 +409,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -417,7 +417,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_MplsConfiguration_ShouldWork()
+        public async Task NokiaHandler_MplsConfiguration_ShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -437,7 +437,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -445,7 +445,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_QosConfiguration_ShouldWork()
+        public async Task NokiaHandler_QosConfiguration_ShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -465,7 +465,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -473,7 +473,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_FilterConfiguration_ShouldWork()
+        public async Task NokiaHandler_FilterConfiguration_ShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -493,7 +493,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -501,7 +501,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_LogConfiguration_ShouldWork()
+        public async Task NokiaHandler_LogConfiguration_ShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -520,7 +520,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -528,7 +528,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_SystemConfiguration_ShouldWork()
+        public async Task NokiaHandler_SystemConfiguration_ShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -549,7 +549,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -557,7 +557,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_CardMdaConfiguration_ShouldWork()
+        public async Task NokiaHandler_CardMdaConfiguration_ShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -576,7 +576,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestRouter# ", device.GetPrompt());

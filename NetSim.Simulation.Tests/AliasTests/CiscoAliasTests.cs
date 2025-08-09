@@ -12,33 +12,33 @@ namespace NetSim.Simulation.Tests.AliasTests
     public class CiscoAliasTests
     {
         [Fact]
-        public void Cisco_ShowRunAlias_ShouldMatchFullCommand()
+        public async Task Cisco_ShowRunAlias_ShouldMatchFullCommand()
         {
             var device = new CiscoDevice("R1");
-            var full = device.ProcessCommand("show running-config");
-            var alias = device.ProcessCommand("sh run");
+            var full = await device.ProcessCommandAsync("show running-config");
+            var alias = await device.ProcessCommandAsync("sh run");
 
             Assert.Equal(full, alias);
         }
 
         [Fact]
-        public void Cisco_InterfaceAliasConfig_ShouldApplySettings()
+        public async Task Cisco_InterfaceAliasConfig_ShouldApplySettings()
         {
             var device = new CiscoDevice("R1");
 
-            device.ProcessCommand("conf t");
-            device.ProcessCommand("int Gi0/0");
-            device.ProcessCommand("ip address 10.1.1.1 255.255.255.0");
-            device.ProcessCommand("no shut");
-            device.ProcessCommand("exit");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("conf t");
+            await device.ProcessCommandAsync("int Gi0/0");
+            await device.ProcessCommandAsync("ip address 10.1.1.1 255.255.255.0");
+            await device.ProcessCommandAsync("no shut");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("exit");
 
             var iface = device.GetInterface("GigabitEthernet0/0");
             Assert.Equal("10.1.1.1", iface.IpAddress);
             Assert.False(iface.IsShutdown);
 
-            var full = device.ProcessCommand("show interface GigabitEthernet0/0");
-            var alias = device.ProcessCommand("sh int Gi0/0");
+            var full = await device.ProcessCommandAsync("show interface GigabitEthernet0/0");
+            var alias = await device.ProcessCommandAsync("sh int Gi0/0");
             Assert.Equal(full, alias);
         }
 
@@ -261,15 +261,15 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void CiscoDevice_InterfaceCommand_WithAlias_EntersCorrectInterface()
+        public async Task CiscoDevice_InterfaceCommand_WithAlias_EntersCorrectInterface()
         {
             // Arrange
             var device = new CiscoDevice("R1");
 
             // Act
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            var result = device.ProcessCommand("interface gi0/1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            var result = await device.ProcessCommandAsync("interface gi0/1");
 
             // Assert
             Assert.Equal("R1(config-if)#", device.GetPrompt().Trim());
@@ -282,19 +282,19 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void CiscoDevice_InterfaceCommand_WithVariousAliases_CreatesOneInterface()
+        public async Task CiscoDevice_InterfaceCommand_WithVariousAliases_CreatesOneInterface()
         {
             // Arrange
             var device = new CiscoDevice("R1");
 
             // Act
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface gi0/1");
-            device.ProcessCommand("exit");
-            device.ProcessCommand("interface gig0/1");
-            device.ProcessCommand("exit");
-            device.ProcessCommand("interface GigabitEthernet0/1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface gi0/1");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("interface gig0/1");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/1");
 
             // Assert
             var interfaces = device.GetAllInterfaces();
@@ -305,17 +305,17 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void CiscoDevice_IpAddressCommand_WithAlias_ConfiguresCorrectInterface()
+        public async Task CiscoDevice_IpAddressCommand_WithAlias_ConfiguresCorrectInterface()
         {
             // Arrange
             var device = new CiscoDevice("R1");
 
             // Act
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface gi0/1");
-            device.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface gi0/1");
+            await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await device.ProcessCommandAsync("exit");
 
             // Assert
             var iface = device.GetInterface("GigabitEthernet0/1");
@@ -330,23 +330,23 @@ namespace NetSim.Simulation.Tests.AliasTests
 
         [Theory]
         [InlineData("gi0/1", "fa0/1", "te0/1", "lo0", "po1")]
-        public void CiscoDevice_MultipleInterfaceTypes_WithAliases_AllWorkCorrectly(params string[] interfaceAliases)
+        public async Task CiscoDevice_MultipleInterfaceTypes_WithAliases_AllWorkCorrectly(params string[] interfaceAliases)
         {
             // Arrange
             var device = new CiscoDevice("R1");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
 
             // Act & Assert
             foreach (var alias in interfaceAliases)
             {
-                var result = device.ProcessCommand($"interface {alias}");
+                var result = await device.ProcessCommandAsync($"interface {alias}");
                 Assert.Equal("R1(config-if)#", device.GetPrompt().Trim());
                 
                 var canonicalName = CiscoInterfaceAliasHandler.ExpandInterfaceAlias(alias);
                 Assert.Equal(canonicalName, device.GetCurrentInterface());
                 
-                device.ProcessCommand("exit");
+                await device.ProcessCommandAsync("exit");
             }
         }
 

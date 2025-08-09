@@ -12,27 +12,27 @@ namespace NetSim.Simulation.Tests.AliasTests
     public class JuniperAliasTests
     {
         [Fact]
-        public void Juniper_ShowConfigurationAlias_ShouldMatchFullCommand()
+        public async Task Juniper_ShowConfigurationAlias_ShouldMatchFullCommand()
         {
             var device = new JuniperDevice("R1");
-            var full = device.ProcessCommand("show configuration");
-            var alias = device.ProcessCommand("sh conf");
+            var full = await device.ProcessCommandAsync("show configuration");
+            var alias = await device.ProcessCommandAsync("sh conf");
             Assert.Equal(full, alias);
         }
 
         [Fact]
-        public void Juniper_InterfaceNameCase_ShouldBeAccepted()
+        public async Task Juniper_InterfaceNameCase_ShouldBeAccepted()
         {
             var device = new JuniperDevice("R1");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 10.1.1.1/24");
-            device.ProcessCommand("commit");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 10.1.1.1/24");
+            await device.ProcessCommandAsync("commit");
 
             var iface = device.GetInterface("ge-0/0/0");
             Assert.Equal("10.1.1.1", iface.IpAddress);
 
-            var full = device.ProcessCommand("show interfaces ge-0/0/0");
-            var alias = device.ProcessCommand("show interfaces GE-0/0/0");
+            var full = await device.ProcessCommandAsync("show interfaces ge-0/0/0");
+            var alias = await device.ProcessCommandAsync("show interfaces GE-0/0/0");
             Assert.Equal(full, alias);
         }
 
@@ -354,7 +354,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Juniper_DeviceIntegration_ShouldWork()
+        public async Task Juniper_DeviceIntegration_ShouldWork()
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
@@ -375,7 +375,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Juniper_AggregatedEthernetAlias_ShouldWork()
+        public async Task Juniper_AggregatedEthernetAlias_ShouldWork()
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
@@ -396,7 +396,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Juniper_IRBAlias_ShouldWork()
+        public async Task Juniper_IRBAlias_ShouldWork()
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
@@ -414,7 +414,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Juniper_LoopbackAlias_ShouldWork()
+        public async Task Juniper_LoopbackAlias_ShouldWork()
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
@@ -435,7 +435,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Juniper_ManagementAlias_ShouldWork()
+        public async Task Juniper_ManagementAlias_ShouldWork()
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
@@ -462,7 +462,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Juniper_HighSpeedEthernetAlias_ShouldWork()
+        public async Task Juniper_HighSpeedEthernetAlias_ShouldWork()
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
@@ -483,7 +483,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Juniper_TunnelAlias_ShouldWork()
+        public async Task Juniper_TunnelAlias_ShouldWork()
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");

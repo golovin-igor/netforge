@@ -6,14 +6,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
     public class ArubaCommandHandlerTests
     {
         [Fact]
-        public void ConfigureHandler_ShouldEnterConfigMode()
+        public async Task ConfigureHandler_ShouldEnterConfigMode()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("configure");
+            var output = await device.ProcessCommandAsync("configure");
             
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
@@ -22,14 +22,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ConfigureHandler_WithAlias_ShouldWork()
+        public async Task ConfigureHandler_WithAlias_ShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("config");
+            var output = await device.ProcessCommandAsync("config");
             
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
@@ -38,13 +38,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ConfigureHandler_WhenNotInManagerMode_ShouldReturnError()
+        public async Task ConfigureHandler_WhenNotInManagerMode_ShouldReturnError()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("configure");
+            var output = await device.ProcessCommandAsync("configure");
             
             // Assert
             Assert.Contains("Invalid input:", output);
@@ -52,15 +52,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void HostnameHandler_ShouldChangeHostname()
+        public async Task HostnameHandler_ShouldChangeHostname()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("hostname NewSwitch");
+            var output = await device.ProcessCommandAsync("hostname NewSwitch");
             
             // Assert
             Assert.Equal("NewSwitch", device.GetHostname());
@@ -68,13 +68,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void HostnameHandler_WhenNotInConfigMode_ShouldReturnError()
+        public async Task HostnameHandler_WhenNotInConfigMode_ShouldReturnError()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("hostname NewSwitch");
+            var output = await device.ProcessCommandAsync("hostname NewSwitch");
             
             // Assert
             Assert.Contains("Invalid input:", output);
@@ -82,15 +82,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void HostnameHandler_WithoutName_ShouldReturnError()
+        public async Task HostnameHandler_WithoutName_ShouldReturnError()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("hostname");
+            var output = await device.ProcessCommandAsync("hostname");
             
             // Assert
             Assert.Contains("Invalid input:", output);
@@ -98,34 +98,34 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ExitHandler_ShouldExitCurrentMode()
+        public async Task ExitHandler_ShouldExitCurrentMode()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface GigabitEthernet0/0");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Act & Assert - Exit interface mode
-            var output1 = device.ProcessCommand("exit");
+            var output1 = await device.ProcessCommandAsync("exit");
             Assert.Equal("config", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config)#", output1);
             
             // Exit config mode
-            var output2 = device.ProcessCommand("exit");
+            var output2 = await device.ProcessCommandAsync("exit");
             Assert.Equal("manager", device.GetCurrentMode());
             Assert.Equal("TestSwitch#", output2);
         }
 
         [Fact]
-        public void ExitHandler_FromManagerMode_ShouldStayInManagerMode()
+        public async Task ExitHandler_FromManagerMode_ShouldStayInManagerMode()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("exit");
+            var output = await device.ProcessCommandAsync("exit");
             
             // Assert
             Assert.Equal("manager", device.GetCurrentMode());
@@ -133,16 +133,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void WriteHandler_ShouldSaveConfiguration()
+        public async Task WriteHandler_ShouldSaveConfiguration()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("hostname NewSwitch");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("hostname NewSwitch");
             
             // Act
-            var output = device.ProcessCommand("write memory");
+            var output = await device.ProcessCommandAsync("write memory");
             
             // Assert
             Assert.Contains("Configuration saved successfully", output);
@@ -150,16 +150,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void WriteHandler_WithoutMemory_ShouldStillSave()
+        public async Task WriteHandler_WithoutMemory_ShouldStillSave()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("hostname NewSwitch");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("hostname NewSwitch");
             
             // Act
-            var output = device.ProcessCommand("write");
+            var output = await device.ProcessCommandAsync("write");
             
             // Assert
             Assert.Contains("Configuration saved successfully", output);
@@ -167,14 +167,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ReloadHandler_ShouldPromptForConfirmation()
+        public async Task ReloadHandler_ShouldPromptForConfirmation()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("reload");
+            var output = await device.ProcessCommandAsync("reload");
             
             // Assert
             Assert.Contains("System configuration has been modified", output);
@@ -183,14 +183,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ReloadHandler_WithAlias_ShouldWork()
+        public async Task ReloadHandler_WithAlias_ShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("reboot");
+            var output = await device.ProcessCommandAsync("reboot");
             
             // Assert
             Assert.Contains("System configuration has been modified", output);
@@ -199,13 +199,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ReloadHandler_WhenNotInManagerMode_ShouldReturnError()
+        public async Task ReloadHandler_WhenNotInManagerMode_ShouldReturnError()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("reload");
+            var output = await device.ProcessCommandAsync("reload");
             
             // Assert
             Assert.Contains("Invalid input:", output);

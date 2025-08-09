@@ -6,14 +6,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
     public class AristaConfigurationCommandHandlerTests
     {
         [Fact]
-        public void Configure_ShouldEnterConfigurationMode()
+        public async Task Configure_ShouldEnterConfigurationMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
 
             // Act
-            var result = device.ProcessCommand("configure");
+            var result = await device.ProcessCommandAsync("configure");
 
             // Assert
             Assert.NotNull(result);
@@ -22,15 +22,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void Hostname_InConfigMode_ShouldChangeHostname()
+        public async Task Hostname_InConfigMode_ShouldChangeHostname()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
 
             // Act
-            var result = device.ProcessCommand("hostname NewSwitch");
+            var result = await device.ProcessCommandAsync("hostname NewSwitch");
 
             // Assert
             Assert.NotNull(result);
@@ -38,15 +38,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void Interface_ShouldEnterInterfaceMode()
+        public async Task Interface_ShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
 
             // Act
-            var result = device.ProcessCommand("interface Ethernet1");
+            var result = await device.ProcessCommandAsync("interface Ethernet1");
 
             // Assert
             Assert.NotNull(result);
@@ -56,15 +56,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void Vlan_ShouldEnterVlanMode()
+        public async Task Vlan_ShouldEnterVlanMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
 
             // Act
-            var result = device.ProcessCommand("vlan 100");
+            var result = await device.ProcessCommandAsync("vlan 100");
 
             // Assert
             Assert.NotNull(result);
@@ -72,15 +72,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void RouterOspf_ShouldEnterOspfMode()
+        public async Task RouterOspf_ShouldEnterOspfMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
 
             // Act
-            var result = device.ProcessCommand("router ospf 1");
+            var result = await device.ProcessCommandAsync("router ospf 1");
 
             // Assert
             Assert.NotNull(result);
@@ -90,15 +90,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void RouterBgp_ShouldEnterBgpMode()
+        public async Task RouterBgp_ShouldEnterBgpMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
 
             // Act
-            var result = device.ProcessCommand("router bgp 65001");
+            var result = await device.ProcessCommandAsync("router bgp 65001");
 
             // Assert
             Assert.NotNull(result);
@@ -109,15 +109,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void RouterRip_ShouldEnterRipMode()
+        public async Task RouterRip_ShouldEnterRipMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
 
             // Act
-            var result = device.ProcessCommand("router rip");
+            var result = await device.ProcessCommandAsync("router rip");
 
             // Assert
             Assert.NotNull(result);
@@ -127,15 +127,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void IpRoute_ShouldCreateStaticRoute()
+        public async Task IpRoute_ShouldCreateStaticRoute()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
 
             // Act
-            var result = device.ProcessCommand("ip route 10.0.0.0 255.255.255.0 192.168.1.1");
+            var result = await device.ProcessCommandAsync("ip route 10.0.0.0 255.255.255.0 192.168.1.1");
 
             // Assert
             Assert.NotNull(result);
@@ -144,15 +144,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void IpAccessListStandard_ShouldEnterAclMode()
+        public async Task IpAccessListStandard_ShouldEnterAclMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
 
             // Act
-            var result = device.ProcessCommand("ip access-list standard TestACL");
+            var result = await device.ProcessCommandAsync("ip access-list standard TestACL");
 
             // Assert
             Assert.NotNull(result);
@@ -164,15 +164,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void IpAccessListExtended_ShouldEnterAclMode()
+        public async Task IpAccessListExtended_ShouldEnterAclMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
 
             // Act
-            var result = device.ProcessCommand("ip access-list extended TestACL");
+            var result = await device.ProcessCommandAsync("ip access-list extended TestACL");
 
             // Assert
             Assert.NotNull(result);
@@ -181,16 +181,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
         // Interface configuration tests
         [Fact]
-        public void IpAddress_InInterfaceMode_ShouldConfigureInterface()
+        public async Task IpAddress_InInterfaceMode_ShouldConfigureInterface()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface Ethernet1");
 
             // Act
-            var result = device.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
+            var result = await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
 
             // Assert
             Assert.NotNull(result);
@@ -202,16 +202,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void Shutdown_InInterfaceMode_ShouldShutdownInterface()
+        public async Task Shutdown_InInterfaceMode_ShouldShutdownInterface()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface Ethernet1");
 
             // Act
-            var result = device.ProcessCommand("shutdown");
+            var result = await device.ProcessCommandAsync("shutdown");
 
             // Assert
             Assert.NotNull(result);
@@ -223,17 +223,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void NoShutdown_InInterfaceMode_ShouldEnableInterface()
+        public async Task NoShutdown_InInterfaceMode_ShouldEnableInterface()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface Ethernet1");
-            device.ProcessCommand("shutdown");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface Ethernet1");
+            await device.ProcessCommandAsync("shutdown");
 
             // Act
-            var result = device.ProcessCommand("no shutdown");
+            var result = await device.ProcessCommandAsync("no shutdown");
 
             // Assert
             Assert.NotNull(result);
@@ -245,16 +245,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void Description_InInterfaceMode_ShouldSetDescription()
+        public async Task Description_InInterfaceMode_ShouldSetDescription()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface Ethernet1");
 
             // Act
-            var result = device.ProcessCommand("description LAN Interface");
+            var result = await device.ProcessCommandAsync("description LAN Interface");
 
             // Assert
             Assert.NotNull(result);
@@ -265,16 +265,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void SwitchportModeAccess_InInterfaceMode_ShouldSetAccessMode()
+        public async Task SwitchportModeAccess_InInterfaceMode_ShouldSetAccessMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface Ethernet1");
 
             // Act
-            var result = device.ProcessCommand("switchport mode access");
+            var result = await device.ProcessCommandAsync("switchport mode access");
 
             // Assert
             Assert.NotNull(result);
@@ -285,18 +285,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void SwitchportAccessVlan_InInterfaceMode_ShouldAssignVlan()
+        public async Task SwitchportAccessVlan_InInterfaceMode_ShouldAssignVlan()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("vlan 100");
-            device.ProcessCommand("exit");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("vlan 100");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("interface Ethernet1");
 
             // Act
-            var result = device.ProcessCommand("switchport access vlan 100");
+            var result = await device.ProcessCommandAsync("switchport access vlan 100");
 
             // Assert
             Assert.NotNull(result);
@@ -307,16 +307,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void SwitchportModeTrunk_InInterfaceMode_ShouldSetTrunkMode()
+        public async Task SwitchportModeTrunk_InInterfaceMode_ShouldSetTrunkMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface Ethernet1");
 
             // Act
-            var result = device.ProcessCommand("switchport mode trunk");
+            var result = await device.ProcessCommandAsync("switchport mode trunk");
 
             // Assert
             Assert.NotNull(result);
@@ -328,16 +328,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
         // VLAN configuration tests
         [Fact]
-        public void VlanName_InVlanMode_ShouldSetVlanName()
+        public async Task VlanName_InVlanMode_ShouldSetVlanName()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("vlan 100");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("vlan 100");
 
             // Act
-            var result = device.ProcessCommand("name TestVLAN");
+            var result = await device.ProcessCommandAsync("name TestVLAN");
 
             // Assert
             Assert.NotNull(result);
@@ -345,16 +345,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
         // Router configuration tests
         [Fact]
-        public void NetworkOspf_InRouterMode_ShouldAdvertiseNetwork()
+        public async Task NetworkOspf_InRouterMode_ShouldAdvertiseNetwork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router ospf 1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router ospf 1");
 
             // Act
-            var result = device.ProcessCommand("network 10.0.0.0 255.255.255.0 area 0");
+            var result = await device.ProcessCommandAsync("network 10.0.0.0 255.255.255.0 area 0");
 
             // Assert
             Assert.NotNull(result);
@@ -364,16 +364,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void RouterId_InOspfMode_ShouldSetRouterId()
+        public async Task RouterId_InOspfMode_ShouldSetRouterId()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router ospf 1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router ospf 1");
 
             // Act
-            var result = device.ProcessCommand("router-id 1.1.1.1");
+            var result = await device.ProcessCommandAsync("router-id 1.1.1.1");
 
             // Assert
             Assert.NotNull(result);
@@ -383,16 +383,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void BgpNeighborRemoteAs_InBgpMode_ShouldAddNeighbor()
+        public async Task BgpNeighborRemoteAs_InBgpMode_ShouldAddNeighbor()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router bgp 65001");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router bgp 65001");
 
             // Act
-            var result = device.ProcessCommand("neighbor 192.168.1.2 remote-as 65002");
+            var result = await device.ProcessCommandAsync("neighbor 192.168.1.2 remote-as 65002");
 
             // Assert
             Assert.NotNull(result);
@@ -402,17 +402,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void BgpNeighborDescription_InBgpMode_ShouldSetDescription()
+        public async Task BgpNeighborDescription_InBgpMode_ShouldSetDescription()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router bgp 65001");
-            device.ProcessCommand("neighbor 192.168.1.2 remote-as 65002");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router bgp 65001");
+            await device.ProcessCommandAsync("neighbor 192.168.1.2 remote-as 65002");
 
             // Act
-            var result = device.ProcessCommand("neighbor 192.168.1.2 description Peer Router");
+            var result = await device.ProcessCommandAsync("neighbor 192.168.1.2 description Peer Router");
 
             // Assert
             Assert.NotNull(result);
@@ -424,16 +424,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void RipVersion_InRipMode_ShouldSetVersion()
+        public async Task RipVersion_InRipMode_ShouldSetVersion()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router rip");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router rip");
 
             // Act
-            var result = device.ProcessCommand("version 2");
+            var result = await device.ProcessCommandAsync("version 2");
 
             // Assert
             Assert.NotNull(result);
@@ -443,16 +443,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void BgpRouterId_InBgpMode_ShouldSetRouterId()
+        public async Task BgpRouterId_InBgpMode_ShouldSetRouterId()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router bgp 65001");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router bgp 65001");
 
             // Act
-            var result = device.ProcessCommand("bgp router-id 2.2.2.2");
+            var result = await device.ProcessCommandAsync("bgp router-id 2.2.2.2");
 
             // Assert
             Assert.NotNull(result);
@@ -463,32 +463,32 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
         // ACL configuration tests
         [Fact]
-        public void Permit_InAclMode_ShouldAddAclEntry()
+        public async Task Permit_InAclMode_ShouldAddAclEntry()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("ip access-list standard TestACL");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("ip access-list standard TestACL");
 
             // Act
-            var result = device.ProcessCommand("permit any");
+            var result = await device.ProcessCommandAsync("permit any");
 
             // Assert
             Assert.NotNull(result);
         }
 
         [Fact]
-        public void Deny_InAclMode_ShouldAddAclEntry()
+        public async Task Deny_InAclMode_ShouldAddAclEntry()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("ip access-list standard TestACL");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("ip access-list standard TestACL");
 
             // Act
-            var result = device.ProcessCommand("deny 192.168.1.0 0.0.0.255");
+            var result = await device.ProcessCommandAsync("deny 192.168.1.0 0.0.0.255");
 
             // Assert
             Assert.NotNull(result);
@@ -496,17 +496,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
         // Mode transition tests
         [Fact]
-        public void Exit_FromInterfaceMode_ShouldReturnToConfigMode()
+        public async Task Exit_FromInterfaceMode_ShouldReturnToConfigMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface Ethernet1");
             Assert.Equal("interface", device.GetMode());
 
             // Act
-            var result = device.ProcessCommand("exit");
+            var result = await device.ProcessCommandAsync("exit");
 
             // Assert
             Assert.NotNull(result);
@@ -514,17 +514,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void End_FromAnyConfigMode_ShouldReturnToPrivilegedMode()
+        public async Task End_FromAnyConfigMode_ShouldReturnToPrivilegedMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface Ethernet1");
             Assert.Equal("interface", device.GetMode());
 
             // Act
-            var result = device.ProcessCommand("end");
+            var result = await device.ProcessCommandAsync("end");
 
             // Assert
             Assert.NotNull(result);
@@ -532,15 +532,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void InvalidCommand_ShouldReturnError()
+        public async Task InvalidCommand_ShouldReturnError()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
 
             // Act
-            var result = device.ProcessCommand("invalid command");
+            var result = await device.ProcessCommandAsync("invalid command");
 
             // Assert
             Assert.NotNull(result);

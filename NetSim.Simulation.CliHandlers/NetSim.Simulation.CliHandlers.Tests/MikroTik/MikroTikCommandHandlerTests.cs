@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
     public class MikroTikCommandHandlerTests
     {
         [Fact]
-        public void RouterOSHandler_ShouldHandlePathCommands()
+        public async Task RouterOSHandler_ShouldHandlePathCommands()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("/system identity print");
+            var output = await device.ProcessCommandAsync("/system identity print");
             
             // Assert
             Assert.Contains("name: TestRouter", output);
@@ -20,13 +20,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public void RouterOSHandler_ShouldHandlePingCommand()
+        public async Task RouterOSHandler_ShouldHandlePingCommand()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("ping 192.168.1.1");
+            var output = await device.ProcessCommandAsync("ping 192.168.1.1");
             
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
@@ -35,14 +35,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public void RouterOSHandler_ShouldHandleQuitCommand()
+        public async Task RouterOSHandler_ShouldHandleQuitCommand()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            device.ProcessCommand("/interface ethernet");
+            await device.ProcessCommandAsync("/interface ethernet");
             
             // Act
-            var output = device.ProcessCommand("quit");
+            var output = await device.ProcessCommandAsync("quit");
             
             // Assert
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
@@ -50,13 +50,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public void RouterOSHandler_ShouldHandleHelpCommand()
+        public async Task RouterOSHandler_ShouldHandleHelpCommand()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("?");
+            var output = await device.ProcessCommandAsync("?");
             
             // Assert
             Assert.Contains("Available commands:", output);
@@ -64,14 +64,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public void RouterOSHandler_ShouldHandleExportCommand()
+        public async Task RouterOSHandler_ShouldHandleExportCommand()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            device.ProcessCommand("/system identity set name=TestRouter2");
+            await device.ProcessCommandAsync("/system identity set name=TestRouter2");
             
             // Act
-            var output = device.ProcessCommand("export");
+            var output = await device.ProcessCommandAsync("export");
             
             // Assert
             Assert.Contains("/system identity", output);
@@ -80,13 +80,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public void RouterOSHandler_ShouldHandlePutCommand()
+        public async Task RouterOSHandler_ShouldHandlePutCommand()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("put [/system identity get name]");
+            var output = await device.ProcessCommandAsync("put [/system identity get name]");
             
             // Assert
             Assert.Contains("TestRouter", output);
@@ -94,13 +94,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public void RouterOSHandler_WithInvalidPath_ShouldReturnError()
+        public async Task RouterOSHandler_WithInvalidPath_ShouldReturnError()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("/invalid/path");
+            var output = await device.ProcessCommandAsync("/invalid/path");
             
             // Assert
             Assert.Contains("bad command name", output);
@@ -108,13 +108,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public void RouterOSHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task RouterOSHandler_WithInvalidCommand_ShouldReturnError()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("invalid command");
+            var output = await device.ProcessCommandAsync("invalid command");
             
             // Assert
             Assert.Contains("bad command name", output);
@@ -122,13 +122,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public void RouterOSHandler_WithIncompleteCommand_ShouldReturnError()
+        public async Task RouterOSHandler_WithIncompleteCommand_ShouldReturnError()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("/system identity");
+            var output = await device.ProcessCommandAsync("/system identity");
             
             // Assert
             Assert.Contains("expected end of command", output);
@@ -136,13 +136,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public void RouterOSHandler_WithInvalidParameter_ShouldReturnError()
+        public async Task RouterOSHandler_WithInvalidParameter_ShouldReturnError()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("/system identity set invalid=value");
+            var output = await device.ProcessCommandAsync("/system identity set invalid=value");
             
             // Assert
             Assert.Contains("bad parameter", output);

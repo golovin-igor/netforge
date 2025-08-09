@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
     public class ArubaCommandHandlerComprehensiveTests
     {
         [Fact]
-        public void ArubaHandler_ShowRunningConfig_ShouldDisplayConfig()
+        public async Task ArubaHandler_ShowRunningConfig_ShouldDisplayConfig()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show running-config");
+            var output = await device.ProcessCommandAsync("show running-config");
             
             // Assert
             Assert.Contains("Current configuration", output);
@@ -20,13 +20,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_ShowVersion_ShouldDisplayVersion()
+        public async Task ArubaHandler_ShowVersion_ShouldDisplayVersion()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show version");
+            var output = await device.ProcessCommandAsync("show version");
             
             // Assert
             Assert.Contains("ArubaOS", output);
@@ -34,13 +34,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_ShowInterfaces_ShouldDisplayInterfaces()
+        public async Task ArubaHandler_ShowInterfaces_ShouldDisplayInterfaces()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show interfaces");
+            var output = await device.ProcessCommandAsync("show interfaces");
             
             // Assert
             Assert.Contains("Interface", output);
@@ -48,13 +48,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_ShowIpRoute_ShouldDisplayRoutes()
+        public async Task ArubaHandler_ShowIpRoute_ShouldDisplayRoutes()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show ip route");
+            var output = await device.ProcessCommandAsync("show ip route");
             
             // Assert
             Assert.Contains("Route", output);
@@ -62,13 +62,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_ShowArp_ShouldDisplayArpTable()
+        public async Task ArubaHandler_ShowArp_ShouldDisplayArpTable()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show arp");
+            var output = await device.ProcessCommandAsync("show arp");
             
             // Assert
             Assert.Contains("ARP", output);
@@ -76,15 +76,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_InterfaceGigabitEthernet_ShouldEnterInterfaceMode()
+        public async Task ArubaHandler_InterfaceGigabitEthernet_ShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("interface GigabitEthernet0/0");
+            var output = await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
@@ -92,62 +92,62 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_IpAddress_ShouldConfigureInterface()
+        public async Task ArubaHandler_IpAddress_ShouldConfigureInterface()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface GigabitEthernet0/0");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Act
-            var output = device.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
+            var output = await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
             
             // Assert
             Assert.Equal("TestSwitch(eth-0/0)#", device.GetPrompt());
         }
 
         [Fact]
-        public void ArubaHandler_Enable_ShouldEnableInterface()
+        public async Task ArubaHandler_Enable_ShouldEnableInterface()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface GigabitEthernet0/0");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Act
-            var output = device.ProcessCommand("enable");
+            var output = await device.ProcessCommandAsync("enable");
             
             // Assert
             Assert.Equal("TestSwitch(eth-0/0)#", device.GetPrompt());
         }
 
         [Fact]
-        public void ArubaHandler_IpRoute_ShouldConfigureRoute()
+        public async Task ArubaHandler_IpRoute_ShouldConfigureRoute()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("ip route 10.0.0.0 255.0.0.0 192.168.1.1");
+            var output = await device.ProcessCommandAsync("ip route 10.0.0.0 255.0.0.0 192.168.1.1");
             
             // Assert
             Assert.Equal("TestSwitch(config)#", device.GetPrompt());
         }
 
         [Fact]
-        public void ArubaHandler_Vlan_ShouldEnterVlanMode()
+        public async Task ArubaHandler_Vlan_ShouldEnterVlanMode()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("vlan 100");
+            var output = await device.ProcessCommandAsync("vlan 100");
             
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
@@ -155,29 +155,29 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_VlanName_ShouldSetVlanName()
+        public async Task ArubaHandler_VlanName_ShouldSetVlanName()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("vlan 100");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("vlan 100");
             
             // Act
-            var output = device.ProcessCommand("name TestVLAN");
+            var output = await device.ProcessCommandAsync("name TestVLAN");
             
             // Assert
             Assert.Equal("TestSwitch(vlan-100)#", device.GetPrompt());
         }
 
         [Fact]
-        public void ArubaHandler_ShowVlan_ShouldDisplayVlans()
+        public async Task ArubaHandler_ShowVlan_ShouldDisplayVlans()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show vlan");
+            var output = await device.ProcessCommandAsync("show vlan");
             
             // Assert
             Assert.Contains("VLAN", output);
@@ -185,13 +185,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_ShowSpanningTree_ShouldDisplayStp()
+        public async Task ArubaHandler_ShowSpanningTree_ShouldDisplayStp()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show spanning-tree");
+            var output = await device.ProcessCommandAsync("show spanning-tree");
             
             // Assert
             Assert.Contains("Spanning Tree", output);
@@ -199,13 +199,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_ShowLog_ShouldDisplayLogs()
+        public async Task ArubaHandler_ShowLog_ShouldDisplayLogs()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show log");
+            var output = await device.ProcessCommandAsync("show log");
             
             // Assert
             Assert.Contains("Log", output);
@@ -213,13 +213,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_ShowTech_ShouldDisplayTechInfo()
+        public async Task ArubaHandler_ShowTech_ShouldDisplayTechInfo()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show tech");
+            var output = await device.ProcessCommandAsync("show tech");
             
             // Assert
             Assert.Contains("Technical", output);
@@ -227,13 +227,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_ShowSystem_ShouldDisplaySystemInfo()
+        public async Task ArubaHandler_ShowSystem_ShouldDisplaySystemInfo()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show system");
+            var output = await device.ProcessCommandAsync("show system");
             
             // Assert
             Assert.Contains("System", output);
@@ -241,13 +241,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_ShowPower_ShouldDisplayPowerInfo()
+        public async Task ArubaHandler_ShowPower_ShouldDisplayPowerInfo()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show power");
+            var output = await device.ProcessCommandAsync("show power");
             
             // Assert
             Assert.Contains("Power", output);
@@ -277,13 +277,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("show environment")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public void ArubaHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task ArubaHandler_AllShowCommands_ShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -304,21 +304,21 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("snmp-server community public")]
         [InlineData("time daylight-time-rule")]
         [InlineData("time timezone")]
-        public void ArubaHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task ArubaHandler_ConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             if (!command.StartsWith("enable") && !command.StartsWith("configure"))
             {
-                device.ProcessCommand("enable");
+                await device.ProcessCommandAsync("enable");
                 if (!command.StartsWith("hostname") && !command.StartsWith("snmp") && !command.StartsWith("time"))
                 {
-                    device.ProcessCommand("configure");
+                    await device.ProcessCommandAsync("configure");
                 }
             }
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -339,13 +339,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("show lldp info remote-device detail")]
         [InlineData("show modules detail")]
         [InlineData("show environment detail")]
-        public void ArubaHandler_DetailedShowCommands_ShouldWork(string command)
+        public async Task ArubaHandler_DetailedShowCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -363,14 +363,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("sntp server 192.168.1.1")]
         [InlineData("logging 192.168.1.100")]
         [InlineData("no spanning-tree")]
-        public void ArubaHandler_SystemConfigurationCommands_ShouldWork(string command)
+        public async Task ArubaHandler_SystemConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -384,16 +384,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("ip directed-broadcast")]
         [InlineData("ip igmp")]
         [InlineData("name TestVLAN")]
-        public void ArubaHandler_VlanConfigurationCommands_ShouldWork(string command)
+        public async Task ArubaHandler_VlanConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("vlan 100");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("vlan 100");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -410,16 +410,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("unknown-vlans-limit 10")]
         [InlineData("rate-limit all in kbps 1000")]
         [InlineData("rate-limit all out kbps 1000")]
-        public void ArubaHandler_InterfaceConfigurationCommands_ShouldWork(string command)
+        public async Task ArubaHandler_InterfaceConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface GigabitEthernet0/0");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -428,12 +428,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_ComplexVlanConfiguration_ShouldWork()
+        public async Task ArubaHandler_ComplexVlanConfiguration_ShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
             
             // Act & Assert for complex VLAN configuration
             var commands = new[]
@@ -453,19 +453,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void ArubaHandler_SpanningTreeConfiguration_ShouldWork()
+        public async Task ArubaHandler_SpanningTreeConfiguration_ShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
             
             // Act & Assert for spanning tree configuration
             var commands = new[]
@@ -481,7 +481,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestSwitch(config)#", device.GetPrompt());
@@ -489,11 +489,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_SnmpConfiguration_ShouldWork()
+        public async Task ArubaHandler_SnmpConfiguration_ShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act & Assert for SNMP configuration
             var commands = new[]
@@ -509,7 +509,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -517,11 +517,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_TimeConfiguration_ShouldWork()
+        public async Task ArubaHandler_TimeConfiguration_ShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act & Assert for time configuration
             var commands = new[]
@@ -536,7 +536,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -544,11 +544,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_LoggingConfiguration_ShouldWork()
+        public async Task ArubaHandler_LoggingConfiguration_ShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act & Assert for logging configuration
             var commands = new[]
@@ -563,7 +563,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -571,13 +571,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_AdvancedInterfaceConfiguration_ShouldWork()
+        public async Task ArubaHandler_AdvancedInterfaceConfiguration_ShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface GigabitEthernet0/0");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Act & Assert for advanced interface configuration
             var commands = new[]
@@ -596,7 +596,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestSwitch(eth-0/0)#", device.GetPrompt());
@@ -604,12 +604,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public void ArubaHandler_TrunkConfiguration_ShouldWork()
+        public async Task ArubaHandler_TrunkConfiguration_ShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
             
             // Act & Assert for trunk configuration
             var commands = new[]
@@ -626,19 +626,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void ArubaHandler_MacAddressTableConfiguration_ShouldWork()
+        public async Task ArubaHandler_MacAddressTableConfiguration_ShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure");
             
             // Act & Assert for MAC address table configuration
             var commands = new[]
@@ -654,7 +654,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }

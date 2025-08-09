@@ -12,11 +12,11 @@ namespace NetSim.Simulation.Tests.AliasTests
     public class HuaweiAliasTests
     {
         [Fact]
-        public void Huawei_ShowRunAlias_ShouldMatchFullCommand()
+        public async Task Huawei_ShowRunAlias_ShouldMatchFullCommand()
         {
             var device = new HuaweiDevice("R1");
-            var full = device.ProcessCommand("display current-configuration");
-            var alias = device.ProcessCommand("disp curr");
+            var full = await device.ProcessCommandAsync("display current-configuration");
+            var alias = await device.ProcessCommandAsync("disp curr");
             Assert.Equal(full, alias);
         }
 
@@ -343,7 +343,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Huawei_InterfaceAliasIntegration_ShouldWork()
+        public async Task Huawei_InterfaceAliasIntegration_ShouldWork()
         {
             var device = new HuaweiDevice("test-huawei");
             
@@ -368,7 +368,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Huawei_InterfaceAliasConfig_ShouldApplySettings()
+        public async Task Huawei_InterfaceAliasConfig_ShouldApplySettings()
         {
             var device = new HuaweiDevice("test-huawei");
             
@@ -391,7 +391,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Huawei_VlanifAlias_ShouldWork()
+        public async Task Huawei_VlanifAlias_ShouldWork()
         {
             var device = new HuaweiDevice("test-huawei");
             
@@ -413,7 +413,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Huawei_SubInterfaceAlias_ShouldWork()
+        public async Task Huawei_SubInterfaceAlias_ShouldWork()
         {
             var device = new HuaweiDevice("test-huawei");
             

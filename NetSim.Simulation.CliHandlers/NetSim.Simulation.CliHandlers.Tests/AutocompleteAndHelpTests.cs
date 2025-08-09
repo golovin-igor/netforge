@@ -16,7 +16,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void GetCompletions_AtRoot_ShouldReturnBasicCommands()
+        public async Task GetCompletions_AtRoot_ShouldReturnBasicCommands()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -28,7 +28,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void GetCompletions_ForShow_ShouldReturnSubCommands()
+        public async Task GetCompletions_ForShow_ShouldReturnSubCommands()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -40,7 +40,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void GetCommandHelp_ForShowIp_ShouldNotThrow()
+        public async Task GetCommandHelp_ForShowIp_ShouldNotThrow()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -49,7 +49,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void GetCommandHelp_InvalidCommand_ShouldNotThrow()
+        public async Task GetCommandHelp_InvalidCommand_ShouldNotThrow()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -58,7 +58,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void GetCompletions_FuzzyMatch_ShouldReturnCommand()
+        public async Task GetCompletions_FuzzyMatch_ShouldReturnCommand()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -68,7 +68,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void GetCommandHelp_NoCommand_ShouldShowGeneralHelp()
+        public async Task GetCommandHelp_NoCommand_ShouldShowGeneralHelp()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -79,10 +79,10 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void ProcessCommand_InvalidCommand_ShouldSuggestSimilar()
+        public async Task ProcessCommand_InvalidCommand_ShouldSuggestSimilar()
         {
             var device = new CiscoDevice("R1");
-            var output = device.ProcessCommand("shw version");
+            var output = await device.ProcessCommandAsync("shw version");
 
             Assert.Contains("Invalid input", output);
             Assert.Contains("show", output);

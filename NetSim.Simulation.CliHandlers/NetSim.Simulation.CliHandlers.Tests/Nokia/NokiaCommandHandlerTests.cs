@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
     public class NokiaCommandHandlerTests
     {
         [Fact]
-        public void NokiaHandler_ShowCommand_ShouldDisplayInfo()
+        public async Task NokiaHandler_ShowCommand_ShouldDisplayInfo()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show system");
+            var output = await device.ProcessCommandAsync("show system");
             
             // Assert
             Assert.Contains("System information", output);
@@ -20,13 +20,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ConfigureCommand_ShouldEnterConfigMode()
+        public async Task NokiaHandler_ConfigureCommand_ShouldEnterConfigMode()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure");
+            var output = await device.ProcessCommandAsync("configure");
             
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
@@ -35,7 +35,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_AdminCommand_ShouldEnterAdminMode()
+        public async Task NokiaHandler_AdminCommand_ShouldEnterAdminMode()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter"); // Starts in "admin" mode.
@@ -45,7 +45,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
             string expectedOutput = "MINOR: CLI Incomplete command.\n" + expectedPrompt; 
 
             // Act
-            var output = device.ProcessCommand("admin");
+            var output = await device.ProcessCommandAsync("admin");
             
             // Assert
             Assert.Equal("admin", device.GetCurrentMode());
@@ -54,13 +54,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_PingCommand_ShouldExecutePing()
+        public async Task NokiaHandler_PingCommand_ShouldExecutePing()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("ping 8.8.8.8");
+            var output = await device.ProcessCommandAsync("ping 8.8.8.8");
             
             // Assert
             Assert.Contains("ping 8.8.8.8", output);
@@ -68,13 +68,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_TracerouteCommand_ShouldExecuteTraceroute()
+        public async Task NokiaHandler_TracerouteCommand_ShouldExecuteTraceroute()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("traceroute 192.168.1.1");
+            var output = await device.ProcessCommandAsync("traceroute 192.168.1.1");
             
             // Assert
             Assert.Contains("traceroute to 192.168.1.1", output);
@@ -83,15 +83,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_ExitCommand_ShouldExitCurrentMode()
+        public async Task NokiaHandler_ExitCommand_ShouldExitCurrentMode()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface GigabitEthernet0/0");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Act
-            var output = device.ProcessCommand("exit");
+            var output = await device.ProcessCommandAsync("exit");
             
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
@@ -100,15 +100,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_BackCommand_ShouldExitCurrentMode()
+        public async Task NokiaHandler_BackCommand_ShouldExitCurrentMode()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface GigabitEthernet0/0");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Act
-            var output = device.ProcessCommand("back");
+            var output = await device.ProcessCommandAsync("back");
             
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
@@ -117,13 +117,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_InfoCommand_ShouldShowInfo()
+        public async Task NokiaHandler_InfoCommand_ShouldShowInfo()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("info");
+            var output = await device.ProcessCommandAsync("info");
             
             // Assert
             Assert.Contains("System information", output);
@@ -131,15 +131,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_CommitCommand_ShouldCommitChanges()
+        public async Task NokiaHandler_CommitCommand_ShouldCommitChanges()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("system name TestRouter2");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("system name TestRouter2");
             
             // Act
-            var output = device.ProcessCommand("commit");
+            var output = await device.ProcessCommandAsync("commit");
             
             // Assert
             Assert.Contains("Configuration committed", output);
@@ -147,15 +147,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_PwcCommand_ShouldShowPendingChanges()
+        public async Task NokiaHandler_PwcCommand_ShouldShowPendingChanges()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("system name TestRouter2");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("system name TestRouter2");
             
             // Act
-            var output = device.ProcessCommand("pwc");
+            var output = await device.ProcessCommandAsync("pwc");
             
             // Assert
             Assert.Contains("Pending changes", output);
@@ -164,7 +164,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task NokiaHandler_WithInvalidCommand_ShouldReturnError()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter"); // NokiaDevice starts in "admin" mode.
@@ -172,7 +172,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
             string expectedOutput = "Invalid command" + expectedPrompt; // Updated to match actual behavior
 
             // Act
-            var output = device.ProcessCommand("invalid command");
+            var output = await device.ProcessCommandAsync("invalid command");
             
             // Assert
             Assert.Equal(expectedOutput, output); // Check the full output
@@ -180,13 +180,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaHandler_WithIncompleteCommand_ShouldReturnError()
+        public async Task NokiaHandler_WithIncompleteCommand_ShouldReturnError()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure system");
+            var output = await device.ProcessCommandAsync("configure system");
             
             // Assert
             Assert.Contains("Incomplete command", output);
@@ -194,18 +194,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaRouter_ShouldConfigureOspf()
+        public async Task NokiaRouter_ShouldConfigureOspf()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure router");
+            await device.ProcessCommandAsync("configure router");
             
             // Act
-            var output1 = device.ProcessCommand("ospf");
-            var output2 = device.ProcessCommand("router-id 1.1.1.1");
-            var output3 = device.ProcessCommand("area 0.0.0.0");
-            var output4 = device.ProcessCommand("interface \"system\"");
-            var output5 = device.ProcessCommand("interface-type point-to-point");
+            var output1 = await device.ProcessCommandAsync("ospf");
+            var output2 = await device.ProcessCommandAsync("router-id 1.1.1.1");
+            var output3 = await device.ProcessCommandAsync("area 0.0.0.0");
+            var output4 = await device.ProcessCommandAsync("interface \"system\"");
+            var output5 = await device.ProcessCommandAsync("interface-type point-to-point");
             
             // Assert
             Assert.Equal("A:TestRouter>config>router>ospf>area>interface#", device.GetPrompt());
@@ -223,18 +223,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaRouter_ShouldConfigureBgp()
+        public async Task NokiaRouter_ShouldConfigureBgp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure router");
+            await device.ProcessCommandAsync("configure router");
             
             // Act
-            var output1 = device.ProcessCommand("autonomous-system 65001");
-            var output2 = device.ProcessCommand("bgp");
-            var output3 = device.ProcessCommand("group \"external-peers\"");
-            var output4 = device.ProcessCommand("peer-as 65002");
-            var output5 = device.ProcessCommand("neighbor 192.168.1.2");
+            var output1 = await device.ProcessCommandAsync("autonomous-system 65001");
+            var output2 = await device.ProcessCommandAsync("bgp");
+            var output3 = await device.ProcessCommandAsync("group \"external-peers\"");
+            var output4 = await device.ProcessCommandAsync("peer-as 65002");
+            var output5 = await device.ProcessCommandAsync("neighbor 192.168.1.2");
             
             // Assert
             Assert.Equal("A:TestRouter>config>router>bgp>group>neighbor#", device.GetPrompt());
@@ -253,18 +253,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaRouter_ShouldConfigureIsIs()
+        public async Task NokiaRouter_ShouldConfigureIsIs()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure router");
+            await device.ProcessCommandAsync("configure router");
             
             // Act
-            var output1 = device.ProcessCommand("isis");
-            var output2 = device.ProcessCommand("net 49.0001.0000.0000.0001.00");
-            var output3 = device.ProcessCommand("level-capability level-2");
-            var output4 = device.ProcessCommand("interface \"system\"");
-            var output5 = device.ProcessCommand("interface-type point-to-point");
+            var output1 = await device.ProcessCommandAsync("isis");
+            var output2 = await device.ProcessCommandAsync("net 49.0001.0000.0000.0001.00");
+            var output3 = await device.ProcessCommandAsync("level-capability level-2");
+            var output4 = await device.ProcessCommandAsync("interface \"system\"");
+            var output5 = await device.ProcessCommandAsync("interface-type point-to-point");
             
             // Assert
             Assert.Equal("A:TestRouter>config>router>isis>interface#", device.GetPrompt());
@@ -283,17 +283,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaRouter_ShouldConfigureRip()
+        public async Task NokiaRouter_ShouldConfigureRip()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure router");
+            await device.ProcessCommandAsync("configure router");
             
             // Act
-            var output1 = device.ProcessCommand("rip");
-            var output2 = device.ProcessCommand("group \"rip-group\"");
-            var output3 = device.ProcessCommand("neighbor 192.168.1.0/24");
-            var output4 = device.ProcessCommand("export-policy \"rip-export\"");
+            var output1 = await device.ProcessCommandAsync("rip");
+            var output2 = await device.ProcessCommandAsync("group \"rip-group\"");
+            var output3 = await device.ProcessCommandAsync("neighbor 192.168.1.0/24");
+            var output4 = await device.ProcessCommandAsync("export-policy \"rip-export\"");
             
             // Assert
             Assert.Equal("A:TestRouter>config>router>rip>group#", device.GetPrompt());
@@ -310,21 +310,21 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaRouter_ShouldConfigureRouteRedistribution()
+        public async Task NokiaRouter_ShouldConfigureRouteRedistribution()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure router");
-            device.ProcessCommand("ospf");
+            await device.ProcessCommandAsync("configure router");
+            await device.ProcessCommandAsync("ospf");
             
             // Act
-            var output1 = device.ProcessCommand("export \"bgp-to-ospf\"");
-            var output2 = device.ProcessCommand("exit");
-            var output3 = device.ProcessCommand("policy-options");
-            var output4 = device.ProcessCommand("policy-statement \"bgp-to-ospf\"");
-            var output5 = device.ProcessCommand("entry 10");
-            var output6 = device.ProcessCommand("from protocol bgp");
-            var output7 = device.ProcessCommand("action accept");
+            var output1 = await device.ProcessCommandAsync("export \"bgp-to-ospf\"");
+            var output2 = await device.ProcessCommandAsync("exit");
+            var output3 = await device.ProcessCommandAsync("policy-options");
+            var output4 = await device.ProcessCommandAsync("policy-statement \"bgp-to-ospf\"");
+            var output5 = await device.ProcessCommandAsync("entry 10");
+            var output6 = await device.ProcessCommandAsync("from protocol bgp");
+            var output7 = await device.ProcessCommandAsync("action accept");
             
             // Assert
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement>entry>action#", device.GetPrompt());
@@ -348,19 +348,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaRouter_ShouldConfigureRoutingPolicies()
+        public async Task NokiaRouter_ShouldConfigureRoutingPolicies()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure router");
-            device.ProcessCommand("policy-options");
+            await device.ProcessCommandAsync("configure router");
+            await device.ProcessCommandAsync("policy-options");
             
             // Act
-            var output1 = device.ProcessCommand("policy-statement \"filter-bgp\"");
-            var output2 = device.ProcessCommand("entry 10");
-            var output3 = device.ProcessCommand("from prefix-list \"PL-BGP\"");
-            var output4 = device.ProcessCommand("action accept");
-            var output5 = device.ProcessCommand("community add \"bgp-community\"");
+            var output1 = await device.ProcessCommandAsync("policy-statement \"filter-bgp\"");
+            var output2 = await device.ProcessCommandAsync("entry 10");
+            var output3 = await device.ProcessCommandAsync("from prefix-list \"PL-BGP\"");
+            var output4 = await device.ProcessCommandAsync("action accept");
+            var output5 = await device.ProcessCommandAsync("community add \"bgp-community\"");
             
             // Assert
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement>entry>action#", device.GetPrompt());
@@ -379,17 +379,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaRouter_ShouldConfigurePrefixLists()
+        public async Task NokiaRouter_ShouldConfigurePrefixLists()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure router");
-            device.ProcessCommand("policy-options");
+            await device.ProcessCommandAsync("configure router");
+            await device.ProcessCommandAsync("policy-options");
             
             // Act
-            var output1 = device.ProcessCommand("prefix-list \"PL-BGP\"");
-            var output2 = device.ProcessCommand("prefix 192.168.0.0/16 longer");
-            var output3 = device.ProcessCommand("prefix 10.0.0.0/8 exact");
+            var output1 = await device.ProcessCommandAsync("prefix-list \"PL-BGP\"");
+            var output2 = await device.ProcessCommandAsync("prefix 192.168.0.0/16 longer");
+            var output3 = await device.ProcessCommandAsync("prefix 10.0.0.0/8 exact");
             
             // Assert
             Assert.Equal("A:TestRouter>config>router>policy-options>prefix-list#", device.GetPrompt());
@@ -405,17 +405,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaRouter_ShouldConfigureCommunities()
+        public async Task NokiaRouter_ShouldConfigureCommunities()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            device.ProcessCommand("configure router");
-            device.ProcessCommand("policy-options");
+            await device.ProcessCommandAsync("configure router");
+            await device.ProcessCommandAsync("policy-options");
             
             // Act
-            var output1 = device.ProcessCommand("community \"bgp-community\"");
-            var output2 = device.ProcessCommand("members \"65001:100\"");
-            var output3 = device.ProcessCommand("members \"65001:200\"");
+            var output1 = await device.ProcessCommandAsync("community \"bgp-community\"");
+            var output2 = await device.ProcessCommandAsync("members \"65001:100\"");
+            var output3 = await device.ProcessCommandAsync("members \"65001:200\"");
             
             // Assert
             Assert.Equal("A:TestRouter>config>router>policy-options>community#", device.GetPrompt());
@@ -431,16 +431,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void NokiaRouter_ShouldShowRoutingProtocols()
+        public async Task NokiaRouter_ShouldShowRoutingProtocols()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
             
             // Act
-            var output1 = device.ProcessCommand("show router ospf neighbor");
-            var output2 = device.ProcessCommand("show router bgp summary");
-            var output3 = device.ProcessCommand("show router isis adjacency");
-            var output4 = device.ProcessCommand("show router rip neighbor");
+            var output1 = await device.ProcessCommandAsync("show router ospf neighbor");
+            var output2 = await device.ProcessCommandAsync("show router bgp summary");
+            var output3 = await device.ProcessCommandAsync("show router isis adjacency");
+            var output4 = await device.ProcessCommandAsync("show router rip neighbor");
             
             // Assert
             Assert.Contains("OSPF Neighbors", output1);

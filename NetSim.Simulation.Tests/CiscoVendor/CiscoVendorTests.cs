@@ -18,7 +18,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorContext_WhenCreated_ShouldHaveCorrectVendorName()
+        public async Task CiscoVendorContext_WhenCreated_ShouldHaveCorrectVendorName()
         {
             // Arrange & Act
             var context = new CiscoVendorContext(_testDevice);
@@ -28,7 +28,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorContext_WhenCreated_ShouldHaveCiscoCapabilities()
+        public async Task CiscoVendorContext_WhenCreated_ShouldHaveCiscoCapabilities()
         {
             // Arrange & Act
             var context = new CiscoVendorContext(_testDevice);
@@ -39,7 +39,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorContext_CandidateConfig_ShouldBeNull()
+        public async Task CiscoVendorContext_CandidateConfig_ShouldBeNull()
         {
             // Arrange & Act
             var context = new CiscoVendorContext(_testDevice);
@@ -49,7 +49,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorContext_IsInMode_ShouldReturnCorrectValue()
+        public async Task CiscoVendorContext_IsInMode_ShouldReturnCorrectValue()
         {
             // Arrange
             _testDevice.SetMode("config");
@@ -60,14 +60,14 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorContext_Constructor_WithNullDevice_ShouldThrowArgumentNullException()
+        public async Task CiscoVendorContext_Constructor_WithNullDevice_ShouldThrowArgumentNullException()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => new CiscoVendorContext(null));
         }
 
         [Fact]
-        public void CiscoVendorContext_GetModePrompt_ShouldReturnCiscoStylePrompt()
+        public async Task CiscoVendorContext_GetModePrompt_ShouldReturnCiscoStylePrompt()
         {
             // Arrange
             _testDevice.SetMode("privileged");
@@ -81,7 +81,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorContext_GetCommandHelp_ShouldReturnCiscoHelp()
+        public async Task CiscoVendorContext_GetCommandHelp_ShouldReturnCiscoHelp()
         {
             // Act
             var help = _ciscoContext.GetCommandHelp("show");
@@ -92,7 +92,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorContext_PreprocessCommand_ShouldHandleCiscoAbbreviations()
+        public async Task CiscoVendorContext_PreprocessCommand_ShouldHandleCiscoAbbreviations()
         {
             // Act
             var processed = _ciscoContext.PreprocessCommand("sh ver");
@@ -115,14 +115,14 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_Constructor_WithNullDevice_ShouldThrowArgumentNullException()
+        public async Task CiscoVendorCapabilities_Constructor_WithNullDevice_ShouldThrowArgumentNullException()
         {
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => new CiscoVendorCapabilities(null));
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_GetRunningConfiguration_ShouldReturnConfiguration()
+        public async Task CiscoVendorCapabilities_GetRunningConfiguration_ShouldReturnConfiguration()
         {
             // Act
             var config = _ciscoCapabilities.GetRunningConfiguration();
@@ -133,7 +133,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_GetStartupConfiguration_ShouldReturnConfiguration()
+        public async Task CiscoVendorCapabilities_GetStartupConfiguration_ShouldReturnConfiguration()
         {
             // Act
             var config = _ciscoCapabilities.GetStartupConfiguration();
@@ -144,7 +144,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_SetDeviceMode_ShouldUpdateDeviceMode()
+        public async Task CiscoVendorCapabilities_SetDeviceMode_ShouldUpdateDeviceMode()
         {
             // Act
             _ciscoCapabilities.SetDeviceMode("config");
@@ -154,7 +154,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_GetCurrentMode_ShouldReturnDeviceMode()
+        public async Task CiscoVendorCapabilities_GetCurrentMode_ShouldReturnDeviceMode()
         {
             // Arrange
             _testDevice.SetMode("privileged");
@@ -167,7 +167,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_GetModeContext_ShouldReturnCiscoContext()
+        public async Task CiscoVendorCapabilities_GetModeContext_ShouldReturnCiscoContext()
         {
             // Arrange
             _testDevice.SetMode("interface");
@@ -183,7 +183,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_IsInMode_ShouldReturnCorrectValue()
+        public async Task CiscoVendorCapabilities_IsInMode_ShouldReturnCorrectValue()
         {
             // Arrange
             _testDevice.SetMode("config");
@@ -194,7 +194,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_ValidateCommand_ShouldValidateCiscoCommands()
+        public async Task CiscoVendorCapabilities_ValidateCommand_ShouldValidateCiscoCommands()
         {
             // Act & Assert
             Assert.True(_ciscoCapabilities.ValidateCommand("show version", "user"));
@@ -204,7 +204,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_GetVendorErrorMessages_ShouldReturnCiscoErrorMessages()
+        public async Task CiscoVendorCapabilities_GetVendorErrorMessages_ShouldReturnCiscoErrorMessages()
         {
             // Act
             var errors = _ciscoCapabilities.GetVendorErrorMessages();
@@ -218,7 +218,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_FormatInterfaceName_ShouldExpandCiscoAbbreviations()
+        public async Task CiscoVendorCapabilities_FormatInterfaceName_ShouldExpandCiscoAbbreviations()
         {
             // Act & Assert
             Assert.Equal("GigabitEthernet0/0", _ciscoCapabilities.FormatInterfaceName("gi0/0"));
@@ -228,11 +228,11 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_GetCommandHistory_ShouldReturnHistoryFromDevice()
+        public async Task CiscoVendorCapabilities_GetCommandHistory_ShouldReturnHistoryFromDevice()
         {
             // Arrange
-            _testDevice.ProcessCommand("show version");
-            _testDevice.ProcessCommand("show interfaces");
+            await _testDevice.ProcessCommandAsync("show version");
+            await _testDevice.ProcessCommandAsync("show interfaces");
 
             // Act
             var history = _ciscoCapabilities.GetCommandHistory();
@@ -252,7 +252,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         [InlineData("ip", "interface", true)]
         [InlineData("configure", "user", false)]
         [InlineData("interface", "user", false)]
-        public void CiscoVendorCapabilities_ValidateCommand_ShouldValidateByMode(string command, string mode, bool expected)
+        public async Task CiscoVendorCapabilities_ValidateCommand_ShouldValidateByMode(string command, string mode, bool expected)
         {
             // Act
             var result = _ciscoCapabilities.ValidateCommand(command, mode);
@@ -262,7 +262,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendorCapabilities_SetModeContext_ShouldUpdateDeviceContext()
+        public async Task CiscoVendorCapabilities_SetModeContext_ShouldUpdateDeviceContext()
         {
             // Act
             _ciscoCapabilities.SetModeContext("interface", "FastEthernet0/0");
@@ -286,7 +286,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoHandlerRegistry_VendorName_ShouldBeCisco()
+        public async Task CiscoHandlerRegistry_VendorName_ShouldBeCisco()
         {
             // Act
             var vendorName = _registry.VendorName;
@@ -296,7 +296,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoHandlerRegistry_Priority_ShouldBeHighPriority()
+        public async Task CiscoHandlerRegistry_Priority_ShouldBeHighPriority()
         {
             // Act
             var priority = _registry.Priority;
@@ -306,7 +306,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoHandlerRegistry_CanHandle_ShouldRecognizeCiscoVariants()
+        public async Task CiscoHandlerRegistry_CanHandle_ShouldRecognizeCiscoVariants()
         {
             // Act & Assert
             Assert.True(_registry.CanHandle("cisco"));
@@ -321,7 +321,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoHandlerRegistry_GetSupportedDeviceTypes_ShouldReturnCiscoDeviceTypes()
+        public async Task CiscoHandlerRegistry_GetSupportedDeviceTypes_ShouldReturnCiscoDeviceTypes()
         {
             // Act
             var deviceTypes = _registry.GetSupportedDeviceTypes();
@@ -337,7 +337,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoHandlerRegistry_CreateVendorContext_WithCiscoDevice_ShouldReturnCiscoContext()
+        public async Task CiscoHandlerRegistry_CreateVendorContext_WithCiscoDevice_ShouldReturnCiscoContext()
         {
             // Act
             var context = _registry.CreateVendorContext(_testDevice);
@@ -349,28 +349,28 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoHandlerRegistry_CreateVendorContext_WithNullDevice_ShouldThrowArgumentException()
+        public async Task CiscoHandlerRegistry_CreateVendorContext_WithNullDevice_ShouldThrowArgumentException()
         {
             // Act & Assert
             Assert.Throws<ArgumentException>(() => _registry.CreateVendorContext(null));
         }
 
         [Fact]
-        public void CiscoHandlerRegistry_Initialize_ShouldNotThrow()
+        public async Task CiscoHandlerRegistry_Initialize_ShouldNotThrow()
         {
             // Act & Assert - Should not throw
             _registry.Initialize();
         }
 
         [Fact]
-        public void CiscoHandlerRegistry_Cleanup_ShouldNotThrow()
+        public async Task CiscoHandlerRegistry_Cleanup_ShouldNotThrow()
         {
             // Act & Assert - Should not throw
             _registry.Cleanup();
         }
 
         [Fact]
-        public void CiscoHandlerRegistry_ToString_ShouldReturnDescriptiveString()
+        public async Task CiscoHandlerRegistry_ToString_ShouldReturnDescriptiveString()
         {
             // Act
             var description = _registry.ToString();
@@ -393,7 +393,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendor_EndToEndTest_ShouldWorkCorrectly()
+        public async Task CiscoVendor_EndToEndTest_ShouldWorkCorrectly()
         {
             // Arrange
             _registry.Initialize();
@@ -411,7 +411,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendor_ModeTransitions_ShouldWorkCorrectly()
+        public async Task CiscoVendor_ModeTransitions_ShouldWorkCorrectly()
         {
             // Arrange
             var context = _registry.CreateVendorContext(_testDevice);
@@ -430,7 +430,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendor_ConfigurationAccess_ShouldWorkCorrectly()
+        public async Task CiscoVendor_ConfigurationAccess_ShouldWorkCorrectly()
         {
             // Arrange
             var context = _registry.CreateVendorContext(_testDevice);
@@ -446,7 +446,7 @@ namespace NetSim.Simulation.Tests.CiscoVendor
         }
 
         [Fact]
-        public void CiscoVendor_ErrorHandling_ShouldProvideCorrectMessages()
+        public async Task CiscoVendor_ErrorHandling_ShouldProvideCorrectMessages()
         {
             // Arrange
             var context = _registry.CreateVendorContext(_testDevice);

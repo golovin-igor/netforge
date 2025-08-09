@@ -7,17 +7,17 @@ namespace NetSim.Simulation.Tests.Protocols
     public class VendorAgnosticRoutingProtocolTests
     {
         [Fact]
-        public void CiscoDevice_OspfConfiguration_ShouldUseVendorAgnosticHandlers()
+        public async System.Threading.Tasks.Task CiscoDevice_OspfConfiguration_ShouldUseVendorAgnosticHandlers()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
 
             // Act
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            var result1 = device.ProcessCommand("router ospf 1");
-            var result2 = device.ProcessCommand("router-id 1.1.1.1");
-            var result3 = device.ProcessCommand("network 192.168.1.0 0.0.0.255 area 0");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            var result1 = await device.ProcessCommandAsync("router ospf 1");
+            var result2 = await device.ProcessCommandAsync("router-id 1.1.1.1");
+            var result3 = await device.ProcessCommandAsync("network 192.168.1.0 0.0.0.255 area 0");
 
             // Assert
             Assert.NotNull(result1);
@@ -35,18 +35,18 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void CiscoDevice_BgpConfiguration_ShouldUseVendorAgnosticHandlers()
+        public async System.Threading.Tasks.Task CiscoDevice_BgpConfiguration_ShouldUseVendorAgnosticHandlers()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
 
             // Act
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            var result1 = device.ProcessCommand("router bgp 65001");
-            var result2 = device.ProcessCommand("neighbor 192.168.1.2 remote-as 65002");
-            var result3 = device.ProcessCommand("address-family ipv4 unicast");
-            var result4 = device.ProcessCommand("neighbor 192.168.1.2 activate");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            var result1 = await device.ProcessCommandAsync("router bgp 65001");
+            var result2 = await device.ProcessCommandAsync("neighbor 192.168.1.2 remote-as 65002");
+            var result3 = await device.ProcessCommandAsync("address-family ipv4 unicast");
+            var result4 = await device.ProcessCommandAsync("neighbor 192.168.1.2 activate");
 
             // Assert
             Assert.NotNull(result1);
@@ -63,17 +63,17 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void CiscoDevice_EigrpConfiguration_ShouldUseVendorAgnosticHandlers()
+        public async System.Threading.Tasks.Task CiscoDevice_EigrpConfiguration_ShouldUseVendorAgnosticHandlers()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
 
             // Act
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            var result1 = device.ProcessCommand("router eigrp 100");
-            var result2 = device.ProcessCommand("network 192.168.1.0 0.0.0.255");
-            var result3 = device.ProcessCommand("no auto-summary");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            var result1 = await device.ProcessCommandAsync("router eigrp 100");
+            var result2 = await device.ProcessCommandAsync("network 192.168.1.0 0.0.0.255");
+            var result3 = await device.ProcessCommandAsync("no auto-summary");
 
             // Assert
             Assert.NotNull(result1);
@@ -90,18 +90,18 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void CiscoDevice_RipConfiguration_ShouldUseVendorAgnosticHandlers()
+        public async System.Threading.Tasks.Task CiscoDevice_RipConfiguration_ShouldUseVendorAgnosticHandlers()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
 
             // Act
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            var result1 = device.ProcessCommand("router rip");
-            var result2 = device.ProcessCommand("version 2");
-            var result3 = device.ProcessCommand("network 192.168.1.0");
-            var result4 = device.ProcessCommand("no auto-summary");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            var result1 = await device.ProcessCommandAsync("router rip");
+            var result2 = await device.ProcessCommandAsync("version 2");
+            var result3 = await device.ProcessCommandAsync("network 192.168.1.0");
+            var result4 = await device.ProcessCommandAsync("no auto-summary");
 
             // Assert
             Assert.NotNull(result1);
@@ -119,17 +119,17 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void CiscoDevice_ShowRoutingProtocols_ShouldUseVendorAgnosticHandlers()
+        public async System.Threading.Tasks.Task CiscoDevice_ShowRoutingProtocols_ShouldUseVendorAgnosticHandlers()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
 
             // Act
-            var ospfResult = device.ProcessCommand("show ip ospf");
-            var bgpResult = device.ProcessCommand("show ip bgp summary");
-            var eigrpResult = device.ProcessCommand("show ip eigrp neighbors");
-            var ripResult = device.ProcessCommand("show ip rip database");
+            var ospfResult = await device.ProcessCommandAsync("show ip ospf");
+            var bgpResult = await device.ProcessCommandAsync("show ip bgp summary");
+            var eigrpResult = await device.ProcessCommandAsync("show ip eigrp neighbors");
+            var ripResult = await device.ProcessCommandAsync("show ip rip database");
 
             // Assert
             Assert.NotNull(ospfResult);
@@ -144,18 +144,18 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void CiscoDevice_RouteRedistribution_ShouldUseVendorAgnosticHandlers()
+        public async System.Threading.Tasks.Task CiscoDevice_RouteRedistribution_ShouldUseVendorAgnosticHandlers()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("router ospf 1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("router ospf 1");
 
             // Act
-            var result1 = device.ProcessCommand("redistribute bgp 65001 subnets");
-            var result2 = device.ProcessCommand("redistribute eigrp 100 subnets");
-            var result3 = device.ProcessCommand("redistribute rip subnets");
+            var result1 = await device.ProcessCommandAsync("redistribute bgp 65001 subnets");
+            var result2 = await device.ProcessCommandAsync("redistribute eigrp 100 subnets");
+            var result3 = await device.ProcessCommandAsync("redistribute rip subnets");
 
             // Assert
             Assert.NotNull(result1);
@@ -172,17 +172,17 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void CiscoDevice_RouteMaps_ShouldUseVendorAgnosticHandlers()
+        public async System.Threading.Tasks.Task CiscoDevice_RouteMaps_ShouldUseVendorAgnosticHandlers()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
 
             // Act
-            var result1 = device.ProcessCommand("route-map RM-BGP permit 10");
-            var result2 = device.ProcessCommand("match ip address prefix-list PL-BGP");
-            var result3 = device.ProcessCommand("set metric 100");
+            var result1 = await device.ProcessCommandAsync("route-map RM-BGP permit 10");
+            var result2 = await device.ProcessCommandAsync("match ip address prefix-list PL-BGP");
+            var result3 = await device.ProcessCommandAsync("set metric 100");
 
             // Assert
             Assert.NotNull(result1);
@@ -199,16 +199,16 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void CiscoDevice_PrefixLists_ShouldUseVendorAgnosticHandlers()
+        public async System.Threading.Tasks.Task CiscoDevice_PrefixLists_ShouldUseVendorAgnosticHandlers()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
 
             // Act
-            var result1 = device.ProcessCommand("ip prefix-list PL-BGP seq 10 permit 192.168.0.0/16 le 24");
-            var result2 = device.ProcessCommand("ip prefix-list PL-BGP seq 20 deny 0.0.0.0/0");
+            var result1 = await device.ProcessCommandAsync("ip prefix-list PL-BGP seq 10 permit 192.168.0.0/16 le 24");
+            var result2 = await device.ProcessCommandAsync("ip prefix-list PL-BGP seq 20 deny 0.0.0.0/0");
 
             // Assert
             Assert.NotNull(result1);
@@ -224,17 +224,17 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void CiscoDevice_BgpRoutePolicies_ShouldUseVendorAgnosticHandlers()
+        public async System.Threading.Tasks.Task CiscoDevice_BgpRoutePolicies_ShouldUseVendorAgnosticHandlers()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("router bgp 65001");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("router bgp 65001");
 
             // Act
-            var result1 = device.ProcessCommand("neighbor 192.168.1.2 route-map RM-BGP in");
-            var result2 = device.ProcessCommand("neighbor 192.168.1.2 route-map RM-BGP out");
+            var result1 = await device.ProcessCommandAsync("neighbor 192.168.1.2 route-map RM-BGP in");
+            var result2 = await device.ProcessCommandAsync("neighbor 192.168.1.2 route-map RM-BGP out");
 
             // Assert
             Assert.NotNull(result1);
@@ -250,17 +250,17 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void CiscoDevice_BgpCommunities_ShouldUseVendorAgnosticHandlers()
+        public async System.Threading.Tasks.Task CiscoDevice_BgpCommunities_ShouldUseVendorAgnosticHandlers()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("router bgp 65001");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("router bgp 65001");
 
             // Act
-            var result1 = device.ProcessCommand("neighbor 192.168.1.2 send-community");
-            var result2 = device.ProcessCommand("neighbor 192.168.1.2 send-community extended");
+            var result1 = await device.ProcessCommandAsync("neighbor 192.168.1.2 send-community");
+            var result2 = await device.ProcessCommandAsync("neighbor 192.168.1.2 send-community extended");
 
             // Assert
             Assert.NotNull(result1);
@@ -276,19 +276,19 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void RoutingProtocols_ShouldWorkAcrossMultipleVendors()
+        public async System.Threading.Tasks.Task RoutingProtocols_ShouldWorkAcrossMultipleVendors()
         {
             // Arrange
             var ciscoDevice = new CiscoDevice("CiscoRouter");
             var juniperDevice = new JuniperDevice("JuniperRouter");
 
             // Act - Configure OSPF on both devices
-            ciscoDevice.ProcessCommand("enable");
-            ciscoDevice.ProcessCommand("configure terminal");
-            var ciscoOspfResult = ciscoDevice.ProcessCommand("router ospf 1");
+            await ciscoDevice.ProcessCommandAsync("enable");
+            await ciscoDevice.ProcessCommandAsync("configure terminal");
+            var ciscoOspfResult = await ciscoDevice.ProcessCommandAsync("router ospf 1");
 
-            juniperDevice.ProcessCommand("configure");
-            var juniperOspfResult = juniperDevice.ProcessCommand("set protocols ospf area 0.0.0.0 interface ge-0/0/0");
+            await juniperDevice.ProcessCommandAsync("configure");
+            var juniperOspfResult = await juniperDevice.ProcessCommandAsync("set protocols ospf area 0.0.0.0 interface ge-0/0/0");
 
             // Assert
             Assert.NotNull(ciscoOspfResult);
@@ -300,15 +300,15 @@ namespace NetSim.Simulation.Tests.Protocols
         }
 
         [Fact]
-        public void RoutingProtocol_ErrorHandling_ShouldBeConsistent()
+        public async System.Threading.Tasks.Task RoutingProtocol_ErrorHandling_ShouldBeConsistent()
         {
             // Arrange
             var device = new CiscoDevice("CiscoRouter");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
 
             // Act - Try routing commands without being in config mode
-            var ospfResult = device.ProcessCommand("router ospf 1");
-            var bgpResult = device.ProcessCommand("router bgp 65001");
+            var ospfResult = await device.ProcessCommandAsync("router ospf 1");
+            var bgpResult = await device.ProcessCommandAsync("router bgp 65001");
 
             // Assert
             Assert.NotNull(ospfResult);

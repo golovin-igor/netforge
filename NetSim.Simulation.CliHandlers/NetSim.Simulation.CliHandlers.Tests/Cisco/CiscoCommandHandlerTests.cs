@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
     public class CiscoCommandHandlerTests
     {
         [Fact]
-        public void EnableHandler_ShouldEnterPrivilegedMode()
+        public async Task EnableHandler_ShouldEnterPrivilegedMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("enable");
+            var output = await device.ProcessCommandAsync("enable");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -21,13 +21,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void EnableHandler_WithAlias_ShouldWork()
+        public async Task EnableHandler_WithAlias_ShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("en");
+            var output = await device.ProcessCommandAsync("en");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -36,14 +36,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void EnableHandler_WhenAlreadyPrivileged_ShouldReturnSuccess()
+        public async Task EnableHandler_WhenAlreadyPrivileged_ShouldReturnSuccess()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable"); // Enter privileged mode first
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode first
             
             // Act
-            var output = device.ProcessCommand("enable");
+            var output = await device.ProcessCommandAsync("enable");
             
             // Assert
             Assert.Contains("Already in privileged mode", output);
@@ -51,14 +51,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void DisableHandler_ShouldExitPrivilegedMode()
+        public async Task DisableHandler_ShouldExitPrivilegedMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable"); // Enter privileged mode first
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode first
             
             // Act
-            var output = device.ProcessCommand("disable");
+            var output = await device.ProcessCommandAsync("disable");
             
             // Assert
             Assert.Equal("user", device.GetCurrentMode());
@@ -67,13 +67,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void DisableHandler_WhenNotPrivileged_ShouldReturnError()
+        public async Task DisableHandler_WhenNotPrivileged_ShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("disable");
+            var output = await device.ProcessCommandAsync("disable");
             
             // Assert
             Assert.Contains("Not in privileged mode", output);
@@ -81,14 +81,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void ClearCdpHandler_ShouldClearCdpInfo()
+        public async Task ClearCdpHandler_ShouldClearCdpInfo()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("clear cdp");
+            var output = await device.ProcessCommandAsync("clear cdp");
             
             // Assert
             Assert.Contains("CDP information cleared", output);
@@ -96,14 +96,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void ClearCdpTableHandler_ShouldClearCdpTable()
+        public async Task ClearCdpTableHandler_ShouldClearCdpTable()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("clear cdp table");
+            var output = await device.ProcessCommandAsync("clear cdp table");
             
             // Assert
             Assert.Contains("CDP table cleared", output);
@@ -111,14 +111,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void ClearCdpCountersHandler_ShouldClearCdpCounters()
+        public async Task ClearCdpCountersHandler_ShouldClearCdpCounters()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("clear cdp counters");
+            var output = await device.ProcessCommandAsync("clear cdp counters");
             
             // Assert
             Assert.Contains("CDP counters cleared", output);
@@ -126,13 +126,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void ClearCdpHandler_WhenNotPrivileged_ShouldReturnError()
+        public async Task ClearCdpHandler_WhenNotPrivileged_ShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("clear cdp");
+            var output = await device.ProcessCommandAsync("clear cdp");
             
             // Assert
             Assert.Contains("Invalid mode", output);
@@ -140,14 +140,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void ClearCdpHandler_WithInvalidSubcommand_ShouldReturnError()
+        public async Task ClearCdpHandler_WithInvalidSubcommand_ShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("clear cdp invalid");
+            var output = await device.ProcessCommandAsync("clear cdp invalid");
             
             // Assert
             Assert.Contains("CDP information cleared", output);
@@ -155,17 +155,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void CiscoRouter_ShouldConfigureOspf()
+        public async Task CiscoRouter_ShouldConfigureOspf()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output1 = device.ProcessCommand("router ospf 1");
-            var output2 = device.ProcessCommand("router-id 1.1.1.1");
-            var output3 = device.ProcessCommand("network 192.168.1.0 0.0.0.255 area 0");
+            var output1 = await device.ProcessCommandAsync("router ospf 1");
+            var output2 = await device.ProcessCommandAsync("router-id 1.1.1.1");
+            var output3 = await device.ProcessCommandAsync("network 192.168.1.0 0.0.0.255 area 0");
             
             // Assert
             Assert.Equal("TestRouter(config-router)#", device.GetPrompt());
@@ -180,18 +180,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void CiscoRouter_ShouldConfigureBgp()
+        public async Task CiscoRouter_ShouldConfigureBgp()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output1 = device.ProcessCommand("router bgp 65001");
-            var output2 = device.ProcessCommand("neighbor 192.168.1.2 remote-as 65002");
-            var output3 = device.ProcessCommand("address-family ipv4 unicast");
-            var output4 = device.ProcessCommand("neighbor 192.168.1.2 activate");
+            var output1 = await device.ProcessCommandAsync("router bgp 65001");
+            var output2 = await device.ProcessCommandAsync("neighbor 192.168.1.2 remote-as 65002");
+            var output3 = await device.ProcessCommandAsync("address-family ipv4 unicast");
+            var output4 = await device.ProcessCommandAsync("neighbor 192.168.1.2 activate");
             
             // Assert
             Assert.Equal("TestRouter(config-router-af)#", device.GetPrompt());
@@ -208,17 +208,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void CiscoRouter_ShouldConfigureEigrp()
+        public async Task CiscoRouter_ShouldConfigureEigrp()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output1 = device.ProcessCommand("router eigrp 100");
-            var output2 = device.ProcessCommand("network 192.168.1.0 0.0.0.255");
-            var output3 = device.ProcessCommand("no auto-summary");
+            var output1 = await device.ProcessCommandAsync("router eigrp 100");
+            var output2 = await device.ProcessCommandAsync("network 192.168.1.0 0.0.0.255");
+            var output3 = await device.ProcessCommandAsync("no auto-summary");
             
             // Assert
             Assert.Equal("TestRouter(config-router)#", device.GetPrompt());
@@ -234,18 +234,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void CiscoRouter_ShouldConfigureRip()
+        public async Task CiscoRouter_ShouldConfigureRip()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output1 = device.ProcessCommand("router rip");
-            var output2 = device.ProcessCommand("version 2");
-            var output3 = device.ProcessCommand("network 192.168.1.0");
-            var output4 = device.ProcessCommand("no auto-summary");
+            var output1 = await device.ProcessCommandAsync("router rip");
+            var output2 = await device.ProcessCommandAsync("version 2");
+            var output3 = await device.ProcessCommandAsync("network 192.168.1.0");
+            var output4 = await device.ProcessCommandAsync("no auto-summary");
             
             // Assert
             Assert.Equal("TestRouter(config-router)#", device.GetPrompt());
@@ -262,17 +262,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void CiscoRouter_ShouldShowRoutingProtocols()
+        public async Task CiscoRouter_ShouldShowRoutingProtocols()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output1 = device.ProcessCommand("show ip ospf");
-            var output2 = device.ProcessCommand("show ip bgp summary");
-            var output3 = device.ProcessCommand("show ip eigrp neighbors");
-            var output4 = device.ProcessCommand("show ip rip database");
+            var output1 = await device.ProcessCommandAsync("show ip ospf");
+            var output2 = await device.ProcessCommandAsync("show ip bgp summary");
+            var output3 = await device.ProcessCommandAsync("show ip eigrp neighbors");
+            var output4 = await device.ProcessCommandAsync("show ip rip database");
             
             // Assert
             Assert.Contains("OSPF Process", output1);
@@ -283,18 +283,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void CiscoRouter_ShouldConfigureRouteRedistribution()
+        public async Task CiscoRouter_ShouldConfigureRouteRedistribution()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("router ospf 1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("router ospf 1");
             
             // Act
-            var output1 = device.ProcessCommand("redistribute bgp 65001 subnets");
-            var output2 = device.ProcessCommand("redistribute eigrp 100 subnets");
-            var output3 = device.ProcessCommand("redistribute rip subnets");
+            var output1 = await device.ProcessCommandAsync("redistribute bgp 65001 subnets");
+            var output2 = await device.ProcessCommandAsync("redistribute eigrp 100 subnets");
+            var output3 = await device.ProcessCommandAsync("redistribute rip subnets");
             
             // Assert
             Assert.Equal("TestRouter(config-router)#", device.GetPrompt());
@@ -310,17 +310,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void CiscoRouter_ShouldConfigureRouteMaps()
+        public async Task CiscoRouter_ShouldConfigureRouteMaps()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output1 = device.ProcessCommand("route-map RM-BGP permit 10");
-            var output2 = device.ProcessCommand("match ip address prefix-list PL-BGP");
-            var output3 = device.ProcessCommand("set metric 100");
+            var output1 = await device.ProcessCommandAsync("route-map RM-BGP permit 10");
+            var output2 = await device.ProcessCommandAsync("match ip address prefix-list PL-BGP");
+            var output3 = await device.ProcessCommandAsync("set metric 100");
             
             // Assert
             Assert.Equal("TestRouter(config-route-map)#", device.GetPrompt());
@@ -336,16 +336,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void CiscoRouter_ShouldConfigurePrefixLists()
+        public async Task CiscoRouter_ShouldConfigurePrefixLists()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output1 = device.ProcessCommand("ip prefix-list PL-BGP seq 10 permit 192.168.0.0/16 le 24");
-            var output2 = device.ProcessCommand("ip prefix-list PL-BGP seq 20 deny 0.0.0.0/0");
+            var output1 = await device.ProcessCommandAsync("ip prefix-list PL-BGP seq 10 permit 192.168.0.0/16 le 24");
+            var output2 = await device.ProcessCommandAsync("ip prefix-list PL-BGP seq 20 deny 0.0.0.0/0");
             
             // Assert
             Assert.Equal("TestRouter(config)#", device.GetPrompt());
@@ -360,17 +360,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void CiscoRouter_ShouldConfigureRoutePolicies()
+        public async Task CiscoRouter_ShouldConfigureRoutePolicies()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("router bgp 65001");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("router bgp 65001");
             
             // Act
-            var output1 = device.ProcessCommand("neighbor 192.168.1.2 route-map RM-BGP in");
-            var output2 = device.ProcessCommand("neighbor 192.168.1.2 route-map RM-BGP out");
+            var output1 = await device.ProcessCommandAsync("neighbor 192.168.1.2 route-map RM-BGP in");
+            var output2 = await device.ProcessCommandAsync("neighbor 192.168.1.2 route-map RM-BGP out");
             
             // Assert
             Assert.Equal("TestRouter(config-router)#", device.GetPrompt());
@@ -385,17 +385,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public void CiscoRouter_ShouldConfigureBgpCommunities()
+        public async Task CiscoRouter_ShouldConfigureBgpCommunities()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("router bgp 65001");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("router bgp 65001");
             
             // Act
-            var output1 = device.ProcessCommand("neighbor 192.168.1.2 send-community");
-            var output2 = device.ProcessCommand("neighbor 192.168.1.2 send-community extended");
+            var output1 = await device.ProcessCommandAsync("neighbor 192.168.1.2 send-community");
+            var output2 = await device.ProcessCommandAsync("neighbor 192.168.1.2 send-community extended");
             
             // Assert
             Assert.Equal("TestRouter(config-router)#", device.GetPrompt());

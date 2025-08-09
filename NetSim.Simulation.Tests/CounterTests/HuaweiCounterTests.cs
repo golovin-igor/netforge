@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Tests.CounterTests
     public class HuaweiCounterTests
     {
         [Fact]
-        public void Huawei_PingCounters_ShouldIncrementCorrectly()
+        public async Task Huawei_PingCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new HuaweiDevice("R1");
@@ -17,7 +17,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "GigabitEthernet0/0/0", "R2", "GigabitEthernet0/0/0").Wait();
 
-            ConfigureBasicInterfaces(r1, r2);
+            await ConfigureBasicInterfaces(r1, r2);
 
             var intfR1Before = r1.GetInterface("GigabitEthernet0/0/0");
             var intfR2Before = r2.GetInterface("GigabitEthernet0/0/0");
@@ -33,7 +33,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void Huawei_PingWithInterfaceShutdown_ShouldNotIncrementCounters()
+        public async Task Huawei_PingWithInterfaceShutdown_ShouldNotIncrementCounters()
         {
             var network = new Network();
             var r1 = new HuaweiDevice("R1");
@@ -43,18 +43,18 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "GigabitEthernet0/0/0", "R2", "GigabitEthernet0/0/0").Wait();
 
-            ConfigureBasicInterfaces(r1, r2);
+            await ConfigureBasicInterfaces(r1, r2);
 
             SimulatePingWithCounters(r1, r2, "GigabitEthernet0/0/0", "GigabitEthernet0/0/0");
             var initialCounters = r2.GetInterface("GigabitEthernet0/0/0").RxPackets;
 
-            r2.ProcessCommand("system-view");
-            r2.ProcessCommand("interface GigabitEthernet0/0/0");
-            r2.ProcessCommand("shutdown");
-            r2.ProcessCommand("quit");
-            r2.ProcessCommand("quit");
+            await r2.ProcessCommandAsync("system-view");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r2.ProcessCommandAsync("shutdown");
+            await r2.ProcessCommandAsync("quit");
+            await r2.ProcessCommandAsync("quit");
 
-            var pingResult = r1.ProcessCommand("ping 192.168.1.2");
+            var pingResult = await r1.ProcessCommandAsync("ping 192.168.1.2");
             var finalCounters = r2.GetInterface("GigabitEthernet0/0/0").RxPackets;
             
             Assert.Equal(initialCounters, finalCounters);
@@ -62,7 +62,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void Huawei_OspfHelloCounters_ShouldIncrementCorrectly()
+        public async Task Huawei_OspfHelloCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new HuaweiDevice("R1");
@@ -72,7 +72,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "GigabitEthernet0/0/0", "R2", "GigabitEthernet0/0/0").Wait();
 
-            ConfigureOspfDevices(r1, r2);
+            await ConfigureOspfDevices(r1, r2);
 
             var intfR1Before = r1.GetInterface("GigabitEthernet0/0/0");
             var initialTxBytes = intfR1Before.TxBytes;
@@ -82,7 +82,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             var intfR1After = r1.GetInterface("GigabitEthernet0/0/0");
             Assert.Equal(initialTxBytes + 120, intfR1After.TxBytes);
 
-            var ospfNeighbors = r1.ProcessCommand("display ospf peer");
+            var ospfNeighbors = await r1.ProcessCommandAsync("display ospf peer");
             Assert.Contains("192.168.1.2", ospfNeighbors);
         }
 
@@ -102,46 +102,46 @@ namespace NetSim.Simulation.Tests.CounterTests
             }
         }
 
-        private void ConfigureBasicInterfaces(HuaweiDevice r1, HuaweiDevice r2)
+        private async Task ConfigureBasicInterfaces(HuaweiDevice r1, HuaweiDevice r2)
         {
-            r1.ProcessCommand("system-view");
-            r1.ProcessCommand("interface GigabitEthernet0/0/0");
-            r1.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("undo shutdown");
-            r1.ProcessCommand("quit");
-            r1.ProcessCommand("quit");
+            await r1.ProcessCommandAsync("system-view");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("undo shutdown");
+            await r1.ProcessCommandAsync("quit");
+            await r1.ProcessCommandAsync("quit");
 
-            r2.ProcessCommand("system-view");
-            r2.ProcessCommand("interface GigabitEthernet0/0/0");
-            r2.ProcessCommand("ip address 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("undo shutdown");
-            r2.ProcessCommand("quit");
-            r2.ProcessCommand("quit");
+            await r2.ProcessCommandAsync("system-view");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("undo shutdown");
+            await r2.ProcessCommandAsync("quit");
+            await r2.ProcessCommandAsync("quit");
         }
 
-        private void ConfigureOspfDevices(HuaweiDevice r1, HuaweiDevice r2)
+        private async Task ConfigureOspfDevices(HuaweiDevice r1, HuaweiDevice r2)
         {
-            r1.ProcessCommand("system-view");
-            r1.ProcessCommand("interface GigabitEthernet0/0/0");
-            r1.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("undo shutdown");
-            r1.ProcessCommand("quit");
-            r1.ProcessCommand("ospf 1");
-            r1.ProcessCommand("area 0");
-            r1.ProcessCommand("network 192.168.1.0 0.0.0.255");
-            r1.ProcessCommand("quit");
-            r1.ProcessCommand("quit");
+            await r1.ProcessCommandAsync("system-view");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("undo shutdown");
+            await r1.ProcessCommandAsync("quit");
+            await r1.ProcessCommandAsync("ospf 1");
+            await r1.ProcessCommandAsync("area 0");
+            await r1.ProcessCommandAsync("network 192.168.1.0 0.0.0.255");
+            await r1.ProcessCommandAsync("quit");
+            await r1.ProcessCommandAsync("quit");
 
-            r2.ProcessCommand("system-view");
-            r2.ProcessCommand("interface GigabitEthernet0/0/0");
-            r2.ProcessCommand("ip address 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("undo shutdown");
-            r2.ProcessCommand("quit");
-            r2.ProcessCommand("ospf 1");
-            r2.ProcessCommand("area 0");
-            r2.ProcessCommand("network 192.168.1.0 0.0.0.255");
-            r2.ProcessCommand("quit");
-            r2.ProcessCommand("quit");
+            await r2.ProcessCommandAsync("system-view");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("undo shutdown");
+            await r2.ProcessCommandAsync("quit");
+            await r2.ProcessCommandAsync("ospf 1");
+            await r2.ProcessCommandAsync("area 0");
+            await r2.ProcessCommandAsync("network 192.168.1.0 0.0.0.255");
+            await r2.ProcessCommandAsync("quit");
+            await r2.ProcessCommandAsync("quit");
         }
 
         private void SimulateOspfHelloExchange(HuaweiDevice r1, HuaweiDevice r2, 

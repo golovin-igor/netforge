@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
     public class JuniperCommandHandlerTests
     {
         [Fact]
-        public void JuniperDevice_ShouldStartInOperationalMode()
+        public async Task JuniperDevice_ShouldStartInOperationalMode()
         {
             // Arrange & Act
             var device = new JuniperDevice("TestRouter");
@@ -17,13 +17,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void ConfigureHandler_ShouldEnterConfigMode()
+        public async Task ConfigureHandler_ShouldEnterConfigMode()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Assert
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -31,17 +31,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void ConfigureHandler_ShouldClearCandidateConfig()
+        public async Task ConfigureHandler_ShouldClearCandidateConfig()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("set system host-name TestRouter2");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("set system host-name TestRouter2");
+            await device.ProcessCommandAsync("exit");
             
             // Act
-            device.ProcessCommand("configure");
-            var output = device.ProcessCommand("show | compare");
+            await device.ProcessCommandAsync("configure");
+            var output = await device.ProcessCommandAsync("show | compare");
             
             // Assert
             Assert.Contains("No changes", output);
@@ -49,13 +49,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void ShowHandler_ShouldDisplaySystemInfo()
+        public async Task ShowHandler_ShouldDisplaySystemInfo()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show system");
+            var output = await device.ProcessCommandAsync("show system");
             
             // Assert
             Assert.Contains("System information", output);
@@ -63,13 +63,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void ShowHandler_ShouldDisplayInterfaces()
+        public async Task ShowHandler_ShouldDisplayInterfaces()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show interfaces");
+            var output = await device.ProcessCommandAsync("show interfaces");
             
             // Assert
             Assert.Contains("Interface information", output);
@@ -77,13 +77,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void ShowHandler_ShouldDisplayVersion()
+        public async Task ShowHandler_ShouldDisplayVersion()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show version");
+            var output = await device.ProcessCommandAsync("show version");
             
             // Assert
             Assert.Contains("Hostname: TestRouter", output);
@@ -93,15 +93,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void ShowHandler_ShouldDisplayConfiguration()
+        public async Task ShowHandler_ShouldDisplayConfiguration()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("set system host-name TestRouter2");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("set system host-name TestRouter2");
             
             // Act
-            var output = device.ProcessCommand("show configuration");
+            var output = await device.ProcessCommandAsync("show configuration");
             
             // Assert
             Assert.Contains("system {", output);
@@ -110,15 +110,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void ShowHandler_ShouldDisplayCandidateConfig()
+        public async Task ShowHandler_ShouldDisplayCandidateConfig()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("set system host-name TestRouter2");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("set system host-name TestRouter2");
             
             // Act
-            var output = device.ProcessCommand("show | compare");
+            var output = await device.ProcessCommandAsync("show | compare");
             
             // Assert
             Assert.Contains("+ host-name TestRouter2;", output);
@@ -126,13 +126,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void ShowHandler_WhenNotInConfigMode_ShouldReturnError()
+        public async Task ShowHandler_WhenNotInConfigMode_ShouldReturnError()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show configuration");
+            var output = await device.ProcessCommandAsync("show configuration");
             
             // Assert
             Assert.Contains("Invalid mode", output);
@@ -140,13 +140,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void ShowHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task ShowHandler_WithInvalidCommand_ShouldReturnError()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show invalid");
+            var output = await device.ProcessCommandAsync("show invalid");
             
             // Assert
             Assert.Contains("syntax error", output);
@@ -154,13 +154,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void ShowHandler_WithIncompleteCommand_ShouldReturnError()
+        public async Task ShowHandler_WithIncompleteCommand_ShouldReturnError()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show");
+            var output = await device.ProcessCommandAsync("show");
             
             // Assert
             Assert.Contains("syntax error", output);
@@ -168,14 +168,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void SetCommand_ShouldAddToCandidateConfig()
+        public async Task SetCommand_ShouldAddToCandidateConfig()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var result = device.ProcessCommand("set system host-name MyRouter");
+            var result = await device.ProcessCommandAsync("set system host-name MyRouter");
             
             // Assert
             Assert.Equal("TestRouter# ", result);
@@ -184,15 +184,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void SetInterfaceCommand_ShouldConfigureInterface()
+        public async Task SetInterfaceCommand_ShouldConfigureInterface()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var result1 = device.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
-            var result2 = device.ProcessCommand("set interfaces ge-0/0/0 description \"LAN Interface\"");
+            var result1 = await device.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
+            var result2 = await device.ProcessCommandAsync("set interfaces ge-0/0/0 description \"LAN Interface\"");
             
             // Assert
             Assert.Equal("TestRouter# ", result1);
@@ -204,14 +204,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void SetVlanCommand_ShouldConfigureVlan()
+        public async Task SetVlanCommand_ShouldConfigureVlan()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var result = device.ProcessCommand("set vlans management vlan-id 100");
+            var result = await device.ProcessCommandAsync("set vlans management vlan-id 100");
             
             // Assert
             Assert.Equal("TestRouter# ", result);
@@ -221,16 +221,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void CommitCommand_ShouldApplyConfiguration()
+        public async Task CommitCommand_ShouldApplyConfiguration()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("set system host-name MyRouter");
-            device.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("set system host-name MyRouter");
+            await device.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
             
             // Act
-            var result = device.ProcessCommand("commit");
+            var result = await device.ProcessCommandAsync("commit");
             
             // Assert
             Assert.Contains("commit complete", result);
@@ -248,16 +248,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void RollbackCommand_ShouldClearCandidateConfig()
+        public async Task RollbackCommand_ShouldClearCandidateConfig()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("set system host-name MyRouter");
-            device.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("set system host-name MyRouter");
+            await device.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
             
             // Act
-            var result = device.ProcessCommand("rollback");
+            var result = await device.ProcessCommandAsync("rollback");
             
             // Assert
             Assert.Contains("rollback complete", result);
@@ -268,16 +268,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void ShowConfiguration_ShouldDisplayCandidateConfig()
+        public async Task ShowConfiguration_ShouldDisplayCandidateConfig()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("set system host-name MyRouter");
-            device.ProcessCommand("set vlans management vlan-id 100");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("set system host-name MyRouter");
+            await device.ProcessCommandAsync("set vlans management vlan-id 100");
             
             // Act
-            var result = device.ProcessCommand("show configuration");
+            var result = await device.ProcessCommandAsync("show configuration");
             
             // Assert
             Assert.Contains("set system host-name MyRouter", result);
@@ -286,14 +286,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void ExitCommand_ShouldLeaveConfigurationMode()
+        public async Task ExitCommand_ShouldLeaveConfigurationMode()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var result = device.ProcessCommand("exit");
+            var result = await device.ProcessCommandAsync("exit");
             
             // Assert
             Assert.Contains("Exiting configuration mode", result);
@@ -302,13 +302,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void ShowVersion_ShouldDisplayJunosVersion()
+        public async Task ShowVersion_ShouldDisplayJunosVersion()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            var result = device.ProcessCommand("show version");
+            var result = await device.ProcessCommandAsync("show version");
             
             // Assert
             Assert.Contains("Hostname: TestRouter", result);
@@ -318,18 +318,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void ShowInterfaces_ShouldDisplayInterfaceInfo()
+        public async Task ShowInterfaces_ShouldDisplayInterfaceInfo()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
-            device.ProcessCommand("set interfaces ge-0/0/0 description \"Test Interface\"");
-            device.ProcessCommand("commit");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
+            await device.ProcessCommandAsync("set interfaces ge-0/0/0 description \"Test Interface\"");
+            await device.ProcessCommandAsync("commit");
+            await device.ProcessCommandAsync("exit");
             
             // Act
-            var result = device.ProcessCommand("show interfaces ge-0/0/0");
+            var result = await device.ProcessCommandAsync("show interfaces ge-0/0/0");
             
             // Assert
             Assert.Contains("Physical interface: ge-0/0/0", result);
@@ -338,13 +338,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void PingCommand_ShouldExecutePing()
+        public async Task PingCommand_ShouldExecutePing()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            var result = device.ProcessCommand("ping 8.8.8.8");
+            var result = await device.ProcessCommandAsync("ping 8.8.8.8");
             
             // Assert
             Assert.Contains("ICMP Echos to 8.8.8.8", result);
@@ -352,16 +352,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public void CommandHistory_ShouldWorkWithJuniper()
+        public async Task CommandHistory_ShouldWorkWithJuniper()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            device.ProcessCommand("show version");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("set system host-name MyRouter");
-            var result = device.ProcessCommand("history");
+            await device.ProcessCommandAsync("show version");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("set system host-name MyRouter");
+            var result = await device.ProcessCommandAsync("history");
             
             // Assert
             Assert.Contains("show version", result);
@@ -370,16 +370,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void JuniperRouter_ShouldConfigureOspf()
+        public async Task JuniperRouter_ShouldConfigureOspf()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output1 = device.ProcessCommand("set protocols ospf area 0.0.0.0 interface ge-0/0/0.0");
-            var output2 = device.ProcessCommand("set protocols ospf area 0.0.0.0 interface lo0.0 passive");
-            var output3 = device.ProcessCommand("set routing-options router-id 1.1.1.1");
+            var output1 = await device.ProcessCommandAsync("set protocols ospf area 0.0.0.0 interface ge-0/0/0.0");
+            var output2 = await device.ProcessCommandAsync("set protocols ospf area 0.0.0.0 interface lo0.0 passive");
+            var output3 = await device.ProcessCommandAsync("set routing-options router-id 1.1.1.1");
             
             // Assert
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -395,17 +395,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void JuniperRouter_ShouldConfigureBgp()
+        public async Task JuniperRouter_ShouldConfigureBgp()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output1 = device.ProcessCommand("set routing-options autonomous-system 65001");
-            var output2 = device.ProcessCommand("set protocols bgp group external-peers type external");
-            var output3 = device.ProcessCommand("set protocols bgp group external-peers peer-as 65002");
-            var output4 = device.ProcessCommand("set protocols bgp group external-peers neighbor 192.168.1.2");
+            var output1 = await device.ProcessCommandAsync("set routing-options autonomous-system 65001");
+            var output2 = await device.ProcessCommandAsync("set protocols bgp group external-peers type external");
+            var output3 = await device.ProcessCommandAsync("set protocols bgp group external-peers peer-as 65002");
+            var output4 = await device.ProcessCommandAsync("set protocols bgp group external-peers neighbor 192.168.1.2");
             
             // Assert
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -424,16 +424,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void JuniperRouter_ShouldConfigureIsIs()
+        public async Task JuniperRouter_ShouldConfigureIsIs()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output1 = device.ProcessCommand("set protocols isis interface ge-0/0/0.0");
-            var output2 = device.ProcessCommand("set protocols isis interface lo0.0 passive");
-            var output3 = device.ProcessCommand("set protocols isis level 1 disable");
+            var output1 = await device.ProcessCommandAsync("set protocols isis interface ge-0/0/0.0");
+            var output2 = await device.ProcessCommandAsync("set protocols isis interface lo0.0 passive");
+            var output3 = await device.ProcessCommandAsync("set protocols isis level 1 disable");
             
             // Assert
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -449,16 +449,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void JuniperRouter_ShouldConfigureRip()
+        public async Task JuniperRouter_ShouldConfigureRip()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output1 = device.ProcessCommand("set protocols rip group rip-group neighbor ge-0/0/0.0");
-            var output2 = device.ProcessCommand("set protocols rip group rip-group export rip-export");
-            var output3 = device.ProcessCommand("set protocols rip authentication-type md5");
+            var output1 = await device.ProcessCommandAsync("set protocols rip group rip-group neighbor ge-0/0/0.0");
+            var output2 = await device.ProcessCommandAsync("set protocols rip group rip-group export rip-export");
+            var output3 = await device.ProcessCommandAsync("set protocols rip authentication-type md5");
             
             // Assert
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -474,16 +474,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void JuniperRouter_ShouldConfigureRouteRedistribution()
+        public async Task JuniperRouter_ShouldConfigureRouteRedistribution()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output1 = device.ProcessCommand("set protocols ospf export bgp-to-ospf");
-            var output2 = device.ProcessCommand("set policy-options policy-statement bgp-to-ospf from protocol bgp");
-            var output3 = device.ProcessCommand("set policy-options policy-statement bgp-to-ospf then accept");
+            var output1 = await device.ProcessCommandAsync("set protocols ospf export bgp-to-ospf");
+            var output2 = await device.ProcessCommandAsync("set policy-options policy-statement bgp-to-ospf from protocol bgp");
+            var output3 = await device.ProcessCommandAsync("set policy-options policy-statement bgp-to-ospf then accept");
             
             // Assert
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -503,16 +503,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void JuniperRouter_ShouldConfigureRoutingPolicies()
+        public async Task JuniperRouter_ShouldConfigureRoutingPolicies()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output1 = device.ProcessCommand("set policy-options policy-statement filter-bgp from route-filter 192.168.0.0/16 orlonger");
-            var output2 = device.ProcessCommand("set policy-options policy-statement filter-bgp then community add bgp-community");
-            var output3 = device.ProcessCommand("set policy-options policy-statement filter-bgp then accept");
+            var output1 = await device.ProcessCommandAsync("set policy-options policy-statement filter-bgp from route-filter 192.168.0.0/16 orlonger");
+            var output2 = await device.ProcessCommandAsync("set policy-options policy-statement filter-bgp then community add bgp-community");
+            var output3 = await device.ProcessCommandAsync("set policy-options policy-statement filter-bgp then accept");
             
             // Assert
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -529,15 +529,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void JuniperRouter_ShouldConfigureCommunities()
+        public async Task JuniperRouter_ShouldConfigureCommunities()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output1 = device.ProcessCommand("set policy-options community bgp-community members 65001:100");
-            var output2 = device.ProcessCommand("set policy-options community bgp-community members 65001:200");
+            var output1 = await device.ProcessCommandAsync("set policy-options community bgp-community members 65001:100");
+            var output2 = await device.ProcessCommandAsync("set policy-options community bgp-community members 65001:200");
             
             // Assert
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -552,15 +552,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void JuniperRouter_ShouldConfigureAsPathGroups()
+        public async Task JuniperRouter_ShouldConfigureAsPathGroups()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output1 = device.ProcessCommand("set policy-options as-path-group external-as path1 .*65002.*");
-            var output2 = device.ProcessCommand("set policy-options as-path-group external-as path2 .*65003.*");
+            var output1 = await device.ProcessCommandAsync("set policy-options as-path-group external-as path1 .*65002.*");
+            var output2 = await device.ProcessCommandAsync("set policy-options as-path-group external-as path2 .*65003.*");
             
             // Assert
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -575,15 +575,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void JuniperRouter_ShouldConfigurePrefixLists()
+        public async Task JuniperRouter_ShouldConfigurePrefixLists()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output1 = device.ProcessCommand("set policy-options prefix-list filter-bgp 192.168.0.0/16");
-            var output2 = device.ProcessCommand("set policy-options prefix-list filter-bgp 10.0.0.0/8");
+            var output1 = await device.ProcessCommandAsync("set policy-options prefix-list filter-bgp 192.168.0.0/16");
+            var output2 = await device.ProcessCommandAsync("set policy-options prefix-list filter-bgp 10.0.0.0/8");
             
             // Assert
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -598,16 +598,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public void JuniperRouter_ShouldShowRoutingProtocols()
+        public async Task JuniperRouter_ShouldShowRoutingProtocols()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
             
             // Act
-            var output1 = device.ProcessCommand("show ospf neighbor");
-            var output2 = device.ProcessCommand("show bgp summary");
-            var output3 = device.ProcessCommand("show isis adjacency");
-            var output4 = device.ProcessCommand("show rip neighbor");
+            var output1 = await device.ProcessCommandAsync("show ospf neighbor");
+            var output2 = await device.ProcessCommandAsync("show bgp summary");
+            var output3 = await device.ProcessCommandAsync("show isis adjacency");
+            var output4 = await device.ProcessCommandAsync("show rip neighbor");
             
             // Assert
             Assert.Contains("OSPF Neighbor", output1);

@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
     public class AristaCommandHandlerTests
     {
         [Fact]
-        public void ShowVersionHandler_ShouldReturnVersionInfo()
+        public async Task ShowVersionHandler_ShouldReturnVersionInfo()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show version");
+            var output = await device.ProcessCommandAsync("show version");
             
             // Assert
             Assert.Contains("Arista DCS-7050TX-64", output);
@@ -21,13 +21,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public void PingHandler_ShouldSimulatePing()
+        public async Task PingHandler_ShouldSimulatePing()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("ping 192.168.1.1");
+            var output = await device.ProcessCommandAsync("ping 192.168.1.1");
             
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
@@ -37,7 +37,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public void EnableHandler_ShouldChangeModeCorrectly()
+        public async Task EnableHandler_ShouldChangeModeCorrectly()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -46,7 +46,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
             Assert.Equal("TestSwitch>", device.GetPrompt());
             Assert.Equal("user", device.GetMode());
             
-            var output = device.ProcessCommand("enable");
+            var output = await device.ProcessCommandAsync("enable");
             
             // Check that mode changed
             Assert.Equal("privileged", device.GetMode());
@@ -55,14 +55,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public void ConfigureHandler_ShouldEnterConfigMode()
+        public async Task ConfigureHandler_ShouldEnterConfigMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("configure");
+            var output = await device.ProcessCommandAsync("configure");
             
             // Assert
             Assert.Equal("config", device.GetMode());
@@ -71,13 +71,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public void HelpCommand_ShouldShowAvailableCommands()
+        public async Task HelpCommand_ShouldShowAvailableCommands()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("?");
+            var output = await device.ProcessCommandAsync("?");
             
             // Assert
             Assert.Contains("Available commands:", output);
@@ -87,13 +87,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public void ShowHelp_ShouldShowSubcommands()
+        public async Task ShowHelp_ShouldShowSubcommands()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show ?");
+            var output = await device.ProcessCommandAsync("show ?");
             
             // Assert
             Assert.Contains("running-config", output);
@@ -105,54 +105,54 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public void InvalidCommand_ShouldFallbackToLegacy()
+        public async Task InvalidCommand_ShouldFallbackToLegacy()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("invalid command");
+            var output = await device.ProcessCommandAsync("invalid command");
             
             // Assert
             Assert.Contains("Invalid input", output);
         }
         
         [Fact]
-        public void WriteMemory_ShouldSaveConfig()
+        public async Task WriteMemory_ShouldSaveConfig()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("write memory");
+            var output = await device.ProcessCommandAsync("write memory");
             
             // Assert
             Assert.Contains("Copy completed successfully", output);
         }
         
         [Fact]
-        public void CopyRunningStartup_ShouldSaveConfig()
+        public async Task CopyRunningStartup_ShouldSaveConfig()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("copy running-config startup-config");
+            var output = await device.ProcessCommandAsync("copy running-config startup-config");
             
             // Assert
             Assert.Contains("Copy completed successfully", output);
         }
         
         [Fact]
-        public void ShowLldpNeighbors_ShouldWork()
+        public async Task ShowLldpNeighbors_ShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show lldp neighbors");
+            var output = await device.ProcessCommandAsync("show lldp neighbors");
             
             // Assert
             // Should not error, even if no neighbors

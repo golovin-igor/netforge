@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
     public class DellCommandHandlerComprehensiveTests
     {
         [Fact]
-        public void DellHandler_ConfigureTerminal_ShouldEnterConfigMode()
+        public async Task DellHandler_ConfigureTerminal_ShouldEnterConfigMode()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("configure terminal");
+            var output = await device.ProcessCommandAsync("configure terminal");
             
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
@@ -20,27 +20,27 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_Hostname_ShouldSetHostname()
+        public async Task DellHandler_Hostname_ShouldSetHostname()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("hostname NewSwitch");
+            var output = await device.ProcessCommandAsync("hostname NewSwitch");
             
             // Assert
             Assert.Equal("NewSwitch(config)#", device.GetPrompt());
         }
 
         [Fact]
-        public void DellHandler_ShowRunningConfig_ShouldDisplayConfig()
+        public async Task DellHandler_ShowRunningConfig_ShouldDisplayConfig()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show running-configuration");
+            var output = await device.ProcessCommandAsync("show running-configuration");
             
             // Assert
             Assert.Contains("Current configuration", output);
@@ -48,13 +48,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_ShowIpInterface_ShouldDisplayInterfaces()
+        public async Task DellHandler_ShowIpInterface_ShouldDisplayInterfaces()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show ip interface brief");
+            var output = await device.ProcessCommandAsync("show ip interface brief");
             
             // Assert
             Assert.Contains("Interface", output);
@@ -62,13 +62,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_ShowIpRoute_ShouldDisplayRoutes()
+        public async Task DellHandler_ShowIpRoute_ShouldDisplayRoutes()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show ip route");
+            var output = await device.ProcessCommandAsync("show ip route");
             
             // Assert
             Assert.Contains("Route", output);
@@ -76,13 +76,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_ShowArp_ShouldDisplayArpTable()
+        public async Task DellHandler_ShowArp_ShouldDisplayArpTable()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show arp");
+            var output = await device.ProcessCommandAsync("show arp");
             
             // Assert
             Assert.Contains("ARP", output);
@@ -90,14 +90,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_InterfaceEthernet_ShouldEnterInterfaceMode()
+        public async Task DellHandler_InterfaceEthernet_ShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("interface ethernet 1/1/1");
+            var output = await device.ProcessCommandAsync("interface ethernet 1/1/1");
             
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
@@ -105,58 +105,58 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_IpAddress_ShouldConfigureInterface()
+        public async Task DellHandler_IpAddress_ShouldConfigureInterface()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface ethernet 1/1/1");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface ethernet 1/1/1");
             
             // Act
-            var output = device.ProcessCommand("ip address 192.168.1.1/24");
+            var output = await device.ProcessCommandAsync("ip address 192.168.1.1/24");
             
             // Assert
             Assert.Equal("TestSwitch(config-if-eth1/1/1)#", device.GetPrompt());
         }
 
         [Fact]
-        public void DellHandler_NoShutdown_ShouldEnableInterface()
+        public async Task DellHandler_NoShutdown_ShouldEnableInterface()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface ethernet 1/1/1");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface ethernet 1/1/1");
             
             // Act
-            var output = device.ProcessCommand("no shutdown");
+            var output = await device.ProcessCommandAsync("no shutdown");
             
             // Assert
             Assert.Equal("TestSwitch(config-if-eth1/1/1)#", device.GetPrompt());
         }
 
         [Fact]
-        public void DellHandler_IpRoute_ShouldConfigureRoute()
+        public async Task DellHandler_IpRoute_ShouldConfigureRoute()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("ip route 10.0.0.0/8 192.168.1.1");
+            var output = await device.ProcessCommandAsync("ip route 10.0.0.0/8 192.168.1.1");
             
             // Assert
             Assert.Equal("TestSwitch(config)#", device.GetPrompt());
         }
 
         [Fact]
-        public void DellHandler_RouterOspf_ShouldEnterOspfMode()
+        public async Task DellHandler_RouterOspf_ShouldEnterOspfMode()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("router ospf 1");
+            var output = await device.ProcessCommandAsync("router ospf 1");
             
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
@@ -164,14 +164,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_RouterBgp_ShouldEnterBgpMode()
+        public async Task DellHandler_RouterBgp_ShouldEnterBgpMode()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("router bgp 65001");
+            var output = await device.ProcessCommandAsync("router bgp 65001");
             
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
@@ -179,14 +179,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_Vlan_ShouldEnterVlanMode()
+        public async Task DellHandler_Vlan_ShouldEnterVlanMode()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("vlan 100");
+            var output = await device.ProcessCommandAsync("vlan 100");
             
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
@@ -194,13 +194,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_ShowVersion_ShouldDisplayVersion()
+        public async Task DellHandler_ShowVersion_ShouldDisplayVersion()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show version");
+            var output = await device.ProcessCommandAsync("show version");
             
             // Assert
             Assert.Contains("Version", output);
@@ -208,13 +208,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_ShowVlan_ShouldDisplayVlans()
+        public async Task DellHandler_ShowVlan_ShouldDisplayVlans()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show vlan");
+            var output = await device.ProcessCommandAsync("show vlan");
             
             // Assert
             Assert.Contains("VLAN", output);
@@ -222,13 +222,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_ShowSpanningTree_ShouldDisplayStp()
+        public async Task DellHandler_ShowSpanningTree_ShouldDisplayStp()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show spanning-tree mst");
+            var output = await device.ProcessCommandAsync("show spanning-tree mst");
             
             // Assert
             Assert.Contains("Spanning Tree", output);
@@ -236,14 +236,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_IpVrf_ShouldConfigureVrf()
+        public async Task DellHandler_IpVrf_ShouldConfigureVrf()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("ip vrf TestVrf");
+            var output = await device.ProcessCommandAsync("ip vrf TestVrf");
             
             // Assert
             Assert.Equal("vrf", device.GetCurrentMode());
@@ -251,13 +251,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_ShowEvpn_ShouldDisplayEvpnInfo()
+        public async Task DellHandler_ShowEvpn_ShouldDisplayEvpnInfo()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show evpn");
+            var output = await device.ProcessCommandAsync("show evpn");
             
             // Assert
             Assert.Contains("EVPN", output);
@@ -265,14 +265,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_VltDomain_ShouldConfigureVlt()
+        public async Task DellHandler_VltDomain_ShouldConfigureVlt()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("vlt domain 1");
+            var output = await device.ProcessCommandAsync("vlt domain 1");
             
             // Assert
             Assert.Equal("vlt", device.GetCurrentMode());
@@ -297,14 +297,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("show port-channel summary")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public void DellHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task DellHandler_AllShowCommands_ShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("enable"); // Enter privileged mode
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -325,17 +325,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("ip vrf TestVrf")]
         [InlineData("vlt domain 1")]
         [InlineData("evpn enable")]
-        public void DellHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task DellHandler_ConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
             if (!command.StartsWith("configure terminal"))
             {
-                device.ProcessCommand("configure terminal");
+                await device.ProcessCommandAsync("configure terminal");
             }
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -359,14 +359,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("show ip multicast")]
         [InlineData("show ip dhcp server")]
         [InlineData("show port-security")]
-        public void DellHandler_DetailedShowCommands_ShouldWork(string command)
+        public async Task DellHandler_DetailedShowCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("enable"); // Enter privileged mode
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -382,17 +382,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("show ip multicast vrf TestVrf")]
         [InlineData("show ip dhcp server vrf TestVrf")]
         [InlineData("show interface ethernet 1/1/1 vrf TestVrf")]
-        public void DellHandler_VrfCommands_ShouldWork(string command)
+        public async Task DellHandler_VrfCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("enable"); // Enter privileged mode
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("ip vrf TestVrf");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("ip vrf TestVrf");
+            await device.ProcessCommandAsync("exit");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -410,14 +410,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("show ip route bgp summary")]
         [InlineData("show ip route static summary")]
         [InlineData("show ip route evpn summary")]
-        public void DellHandler_RoutingProtocolCommands_ShouldWork(string command)
+        public async Task DellHandler_RoutingProtocolCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("enable"); // Enter privileged mode
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -435,14 +435,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("ip source-guard enable")]
         [InlineData("ip dhcp snooping")]
         [InlineData("aaa authentication login local")]
-        public void DellHandler_AdvancedConfigurationCommands_ShouldWork(string command)
+        public async Task DellHandler_AdvancedConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -450,11 +450,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public void DellHandler_EvpnVniConfiguration_ShouldWork()
+        public async Task DellHandler_EvpnVniConfiguration_ShouldWork()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act & Assert for EVPN VNI configuration
             var commands = new[]
@@ -468,18 +468,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void DellHandler_VltConfiguration_ShouldWork()
+        public async Task DellHandler_VltConfiguration_ShouldWork()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act & Assert for VLT configuration
             var commands = new[]
@@ -491,18 +491,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void DellHandler_ComplexVrfConfiguration_ShouldWork()
+        public async Task DellHandler_ComplexVrfConfiguration_ShouldWork()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act & Assert for complex VRF configuration
             var commands = new[]
@@ -517,19 +517,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void DellHandler_InterfaceAdvancedConfiguration_ShouldWork()
+        public async Task DellHandler_InterfaceAdvancedConfiguration_ShouldWork()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface ethernet 1/1/1");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface ethernet 1/1/1");
             
             // Act & Assert for advanced interface configuration
             var commands = new[]
@@ -545,7 +545,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }

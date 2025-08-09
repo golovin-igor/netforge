@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
     public class BroadcomCommandHandlerTests
     {
         [Fact]
-        public void BroadcomHandler_ConfigureTerminal_ShouldEnterConfigMode()
+        public async Task BroadcomHandler_ConfigureTerminal_ShouldEnterConfigMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("configure terminal");
+            var output = await device.ProcessCommandAsync("configure terminal");
             
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
@@ -20,27 +20,27 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_Hostname_ShouldSetHostname()
+        public async Task BroadcomHandler_Hostname_ShouldSetHostname()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("hostname NewSwitch");
+            var output = await device.ProcessCommandAsync("hostname NewSwitch");
             
             // Assert
             Assert.Equal("NewSwitch(config)#", device.GetPrompt());
         }
 
         [Fact]
-        public void BroadcomHandler_ShowRunningConfig_ShouldDisplayConfig()
+        public async Task BroadcomHandler_ShowRunningConfig_ShouldDisplayConfig()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show running-config");
+            var output = await device.ProcessCommandAsync("show running-config");
             
             // Assert
             Assert.Contains("Current configuration", output);
@@ -48,13 +48,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_ShowIpInterface_ShouldDisplayInterfaces()
+        public async Task BroadcomHandler_ShowIpInterface_ShouldDisplayInterfaces()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show ip interface brief");
+            var output = await device.ProcessCommandAsync("show ip interface brief");
             
             // Assert
             Assert.Contains("Interface", output);
@@ -62,13 +62,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_ShowIpRoute_ShouldDisplayRoutes()
+        public async Task BroadcomHandler_ShowIpRoute_ShouldDisplayRoutes()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show ip route");
+            var output = await device.ProcessCommandAsync("show ip route");
             
             // Assert
             Assert.Contains("Route", output);
@@ -76,13 +76,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_ShowArp_ShouldDisplayArpTable()
+        public async Task BroadcomHandler_ShowArp_ShouldDisplayArpTable()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show arp");
+            var output = await device.ProcessCommandAsync("show arp");
             
             // Assert
             Assert.Contains("ARP", output);
@@ -90,14 +90,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_InterfaceEthernet_ShouldEnterInterfaceMode()
+        public async Task BroadcomHandler_InterfaceEthernet_ShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("interface ethernet 1/0/1");
+            var output = await device.ProcessCommandAsync("interface ethernet 1/0/1");
             
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
@@ -105,58 +105,58 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_IpAddress_ShouldConfigureInterface()
+        public async Task BroadcomHandler_IpAddress_ShouldConfigureInterface()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface ethernet 1/0/1");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface ethernet 1/0/1");
             
             // Act
-            var output = device.ProcessCommand("ip address 192.168.1.1/24");
+            var output = await device.ProcessCommandAsync("ip address 192.168.1.1/24");
             
             // Assert
             Assert.Equal("TestSwitch(config-if)#", device.GetPrompt());
         }
 
         [Fact]
-        public void BroadcomHandler_NoShutdown_ShouldEnableInterface()
+        public async Task BroadcomHandler_NoShutdown_ShouldEnableInterface()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface ethernet 1/0/1");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface ethernet 1/0/1");
             
             // Act
-            var output = device.ProcessCommand("no shutdown");
+            var output = await device.ProcessCommandAsync("no shutdown");
             
             // Assert
             Assert.Equal("TestSwitch(config-if)#", device.GetPrompt());
         }
 
         [Fact]
-        public void BroadcomHandler_IpRoute_ShouldConfigureRoute()
+        public async Task BroadcomHandler_IpRoute_ShouldConfigureRoute()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("ip route 10.0.0.0/8 192.168.1.1");
+            var output = await device.ProcessCommandAsync("ip route 10.0.0.0/8 192.168.1.1");
             
             // Assert
             Assert.Equal("TestSwitch(config)#", device.GetPrompt());
         }
 
         [Fact]
-        public void BroadcomHandler_RouterOspf_ShouldEnterOspfMode()
+        public async Task BroadcomHandler_RouterOspf_ShouldEnterOspfMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("router ospf 1");
+            var output = await device.ProcessCommandAsync("router ospf 1");
             
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
@@ -164,14 +164,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_RouterBgp_ShouldEnterBgpMode()
+        public async Task BroadcomHandler_RouterBgp_ShouldEnterBgpMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("router bgp 65001");
+            var output = await device.ProcessCommandAsync("router bgp 65001");
             
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
@@ -179,14 +179,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_Vlan_ShouldEnterVlanMode()
+        public async Task BroadcomHandler_Vlan_ShouldEnterVlanMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("vlan 100");
+            var output = await device.ProcessCommandAsync("vlan 100");
             
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
@@ -194,13 +194,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_PingCommand_ShouldExecutePing()
+        public async Task BroadcomHandler_PingCommand_ShouldExecutePing()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("ping 8.8.8.8");
+            var output = await device.ProcessCommandAsync("ping 8.8.8.8");
             
             // Assert
             Assert.Contains("ping", output);
@@ -208,13 +208,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_TracerouteCommand_ShouldExecuteTraceroute()
+        public async Task BroadcomHandler_TracerouteCommand_ShouldExecuteTraceroute()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("traceroute 8.8.8.8");
+            var output = await device.ProcessCommandAsync("traceroute 8.8.8.8");
             
             // Assert
             Assert.Contains("traceroute", output);
@@ -222,13 +222,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_ShowVersion_ShouldDisplayVersion()
+        public async Task BroadcomHandler_ShowVersion_ShouldDisplayVersion()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show version");
+            var output = await device.ProcessCommandAsync("show version");
             
             // Assert
             Assert.Contains("Version", output);
@@ -236,13 +236,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_ShowVlan_ShouldDisplayVlans()
+        public async Task BroadcomHandler_ShowVlan_ShouldDisplayVlans()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show vlan brief");
+            var output = await device.ProcessCommandAsync("show vlan brief");
             
             // Assert
             Assert.Contains("VLAN", output);
@@ -250,43 +250,43 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_SwitchportMode_ShouldConfigureSwitchport()
+        public async Task BroadcomHandler_SwitchportMode_ShouldConfigureSwitchport()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface ethernet 1/0/1");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface ethernet 1/0/1");
             
             // Act
-            var output = device.ProcessCommand("switchport mode access");
+            var output = await device.ProcessCommandAsync("switchport mode access");
             
             // Assert
             Assert.Equal("TestSwitch(config-if)#", device.GetPrompt());
         }
 
         [Fact]
-        public void BroadcomHandler_SwitchportAccess_ShouldConfigureAccessVlan()
+        public async Task BroadcomHandler_SwitchportAccess_ShouldConfigureAccessVlan()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface ethernet 1/0/1");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface ethernet 1/0/1");
             
             // Act
-            var output = device.ProcessCommand("switchport access vlan 100");
+            var output = await device.ProcessCommandAsync("switchport access vlan 100");
             
             // Assert
             Assert.Equal("TestSwitch(config-if)#", device.GetPrompt());
         }
 
         [Fact]
-        public void BroadcomHandler_ShowMacAddressTable_ShouldDisplayMacTable()
+        public async Task BroadcomHandler_ShowMacAddressTable_ShouldDisplayMacTable()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show mac address-table");
+            var output = await device.ProcessCommandAsync("show mac address-table");
             
             // Assert
             Assert.Contains("MAC", output);
@@ -294,13 +294,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_ShowSpanningTree_ShouldDisplayStp()
+        public async Task BroadcomHandler_ShowSpanningTree_ShouldDisplayStp()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show spanning-tree");
+            var output = await device.ProcessCommandAsync("show spanning-tree");
             
             // Assert
             Assert.Contains("Spanning Tree", output);
@@ -308,14 +308,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_MlagConfiguration_ShouldEnterMlagMode()
+        public async Task BroadcomHandler_MlagConfiguration_ShouldEnterMlagMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("mlag configuration");
+            var output = await device.ProcessCommandAsync("mlag configuration");
             
             // Assert
             Assert.Equal("mlag", device.GetCurrentMode());
@@ -323,13 +323,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_BashCommand_ShouldExecuteLinuxCommand()
+        public async Task BroadcomHandler_BashCommand_ShouldExecuteLinuxCommand()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("bash ls");
+            var output = await device.ProcessCommandAsync("bash ls");
             
             // Assert
             Assert.Contains("bash", output);
@@ -337,13 +337,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_ShowEvpn_ShouldDisplayEvpnInfo()
+        public async Task BroadcomHandler_ShowEvpn_ShouldDisplayEvpnInfo()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show evpn");
+            var output = await device.ProcessCommandAsync("show evpn");
             
             // Assert
             Assert.Contains("EVPN", output);
@@ -351,13 +351,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public void BroadcomHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task BroadcomHandler_WithInvalidCommand_ShouldReturnError()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("invalid command");
+            var output = await device.ProcessCommandAsync("invalid command");
             
             // Assert
             Assert.Contains("Invalid", output);
@@ -380,14 +380,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         [InlineData("show interface ethernet 1/0/1")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public void BroadcomHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task BroadcomHandler_AllShowCommands_ShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("enable"); // Enter privileged mode
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -407,17 +407,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         [InlineData("vlan 100")]
         [InlineData("switchport mode access")]
         [InlineData("mlag configuration")]
-        public void BroadcomHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task BroadcomHandler_ConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             if (!command.StartsWith("configure terminal"))
             {
-                device.ProcessCommand("configure terminal");
+                await device.ProcessCommandAsync("configure terminal");
             }
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -433,14 +433,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         [InlineData("ip dhcp pool TestPool")]
         [InlineData("evpn enable")]
         [InlineData("port-security enable")]
-        public void BroadcomHandler_AdvancedCommands_ShouldHaveHandlers(string command)
+        public async Task BroadcomHandler_AdvancedCommands_ShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);

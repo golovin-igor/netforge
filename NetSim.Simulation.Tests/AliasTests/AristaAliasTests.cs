@@ -303,7 +303,7 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void Arista_ShowInterfaceAlias_ShouldWork()
+        public async Task Arista_ShowInterfaceAlias_ShouldWork()
         {
             var device = new AristaDevice("test-arista");
             
@@ -315,7 +315,7 @@ namespace NetSim.Simulation.Tests.AliasTests
             iface.IsUp = true;
             
             // Test show command with alias
-            var result = device.ProcessCommand("show int et1");
+            var result = await device.ProcessCommandAsync("show int et1");
             Assert.Contains("Ethernet1", result);
             Assert.Contains("192.168.1.1", result);
         }

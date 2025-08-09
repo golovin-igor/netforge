@@ -18,7 +18,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void Constructor_SetsVendorToNokia()
+        public async Task Constructor_SetsVendorToNokia()
         {
             // Arrange & Act
             var device = new NokiaDevice("SR1");
@@ -29,55 +29,55 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public void InitialPrompt_ShowsAdminMode()
+        public async Task InitialPrompt_ShowsAdminMode()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
             
             // Act
-            var output = device.ProcessCommand("");
+            var output = await device.ProcessCommandAsync("");
             
             // Assert
             Assert.Equal("SR1>admin# ", output);
         }
         
         [Fact]
-        public void Configure_EntersConfigMode()
+        public async Task Configure_EntersConfigMode()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
             
             // Act
-            var output = device.ProcessCommand("configure");
+            var output = await device.ProcessCommandAsync("configure");
             
             // Assert
             Assert.Contains("SR1[configure]>admin# ", output);
         }
         
         [Fact]
-        public void ConfigurePort_EntersPortContext()
+        public async Task ConfigurePort_EntersPortContext()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("port 1/1/1");
+            var output = await device.ProcessCommandAsync("port 1/1/1");
             
             // Assert
             Assert.Contains("SR1[configure][Port 1/1/1]>admin# ", output);
         }
         
         [Fact]
-        public void PortShutdown_DisablesInterface()
+        public async Task PortShutdown_DisablesInterface()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("port 1/1/1");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("port 1/1/1");
             
             // Act
-            var output = device.ProcessCommand("shutdown");
+            var output = await device.ProcessCommandAsync("shutdown");
             
             // Assert
             var iface = device.GetAllInterfaces()["1/1/1"];
@@ -86,16 +86,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public void PortNoShutdown_EnablesInterface()
+        public async Task PortNoShutdown_EnablesInterface()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("port 1/1/1");
-            device.ProcessCommand("shutdown");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("port 1/1/1");
+            await device.ProcessCommandAsync("shutdown");
             
             // Act
-            var output = device.ProcessCommand("no shutdown");
+            var output = await device.ProcessCommandAsync("no shutdown");
             
             // Assert
             var iface = device.GetAllInterfaces()["1/1/1"];
@@ -104,15 +104,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public void RouterInterface_ConfiguresIpAddress()
+        public async Task RouterInterface_ConfiguresIpAddress()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router interface test1");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router interface test1");
             
             // Act
-            var output = device.ProcessCommand("address 192.168.1.1/24");
+            var output = await device.ProcessCommandAsync("address 192.168.1.1/24");
             
             // Assert
             var iface = device.GetAllInterfaces()["router-test1"];
@@ -121,29 +121,29 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public void RouterStaticRoute_AddsRoute()
+        public async Task RouterStaticRoute_AddsRoute()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("router static-route 192.168.1.0/24 next-hop 10.0.0.254");
+            var output = await device.ProcessCommandAsync("router static-route 192.168.1.0/24 next-hop 10.0.0.254");
             
             // Assert
-            var showOutput = device.ProcessCommand("show router route-table");
+            var showOutput = await device.ProcessCommandAsync("show router route-table");
             Assert.Contains("192.168.1.0/24", showOutput);
             Assert.Contains("10.0.0.254", showOutput);
         }
         
         [Fact]
-        public void ShowCommand_DisplaysSystemInfo()
+        public async Task ShowCommand_DisplaysSystemInfo()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
 
             // Act
-            var output = device.ProcessCommand("show system");
+            var output = await device.ProcessCommandAsync("show system");
 
             // Assert
             Assert.Contains("System Name    : SR1", output);
@@ -164,22 +164,22 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
             await network.AddLinkAsync("SR1", "1/1/1", "SR2", "1/1/1");
 
             // Configure interfaces
-            sr1.ProcessCommand("configure");
-            sr1.ProcessCommand("router interface test1");
-            sr1.ProcessCommand("address 192.168.1.1/24");
-            sr1.ProcessCommand("port 1/1/1");
-            sr1.ProcessCommand("exit");
-            sr1.ProcessCommand("exit");
+            await sr1.ProcessCommandAsync("configure");
+            await sr1.ProcessCommandAsync("router interface test1");
+            await sr1.ProcessCommandAsync("address 192.168.1.1/24");
+            await sr1.ProcessCommandAsync("port 1/1/1");
+            await sr1.ProcessCommandAsync("exit");
+            await sr1.ProcessCommandAsync("exit");
 
-            sr2.ProcessCommand("configure");
-            sr2.ProcessCommand("router interface test2");
-            sr2.ProcessCommand("address 192.168.1.2/24");
-            sr2.ProcessCommand("port 1/1/1");
-            sr2.ProcessCommand("exit");
-            sr2.ProcessCommand("exit");
+            await sr2.ProcessCommandAsync("configure");
+            await sr2.ProcessCommandAsync("router interface test2");
+            await sr2.ProcessCommandAsync("address 192.168.1.2/24");
+            await sr2.ProcessCommandAsync("port 1/1/1");
+            await sr2.ProcessCommandAsync("exit");
+            await sr2.ProcessCommandAsync("exit");
 
             // Act
-            var output = sr1.ProcessCommand("ping 192.168.1.2");
+            var output = await sr1.ProcessCommandAsync("ping 192.168.1.2");
 
             // Assert
             Assert.Contains("64 bytes from 192.168.1.2", output);
@@ -189,13 +189,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void AdminSaveCommand_SavesConfig()
+        public async Task AdminSaveCommand_SavesConfig()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
 
             // Act
-            var output = device.ProcessCommand("admin save");
+            var output = await device.ProcessCommandAsync("admin save");
 
             // Assert
             Assert.Contains("Writing configuration to cf3:\\config.cfg", output);
@@ -204,20 +204,20 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void AdminRebootCommand_PromptsForConfirmation()
+        public async Task AdminRebootCommand_PromptsForConfirmation()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
 
             // Act
-            var output = device.ProcessCommand("admin reboot");
+            var output = await device.ProcessCommandAsync("admin reboot");
 
             // Assert
             Assert.Contains("Are you want to reboot (y/n)?", output);
         }
 
         [Fact]
-        public void ClearPortStatistics_ClearsCounters()
+        public async Task ClearPortStatistics_ClearsCounters()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -230,7 +230,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
             iface.TxBytes = 1000;
 
             // Act
-            var output = device.ProcessCommand($"clear port {portName} statistics");
+            var output = await device.ProcessCommandAsync($"clear port {portName} statistics");
 
             // Assert
             Assert.Contains($"Cleared statistics for port {portName}", output);
@@ -241,26 +241,26 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void ClearPortStatistics_FailsForInvalidPort()
+        public async Task ClearPortStatistics_FailsForInvalidPort()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
 
             // Act
-            var output = device.ProcessCommand("clear port invalid-port statistics");
+            var output = await device.ProcessCommandAsync("clear port invalid-port statistics");
 
             // Assert
             Assert.Contains("MINOR: CLI Invalid parameter.", output);
         }
 
         [Fact]
-        public void ShowVersion_DisplaysVersion()
+        public async Task ShowVersion_DisplaysVersion()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
 
             // Act
-            var output = device.ProcessCommand("show version");
+            var output = await device.ProcessCommandAsync("show version");
 
             // Assert
             Assert.Contains("TiMOS-C-20.10.R1", output);
@@ -269,13 +269,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void ShowPort_DisplaysPortStatus()
+        public async Task ShowPort_DisplaysPortStatus()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
 
             // Act
-            var output = device.ProcessCommand("show port");
+            var output = await device.ProcessCommandAsync("show port");
 
             // Assert
             Assert.Contains("Port        Admin Link Port    Cfg  Oper LAG/ Port Port Port   C/QS/S", output);
@@ -287,13 +287,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public void InvalidCommand_ReturnsError()
+        public async Task InvalidCommand_ReturnsError()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
             
             // Act
-            var output = device.ProcessCommand("invalid-command");
+            var output = await device.ProcessCommandAsync("invalid-command");
             
             // Assert
             Assert.Contains("Error: Invalid command", output);
@@ -303,27 +303,27 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         public async Task Nokia_ConfigureInterfaceAndPing_ShouldSucceed()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("configure");
-            r1.ProcessCommand("port 1/1/1");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("router interface \"to_R2\"");
-            r1.ProcessCommand("address 192.168.1.1/24");
-            r1.ProcessCommand("port 1/1/1");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure");
+            await r1.ProcessCommandAsync("port 1/1/1");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("router interface \"to_R2\"");
+            await r1.ProcessCommandAsync("address 192.168.1.1/24");
+            await r1.ProcessCommandAsync("port 1/1/1");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("port 1/1/1");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("router interface \"to_R1\"");
-            r2.ProcessCommand("address 192.168.1.2/24");
-            r2.ProcessCommand("port 1/1/1");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("port 1/1/1");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("router interface \"to_R1\"");
+            await r2.ProcessCommandAsync("address 192.168.1.2/24");
+            await r2.ProcessCommandAsync("port 1/1/1");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
-            var pingOutput = r1.ProcessCommand("ping 192.168.1.2");
+            var pingOutput = await r1.ProcessCommandAsync("ping 192.168.1.2");
             Assert.Contains("5 packets transmitted, 5 received", pingOutput);
         }
 
@@ -331,20 +331,20 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         public async Task Nokia_ConfigureOspf_ShouldFormAdjacency()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("configure router interface \"system\" address 1.1.1.1/32");
-            r1.ProcessCommand("configure router interface \"to_R2\" address 10.0.0.1/30 port 1/1/1");
-            r1.ProcessCommand("configure router ospf area 0.0.0.0 interface \"system\"");
-            r1.ProcessCommand("configure router ospf area 0.0.0.0 interface \"to_R2\"");
+            await r1.ProcessCommandAsync("configure router interface \"system\" address 1.1.1.1/32");
+            await r1.ProcessCommandAsync("configure router interface \"to_R2\" address 10.0.0.1/30 port 1/1/1");
+            await r1.ProcessCommandAsync("configure router ospf area 0.0.0.0 interface \"system\"");
+            await r1.ProcessCommandAsync("configure router ospf area 0.0.0.0 interface \"to_R2\"");
 
-            r2.ProcessCommand("configure router interface \"system\" address 2.2.2.2/32");
-            r2.ProcessCommand("configure router interface \"to_R1\" address 10.0.0.2/30 port 1/1/1");
-            r2.ProcessCommand("configure router ospf area 0.0.0.0 interface \"system\"");
-            r2.ProcessCommand("configure router ospf area 0.0.0.0 interface \"to_R1\"");
+            await r2.ProcessCommandAsync("configure router interface \"system\" address 2.2.2.2/32");
+            await r2.ProcessCommandAsync("configure router interface \"to_R1\" address 10.0.0.2/30 port 1/1/1");
+            await r2.ProcessCommandAsync("configure router ospf area 0.0.0.0 interface \"system\"");
+            await r2.ProcessCommandAsync("configure router ospf area 0.0.0.0 interface \"to_R1\"");
             
             network.UpdateProtocols();
             await Task.Delay(50);
 
-            var ospfOutput = r1.ProcessCommand("show router ospf neighbor");
+            var ospfOutput = await r1.ProcessCommandAsync("show router ospf neighbor");
             Assert.Contains("2.2.2.2", ospfOutput);
             Assert.Contains("Full", ospfOutput);
         }
@@ -353,20 +353,20 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         public async Task Nokia_ConfigureBgp_ShouldEstablishPeering()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("configure router interface \"system\" address 1.1.1.1/32");
-            r1.ProcessCommand("configure router interface \"to_R2\" address 10.0.0.1/30 port 1/1/1");
-            r1.ProcessCommand("configure router bgp group \"ebgp\" autonomous-system 65001");
-            r1.ProcessCommand("configure router bgp group \"ebgp\" neighbor 10.0.0.2 peer-as 65002");
+            await r1.ProcessCommandAsync("configure router interface \"system\" address 1.1.1.1/32");
+            await r1.ProcessCommandAsync("configure router interface \"to_R2\" address 10.0.0.1/30 port 1/1/1");
+            await r1.ProcessCommandAsync("configure router bgp group \"ebgp\" autonomous-system 65001");
+            await r1.ProcessCommandAsync("configure router bgp group \"ebgp\" neighbor 10.0.0.2 peer-as 65002");
 
-            r2.ProcessCommand("configure router interface \"system\" address 2.2.2.2/32");
-            r2.ProcessCommand("configure router interface \"to_R1\" address 10.0.0.2/30 port 1/1/1");
-            r2.ProcessCommand("configure router bgp group \"ebgp\" autonomous-system 65002");
-            r2.ProcessCommand("configure router bgp group \"ebgp\" neighbor 10.0.0.1 peer-as 65001");
+            await r2.ProcessCommandAsync("configure router interface \"system\" address 2.2.2.2/32");
+            await r2.ProcessCommandAsync("configure router interface \"to_R1\" address 10.0.0.2/30 port 1/1/1");
+            await r2.ProcessCommandAsync("configure router bgp group \"ebgp\" autonomous-system 65002");
+            await r2.ProcessCommandAsync("configure router bgp group \"ebgp\" neighbor 10.0.0.1 peer-as 65001");
 
             network.UpdateProtocols();
             await Task.Delay(100);
 
-            var bgpOutput = r1.ProcessCommand("show router bgp summary");
+            var bgpOutput = await r1.ProcessCommandAsync("show router bgp summary");
             Assert.Contains("10.0.0.2", bgpOutput);
             Assert.Contains("Established", bgpOutput);
         }
@@ -375,18 +375,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         public async Task Nokia_ConfigureRip_ShouldExchangeRoutes()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("configure router interface \"system\" address 1.1.1.1/32");
-            r1.ProcessCommand("configure router interface \"to_R2\" address 10.0.0.1/24 port 1/1/1");
-            r1.ProcessCommand("configure router rip group \"rip-group\" interface \"to_R2\"");
+            await r1.ProcessCommandAsync("configure router interface \"system\" address 1.1.1.1/32");
+            await r1.ProcessCommandAsync("configure router interface \"to_R2\" address 10.0.0.1/24 port 1/1/1");
+            await r1.ProcessCommandAsync("configure router rip group \"rip-group\" interface \"to_R2\"");
 
-            r2.ProcessCommand("configure router interface \"system\" address 2.2.2.2/32");
-            r2.ProcessCommand("configure router interface \"to_R1\" address 10.0.0.2/24 port 1/1/1");
-            r2.ProcessCommand("configure router rip group \"rip-group\" interface \"to_R1\"");
+            await r2.ProcessCommandAsync("configure router interface \"system\" address 2.2.2.2/32");
+            await r2.ProcessCommandAsync("configure router interface \"to_R1\" address 10.0.0.2/24 port 1/1/1");
+            await r2.ProcessCommandAsync("configure router rip group \"rip-group\" interface \"to_R1\"");
 
             network.UpdateProtocols();
             await Task.Delay(100); 
 
-            var routeOutput = r1.ProcessCommand("show router route-table");
+            var routeOutput = await r1.ProcessCommandAsync("show router route-table");
             Assert.Contains("2.2.2.2/32", routeOutput);
             Assert.Contains("RIP", routeOutput);
         }

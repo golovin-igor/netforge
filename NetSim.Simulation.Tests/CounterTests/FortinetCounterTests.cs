@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Tests.CounterTests
     public class FortinetCounterTests
     {
         [Fact]
-        public void Fortinet_PingCounters_ShouldIncrementCorrectly()
+        public async Task Fortinet_PingCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new FortinetDevice("R1");
@@ -17,7 +17,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "port1", "R2", "port1").Wait();
 
-            ConfigureBasicInterfaces(r1, r2);
+            await ConfigureBasicInterfaces(r1, r2);
 
             var intfR1Before = r1.GetInterface("port1");
             var intfR2Before = r2.GetInterface("port1");
@@ -33,7 +33,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void Fortinet_OspfHelloCounters_ShouldIncrementCorrectly()
+        public async Task Fortinet_OspfHelloCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new FortinetDevice("R1");
@@ -43,7 +43,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "port1", "R2", "port1").Wait();
 
-            ConfigureOspfDevices(r1, r2);
+            await ConfigureOspfDevices(r1, r2);
 
             var intfR1Before = r1.GetInterface("port1");
             var initialTxBytes = intfR1Before.TxBytes;
@@ -53,7 +53,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             var intfR1After = r1.GetInterface("port1");
             Assert.Equal(initialTxBytes + 120, intfR1After.TxBytes);
 
-            var ospfNeighbors = r1.ProcessCommand("get router info ospf neighbor");
+            var ospfNeighbors = await r1.ProcessCommandAsync("get router info ospf neighbor");
             Assert.Contains("192.168.1.2", ospfNeighbors);
         }
 
@@ -73,54 +73,54 @@ namespace NetSim.Simulation.Tests.CounterTests
             }
         }
 
-        private void ConfigureBasicInterfaces(FortinetDevice r1, FortinetDevice r2)
+        private async Task ConfigureBasicInterfaces(FortinetDevice r1, FortinetDevice r2)
         {
-            r1.ProcessCommand("config system interface");
-            r1.ProcessCommand("edit port1");
-            r1.ProcessCommand("set ip 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("set allowaccess ping");
-            r1.ProcessCommand("next");
-            r1.ProcessCommand("end");
+            await r1.ProcessCommandAsync("config system interface");
+            await r1.ProcessCommandAsync("edit port1");
+            await r1.ProcessCommandAsync("set ip 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("set allowaccess ping");
+            await r1.ProcessCommandAsync("next");
+            await r1.ProcessCommandAsync("end");
 
-            r2.ProcessCommand("config system interface");
-            r2.ProcessCommand("edit port1");
-            r2.ProcessCommand("set ip 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("set allowaccess ping");
-            r2.ProcessCommand("next");
-            r2.ProcessCommand("end");
+            await r2.ProcessCommandAsync("config system interface");
+            await r2.ProcessCommandAsync("edit port1");
+            await r2.ProcessCommandAsync("set ip 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("set allowaccess ping");
+            await r2.ProcessCommandAsync("next");
+            await r2.ProcessCommandAsync("end");
         }
 
-        private void ConfigureOspfDevices(FortinetDevice r1, FortinetDevice r2)
+        private async Task ConfigureOspfDevices(FortinetDevice r1, FortinetDevice r2)
         {
-            ConfigureBasicInterfaces(r1, r2);
+            await ConfigureBasicInterfaces(r1, r2);
 
-            r1.ProcessCommand("config router ospf");
-            r1.ProcessCommand("set router-id 1.1.1.1");
-            r1.ProcessCommand("config area");
-            r1.ProcessCommand("edit 0.0.0.0");
-            r1.ProcessCommand("next");
-            r1.ProcessCommand("end");
-            r1.ProcessCommand("config network");
-            r1.ProcessCommand("edit 1");
-            r1.ProcessCommand("set prefix 192.168.1.0 255.255.255.0");
-            r1.ProcessCommand("set area 0.0.0.0");
-            r1.ProcessCommand("next");
-            r1.ProcessCommand("end");
-            r1.ProcessCommand("end");
+            await r1.ProcessCommandAsync("config router ospf");
+            await r1.ProcessCommandAsync("set router-id 1.1.1.1");
+            await r1.ProcessCommandAsync("config area");
+            await r1.ProcessCommandAsync("edit 0.0.0.0");
+            await r1.ProcessCommandAsync("next");
+            await r1.ProcessCommandAsync("end");
+            await r1.ProcessCommandAsync("config network");
+            await r1.ProcessCommandAsync("edit 1");
+            await r1.ProcessCommandAsync("set prefix 192.168.1.0 255.255.255.0");
+            await r1.ProcessCommandAsync("set area 0.0.0.0");
+            await r1.ProcessCommandAsync("next");
+            await r1.ProcessCommandAsync("end");
+            await r1.ProcessCommandAsync("end");
 
-            r2.ProcessCommand("config router ospf");
-            r2.ProcessCommand("set router-id 2.2.2.2");
-            r2.ProcessCommand("config area");
-            r2.ProcessCommand("edit 0.0.0.0");
-            r2.ProcessCommand("next");
-            r2.ProcessCommand("end");
-            r2.ProcessCommand("config network");
-            r2.ProcessCommand("edit 1");
-            r2.ProcessCommand("set prefix 192.168.1.0 255.255.255.0");
-            r2.ProcessCommand("set area 0.0.0.0");
-            r2.ProcessCommand("next");
-            r2.ProcessCommand("end");
-            r2.ProcessCommand("end");
+            await r2.ProcessCommandAsync("config router ospf");
+            await r2.ProcessCommandAsync("set router-id 2.2.2.2");
+            await r2.ProcessCommandAsync("config area");
+            await r2.ProcessCommandAsync("edit 0.0.0.0");
+            await r2.ProcessCommandAsync("next");
+            await r2.ProcessCommandAsync("end");
+            await r2.ProcessCommandAsync("config network");
+            await r2.ProcessCommandAsync("edit 1");
+            await r2.ProcessCommandAsync("set prefix 192.168.1.0 255.255.255.0");
+            await r2.ProcessCommandAsync("set area 0.0.0.0");
+            await r2.ProcessCommandAsync("next");
+            await r2.ProcessCommandAsync("end");
+            await r2.ProcessCommandAsync("end");
         }
 
         private void SimulateOspfHelloExchange(FortinetDevice r1, FortinetDevice r2, 

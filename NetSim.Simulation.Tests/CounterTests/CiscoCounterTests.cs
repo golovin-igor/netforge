@@ -16,7 +16,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Test ping counter increments - verifies 5 packets, 320 bytes (64 bytes * 5)
         /// </summary>
         [Fact]
-        public void Cisco_PingCounters_ShouldIncrementCorrectly()
+        public async System.Threading.Tasks.Task Cisco_PingCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new CiscoDevice("R1");
@@ -26,19 +26,19 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
 
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
             var intfR1Before = r1.GetInterface("GigabitEthernet0/0");
             var intfR2Before = r2.GetInterface("GigabitEthernet0/0");
@@ -59,7 +59,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Test ping with interface shutdown - no counter increments should occur
         /// </summary>
         [Fact]
-        public void Cisco_PingWithInterfaceShutdown_ShouldNotIncrementCounters()
+        public async System.Threading.Tasks.Task Cisco_PingWithInterfaceShutdown_ShouldNotIncrementCounters()
         {
             // Arrange
             var network = new Network();
@@ -71,19 +71,19 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
 
             // Configure interfaces
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
             // Initial successful ping to establish baseline
             SimulatePingWithCounters(r1, r2, "GigabitEthernet0/0", "GigabitEthernet0/0");
@@ -92,14 +92,14 @@ namespace NetSim.Simulation.Tests.CounterTests
             var initialCounters = r2.GetInterface("GigabitEthernet0/0").RxPackets;
 
             // Shutdown destination interface
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
             // Act - Attempt ping to shutdown interface
-            var pingResult = r1.ProcessCommand("ping 192.168.1.2");
+            var pingResult = await r1.ProcessCommandAsync("ping 192.168.1.2");
 
             // Assert
             var finalCounters = r2.GetInterface("GigabitEthernet0/0").RxPackets;
@@ -109,11 +109,11 @@ namespace NetSim.Simulation.Tests.CounterTests
             Assert.Contains("No response", pingResult);
 
             // Re-enable interface and verify counters resume
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
             SimulatePingWithCounters(r1, r2, "GigabitEthernet0/0", "GigabitEthernet0/0");
             var resumedCounters = r2.GetInterface("GigabitEthernet0/0").RxPackets;
@@ -124,7 +124,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Test OSPF hello packet counters - 40 bytes per hello packet
         /// </summary>
         [Fact]
-        public void Cisco_OspfHelloCounters_ShouldIncrementCorrectly()
+        public async System.Threading.Tasks.Task Cisco_OspfHelloCounters_ShouldIncrementCorrectly()
         {
             // Arrange
             var network = new Network();
@@ -156,7 +156,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             Assert.Equal(initialRxBytes + 120, intfR2After.RxBytes);
 
             // Verify OSPF neighbors are established
-            var ospfNeighbors = r1.ProcessCommand("show ip ospf neighbor");
+            var ospfNeighbors = await r1.ProcessCommandAsync("show ip ospf neighbor");
             Assert.Contains("192.168.1.2", ospfNeighbors);
         }
 
@@ -164,7 +164,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Test BGP update message counters - 48 bytes per update
         /// </summary>
         [Fact]
-        public void Cisco_BgpUpdateCounters_ShouldIncrementCorrectly()
+        public async System.Threading.Tasks.Task Cisco_BgpUpdateCounters_ShouldIncrementCorrectly()
         {
             // Arrange
             var network = new Network();
@@ -176,7 +176,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
 
             // Configure BGP peers
-            ConfigureBgpPeers(r1, r2, 65001, 65002);
+            await ConfigureBgpPeers(r1, r2, 65001, 65002);
 
             // Get initial counters
             var intfR1Before = r1.GetInterface("GigabitEthernet0/0");
@@ -192,7 +192,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             Assert.Equal(initialTxBytes + 96, intfR1After.TxBytes); // 2 * 48 bytes
 
             // Verify BGP peering
-            var bgpSummary = r1.ProcessCommand("show ip bgp summary");
+            var bgpSummary = await r1.ProcessCommandAsync("show ip bgp summary");
             Assert.Contains("192.168.1.2", bgpSummary);
         }
 
@@ -200,7 +200,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Test RIP advertisement counters - 32 bytes per advertisement
         /// </summary>
         [Fact]
-        public void Cisco_RipAdvertisementCounters_ShouldIncrementCorrectly()
+        public async System.Threading.Tasks.Task Cisco_RipAdvertisementCounters_ShouldIncrementCorrectly()
         {
             // Arrange
             var network = new Network();
@@ -212,7 +212,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
 
             // Configure RIP
-            ConfigureRipDevices(r1, r2);
+            await ConfigureRipDevices(r1, r2);
 
             // Get initial counters
             var intfR1Before = r1.GetInterface("GigabitEthernet0/0");
@@ -228,7 +228,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             Assert.Equal(initialTxBytes + 64, intfR1After.TxBytes); // 2 * 32 bytes
 
             // Verify RIP routes
-            var ripRoutes = r1.ProcessCommand("show ip route rip");
+            var ripRoutes = await r1.ProcessCommandAsync("show ip route rip");
             Assert.Contains("R", ripRoutes); // RIP routes marked with 'R'
         }
 
@@ -236,7 +236,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Test ACL blocking - no counter increments when traffic is blocked
         /// </summary>
         [Fact]
-        public void Cisco_AclBlockingCounters_ShouldNotIncrementWhenBlocked()
+        public async System.Threading.Tasks.Task Cisco_AclBlockingCounters_ShouldNotIncrementWhenBlocked()
         {
             // Arrange
             var network = new Network();
@@ -248,31 +248,31 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
 
             // Configure interfaces
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
 
             // Apply ACL to block ping
-            r2.ProcessCommand("access-list 101 deny icmp any host 192.168.1.2");
-            r2.ProcessCommand("access-list 101 permit ip any any");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip access-group 101 in");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("access-list 101 deny icmp any host 192.168.1.2");
+            await r2.ProcessCommandAsync("access-list 101 permit ip any any");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip access-group 101 in");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
             // Get initial counters
             var initialRxPackets = r2.GetInterface("GigabitEthernet0/0").RxPackets;
 
             // Act - Attempt ping (should be blocked)
-            var pingResult = r1.ProcessCommand("ping 192.168.1.2");
+            var pingResult = await r1.ProcessCommandAsync("ping 192.168.1.2");
             
             // Assert
             var finalRxPackets = r2.GetInterface("GigabitEthernet0/0").RxPackets;
@@ -282,11 +282,11 @@ namespace NetSim.Simulation.Tests.CounterTests
             Assert.Contains("Request timeout", pingResult);
 
             // Remove ACL and verify counters resume
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("no ip access-group 101 in");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("no ip access-group 101 in");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
             SimulatePingWithCounters(r1, r2, "GigabitEthernet0/0", "GigabitEthernet0/0");
             var resumedRxPackets = r2.GetInterface("GigabitEthernet0/0").RxPackets;
@@ -297,7 +297,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// Test multi-protocol counters - OSPF and BGP running simultaneously
         /// </summary>
         [Fact]
-        public void Cisco_MultiProtocolCounters_ShouldAccumulateCorrectly()
+        public async System.Threading.Tasks.Task Cisco_MultiProtocolCounters_ShouldAccumulateCorrectly()
         {
             // Arrange
             var network = new Network();
@@ -310,7 +310,7 @@ namespace NetSim.Simulation.Tests.CounterTests
 
             // Configure both OSPF and BGP
             ConfigureOspfDevices(r1, r2);
-            ConfigureBgpPeers(r1, r2, 65001, 65002);
+            await ConfigureBgpPeers(r1, r2, 65001, 65002);
 
             // Get initial counters
             var intfR1Before = r1.GetInterface("GigabitEthernet0/0");
@@ -327,8 +327,8 @@ namespace NetSim.Simulation.Tests.CounterTests
             Assert.Equal(initialTxBytes + 128, intfR1After.TxBytes); // 80 + 48 bytes
 
             // Verify both protocols are active
-            var ospfNeighbors = r1.ProcessCommand("show ip ospf neighbor");
-            var bgpSummary = r1.ProcessCommand("show ip bgp summary");
+            var ospfNeighbors = await r1.ProcessCommandAsync("show ip ospf neighbor");
+            var bgpSummary = await r1.ProcessCommandAsync("show ip bgp summary");
             Assert.Contains("192.168.1.2", ospfNeighbors);
             Assert.Contains("192.168.1.2", bgpSummary);
         }
@@ -357,85 +357,85 @@ namespace NetSim.Simulation.Tests.CounterTests
         /// <summary>
         /// Configure OSPF on both devices
         /// </summary>
-        private void ConfigureOspfDevices(CiscoDevice r1, CiscoDevice r2)
+        private async System.Threading.Tasks.Task ConfigureOspfDevices(CiscoDevice r1, CiscoDevice r2)
         {
             // R1 OSPF configuration
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("router ospf 1");
-            r1.ProcessCommand("network 192.168.1.0 0.0.0.255 area 0");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("router ospf 1");
+            await r1.ProcessCommandAsync("network 192.168.1.0 0.0.0.255 area 0");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
             // R2 OSPF configuration
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("router ospf 1");
-            r2.ProcessCommand("network 192.168.1.0 0.0.0.255 area 0");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("router ospf 1");
+            await r2.ProcessCommandAsync("network 192.168.1.0 0.0.0.255 area 0");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
         }
 
         /// <summary>
         /// Configure BGP peers
         /// </summary>
-        private void ConfigureBgpPeers(CiscoDevice r1, CiscoDevice r2, int as1, int as2)
+        private async System.Threading.Tasks.Task ConfigureBgpPeers(CiscoDevice r1, CiscoDevice r2, int as1, int as2)
         {
             // R1 BGP configuration
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand($"router bgp {as1}");
-            r1.ProcessCommand($"neighbor 192.168.1.2 remote-as {as2}");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync($"router bgp {as1}");
+            await r1.ProcessCommandAsync($"neighbor 192.168.1.2 remote-as {as2}");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
             // R2 BGP configuration
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand($"router bgp {as2}");
-            r2.ProcessCommand($"neighbor 192.168.1.1 remote-as {as1}");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync($"router bgp {as2}");
+            await r2.ProcessCommandAsync($"neighbor 192.168.1.1 remote-as {as1}");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
         }
 
         /// <summary>
         /// Configure RIP on both devices
         /// </summary>
-        private void ConfigureRipDevices(CiscoDevice r1, CiscoDevice r2)
+        private async System.Threading.Tasks.Task ConfigureRipDevices(CiscoDevice r1, CiscoDevice r2)
         {
             // R1 RIP configuration
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("router rip");
-            r1.ProcessCommand("network 192.168.1.0");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("router rip");
+            await r1.ProcessCommandAsync("network 192.168.1.0");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
             // R2 RIP configuration
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("router rip");
-            r2.ProcessCommand("network 192.168.1.0");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("router rip");
+            await r2.ProcessCommandAsync("network 192.168.1.0");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
         }
 
         /// <summary>

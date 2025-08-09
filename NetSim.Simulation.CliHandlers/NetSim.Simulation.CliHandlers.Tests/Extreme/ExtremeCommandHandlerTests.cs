@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
     public class ExtremeCommandHandlerTests
     {
         [Fact]
-        public void ExtremeHandler_ShowCommand_ShouldDisplayInfo()
+        public async Task ExtremeHandler_ShowCommand_ShouldDisplayInfo()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show version");
+            var output = await device.ProcessCommandAsync("show version");
             
             // Assert
             Assert.Contains("ExtremeXOS", output);
@@ -20,13 +20,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_ConfigureCommand_ShouldEnterConfigMode()
+        public async Task ExtremeHandler_ConfigureCommand_ShouldEnterConfigMode()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure");
+            var output = await device.ProcessCommandAsync("configure");
             
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
@@ -35,14 +35,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_ExitCommand_ShouldExitConfigMode()
+        public async Task ExtremeHandler_ExitCommand_ShouldExitConfigMode()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("exit");
+            var output = await device.ProcessCommandAsync("exit");
             
             // Assert
             Assert.Equal("operational", device.GetCurrentMode());
@@ -51,13 +51,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_PingCommand_ShouldExecutePing()
+        public async Task ExtremeHandler_PingCommand_ShouldExecutePing()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("ping 192.168.1.1");
+            var output = await device.ProcessCommandAsync("ping 192.168.1.1");
             
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
@@ -66,13 +66,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_TracerouteCommand_ShouldExecuteTraceroute()
+        public async Task ExtremeHandler_TracerouteCommand_ShouldExecuteTraceroute()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("traceroute 192.168.1.1");
+            var output = await device.ProcessCommandAsync("traceroute 192.168.1.1");
             
             // Assert
             Assert.Contains("traceroute to 192.168.1.1", output);
@@ -81,14 +81,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_InterfaceCommand_ShouldEnterInterfaceMode()
+        public async Task ExtremeHandler_InterfaceCommand_ShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("interface 1");
+            var output = await device.ProcessCommandAsync("interface 1");
             
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
@@ -97,15 +97,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_EndCommand_ShouldExitToOperationalMode()
+        public async Task ExtremeHandler_EndCommand_ShouldExitToOperationalMode()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("interface 1");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("interface 1");
             
             // Act
-            var output = device.ProcessCommand("end");
+            var output = await device.ProcessCommandAsync("end");
             
             // Assert
             Assert.Equal("operational", device.GetCurrentMode());
@@ -114,15 +114,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_SaveCommand_ShouldSaveConfiguration()
+        public async Task ExtremeHandler_SaveCommand_ShouldSaveConfiguration()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("configure snmp sysName TestRouter2");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("configure snmp sysName TestRouter2");
             
             // Act
-            var output = device.ProcessCommand("save");
+            var output = await device.ProcessCommandAsync("save");
             
             // Assert
             Assert.Contains("Configuration saved", output);
@@ -130,15 +130,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_ShowConfigCommand_ShouldShowConfig()
+        public async Task ExtremeHandler_ShowConfigCommand_ShouldShowConfig()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("configure snmp sysName TestRouter2");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("configure snmp sysName TestRouter2");
             
             // Act
-            var output = device.ProcessCommand("show config");
+            var output = await device.ProcessCommandAsync("show config");
             
             // Assert
             Assert.Contains("configure snmp sysName TestRouter2", output);
@@ -146,15 +146,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_UnconfigureCommand_ShouldRemoveConfiguration()
+        public async Task ExtremeHandler_UnconfigureCommand_ShouldRemoveConfiguration()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("configure snmp sysName TestRouter2");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("configure snmp sysName TestRouter2");
             
             // Act
-            var output = device.ProcessCommand("unconfigure snmp sysName");
+            var output = await device.ProcessCommandAsync("unconfigure snmp sysName");
             
             // Assert
             Assert.Contains("Configuration removed", output);
@@ -162,13 +162,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task ExtremeHandler_WithInvalidCommand_ShouldReturnError()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("invalid command");
+            var output = await device.ProcessCommandAsync("invalid command");
             
             // Assert
             Assert.Contains("Invalid command", output);
@@ -176,13 +176,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public void ExtremeHandler_WithIncompleteCommand_ShouldReturnError()
+        public async Task ExtremeHandler_WithIncompleteCommand_ShouldReturnError()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("configure");
+            var output = await device.ProcessCommandAsync("configure");
             
             // Assert
             Assert.Contains("Incomplete command", output);

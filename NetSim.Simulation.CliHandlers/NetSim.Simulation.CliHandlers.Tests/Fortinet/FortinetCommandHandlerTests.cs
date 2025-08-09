@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
     public class FortinetCommandHandlerTests
     {
         [Fact]
-        public void ConfigGlobal_ShouldEnterGlobalConfigMode()
+        public async Task ConfigGlobal_ShouldEnterGlobalConfigMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
             
             // Act
-            var result = device.ProcessCommand("config global");
+            var result = await device.ProcessCommandAsync("config global");
 
             // Assert
             Assert.NotNull(result);
@@ -21,13 +21,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void ConfigSystemInterface_ShouldEnterSystemInterfaceMode()
+        public async Task ConfigSystemInterface_ShouldEnterSystemInterfaceMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
             
             // Act
-            var result = device.ProcessCommand("config system interface");
+            var result = await device.ProcessCommandAsync("config system interface");
 
             // Assert
             Assert.NotNull(result);
@@ -36,13 +36,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void ConfigRouterOspf_ShouldEnterOspfMode()
+        public async Task ConfigRouterOspf_ShouldEnterOspfMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
             
             // Act
-            var result = device.ProcessCommand("config router ospf");
+            var result = await device.ProcessCommandAsync("config router ospf");
 
             // Assert
             Assert.NotNull(result);
@@ -52,13 +52,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void ConfigRouterBgp_ShouldEnterBgpMode()
+        public async Task ConfigRouterBgp_ShouldEnterBgpMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
             
             // Act
-            var result = device.ProcessCommand("config router bgp");
+            var result = await device.ProcessCommandAsync("config router bgp");
 
             // Assert
             Assert.NotNull(result);
@@ -68,14 +68,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void SetHostname_InGlobalConfigMode_ShouldChangeHostname()
+        public async Task SetHostname_InGlobalConfigMode_ShouldChangeHostname()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config global");
+            await device.ProcessCommandAsync("config global");
 
             // Act
-            var result = device.ProcessCommand("set hostname \"TestDevice\"");
+            var result = await device.ProcessCommandAsync("set hostname \"TestDevice\"");
 
             // Assert
             Assert.NotNull(result);
@@ -84,14 +84,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void EditInterface_ShouldEnterInterfaceMode()
+        public async Task EditInterface_ShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config system interface");
+            await device.ProcessCommandAsync("config system interface");
 
             // Act
-            var result = device.ProcessCommand("edit port1");
+            var result = await device.ProcessCommandAsync("edit port1");
 
             // Assert
             Assert.NotNull(result);
@@ -100,15 +100,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void SetIpAddress_InInterfaceMode_ShouldConfigureInterface()
+        public async Task SetIpAddress_InInterfaceMode_ShouldConfigureInterface()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config system interface");
-            device.ProcessCommand("edit port1");
+            await device.ProcessCommandAsync("config system interface");
+            await device.ProcessCommandAsync("edit port1");
 
             // Act
-            var result = device.ProcessCommand("set ip 192.168.1.1 255.255.255.0");
+            var result = await device.ProcessCommandAsync("set ip 192.168.1.1 255.255.255.0");
 
             // Assert
             Assert.NotNull(result);
@@ -118,15 +118,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void SetInterfaceDescription_ShouldSetDescription()
+        public async Task SetInterfaceDescription_ShouldSetDescription()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config system interface");
-            device.ProcessCommand("edit port1");
+            await device.ProcessCommandAsync("config system interface");
+            await device.ProcessCommandAsync("edit port1");
 
             // Act
-            var result = device.ProcessCommand("set description \"LAN Interface\"");
+            var result = await device.ProcessCommandAsync("set description \"LAN Interface\"");
 
             // Assert
             Assert.NotNull(result);
@@ -135,19 +135,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void SetInterfaceStatus_ShouldControlInterfaceState()
+        public async Task SetInterfaceStatus_ShouldControlInterfaceState()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config system interface");
-            device.ProcessCommand("edit port1");
+            await device.ProcessCommandAsync("config system interface");
+            await device.ProcessCommandAsync("edit port1");
 
             // Act - Shutdown interface
-            device.ProcessCommand("set status down");
+            await device.ProcessCommandAsync("set status down");
             var interfaces1 = device.GetAllInterfaces();
 
             // Act - Enable interface
-            device.ProcessCommand("set status up");
+            await device.ProcessCommandAsync("set status up");
             var interfaces2 = device.GetAllInterfaces();
 
             // Assert
@@ -158,17 +158,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void GetSystemInterface_ShouldReturnInterfaceInfo()
+        public async Task GetSystemInterface_ShouldReturnInterfaceInfo()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config system interface");
-            device.ProcessCommand("edit port1");
-            device.ProcessCommand("set ip 192.168.1.1 255.255.255.0");
-            device.ProcessCommand("end");
+            await device.ProcessCommandAsync("config system interface");
+            await device.ProcessCommandAsync("edit port1");
+            await device.ProcessCommandAsync("set ip 192.168.1.1 255.255.255.0");
+            await device.ProcessCommandAsync("end");
 
             // Act
-            var result = device.ProcessCommand("get system interface port1");
+            var result = await device.ProcessCommandAsync("get system interface port1");
 
             // Assert
             Assert.NotNull(result);
@@ -178,13 +178,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void GetSystemStatus_ShouldReturnSystemInfo()
+        public async Task GetSystemStatus_ShouldReturnSystemInfo()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
 
             // Act
-            var result = device.ProcessCommand("get system status");
+            var result = await device.ProcessCommandAsync("get system status");
 
             // Assert
             Assert.NotNull(result);
@@ -195,17 +195,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void GetRouterInfoRoutingTable_ShouldReturnRoutes()
+        public async Task GetRouterInfoRoutingTable_ShouldReturnRoutes()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config system interface");
-            device.ProcessCommand("edit port1");
-            device.ProcessCommand("set ip 192.168.1.1 255.255.255.0");
-            device.ProcessCommand("end");
+            await device.ProcessCommandAsync("config system interface");
+            await device.ProcessCommandAsync("edit port1");
+            await device.ProcessCommandAsync("set ip 192.168.1.1 255.255.255.0");
+            await device.ProcessCommandAsync("end");
 
             // Act
-            var result = device.ProcessCommand("get router info routing-table");
+            var result = await device.ProcessCommandAsync("get router info routing-table");
 
             // Assert
             Assert.NotNull(result);
@@ -215,16 +215,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void ShowFullConfiguration_ShouldReturnCompleteConfig()
+        public async Task ShowFullConfiguration_ShouldReturnCompleteConfig()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config global");
-            device.ProcessCommand("set hostname \"TestFortiGate\"");
-            device.ProcessCommand("end");
+            await device.ProcessCommandAsync("config global");
+            await device.ProcessCommandAsync("set hostname \"TestFortiGate\"");
+            await device.ProcessCommandAsync("end");
 
             // Act
-            var result = device.ProcessCommand("show full-configuration");
+            var result = await device.ProcessCommandAsync("show full-configuration");
 
             // Assert
             Assert.NotNull(result);
@@ -235,13 +235,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void ShowSystemInterface_ShouldReturnInterfaceStatus()
+        public async Task ShowSystemInterface_ShouldReturnInterfaceStatus()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
 
             // Act
-            var result = device.ProcessCommand("show system interface");
+            var result = await device.ProcessCommandAsync("show system interface");
 
             // Assert
             Assert.NotNull(result);
@@ -252,13 +252,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void ShowFirewallPolicy_ShouldReturnPolicies()
+        public async Task ShowFirewallPolicy_ShouldReturnPolicies()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
 
             // Act
-            var result = device.ProcessCommand("show firewall policy");
+            var result = await device.ProcessCommandAsync("show firewall policy");
 
             // Assert
             Assert.NotNull(result);
@@ -270,13 +270,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void ExecutePing_ShouldSimulatePing()
+        public async Task ExecutePing_ShouldSimulatePing()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
 
             // Act
-            var result = device.ProcessCommand("execute ping 8.8.8.8");
+            var result = await device.ProcessCommandAsync("execute ping 8.8.8.8");
 
             // Assert
             Assert.NotNull(result);
@@ -287,13 +287,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void ExecuteSaveConfig_ShouldConfirmSave()
+        public async Task ExecuteSaveConfig_ShouldConfirmSave()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
 
             // Act
-            var result = device.ProcessCommand("execute save config");
+            var result = await device.ProcessCommandAsync("execute save config");
 
             // Assert
             Assert.NotNull(result);
@@ -301,13 +301,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void ExecuteReboot_ShouldPromptConfirmation()
+        public async Task ExecuteReboot_ShouldPromptConfirmation()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
 
             // Act
-            var result = device.ProcessCommand("execute reboot");
+            var result = await device.ProcessCommandAsync("execute reboot");
 
             // Assert
             Assert.NotNull(result);
@@ -316,17 +316,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void DiagnoseIpArpList_ShouldReturnArpTable()
+        public async Task DiagnoseIpArpList_ShouldReturnArpTable()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config system interface");
-            device.ProcessCommand("edit port1");
-            device.ProcessCommand("set ip 192.168.1.1 255.255.255.0");
-            device.ProcessCommand("end");
+            await device.ProcessCommandAsync("config system interface");
+            await device.ProcessCommandAsync("edit port1");
+            await device.ProcessCommandAsync("set ip 192.168.1.1 255.255.255.0");
+            await device.ProcessCommandAsync("end");
 
             // Act
-            var result = device.ProcessCommand("diagnose ip arp list");
+            var result = await device.ProcessCommandAsync("diagnose ip arp list");
 
             // Assert
             Assert.NotNull(result);
@@ -337,13 +337,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void DiagnoseNetlinkInterface_ShouldReturnInterfaceList()
+        public async Task DiagnoseNetlinkInterface_ShouldReturnInterfaceList()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
 
             // Act
-            var result = device.ProcessCommand("diagnose netlink interface");
+            var result = await device.ProcessCommandAsync("diagnose netlink interface");
 
             // Assert
             Assert.NotNull(result);
@@ -353,13 +353,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void DiagnoseHardwareDeviceinfo_ShouldReturnHardwareInfo()
+        public async Task DiagnoseHardwareDeviceinfo_ShouldReturnHardwareInfo()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
 
             // Act
-            var result = device.ProcessCommand("diagnose hardware deviceinfo");
+            var result = await device.ProcessCommandAsync("diagnose hardware deviceinfo");
 
             // Assert
             Assert.NotNull(result);
@@ -369,16 +369,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void OspfConfiguration_ShouldConfigureOspfSettings()
+        public async Task OspfConfiguration_ShouldConfigureOspfSettings()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config router ospf");
+            await device.ProcessCommandAsync("config router ospf");
 
             // Act
-            var result1 = device.ProcessCommand("set router-id 1.1.1.1");
-            var result2 = device.ProcessCommand("config network");
-            device.ProcessCommand("end");
+            var result1 = await device.ProcessCommandAsync("set router-id 1.1.1.1");
+            var result2 = await device.ProcessCommandAsync("config network");
+            await device.ProcessCommandAsync("end");
 
             // Assert
             Assert.NotNull(result1);
@@ -389,17 +389,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void BgpConfiguration_ShouldConfigureBgpSettings()
+        public async Task BgpConfiguration_ShouldConfigureBgpSettings()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config router bgp");
+            await device.ProcessCommandAsync("config router bgp");
 
             // Act
-            var result1 = device.ProcessCommand("set as 65001");
-            var result2 = device.ProcessCommand("set router-id 2.2.2.2");
-            var result3 = device.ProcessCommand("config neighbor 192.168.1.2");
-            device.ProcessCommand("end");
+            var result1 = await device.ProcessCommandAsync("set as 65001");
+            var result2 = await device.ProcessCommandAsync("set router-id 2.2.2.2");
+            var result3 = await device.ProcessCommandAsync("config neighbor 192.168.1.2");
+            await device.ProcessCommandAsync("end");
 
             // Assert
             Assert.NotNull(result1);
@@ -412,15 +412,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void EndCommand_ShouldReturnToGlobalMode()
+        public async Task EndCommand_ShouldReturnToGlobalMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config global");
+            await device.ProcessCommandAsync("config global");
             Assert.Equal("global_config", device.GetCurrentMode());
 
             // Act
-            var result = device.ProcessCommand("end");
+            var result = await device.ProcessCommandAsync("end");
 
             // Assert
             Assert.NotNull(result);
@@ -429,13 +429,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void InvalidCommand_ShouldReturnError()
+        public async Task InvalidCommand_ShouldReturnError()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
 
             // Act
-            var result = device.ProcessCommand("invalid command");
+            var result = await device.ProcessCommandAsync("invalid command");
 
             // Assert
             Assert.NotNull(result);
@@ -443,7 +443,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void ModeTransitions_ShouldWorkCorrectly()
+        public async Task ModeTransitions_ShouldWorkCorrectly()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -452,41 +452,41 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
             Assert.Equal("global", device.GetCurrentMode());
 
             // Enter global config mode
-            device.ProcessCommand("config global");
+            await device.ProcessCommandAsync("config global");
             Assert.Equal("global_config", device.GetCurrentMode());
 
             // Return to global mode
-            device.ProcessCommand("end");
+            await device.ProcessCommandAsync("end");
             Assert.Equal("global", device.GetCurrentMode());
 
             // Enter system interface mode
-            device.ProcessCommand("config system interface");
+            await device.ProcessCommandAsync("config system interface");
             Assert.Equal("system_if", device.GetCurrentMode());
 
             // Edit specific interface
-            device.ProcessCommand("edit port1");
+            await device.ProcessCommandAsync("edit port1");
             Assert.Equal("interface", device.GetCurrentMode());
 
             // Return to system interface mode
-            device.ProcessCommand("next");
+            await device.ProcessCommandAsync("next");
             Assert.Equal("system_if", device.GetCurrentMode());
 
             // Return to global mode
-            device.ProcessCommand("end");
+            await device.ProcessCommandAsync("end");
             Assert.Equal("global", device.GetCurrentMode());
         }
 
         [Fact]
-        public void VlanConfiguration_ShouldCreateAndConfigureVlan()
+        public async Task VlanConfiguration_ShouldCreateAndConfigureVlan()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config system vlan");
+            await device.ProcessCommandAsync("config system vlan");
 
             // Act
-            var result1 = device.ProcessCommand("edit 100");
-            var result2 = device.ProcessCommand("set name \"TestVLAN\"");
-            var result3 = device.ProcessCommand("next");
+            var result1 = await device.ProcessCommandAsync("edit 100");
+            var result2 = await device.ProcessCommandAsync("set name \"TestVLAN\"");
+            var result3 = await device.ProcessCommandAsync("next");
 
             // Assert
             Assert.NotNull(result1);
@@ -498,16 +498,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void RipConfiguration_ShouldConfigureRipSettings()
+        public async Task RipConfiguration_ShouldConfigureRipSettings()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config router rip");
+            await device.ProcessCommandAsync("config router rip");
 
             // Act
-            var result1 = device.ProcessCommand("set version 2");
-            var result2 = device.ProcessCommand("config network 192.168.1.0");
-            device.ProcessCommand("end");
+            var result1 = await device.ProcessCommandAsync("set version 2");
+            var result2 = await device.ProcessCommandAsync("config network 192.168.1.0");
+            await device.ProcessCommandAsync("end");
 
             // Assert
             Assert.NotNull(result1);
@@ -518,17 +518,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FirewallPolicyConfiguration_ShouldAllowPolicyEditing()
+        public async Task FirewallPolicyConfiguration_ShouldAllowPolicyEditing()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            device.ProcessCommand("config firewall policy");
+            await device.ProcessCommandAsync("config firewall policy");
 
             // Act
-            var result1 = device.ProcessCommand("edit 1");
-            var result2 = device.ProcessCommand("set name \"Test Policy\"");
-            var result3 = device.ProcessCommand("next");
-            device.ProcessCommand("end");
+            var result1 = await device.ProcessCommandAsync("edit 1");
+            var result2 = await device.ProcessCommandAsync("set name \"Test Policy\"");
+            var result3 = await device.ProcessCommandAsync("next");
+            await device.ProcessCommandAsync("end");
 
             // Assert
             Assert.NotNull(result1);
@@ -537,13 +537,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FortinetGlobalHandler_ConfigCommand_ShouldEnterConfigMode()
+        public async Task FortinetGlobalHandler_ConfigCommand_ShouldEnterConfigMode()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
             
             // Act
-            var output = device.ProcessCommand("config system global");
+            var output = await device.ProcessCommandAsync("config system global");
             
             // Assert
             Assert.Equal("global_config", device.GetCurrentMode());
@@ -552,13 +552,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FortinetGlobalHandler_GetCommand_ShouldShowSystemInfo()
+        public async Task FortinetGlobalHandler_GetCommand_ShouldShowSystemInfo()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
             
             // Act
-            var output = device.ProcessCommand("get system status");
+            var output = await device.ProcessCommandAsync("get system status");
             
             // Assert
             Assert.Contains("Version:", output);
@@ -567,13 +567,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FortinetGlobalHandler_ShowCommand_ShouldDisplayInfo()
+        public async Task FortinetGlobalHandler_ShowCommand_ShouldDisplayInfo()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
             
             // Act
-            var output = device.ProcessCommand("show system interface");
+            var output = await device.ProcessCommandAsync("show system interface");
             
             // Assert
             Assert.Contains("Interface information", output);
@@ -581,13 +581,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FortinetGlobalHandler_ExecuteCommand_ShouldExecuteCommand()
+        public async Task FortinetGlobalHandler_ExecuteCommand_ShouldExecuteCommand()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
             
             // Act
-            var output = device.ProcessCommand("execute ping 192.168.1.1");
+            var output = await device.ProcessCommandAsync("execute ping 192.168.1.1");
             
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
@@ -596,13 +596,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FortinetGlobalHandler_DiagnoseCommand_ShouldRunDiagnostics()
+        public async Task FortinetGlobalHandler_DiagnoseCommand_ShouldRunDiagnostics()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
             
             // Act
-            var output = device.ProcessCommand("diagnose sys version");
+            var output = await device.ProcessCommandAsync("diagnose sys version");
             
             // Assert
             Assert.Contains("FortiOS version", output);
@@ -610,14 +610,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FortinetGlobalHandler_WhenInRouterMode_ShouldHandleRouterCommands()
+        public async Task FortinetGlobalHandler_WhenInRouterMode_ShouldHandleRouterCommands()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
-            device.ProcessCommand("config router ospf");
+            await device.ProcessCommandAsync("config router ospf");
             
             // Act
-            var output = device.ProcessCommand("show");
+            var output = await device.ProcessCommandAsync("show");
             
             // Assert
             Assert.Contains("OSPF configuration", output);
@@ -625,14 +625,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FortinetGlobalHandler_WhenInRouterMode_ShouldRejectNonRouterCommands()
+        public async Task FortinetGlobalHandler_WhenInRouterMode_ShouldRejectNonRouterCommands()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
-            device.ProcessCommand("config router ospf");
+            await device.ProcessCommandAsync("config router ospf");
             
             // Act
-            var output = device.ProcessCommand("config system global");
+            var output = await device.ProcessCommandAsync("config system global");
             
             // Assert
             Assert.Contains("Invalid command", output);
@@ -640,14 +640,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FortinetGlobalHandler_WhenNotInGlobalMode_ShouldReturnError()
+        public async Task FortinetGlobalHandler_WhenNotInGlobalMode_ShouldReturnError()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
-            device.ProcessCommand("config system interface");
+            await device.ProcessCommandAsync("config system interface");
             
             // Act
-            var output = device.ProcessCommand("get system status");
+            var output = await device.ProcessCommandAsync("get system status");
             
             // Assert
             Assert.Contains("Invalid mode", output);
@@ -655,13 +655,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FortinetGlobalHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task FortinetGlobalHandler_WithInvalidCommand_ShouldReturnError()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
             
             // Act
-            var output = device.ProcessCommand("invalid command");
+            var output = await device.ProcessCommandAsync("invalid command");
             
             // Assert
             Assert.Contains("Invalid command", output);
@@ -669,13 +669,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public void FortinetGlobalHandler_WithIncompleteCommand_ShouldReturnError()
+        public async Task FortinetGlobalHandler_WithIncompleteCommand_ShouldReturnError()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
             
             // Act
-            var output = device.ProcessCommand("config");
+            var output = await device.ProcessCommandAsync("config");
             
             // Assert
             Assert.Contains("Incomplete command", output);

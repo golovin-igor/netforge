@@ -76,27 +76,27 @@ namespace NetSim.Simulation.Tests.CliHandlers.TestHelpers
         /// <summary>
         /// Sets up a device in privileged mode for testing configuration commands
         /// </summary>
-        public static void SetupPrivilegedMode(NetworkDevice device)
+        public static async Task SetupPrivilegedMode(NetworkDevice device)
         {
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
         }
 
         /// <summary>
         /// Sets up a device in configuration mode for testing config commands
         /// </summary>
-        public static void SetupConfigurationMode(NetworkDevice device)
+        public static async Task SetupConfigurationMode(NetworkDevice device)
         {
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
         }
 
         /// <summary>
         /// Sets up a device in interface configuration mode
         /// </summary>
-        public static void SetupInterfaceMode(NetworkDevice device, string interfaceName = "GigabitEthernet0/0")
+        public static async Task SetupInterfaceMode(NetworkDevice device, string interfaceName = "GigabitEthernet0/0")
         {
             SetupConfigurationMode(device);
-            device.ProcessCommand($"interface {interfaceName}");
+            await device.ProcessCommandAsync($"interface {interfaceName}");
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.TestHelpers
         /// <summary>
         /// Verifies that a command completed successfully with expected mode
         /// </summary>
-        public static void VerifyCommandSuccess(NetworkDevice device, string output, string expectedMode)
+        public static async Task VerifyCommandSuccess(NetworkDevice device, string output, string expectedMode)
         {
             var actualMode = device.GetCurrentMode();
             var normalizedOutput = NormalizeOutput(output);

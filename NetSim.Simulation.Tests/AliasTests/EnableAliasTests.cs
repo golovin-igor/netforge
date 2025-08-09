@@ -9,13 +9,13 @@ namespace NetSim.Simulation.Tests.AliasTests
     public class EnableAliasTests
     {
         [Fact]
-        public void CiscoDevice_EnableAlias_ShouldWork()
+        public async Task CiscoDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("R1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -24,13 +24,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void AristaDevice_EnableAlias_ShouldWork()
+        public async Task AristaDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new AristaDevice("SW1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -39,13 +39,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void AniraDevice_EnableAlias_ShouldWork()
+        public async Task AniraDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new AniraDevice("R1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -54,13 +54,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void DellDevice_EnableAlias_ShouldWork()
+        public async Task DellDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new DellDevice("SW1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -69,13 +69,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void MikroTikDevice_EnableAlias_ShouldWork()
+        public async Task MikroTikDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new MikroTikDevice("RB1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -84,13 +84,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void NokiaDevice_EnableAlias_ShouldWork()
+        public async Task NokiaDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("R1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -99,13 +99,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void LinuxDevice_EnableAlias_ShouldWork()
+        public async Task LinuxDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new LinuxDevice("R1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -114,13 +114,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void FortinetDevice_EnableAlias_ShouldWork()
+        public async Task FortinetDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new FortinetDevice("FW1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -129,13 +129,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void F5Device_EnableAlias_ShouldWork()
+        public async Task F5Device_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new F5Device("LB1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -144,13 +144,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void ExtremeDevice_EnableAlias_ShouldWork()
+        public async Task ExtremeDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new ExtremeDevice("SW1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -159,13 +159,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void HuaweiDevice_EnableAlias_ShouldWork()
+        public async Task HuaweiDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new HuaweiDevice("R1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -174,13 +174,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void BroadcomDevice_EnableAlias_ShouldWork()
+        public async Task BroadcomDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new BroadcomDevice("SW1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -189,13 +189,13 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void AlcatelDevice_EnableAlias_ShouldWork()
+        public async Task AlcatelDevice_EnableAlias_ShouldWork()
         {
             // Arrange
             var device = new AlcatelDevice("R1");
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -204,14 +204,14 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void EnableAlias_WhenAlreadyPrivileged_ShouldReturnSuccess()
+        public async Task EnableAlias_WhenAlreadyPrivileged_ShouldReturnSuccess()
         {
             // Arrange
             var device = new CiscoDevice("R1");
-            device.ProcessCommand("enable"); // Enter privileged mode first
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode first
             
             // Act
-            var output = device.ProcessCommand("ena");
+            var output = await device.ProcessCommandAsync("ena");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -220,15 +220,15 @@ namespace NetSim.Simulation.Tests.AliasTests
         }
 
         [Fact]
-        public void EnableAlias_ShouldBeEquivalentToFullCommand()
+        public async Task EnableAlias_ShouldBeEquivalentToFullCommand()
         {
             // Arrange
             var device1 = new CiscoDevice("R1");
             var device2 = new CiscoDevice("R2");
             
             // Act
-            var output1 = device1.ProcessCommand("ena");
-            var output2 = device2.ProcessCommand("enable");
+            var output1 = await device1.ProcessCommandAsync("ena");
+            var output2 = await device2.ProcessCommandAsync("enable");
             
             // Assert
             Assert.Equal(device1.GetCurrentMode(), device2.GetCurrentMode());

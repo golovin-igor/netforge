@@ -12,7 +12,7 @@ namespace NetSim.Simulation.Tests.CounterTests
     public class JuniperCounterTests
     {
         [Fact]
-        public void Juniper_PingCounters_ShouldIncrementCorrectly()
+        public async Task Juniper_PingCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new JuniperDevice("R1");
@@ -22,7 +22,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ge-0/0/0", "R2", "ge-0/0/0").Wait();
 
-            ConfigureBasicInterfaces(r1, r2);
+            await ConfigureBasicInterfaces(r1, r2);
 
             var intfR1Before = r1.GetInterface("ge-0/0/0");
             var intfR2Before = r2.GetInterface("ge-0/0/0");
@@ -40,7 +40,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void Juniper_PingWithInterfaceDown_ShouldNotIncrementCounters()
+        public async Task Juniper_PingWithInterfaceDown_ShouldNotIncrementCounters()
         {
             var network = new Network();
             var r1 = new JuniperDevice("R1");
@@ -50,17 +50,17 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ge-0/0/0", "R2", "ge-0/0/0").Wait();
 
-            ConfigureBasicInterfaces(r1, r2);
+            await ConfigureBasicInterfaces(r1, r2);
             
             SimulatePingWithCounters(r1, r2, "ge-0/0/0", "ge-0/0/0");
             var initialCounters = r2.GetInterface("ge-0/0/0").RxPackets;
 
             // Disable interface in Junos style
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("set interfaces ge-0/0/0 disable");
-            r2.ProcessCommand("commit");
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("set interfaces ge-0/0/0 disable");
+            await r2.ProcessCommandAsync("commit");
 
-            var pingResult = r1.ProcessCommand("ping 192.168.1.2");
+            var pingResult = await r1.ProcessCommandAsync("ping 192.168.1.2");
             var finalCounters = r2.GetInterface("ge-0/0/0").RxPackets;
             
             Assert.Equal(initialCounters, finalCounters);
@@ -68,7 +68,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void Juniper_OspfHelloCounters_ShouldIncrementCorrectly()
+        public async Task Juniper_OspfHelloCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new JuniperDevice("R1");
@@ -78,7 +78,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ge-0/0/0", "R2", "ge-0/0/0").Wait();
 
-            ConfigureOspfDevices(r1, r2);
+            await ConfigureOspfDevices(r1, r2);
 
             var intfR1Before = r1.GetInterface("ge-0/0/0");
             var initialTxBytes = intfR1Before.TxBytes;
@@ -88,12 +88,12 @@ namespace NetSim.Simulation.Tests.CounterTests
             var intfR1After = r1.GetInterface("ge-0/0/0");
             Assert.Equal(initialTxBytes + 120, intfR1After.TxBytes); // 3 * 40 bytes
 
-            var ospfNeighbors = r1.ProcessCommand("show ospf neighbor");
+            var ospfNeighbors = await r1.ProcessCommandAsync("show ospf neighbor");
             Assert.Contains("192.168.1.2", ospfNeighbors);
         }
 
         [Fact]
-        public void Juniper_BgpUpdateCounters_ShouldIncrementCorrectly()
+        public async Task Juniper_BgpUpdateCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new JuniperDevice("R1");
@@ -103,7 +103,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ge-0/0/0", "R2", "ge-0/0/0").Wait();
 
-            ConfigureBgpPeers(r1, r2, 65001, 65002);
+            await ConfigureBgpPeers(r1, r2, 65001, 65002);
 
             var intfR1Before = r1.GetInterface("ge-0/0/0");
             var initialTxBytes = intfR1Before.TxBytes;
@@ -113,12 +113,12 @@ namespace NetSim.Simulation.Tests.CounterTests
             var intfR1After = r1.GetInterface("ge-0/0/0");
             Assert.Equal(initialTxBytes + 96, intfR1After.TxBytes); // 2 * 48 bytes
 
-            var bgpSummary = r1.ProcessCommand("show bgp summary");
+            var bgpSummary = await r1.ProcessCommandAsync("show bgp summary");
             Assert.Contains("192.168.1.2", bgpSummary);
         }
 
         [Fact]
-        public void Juniper_FirewallFilterCounters_ShouldNotIncrementWhenBlocked()
+        public async Task Juniper_FirewallFilterCounters_ShouldNotIncrementWhenBlocked()
         {
             var network = new Network();
             var r1 = new JuniperDevice("R1");
@@ -128,19 +128,19 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ge-0/0/0", "R2", "ge-0/0/0").Wait();
 
-            ConfigureBasicInterfaces(r1, r2);
+            await ConfigureBasicInterfaces(r1, r2);
 
             // Apply firewall filter to block ICMP
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("set firewall filter block-icmp term 1 from protocol icmp");
-            r2.ProcessCommand("set firewall filter block-icmp term 1 then discard");
-            r2.ProcessCommand("set firewall filter block-icmp term 2 then accept");
-            r2.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet filter input block-icmp");
-            r2.ProcessCommand("commit");
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("set firewall filter block-icmp term 1 from protocol icmp");
+            await r2.ProcessCommandAsync("set firewall filter block-icmp term 1 then discard");
+            await r2.ProcessCommandAsync("set firewall filter block-icmp term 2 then accept");
+            await r2.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet filter input block-icmp");
+            await r2.ProcessCommandAsync("commit");
 
             var initialRxPackets = r2.GetInterface("ge-0/0/0").RxPackets;
 
-            var pingResult = r1.ProcessCommand("ping 192.168.1.2");
+            var pingResult = await r1.ProcessCommandAsync("ping 192.168.1.2");
             var finalRxPackets = r2.GetInterface("ge-0/0/0").RxPackets;
             
             Assert.Equal(initialRxPackets, finalRxPackets);
@@ -148,7 +148,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void Juniper_MultiProtocolCounters_ShouldAccumulateCorrectly()
+        public async Task Juniper_MultiProtocolCounters_ShouldAccumulateCorrectly()
         {
             var network = new Network();
             var r1 = new JuniperDevice("R1");
@@ -158,8 +158,8 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ge-0/0/0", "R2", "ge-0/0/0").Wait();
 
-            ConfigureOspfDevices(r1, r2);
-            ConfigureBgpPeers(r1, r2, 65001, 65002);
+            await ConfigureOspfDevices(r1, r2);
+            await ConfigureBgpPeers(r1, r2, 65001, 65002);
 
             var intfR1Before = r1.GetInterface("ge-0/0/0");
             var initialTxBytes = intfR1Before.TxBytes;
@@ -189,51 +189,51 @@ namespace NetSim.Simulation.Tests.CounterTests
             }
         }
 
-        private void ConfigureBasicInterfaces(JuniperDevice r1, JuniperDevice r2)
+        private async Task ConfigureBasicInterfaces(JuniperDevice r1, JuniperDevice r2)
         {
             // R1 interface configuration - Junos style
-            r1.ProcessCommand("configure");
-            r1.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
-            r1.ProcessCommand("commit");
+            await r1.ProcessCommandAsync("configure");
+            await r1.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
+            await r1.ProcessCommandAsync("commit");
 
             // R2 interface configuration - Junos style
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.2/24");
-            r2.ProcessCommand("commit");
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.2/24");
+            await r2.ProcessCommandAsync("commit");
         }
 
-        private void ConfigureOspfDevices(JuniperDevice r1, JuniperDevice r2)
+        private async Task ConfigureOspfDevices(JuniperDevice r1, JuniperDevice r2)
         {
             // R1 OSPF configuration - Junos style
-            r1.ProcessCommand("configure");
-            r1.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
-            r1.ProcessCommand("set protocols ospf area 0.0.0.0 interface ge-0/0/0");
-            r1.ProcessCommand("commit");
+            await r1.ProcessCommandAsync("configure");
+            await r1.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
+            await r1.ProcessCommandAsync("set protocols ospf area 0.0.0.0 interface ge-0/0/0");
+            await r1.ProcessCommandAsync("commit");
 
             // R2 OSPF configuration - Junos style
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.2/24");
-            r2.ProcessCommand("set protocols ospf area 0.0.0.0 interface ge-0/0/0");
-            r2.ProcessCommand("commit");
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.2/24");
+            await r2.ProcessCommandAsync("set protocols ospf area 0.0.0.0 interface ge-0/0/0");
+            await r2.ProcessCommandAsync("commit");
         }
 
-        private void ConfigureBgpPeers(JuniperDevice r1, JuniperDevice r2, int as1, int as2)
+        private async Task ConfigureBgpPeers(JuniperDevice r1, JuniperDevice r2, int as1, int as2)
         {
             // R1 BGP configuration - Junos style
-            r1.ProcessCommand("configure");
-            r1.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
-            r1.ProcessCommand($"set routing-options autonomous-system {as1}");
-            r1.ProcessCommand($"set protocols bgp group external type external");
-            r1.ProcessCommand($"set protocols bgp group external neighbor 192.168.1.2 peer-as {as2}");
-            r1.ProcessCommand("commit");
+            await r1.ProcessCommandAsync("configure");
+            await r1.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24");
+            await r1.ProcessCommandAsync($"set routing-options autonomous-system {as1}");
+            await r1.ProcessCommandAsync($"set protocols bgp group external type external");
+            await r1.ProcessCommandAsync($"set protocols bgp group external neighbor 192.168.1.2 peer-as {as2}");
+            await r1.ProcessCommandAsync("commit");
 
             // R2 BGP configuration - Junos style
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.2/24");
-            r2.ProcessCommand($"set routing-options autonomous-system {as2}");
-            r2.ProcessCommand($"set protocols bgp group external type external");
-            r2.ProcessCommand($"set protocols bgp group external neighbor 192.168.1.1 peer-as {as1}");
-            r2.ProcessCommand("commit");
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.2/24");
+            await r2.ProcessCommandAsync($"set routing-options autonomous-system {as2}");
+            await r2.ProcessCommandAsync($"set protocols bgp group external type external");
+            await r2.ProcessCommandAsync($"set protocols bgp group external neighbor 192.168.1.1 peer-as {as1}");
+            await r2.ProcessCommandAsync("commit");
         }
 
         private void SimulateOspfHelloExchange(JuniperDevice r1, JuniperDevice r2, 

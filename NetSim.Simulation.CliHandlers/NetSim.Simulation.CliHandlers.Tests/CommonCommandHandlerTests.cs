@@ -10,13 +10,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
     public class CommonCommandHandlerTests
     {
         [Fact]
-        public void CommonEnableHandler_ShouldEnterPrivilegedMode()
+        public async Task CommonEnableHandler_ShouldEnterPrivilegedMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("enable");
+            var output = await device.ProcessCommandAsync("enable");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -25,13 +25,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void CommonEnableHandler_WithAlias_ShouldWork()
+        public async Task CommonEnableHandler_WithAlias_ShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("en");
+            var output = await device.ProcessCommandAsync("en");
             
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
@@ -40,14 +40,14 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void CommonEnableHandler_WhenAlreadyPrivileged_ShouldReturnError()
+        public async Task CommonEnableHandler_WhenAlreadyPrivileged_ShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable"); // Enter privileged mode first
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode first
             
             // Act
-            var output = device.ProcessCommand("enable");
+            var output = await device.ProcessCommandAsync("enable");
             
             // Assert
             // Most handlers return empty string when already in privileged mode
@@ -56,14 +56,14 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void CommonDisableHandler_ShouldExitPrivilegedMode()
+        public async Task CommonDisableHandler_ShouldExitPrivilegedMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable"); // Enter privileged mode first
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode first
             
             // Act
-            var output = device.ProcessCommand("disable");
+            var output = await device.ProcessCommandAsync("disable");
             
             // Assert
             Assert.Equal("user", device.GetCurrentMode());
@@ -72,13 +72,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void CommonDisableHandler_WhenNotPrivileged_ShouldReturnError()
+        public async Task CommonDisableHandler_WhenNotPrivileged_ShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("disable");
+            var output = await device.ProcessCommandAsync("disable");
             
             // Assert
             // Disable from user mode typically just returns the prompt
@@ -87,13 +87,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void CommonPingHandler_ShouldExecutePing()
+        public async Task CommonPingHandler_ShouldExecutePing()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("ping 192.168.1.1");
+            var output = await device.ProcessCommandAsync("ping 192.168.1.1");
             
             // Assert
             // In test environment without network initialization, expect network error
@@ -102,13 +102,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void CommonPingHandler_WithInvalidDestination_ShouldReturnError()
+        public async Task CommonPingHandler_WithInvalidDestination_ShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("ping invalid-ip");
+            var output = await device.ProcessCommandAsync("ping invalid-ip");
             
             // Assert
             Assert.Contains("Invalid IP address", output);
@@ -116,13 +116,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void CommonPingHandler_WithoutDestination_ShouldReturnError()
+        public async Task CommonPingHandler_WithoutDestination_ShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("ping");
+            var output = await device.ProcessCommandAsync("ping");
             
             // Assert
             Assert.Contains("Incomplete command", output);
@@ -131,38 +131,38 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void CommonExitHandler_ShouldExitCurrentMode()
+        public async Task CommonExitHandler_ShouldExitCurrentMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface GigabitEthernet0/0");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Act & Assert - Exit interface mode
-            var output1 = device.ProcessCommand("exit");
+            var output1 = await device.ProcessCommandAsync("exit");
             Assert.Equal("config", device.GetCurrentMode());
             Assert.Equal("TestRouter(config)#", output1);
             
             // Exit config mode
-            var output2 = device.ProcessCommand("exit");
+            var output2 = await device.ProcessCommandAsync("exit");
             Assert.Equal("privileged", device.GetCurrentMode());
             Assert.Equal("TestRouter#", output2);
             
             // Exit privileged mode
-            var output3 = device.ProcessCommand("exit");
+            var output3 = await device.ProcessCommandAsync("exit");
             Assert.Equal("user", device.GetCurrentMode());
             Assert.Equal("TestRouter>", output3);
         }
 
         [Fact]
-        public void CommonExitHandler_FromUserMode_ShouldStayInUserMode()
+        public async Task CommonExitHandler_FromUserMode_ShouldStayInUserMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("exit");
+            var output = await device.ProcessCommandAsync("exit");
             
             // Assert
             Assert.Equal("user", device.GetCurrentMode());

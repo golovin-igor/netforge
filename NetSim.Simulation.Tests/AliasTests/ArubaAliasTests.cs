@@ -9,32 +9,32 @@ namespace NetSim.Simulation.Tests.AliasTests
     public class ArubaAliasTests
     {
         [Fact]
-        public void Aruba_ShowRunAlias_ShouldMatchFullCommand()
+        public async Task Aruba_ShowRunAlias_ShouldMatchFullCommand()
         {
             var device = new ArubaDevice("SW1");
-            var full = device.ProcessCommand("show running-config");
-            var alias = device.ProcessCommand("sh run");
+            var full = await device.ProcessCommandAsync("show running-config");
+            var alias = await device.ProcessCommandAsync("sh run");
             Assert.Equal(full, alias);
         }
 
         [Fact]
-        public void Aruba_InterfaceAliasConfig_ShouldApplySettings()
+        public async Task Aruba_InterfaceAliasConfig_ShouldApplySettings()
         {
             var device = new ArubaDevice("SW1");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("conf t");
-            device.ProcessCommand("int Gig1/0/1");
-            device.ProcessCommand("ip address 10.1.1.1 255.255.255.0");
-            device.ProcessCommand("no shut");
-            device.ProcessCommand("exit");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("conf t");
+            await device.ProcessCommandAsync("int Gig1/0/1");
+            await device.ProcessCommandAsync("ip address 10.1.1.1 255.255.255.0");
+            await device.ProcessCommandAsync("no shut");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("exit");
 
             var iface = device.GetInterface("GigabitEthernet1/0/1");
             Assert.Equal("10.1.1.1", iface.IpAddress);
             Assert.False(iface.IsShutdown);
 
-            var full = device.ProcessCommand("show interface GigabitEthernet1/0/1");
-            var alias = device.ProcessCommand("sh int 1/1/1");
+            var full = await device.ProcessCommandAsync("show interface GigabitEthernet1/0/1");
+            var alias = await device.ProcessCommandAsync("sh int 1/1/1");
             Assert.Equal(full, alias);
         }
     }

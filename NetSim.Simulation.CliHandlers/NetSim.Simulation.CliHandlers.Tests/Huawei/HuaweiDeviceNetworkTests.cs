@@ -18,23 +18,23 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_Ping_ShouldShowSuccessAndFailure()
+        public async Task Huawei_Ping_ShouldShowSuccessAndFailure()
         {
             var device = new HuaweiDevice("R1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
-            device.ProcessCommand("undo shutdown");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
+            await device.ProcessCommandAsync("undo shutdown");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("ping 10.0.0.2");
+            var output = await device.ProcessCommandAsync("ping 10.0.0.2");
             Assert.Contains("56 data bytes", output);
             Assert.Contains("10.0.0.2", output);
             Assert.Contains("Reply from", output);
             Assert.Contains("100.00% packet loss", output, StringComparison.OrdinalIgnoreCase);
 
-            output = device.ProcessCommand("ping 192.168.99.99");
+            output = await device.ProcessCommandAsync("ping 192.168.99.99");
             Assert.Contains("0.00% packet loss", output, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -42,19 +42,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         public async Task Huawei_ConfigureInterfaceAndPing_ShouldSucceed()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("system-view");
-            r1.ProcessCommand("interface GigabitEthernet0/0/0");
-            r1.ProcessCommand("ip address 192.168.1.1 24");
-            r1.ProcessCommand("quit");
-            r1.ProcessCommand("quit");
+            await r1.ProcessCommandAsync("system-view");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 24");
+            await r1.ProcessCommandAsync("quit");
+            await r1.ProcessCommandAsync("quit");
 
-            r2.ProcessCommand("system-view");
-            r2.ProcessCommand("interface GigabitEthernet0/0/0");
-            r2.ProcessCommand("ip address 192.168.1.2 24");
-            r2.ProcessCommand("quit");
-            r2.ProcessCommand("quit");
+            await r2.ProcessCommandAsync("system-view");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 24");
+            await r2.ProcessCommandAsync("quit");
+            await r2.ProcessCommandAsync("quit");
 
-            var pingOutput = r1.ProcessCommand("ping 192.168.1.2");
+            var pingOutput = await r1.ProcessCommandAsync("ping 192.168.1.2");
             Assert.Contains("5 packet(s) transmitted, 5 packet(s) received", pingOutput);
         }
 
@@ -62,30 +62,30 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         public async Task Huawei_ConfigureOspf_ShouldFormAdjacency()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("system-view");
-            r1.ProcessCommand("interface GigabitEthernet0/0/0");
-            r1.ProcessCommand("ip address 10.0.0.1 30");
-            r1.ProcessCommand("quit");
-            r1.ProcessCommand("ospf 1 router-id 1.1.1.1");
-            r1.ProcessCommand("area 0");
-            r1.ProcessCommand("network 10.0.0.0 0.0.0.3");
-            r1.ProcessCommand("quit");
-            r1.ProcessCommand("quit");
+            await r1.ProcessCommandAsync("system-view");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r1.ProcessCommandAsync("ip address 10.0.0.1 30");
+            await r1.ProcessCommandAsync("quit");
+            await r1.ProcessCommandAsync("ospf 1 router-id 1.1.1.1");
+            await r1.ProcessCommandAsync("area 0");
+            await r1.ProcessCommandAsync("network 10.0.0.0 0.0.0.3");
+            await r1.ProcessCommandAsync("quit");
+            await r1.ProcessCommandAsync("quit");
 
-            r2.ProcessCommand("system-view");
-            r2.ProcessCommand("interface GigabitEthernet0/0/0");
-            r2.ProcessCommand("ip address 10.0.0.2 30");
-            r2.ProcessCommand("quit");
-            r2.ProcessCommand("ospf 1 router-id 2.2.2.2");
-            r2.ProcessCommand("area 0");
-            r2.ProcessCommand("network 10.0.0.0 0.0.0.3");
-            r2.ProcessCommand("quit");
-            r2.ProcessCommand("quit");
+            await r2.ProcessCommandAsync("system-view");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r2.ProcessCommandAsync("ip address 10.0.0.2 30");
+            await r2.ProcessCommandAsync("quit");
+            await r2.ProcessCommandAsync("ospf 1 router-id 2.2.2.2");
+            await r2.ProcessCommandAsync("area 0");
+            await r2.ProcessCommandAsync("network 10.0.0.0 0.0.0.3");
+            await r2.ProcessCommandAsync("quit");
+            await r2.ProcessCommandAsync("quit");
 
             network.UpdateProtocols();
             await Task.Delay(50);
 
-            var ospfOutput = r1.ProcessCommand("display ospf peer");
+            var ospfOutput = await r1.ProcessCommandAsync("display ospf peer");
             Assert.Contains("2.2.2.2", ospfOutput);
             Assert.Contains("Full", ospfOutput);
         }
@@ -94,30 +94,30 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         public async Task Huawei_ConfigureBgp_ShouldEstablishPeering()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("system-view");
-            r1.ProcessCommand("bgp 65001");
-            r1.ProcessCommand("router-id 1.1.1.1");
-            r1.ProcessCommand("peer 10.0.0.2 as-number 65002");
-            r1.ProcessCommand("quit");
-            r1.ProcessCommand("interface GigabitEthernet0/0/0");
-            r1.ProcessCommand("ip address 10.0.0.1 30");
-            r1.ProcessCommand("quit");
-            r1.ProcessCommand("quit");
+            await r1.ProcessCommandAsync("system-view");
+            await r1.ProcessCommandAsync("bgp 65001");
+            await r1.ProcessCommandAsync("router-id 1.1.1.1");
+            await r1.ProcessCommandAsync("peer 10.0.0.2 as-number 65002");
+            await r1.ProcessCommandAsync("quit");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r1.ProcessCommandAsync("ip address 10.0.0.1 30");
+            await r1.ProcessCommandAsync("quit");
+            await r1.ProcessCommandAsync("quit");
 
-            r2.ProcessCommand("system-view");
-            r2.ProcessCommand("bgp 65002");
-            r2.ProcessCommand("router-id 2.2.2.2");
-            r2.ProcessCommand("peer 10.0.0.1 as-number 65001");
-            r2.ProcessCommand("quit");
-            r2.ProcessCommand("interface GigabitEthernet0/0/0");
-            r2.ProcessCommand("ip address 10.0.0.2 30");
-            r2.ProcessCommand("quit");
-            r2.ProcessCommand("quit");
+            await r2.ProcessCommandAsync("system-view");
+            await r2.ProcessCommandAsync("bgp 65002");
+            await r2.ProcessCommandAsync("router-id 2.2.2.2");
+            await r2.ProcessCommandAsync("peer 10.0.0.1 as-number 65001");
+            await r2.ProcessCommandAsync("quit");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0/0");
+            await r2.ProcessCommandAsync("ip address 10.0.0.2 30");
+            await r2.ProcessCommandAsync("quit");
+            await r2.ProcessCommandAsync("quit");
 
             network.UpdateProtocols();
             await Task.Delay(100);
 
-            var bgpOutput = r1.ProcessCommand("display bgp peer");
+            var bgpOutput = await r1.ProcessCommandAsync("display bgp peer");
             Assert.Contains("10.0.0.2", bgpOutput);
             Assert.Contains("Established", bgpOutput);
         }

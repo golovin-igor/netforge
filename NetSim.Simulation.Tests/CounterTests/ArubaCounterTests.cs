@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Tests.CounterTests
     public class ArubaCounterTests
     {
         [Fact]
-        public void Aruba_PingCounters_ShouldIncrementCorrectly()
+        public async Task Aruba_PingCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new ArubaDevice("R1");
@@ -17,7 +17,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "1/1/1", "R2", "1/1/1").Wait();
 
-            ConfigureBasicInterfaces(r1, r2);
+            await ConfigureBasicInterfaces(r1, r2);
 
             var intfR1Before = r1.GetInterface("1/1/1");
             var intfR2Before = r2.GetInterface("1/1/1");
@@ -33,7 +33,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void Aruba_OspfHelloCounters_ShouldIncrementCorrectly()
+        public async Task Aruba_OspfHelloCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new ArubaDevice("R1");
@@ -43,7 +43,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "1/1/1", "R2", "1/1/1").Wait();
 
-            ConfigureOspfDevices(r1, r2);
+            await ConfigureOspfDevices(r1, r2);
 
             var intfR1Before = r1.GetInterface("1/1/1");
             var initialTxBytes = intfR1Before.TxBytes;
@@ -53,7 +53,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             var intfR1After = r1.GetInterface("1/1/1");
             Assert.Equal(initialTxBytes + 120, intfR1After.TxBytes);
 
-            var ospfNeighbors = r1.ProcessCommand("show ip ospf neighbor");
+            var ospfNeighbors = await r1.ProcessCommandAsync("show ip ospf neighbor");
             Assert.Contains("192.168.1.2", ospfNeighbors);
         }
 
@@ -73,44 +73,44 @@ namespace NetSim.Simulation.Tests.CounterTests
             }
         }
 
-        private void ConfigureBasicInterfaces(ArubaDevice r1, ArubaDevice r2)
+        private async Task ConfigureBasicInterfaces(ArubaDevice r1, ArubaDevice r2)
         {
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface 1/1/1");
-            r1.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface 1/1/1");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface 1/1/1");
-            r2.ProcessCommand("ip address 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface 1/1/1");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
         }
 
-        private void ConfigureOspfDevices(ArubaDevice r1, ArubaDevice r2)
+        private async Task ConfigureOspfDevices(ArubaDevice r1, ArubaDevice r2)
         {
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface 1/1/1");
-            r1.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("router ospf 1");
-            r1.ProcessCommand("network 192.168.1.0 0.0.0.255 area 0");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface 1/1/1");
+            await r1.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("router ospf 1");
+            await r1.ProcessCommandAsync("network 192.168.1.0 0.0.0.255 area 0");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface 1/1/1");
-            r2.ProcessCommand("ip address 192.168.1.2 255.255.255.0");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("router ospf 1");
-            r2.ProcessCommand("network 192.168.1.0 0.0.0.255 area 0");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface 1/1/1");
+            await r2.ProcessCommandAsync("ip address 192.168.1.2 255.255.255.0");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("router ospf 1");
+            await r2.ProcessCommandAsync("network 192.168.1.0 0.0.0.255 area 0");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
         }
 
         private void SimulateOspfHelloExchange(ArubaDevice r1, ArubaDevice r2, 

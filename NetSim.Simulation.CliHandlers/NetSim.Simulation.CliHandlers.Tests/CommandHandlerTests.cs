@@ -6,13 +6,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
     public class CommandHandlerTests
     {
         [Fact]
-        public void ShowVersionHandler_ShouldReturnVersionInfo()
+        public async Task ShowVersionHandler_ShouldReturnVersionInfo()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show version");
+            var output = await device.ProcessCommandAsync("show version");
             
             // Assert
             Assert.Contains("Cisco IOS Software", output);
@@ -21,26 +21,26 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void ShowRunningConfigHandler_ShouldReturnConfig()
+        public async Task ShowRunningConfigHandler_ShouldReturnConfig()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Enter privileged mode
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             Assert.Equal("privileged", (device as CiscoDevice).GetMode());
             
             // Configure terminal and change hostname
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("hostname TestCisco");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("hostname TestCisco");
+            await device.ProcessCommandAsync("exit");
             
             // Verify we're in privileged mode before running show command
             var currentPrompt = device.GetPrompt();
             Assert.Equal("TestCisco#", currentPrompt); // Should be in privileged mode
             
             // Act
-            var output = device.ProcessCommand("show running-config");
+            var output = await device.ProcessCommandAsync("show running-config");
             
             // Assert
             Assert.Contains("hostname TestCisco", output);
@@ -48,13 +48,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void PingHandler_ShouldSimulatePing()
+        public async Task PingHandler_ShouldSimulatePing()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("ping 8.8.8.8");
+            var output = await device.ProcessCommandAsync("ping 8.8.8.8");
             
             // Assert
             Assert.Contains("Network not initialized", output);
@@ -62,7 +62,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void EnableHandler_ShouldChangeModeCorrectly()
+        public async Task EnableHandler_ShouldChangeModeCorrectly()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -71,7 +71,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
             Assert.Equal("TestRouter>", device.GetPrompt());
             Assert.Equal("user", (device as CiscoDevice).GetMode());
             
-            var output = device.ProcessCommand("enable");
+            var output = await device.ProcessCommandAsync("enable");
             
             // Check that mode changed
             Assert.Equal("privileged", (device as CiscoDevice).GetMode());
@@ -80,144 +80,144 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void InvalidCommand_ShouldFallbackToLegacy()
+        public async Task InvalidCommand_ShouldFallbackToLegacy()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("invalid command");
+            var output = await device.ProcessCommandAsync("invalid command");
             
             // Assert
             Assert.Contains("Invalid input detected", output);
         }
         
         [Fact]
-        public void HostnameHandler_ShouldChangeHostname()
+        public async Task HostnameHandler_ShouldChangeHostname()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("hostname NewName");
+            var output = await device.ProcessCommandAsync("hostname NewName");
             
             // Assert
             Assert.Equal("NewName(config)#", output);
             
             // Verify it persists in show run
-            device.ProcessCommand("exit");
-            var showRun = device.ProcessCommand("show running-config");
+            await device.ProcessCommandAsync("exit");
+            var showRun = await device.ProcessCommandAsync("show running-config");
             Assert.Contains("hostname NewName", showRun);
         }
         
         [Fact]
-        public void VlanHandler_ShouldCreateVlan()
+        public async Task VlanHandler_ShouldCreateVlan()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("vlan 10");
+            var output = await device.ProcessCommandAsync("vlan 10");
             
             // Assert
             Assert.Equal("TestRouter(config-vlan)#", output);
             
             // Configure VLAN name
-            device.ProcessCommand("name TestVLAN");
-            device.ProcessCommand("exit");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("name TestVLAN");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("exit");
             
             // Verify VLAN exists
-            var showVlan = device.ProcessCommand("show vlan brief");
+            var showVlan = await device.ProcessCommandAsync("show vlan brief");
             Assert.Contains("10", showVlan);
             Assert.Contains("TestVLAN", showVlan);
         }
         
         [Fact]
-        public void InterfaceHandler_ShouldConfigureInterface()
+        public async Task InterfaceHandler_ShouldConfigureInterface()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("interface GigabitEthernet0/0");
+            var output = await device.ProcessCommandAsync("interface GigabitEthernet0/0");
             
             // Assert
             Assert.Equal("TestRouter(config-if)#", output);
             
             // Configure IP address
-            device.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            device.ProcessCommand("no shutdown");
-            device.ProcessCommand("description Test Interface");
-            device.ProcessCommand("exit");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            await device.ProcessCommandAsync("no shutdown");
+            await device.ProcessCommandAsync("description Test Interface");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("exit");
             
             // Verify interface configuration
-            var showInt = device.ProcessCommand("show interfaces GigabitEthernet0/0");
+            var showInt = await device.ProcessCommandAsync("show interfaces GigabitEthernet0/0");
             Assert.Contains("192.168.1.1", showInt);
             Assert.Contains("Test Interface", showInt);
         }
         
         [Fact]
-        public void RouterOspfHandler_ShouldEnterOspfMode()
+        public async Task RouterOspfHandler_ShouldEnterOspfMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("router ospf 1");
+            var output = await device.ProcessCommandAsync("router ospf 1");
             
             // Assert
             Assert.Equal("TestRouter(config-router)#", output);
             
             // Verify OSPF configuration appears in running config
-            device.ProcessCommand("exit");
-            device.ProcessCommand("exit");
-            var showRun = device.ProcessCommand("show running-config");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("exit");
+            var showRun = await device.ProcessCommandAsync("show running-config");
             Assert.Contains("router ospf 1", showRun);
         }
         
         [Fact]
-        public void IpRouteHandler_ShouldAddStaticRoute()
+        public async Task IpRouteHandler_ShouldAddStaticRoute()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("ip route 10.0.0.0 255.255.255.0 192.168.1.254");
+            var output = await device.ProcessCommandAsync("ip route 10.0.0.0 255.255.255.0 192.168.1.254");
             
             // Assert
             Assert.Equal("TestRouter(config)#", output);
             
             // Verify route in running config
-            device.ProcessCommand("exit");
-            var showRun = device.ProcessCommand("show running-config");
+            await device.ProcessCommandAsync("exit");
+            var showRun = await device.ProcessCommandAsync("show running-config");
             Assert.Contains("ip route 10.0.0.0 255.255.255.0 192.168.1.254", showRun);
             
             // Verify route in routing table
-            var showRoute = device.ProcessCommand("show ip route");
+            var showRoute = await device.ProcessCommandAsync("show ip route");
             Assert.Contains("S    10.0.0.0/24", showRoute);
             Assert.Contains("192.168.1.254", showRoute);
         }
         
         [Fact]
-        public void HelpCommand_AtRootLevel_ShouldShowAvailableCommands()
+        public async Task HelpCommand_AtRootLevel_ShouldShowAvailableCommands()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("?");
+            var output = await device.ProcessCommandAsync("?");
             
             // Assert
             Assert.Contains("Available commands:", output);
@@ -227,13 +227,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void HelpCommand_WithPartialCommand_ShouldShowSubcommands()
+        public async Task HelpCommand_WithPartialCommand_ShouldShowSubcommands()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show ?");
+            var output = await device.ProcessCommandAsync("show ?");
             
             // Assert
             Assert.Contains("running-config", output);
@@ -244,13 +244,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void HelpCommand_WithNestedCommand_ShouldShowNestedOptions()
+        public async Task HelpCommand_WithNestedCommand_ShouldShowNestedOptions()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show ip ?");
+            var output = await device.ProcessCommandAsync("show ip ?");
             
             // Assert
             Assert.Contains("route", output);
@@ -258,15 +258,15 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void HelpCommand_InConfigMode_ShouldShowConfigCommands()
+        public async Task HelpCommand_InConfigMode_ShouldShowConfigCommands()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("?");
+            var output = await device.ProcessCommandAsync("?");
             
             // Assert
             Assert.Contains("hostname", output);
@@ -277,13 +277,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void HelpCommand_WithCompleteCommand_ShouldShowCR()
+        public async Task HelpCommand_WithCompleteCommand_ShouldShowCR()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("enable ?");
+            var output = await device.ProcessCommandAsync("enable ?");
             
             // Assert
             Assert.Contains("<cr>", output);

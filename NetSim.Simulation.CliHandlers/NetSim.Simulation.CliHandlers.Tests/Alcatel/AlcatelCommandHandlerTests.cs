@@ -34,14 +34,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ConfigurePort_ShouldEnterPortMode()
+        public async Task AlcatelHandler_ConfigurePort_ShouldEnterPortMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("port 1/1/1");
+            var output = await device.ProcessCommandAsync("port 1/1/1");
             
             // Assert
             Assert.Equal("port", device.GetCurrentMode());
@@ -49,14 +49,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ConfigureRouterInterface_ShouldEnterInterfaceMode()
+        public async Task AlcatelHandler_ConfigureRouterInterface_ShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("router interface system");
+            var output = await device.ProcessCommandAsync("router interface system");
             
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
@@ -64,15 +64,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ConfigureRouterOspf_ShouldEnterOspfMode()
+        public async Task AlcatelHandler_ConfigureRouterOspf_ShouldEnterOspfMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router");
             
             // Act
-            var output = device.ProcessCommand("ospf");
+            var output = await device.ProcessCommandAsync("ospf");
             
             // Assert
             Assert.Equal("ospf", device.GetCurrentMode());
@@ -80,15 +80,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ConfigureRouterBgp_ShouldEnterBgpMode()
+        public async Task AlcatelHandler_ConfigureRouterBgp_ShouldEnterBgpMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router");
             
             // Act
-            var output = device.ProcessCommand("bgp");
+            var output = await device.ProcessCommandAsync("bgp");
             
             // Assert
             Assert.Equal("bgp", device.GetCurrentMode());
@@ -96,13 +96,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_AdminDisplayConfig_ShouldShowConfiguration()
+        public async Task AlcatelHandler_AdminDisplayConfig_ShouldShowConfiguration()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("admin display-config");
+            var output = await device.ProcessCommandAsync("admin display-config");
             
             // Assert
             Assert.Contains("Configuration", output);
@@ -110,13 +110,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ShowRouterRouteTable_ShouldDisplayRoutes()
+        public async Task AlcatelHandler_ShowRouterRouteTable_ShouldDisplayRoutes()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show router route-table");
+            var output = await device.ProcessCommandAsync("show router route-table");
             
             // Assert
             Assert.Contains("Route Table", output);
@@ -124,13 +124,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ShowRouterArp_ShouldDisplayArpTable()
+        public async Task AlcatelHandler_ShowRouterArp_ShouldDisplayArpTable()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show router arp");
+            var output = await device.ProcessCommandAsync("show router arp");
             
             // Assert
             Assert.Contains("ARP Table", output);
@@ -138,13 +138,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ShowRouterInterface_ShouldDisplayInterfaces()
+        public async Task AlcatelHandler_ShowRouterInterface_ShouldDisplayInterfaces()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show router interface");
+            var output = await device.ProcessCommandAsync("show router interface");
             
             // Assert
             Assert.Contains("Interface", output);
@@ -152,13 +152,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_PingCommand_ShouldExecutePing()
+        public async Task AlcatelHandler_PingCommand_ShouldExecutePing()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("ping 8.8.8.8");
+            var output = await device.ProcessCommandAsync("ping 8.8.8.8");
             
             // Assert
             Assert.Contains("ping", output);
@@ -166,13 +166,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_TracerouteCommand_ShouldExecuteTraceroute()
+        public async Task AlcatelHandler_TracerouteCommand_ShouldExecuteTraceroute()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("traceroute 8.8.8.8");
+            var output = await device.ProcessCommandAsync("traceroute 8.8.8.8");
             
             // Assert
             Assert.Contains("traceroute", output);
@@ -180,14 +180,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ConfigureVlan_ShouldEnterVlanMode()
+        public async Task AlcatelHandler_ConfigureVlan_ShouldEnterVlanMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("vlan 100");
+            var output = await device.ProcessCommandAsync("vlan 100");
             
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
@@ -195,13 +195,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ShowVlanInfo_ShouldDisplayVlanInfo()
+        public async Task AlcatelHandler_ShowVlanInfo_ShouldDisplayVlanInfo()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show vlan info");
+            var output = await device.ProcessCommandAsync("show vlan info");
             
             // Assert
             Assert.Contains("VLAN", output);
@@ -209,15 +209,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ConfigureRouterMpls_ShouldEnterMplsMode()
+        public async Task AlcatelHandler_ConfigureRouterMpls_ShouldEnterMplsMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router");
             
             // Act
-            var output = device.ProcessCommand("mpls lsp test-lsp");
+            var output = await device.ProcessCommandAsync("mpls lsp test-lsp");
             
             // Assert
             Assert.Equal("mpls-lsp", device.GetCurrentMode());
@@ -225,13 +225,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ShowRouterMplsLsp_ShouldDisplayMplsLsp()
+        public async Task AlcatelHandler_ShowRouterMplsLsp_ShouldDisplayMplsLsp()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show router mpls lsp");
+            var output = await device.ProcessCommandAsync("show router mpls lsp");
             
             // Assert
             Assert.Contains("MPLS LSP", output);
@@ -239,15 +239,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ConfigureRouterLdp_ShouldEnterLdpMode()
+        public async Task AlcatelHandler_ConfigureRouterLdp_ShouldEnterLdpMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("router");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("router");
             
             // Act
-            var output = device.ProcessCommand("ldp");
+            var output = await device.ProcessCommandAsync("ldp");
             
             // Assert
             Assert.Equal("ldp", device.GetCurrentMode());
@@ -255,13 +255,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ShowSystemTime_ShouldDisplayTime()
+        public async Task AlcatelHandler_ShowSystemTime_ShouldDisplayTime()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show system time");
+            var output = await device.ProcessCommandAsync("show system time");
             
             // Assert
             Assert.Contains("Time", output);
@@ -269,28 +269,28 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ConfigureSystemTimeNtp_ShouldConfigureNtp()
+        public async Task AlcatelHandler_ConfigureSystemTimeNtp_ShouldConfigureNtp()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
-            device.ProcessCommand("system");
+            await device.ProcessCommandAsync("configure");
+            await device.ProcessCommandAsync("system");
             
             // Act
-            var output = device.ProcessCommand("time ntp server 192.168.1.1");
+            var output = await device.ProcessCommandAsync("time ntp server 192.168.1.1");
             
             // Assert
             Assert.Equal("A:TestRouter>config>system#", device.GetPrompt());
         }
 
         [Fact]
-        public void AlcatelHandler_AdminSave_ShouldSaveConfiguration()
+        public async Task AlcatelHandler_AdminSave_ShouldSaveConfiguration()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("admin save");
+            var output = await device.ProcessCommandAsync("admin save");
             
             // Assert
             Assert.Contains("Configuration saved", output);
@@ -298,13 +298,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ShowSystemUptime_ShouldDisplayUptime()
+        public async Task AlcatelHandler_ShowSystemUptime_ShouldDisplayUptime()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show system uptime");
+            var output = await device.ProcessCommandAsync("show system uptime");
             
             // Assert
             Assert.Contains("Uptime", output);
@@ -312,14 +312,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ConfigureServiceVpls_ShouldEnterVplsMode()
+        public async Task AlcatelHandler_ConfigureServiceVpls_ShouldEnterVplsMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand("service vpls 100");
+            var output = await device.ProcessCommandAsync("service vpls 100");
             
             // Assert
             Assert.Equal("vpls", device.GetCurrentMode());
@@ -327,13 +327,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_ShowServiceVpls_ShouldDisplayVplsInfo()
+        public async Task AlcatelHandler_ShowServiceVpls_ShouldDisplayVplsInfo()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("show service vpls 100");
+            var output = await device.ProcessCommandAsync("show service vpls 100");
             
             // Assert
             Assert.Contains("VPLS", output);
@@ -341,13 +341,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public void AlcatelHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task AlcatelHandler_WithInvalidCommand_ShouldReturnError()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("invalid command");
+            var output = await device.ProcessCommandAsync("invalid command");
             
             // Assert
             Assert.Contains("Invalid", output);
@@ -370,14 +370,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         [InlineData("show router rip neighbor")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public void AlcatelHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task AlcatelHandler_AllShowCommands_ShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("enable"); // Enter privileged mode
+            await device.ProcessCommandAsync("enable"); // Enter privileged mode
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -394,17 +394,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         [InlineData("router bgp")]
         [InlineData("vlan 100")]
         [InlineData("service vpls 100")]
-        public void AlcatelHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task AlcatelHandler_ConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             if (!command.Equals("configure"))
             {
-                device.ProcessCommand("configure");
+                await device.ProcessCommandAsync("configure");
             }
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -421,14 +421,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         [InlineData("system security user test")]
         [InlineData("system snmp community public")]
         [InlineData("system login-control ssh")]
-        public void AlcatelHandler_AdvancedCommands_ShouldHaveHandlers(string command)
+        public async Task AlcatelHandler_AdvancedCommands_ShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            device.ProcessCommand("configure");
+            await device.ProcessCommandAsync("configure");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -447,13 +447,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         [InlineData("show router arp resolve")]
         [InlineData("show router arp reachable")]
         [InlineData("show router arp connected")]
-        public void AlcatelHandler_ArpCommands_ShouldWork(string command)
+        public async Task AlcatelHandler_ArpCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);

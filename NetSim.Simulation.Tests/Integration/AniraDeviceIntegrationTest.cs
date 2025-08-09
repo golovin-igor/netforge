@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.Integration
     public class AniraDeviceIntegrationTest
     {
         [Fact]
-        public void AniraDevice_MigrationVerification_ShouldWork()
+        public async Task AniraDevice_MigrationVerification_ShouldWork()
         {
             // This test verifies that AniraDevice has been successfully migrated
             // to use vendor-agnostic handlers instead of old common handlers
@@ -20,14 +20,14 @@ namespace NetSim.Simulation.Tests.Integration
             Assert.Equal("MigrationTestDevice", device.GetHostname());
 
             // Test that commands work (indicating successful migration)
-            var result1 = device.ProcessCommand("enable");
+            var result1 = await device.ProcessCommandAsync("enable");
             Assert.NotNull(result1);
 
-            var result2 = device.ProcessCommand("ping 8.8.8.8");
+            var result2 = await device.ProcessCommandAsync("ping 8.8.8.8");
             Assert.NotNull(result2);
             Assert.Contains("8.8.8.8", result2);
 
-            var result3 = device.ProcessCommand("configure terminal");
+            var result3 = await device.ProcessCommandAsync("configure terminal");
             Assert.NotNull(result3);
 
             // Verify interfaces are initialized

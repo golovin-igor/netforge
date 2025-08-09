@@ -6,14 +6,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
     public class AristaCommandHandlerComprehensiveTests
     {
         [Fact]
-        public void AristaHandler_ConfigureTerminal_ShouldEnterConfigMode()
+        public async Task AristaHandler_ConfigureTerminal_ShouldEnterConfigMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
             
             // Act
-            var output = device.ProcessCommand("configure terminal");
+            var output = await device.ProcessCommandAsync("configure terminal");
             
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
@@ -21,28 +21,28 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_Hostname_ShouldSetHostname()
+        public async Task AristaHandler_Hostname_ShouldSetHostname()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("hostname NewSwitch");
+            var output = await device.ProcessCommandAsync("hostname NewSwitch");
             
             // Assert
             Assert.Equal("NewSwitch(config)#", device.GetPrompt());
         }
 
         [Fact]
-        public void AristaHandler_ShowRunningConfig_ShouldDisplayConfig()
+        public async Task AristaHandler_ShowRunningConfig_ShouldDisplayConfig()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show running-config");
+            var output = await device.ProcessCommandAsync("show running-config");
             
             // Assert
             Assert.Contains("Current configuration", output);
@@ -50,13 +50,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_ShowInterfaces_ShouldDisplayInterfaces()
+        public async Task AristaHandler_ShowInterfaces_ShouldDisplayInterfaces()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show interfaces");
+            var output = await device.ProcessCommandAsync("show interfaces");
             
             // Assert
             Assert.Contains("Interface", output);
@@ -64,13 +64,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_ShowIpRoute_ShouldDisplayRoutes()
+        public async Task AristaHandler_ShowIpRoute_ShouldDisplayRoutes()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show ip route");
+            var output = await device.ProcessCommandAsync("show ip route");
             
             // Assert
             Assert.Contains("Route", output);
@@ -78,13 +78,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_ShowArp_ShouldDisplayArpTable()
+        public async Task AristaHandler_ShowArp_ShouldDisplayArpTable()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show arp");
+            var output = await device.ProcessCommandAsync("show arp");
             
             // Assert
             Assert.Contains("ARP", output);
@@ -92,15 +92,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_InterfaceEthernet_ShouldEnterInterfaceMode()
+        public async Task AristaHandler_InterfaceEthernet_ShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("interface Ethernet1");
+            var output = await device.ProcessCommandAsync("interface Ethernet1");
             
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
@@ -108,47 +108,47 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_IpAddress_ShouldConfigureInterface()
+        public async Task AristaHandler_IpAddress_ShouldConfigureInterface()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface Ethernet1");
             
             // Act
-            var output = device.ProcessCommand("ip address 192.168.1.1/24");
+            var output = await device.ProcessCommandAsync("ip address 192.168.1.1/24");
             
             // Assert
             Assert.Equal("TestSwitch(config-if-Et1)#", device.GetPrompt());
         }
 
         [Fact]
-        public void AristaHandler_NoShutdown_ShouldEnableInterface()
+        public async Task AristaHandler_NoShutdown_ShouldEnableInterface()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface Ethernet1");
             
             // Act
-            var output = device.ProcessCommand("no shutdown");
+            var output = await device.ProcessCommandAsync("no shutdown");
             
             // Assert
             Assert.Equal("TestSwitch(config-if-Et1)#", device.GetPrompt());
         }
 
         [Fact]
-        public void AristaHandler_RouterOspf_ShouldEnterOspfMode()
+        public async Task AristaHandler_RouterOspf_ShouldEnterOspfMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("router ospf 1");
+            var output = await device.ProcessCommandAsync("router ospf 1");
             
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
@@ -156,15 +156,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_RouterBgp_ShouldEnterBgpMode()
+        public async Task AristaHandler_RouterBgp_ShouldEnterBgpMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("router bgp 65001");
+            var output = await device.ProcessCommandAsync("router bgp 65001");
             
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
@@ -172,15 +172,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_Vlan_ShouldEnterVlanMode()
+        public async Task AristaHandler_Vlan_ShouldEnterVlanMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand("vlan 100");
+            var output = await device.ProcessCommandAsync("vlan 100");
             
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
@@ -188,13 +188,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_ShowVlan_ShouldDisplayVlans()
+        public async Task AristaHandler_ShowVlan_ShouldDisplayVlans()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show vlan");
+            var output = await device.ProcessCommandAsync("show vlan");
             
             // Assert
             Assert.Contains("VLAN", output);
@@ -202,13 +202,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_ShowSpanningTree_ShouldDisplayStp()
+        public async Task AristaHandler_ShowSpanningTree_ShouldDisplayStp()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show spanning-tree");
+            var output = await device.ProcessCommandAsync("show spanning-tree");
             
             // Assert
             Assert.Contains("Spanning Tree", output);
@@ -216,13 +216,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_ShowMlag_ShouldDisplayMlagInfo()
+        public async Task AristaHandler_ShowMlag_ShouldDisplayMlagInfo()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show mlag");
+            var output = await device.ProcessCommandAsync("show mlag");
             
             // Assert
             Assert.Contains("MLAG", output);
@@ -230,13 +230,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_ShowVxlan_ShouldDisplayVxlanInfo()
+        public async Task AristaHandler_ShowVxlan_ShouldDisplayVxlanInfo()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show vxlan");
+            var output = await device.ProcessCommandAsync("show vxlan");
             
             // Assert
             Assert.Contains("VXLAN", output);
@@ -244,13 +244,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_ShowBgpEvpn_ShouldDisplayEvpnInfo()
+        public async Task AristaHandler_ShowBgpEvpn_ShouldDisplayEvpnInfo()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand("show bgp evpn");
+            var output = await device.ProcessCommandAsync("show bgp evpn");
             
             // Assert
             Assert.Contains("BGP EVPN", output);
@@ -280,13 +280,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("show system")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public void AristaHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task AristaHandler_AllShowCommands_ShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -308,18 +308,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("mlag configuration")]
         [InlineData("interface vxlan1")]
         [InlineData("spanning-tree mode mstp")]
-        public void AristaHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task AristaHandler_ConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             if (!command.StartsWith("enable") && !command.StartsWith("configure terminal"))
             {
-                device.ProcessCommand("enable");
-                device.ProcessCommand("configure terminal");
+                await device.ProcessCommandAsync("enable");
+                await device.ProcessCommandAsync("configure terminal");
             }
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -343,13 +343,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("show mac address-table dynamic")]
         [InlineData("show lldp neighbors detail")]
         [InlineData("show port-channel summary")]
-        public void AristaHandler_DetailedShowCommands_ShouldWork(string command)
+        public async Task AristaHandler_DetailedShowCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -363,17 +363,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("show ip ospf vrf management")]
         [InlineData("show ip bgp vrf management")]
         [InlineData("show interfaces vrf management")]
-        public void AristaHandler_VrfCommands_ShouldWork(string command)
+        public async Task AristaHandler_VrfCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("vrf instance management");
-            device.ProcessCommand("exit");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("vrf instance management");
+            await device.ProcessCommandAsync("exit");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -391,15 +391,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("mlag local-interface Vlan4094")]
         [InlineData("mlag peer-address 192.168.1.2")]
         [InlineData("mlag peer-link Port-Channel1")]
-        public void AristaHandler_MlagConfiguration_ShouldWork(string command)
+        public async Task AristaHandler_MlagConfiguration_ShouldWork(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -415,20 +415,20 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("evpn")]
         [InlineData("neighbor 192.168.1.2 activate")]
         [InlineData("advertise-all-vni")]
-        public void AristaHandler_VxlanEvpnConfiguration_ShouldWork(string command)
+        public async Task AristaHandler_VxlanEvpnConfiguration_ShouldWork(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             if (command.StartsWith("neighbor") || command.StartsWith("advertise"))
             {
-                device.ProcessCommand("router bgp 65001");
-                device.ProcessCommand("address-family evpn");
+                await device.ProcessCommandAsync("router bgp 65001");
+                await device.ProcessCommandAsync("address-family evpn");
             }
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -436,12 +436,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public void AristaHandler_ComplexMlagConfiguration_ShouldWork()
+        public async Task AristaHandler_ComplexMlagConfiguration_ShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act & Assert for complex MLAG configuration
             var commands = new[]
@@ -457,19 +457,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void AristaHandler_VxlanConfiguration_ShouldWork()
+        public async Task AristaHandler_VxlanConfiguration_ShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act & Assert for VXLAN configuration
             var commands = new[]
@@ -484,19 +484,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void AristaHandler_BgpEvpnConfiguration_ShouldWork()
+        public async Task AristaHandler_BgpEvpnConfiguration_ShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act & Assert for BGP EVPN configuration
             var commands = new[]
@@ -512,19 +512,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void AristaHandler_SpanningTreeConfiguration_ShouldWork()
+        public async Task AristaHandler_SpanningTreeConfiguration_ShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act & Assert for spanning tree configuration
             var commands = new[]
@@ -540,19 +540,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void AristaHandler_RouteMapConfiguration_ShouldWork()
+        public async Task AristaHandler_RouteMapConfiguration_ShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act & Assert for route map configuration
             var commands = new[]
@@ -568,19 +568,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void AristaHandler_AccessListConfiguration_ShouldWork()
+        public async Task AristaHandler_AccessListConfiguration_ShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
             
             // Act & Assert for access list configuration
             var commands = new[]
@@ -595,20 +595,20 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void AristaHandler_InterfaceAdvancedConfiguration_ShouldWork()
+        public async Task AristaHandler_InterfaceAdvancedConfiguration_ShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface Ethernet1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface Ethernet1");
             
             // Act & Assert for advanced interface configuration
             var commands = new[]
@@ -626,7 +626,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("TestSwitch(config-if-Et1)#", device.GetPrompt());

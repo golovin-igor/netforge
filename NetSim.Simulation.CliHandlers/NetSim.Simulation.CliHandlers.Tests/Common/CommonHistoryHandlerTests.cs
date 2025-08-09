@@ -15,10 +15,10 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryCommandHandler_WithEmptyHistory_ShouldReturnEmptyMessage()
+        public async Task CommonHistoryCommandHandler_WithEmptyHistory_ShouldReturnEmptyMessage()
         {
             // Act
-            var result = _testDevice.ProcessCommand("history");
+            var result = await _testDevice.ProcessCommandAsync("history");
 
             // Assert
             Assert.NotNull(result);
@@ -26,15 +26,15 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryCommandHandler_WithCommandHistory_ShouldDisplayHistory()
+        public async Task CommonHistoryCommandHandler_WithCommandHistory_ShouldDisplayHistory()
         {
             // Arrange - Add some commands to history
-            _testDevice.ProcessCommand("show version");
-            _testDevice.ProcessCommand("show interfaces");
-            _testDevice.ProcessCommand("configure terminal");
+            await _testDevice.ProcessCommandAsync("show version");
+            await _testDevice.ProcessCommandAsync("show interfaces");
+            await _testDevice.ProcessCommandAsync("configure terminal");
 
             // Act
-            var result = _testDevice.ProcessCommand("history");
+            var result = await _testDevice.ProcessCommandAsync("history");
 
             // Assert
             Assert.NotNull(result);
@@ -44,10 +44,10 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryRecallHandler_WithEmptyHistory_ShouldReturnError()
+        public async Task CommonHistoryRecallHandler_WithEmptyHistory_ShouldReturnError()
         {
             // Act
-            var result = _testDevice.ProcessCommand("!!");
+            var result = await _testDevice.ProcessCommandAsync("!!");
 
             // Assert
             Assert.NotNull(result);
@@ -55,13 +55,13 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryRecallHandler_WithHistory_ShouldRecallLastCommand()
+        public async Task CommonHistoryRecallHandler_WithHistory_ShouldRecallLastCommand()
         {
             // Arrange - Add a command to history
-            _testDevice.ProcessCommand("show version");
+            await _testDevice.ProcessCommandAsync("show version");
 
             // Act
-            var result = _testDevice.ProcessCommand("!!");
+            var result = await _testDevice.ProcessCommandAsync("!!");
 
             // Assert
             Assert.NotNull(result);
@@ -70,10 +70,10 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryNumberRecallHandler_WithInvalidNumber_ShouldReturnError()
+        public async Task CommonHistoryNumberRecallHandler_WithInvalidNumber_ShouldReturnError()
         {
             // Act
-            var result = _testDevice.ProcessCommand("! 999");
+            var result = await _testDevice.ProcessCommandAsync("! 999");
 
             // Assert
             Assert.NotNull(result);
@@ -81,14 +81,14 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryNumberRecallHandler_WithValidNumber_ShouldRecallCommand()
+        public async Task CommonHistoryNumberRecallHandler_WithValidNumber_ShouldRecallCommand()
         {
             // Arrange
-            _testDevice.ProcessCommand("show version");
-            _testDevice.ProcessCommand("show interfaces");
+            await _testDevice.ProcessCommandAsync("show version");
+            await _testDevice.ProcessCommandAsync("show interfaces");
 
             // Act
-            var result = _testDevice.ProcessCommand("! 1");
+            var result = await _testDevice.ProcessCommandAsync("! 1");
 
             // Assert
             Assert.NotNull(result);
@@ -97,10 +97,10 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryNumberRecallHandler_WithInvalidFormat_ShouldReturnError()
+        public async Task CommonHistoryNumberRecallHandler_WithInvalidFormat_ShouldReturnError()
         {
             // Act
-            var result = _testDevice.ProcessCommand("! abc");
+            var result = await _testDevice.ProcessCommandAsync("! abc");
 
             // Assert
             Assert.NotNull(result);
@@ -108,10 +108,10 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryNumberRecallHandler_WithMissingParameter_ShouldReturnError()
+        public async Task CommonHistoryNumberRecallHandler_WithMissingParameter_ShouldReturnError()
         {
             // Act
-            var result = _testDevice.ProcessCommand("!");
+            var result = await _testDevice.ProcessCommandAsync("!");
 
             // Assert
             Assert.NotNull(result);
@@ -119,11 +119,11 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryHandlers_ShouldBeVendorAgnostic()
+        public async Task CommonHistoryHandlers_ShouldBeVendorAgnostic()
         {
             // Act
-            var ciscoResult = _testDevice.ProcessCommand("history");
-            var juniperResult = _juniperDevice.ProcessCommand("history");
+            var ciscoResult = await _testDevice.ProcessCommandAsync("history");
+            var juniperResult = await _juniperDevice.ProcessCommandAsync("history");
 
             // Assert
             Assert.NotNull(ciscoResult);
@@ -135,13 +135,13 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryHandlers_ShouldHandleDeviceProcessingErrors()
+        public async Task CommonHistoryHandlers_ShouldHandleDeviceProcessingErrors()
         {
             // Arrange - Add a command that would cause an error when processed
-            _testDevice.ProcessCommand("invalid-command-that-fails");
+            await _testDevice.ProcessCommandAsync("invalid-command-that-fails");
 
             // Act
-            var result = _testDevice.ProcessCommand("!!");
+            var result = await _testDevice.ProcessCommandAsync("!!");
 
             // Assert
             Assert.NotNull(result);
@@ -149,16 +149,16 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public void CommonHistoryHandlers_ShouldWorkWithLongHistory()
+        public async Task CommonHistoryHandlers_ShouldWorkWithLongHistory()
         {
             // Arrange - Add many commands to test history limit handling
             for (int i = 1; i <= 50; i++)
             {
-                _testDevice.ProcessCommand($"show test-command-{i}");
+                await _testDevice.ProcessCommandAsync($"show test-command-{i}");
             }
 
             // Act
-            var result = _testDevice.ProcessCommand("history");
+            var result = await _testDevice.ProcessCommandAsync("history");
 
             // Assert
             Assert.NotNull(result);

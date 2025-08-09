@@ -6,29 +6,29 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
     public class HuaweiCommandHandlerComprehensiveTests
     {
         [Fact]
-        public void HuaweiHandler_SystemName_ShouldSetSystemName()
+        public async Task HuaweiHandler_SystemName_ShouldSetSystemName()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act
-            var output = device.ProcessCommand("sysname NewRouter");
+            var output = await device.ProcessCommandAsync("sysname NewRouter");
             
             // Assert
             Assert.Equal("[NewRouter]", device.GetPrompt());
         }
 
         [Fact]
-        public void HuaweiHandler_DisplayCurrentConfiguration_ShouldShowConfig()
+        public async Task HuaweiHandler_DisplayCurrentConfiguration_ShouldShowConfig()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("sysname NewRouter");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("sysname NewRouter");
             
             // Act
-            var output = device.ProcessCommand("display current-configuration");
+            var output = await device.ProcessCommandAsync("display current-configuration");
             
             // Assert
             Assert.Contains("sysname NewRouter", output);
@@ -36,14 +36,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_InterfaceLoopback_ShouldEnterLoopbackMode()
+        public async Task HuaweiHandler_InterfaceLoopback_ShouldEnterLoopbackMode()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act
-            var output = device.ProcessCommand("interface LoopBack0");
+            var output = await device.ProcessCommandAsync("interface LoopBack0");
             
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
@@ -51,44 +51,44 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_IpAddress_ShouldConfigureInterface()
+        public async Task HuaweiHandler_IpAddress_ShouldConfigureInterface()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/0");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/0");
             
             // Act
-            var output = device.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
+            var output = await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
             
             // Assert
             Assert.Equal("[TestRouter-GigabitEthernet0/0/0]", device.GetPrompt());
         }
 
         [Fact]
-        public void HuaweiHandler_UndoShutdown_ShouldEnableInterface()
+        public async Task HuaweiHandler_UndoShutdown_ShouldEnableInterface()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/0");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/0");
             
             // Act
-            var output = device.ProcessCommand("undo shutdown");
+            var output = await device.ProcessCommandAsync("undo shutdown");
             
             // Assert
             Assert.Equal("[TestRouter-GigabitEthernet0/0/0]", device.GetPrompt());
         }
 
         [Fact]
-        public void HuaweiHandler_Vlan_ShouldEnterVlanMode()
+        public async Task HuaweiHandler_Vlan_ShouldEnterVlanMode()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act
-            var output = device.ProcessCommand("vlan 100");
+            var output = await device.ProcessCommandAsync("vlan 100");
             
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
@@ -96,29 +96,29 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_VlanDescription_ShouldSetVlanDescription()
+        public async Task HuaweiHandler_VlanDescription_ShouldSetVlanDescription()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("vlan 100");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("vlan 100");
             
             // Act
-            var output = device.ProcessCommand("description TestVLAN");
+            var output = await device.ProcessCommandAsync("description TestVLAN");
             
             // Assert
             Assert.Equal("[TestRouter-vlan100]", device.GetPrompt());
         }
 
         [Fact]
-        public void HuaweiHandler_PortGroup_ShouldEnterPortGroupMode()
+        public async Task HuaweiHandler_PortGroup_ShouldEnterPortGroupMode()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act
-            var output = device.ProcessCommand("port-group 1");
+            var output = await device.ProcessCommandAsync("port-group 1");
             
             // Assert
             Assert.Equal("port-group", device.GetCurrentMode());
@@ -126,28 +126,28 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_GroupMember_ShouldAddPortsToGroup()
+        public async Task HuaweiHandler_GroupMember_ShouldAddPortsToGroup()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("port-group 1");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("port-group 1");
             
             // Act
-            var output = device.ProcessCommand("group-member GigabitEthernet0/0/1 to GigabitEthernet0/0/10");
+            var output = await device.ProcessCommandAsync("group-member GigabitEthernet0/0/1 to GigabitEthernet0/0/10");
             
             // Assert
             Assert.Equal("[TestRouter-port-group-1]", device.GetPrompt());
         }
 
         [Fact]
-        public void HuaweiHandler_DisplayVlan_ShouldDisplayVlans()
+        public async Task HuaweiHandler_DisplayVlan_ShouldDisplayVlans()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("display vlan");
+            var output = await device.ProcessCommandAsync("display vlan");
             
             // Assert
             Assert.Contains("VLAN", output);
@@ -155,13 +155,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_DisplayInterface_ShouldDisplayInterfaceInfo()
+        public async Task HuaweiHandler_DisplayInterface_ShouldDisplayInterfaceInfo()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("display interface GigabitEthernet0/0/0");
+            var output = await device.ProcessCommandAsync("display interface GigabitEthernet0/0/0");
             
             // Assert
             Assert.Contains("GigabitEthernet0/0/0", output);
@@ -169,13 +169,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_DisplayIpInterface_ShouldDisplayIpInfo()
+        public async Task HuaweiHandler_DisplayIpInterface_ShouldDisplayIpInfo()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("display ip interface brief");
+            var output = await device.ProcessCommandAsync("display ip interface brief");
             
             // Assert
             Assert.Contains("Interface", output);
@@ -183,13 +183,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_DisplayIpRouting_ShouldDisplayRoutes()
+        public async Task HuaweiHandler_DisplayIpRouting_ShouldDisplayRoutes()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("display ip routing-table");
+            var output = await device.ProcessCommandAsync("display ip routing-table");
             
             // Assert
             Assert.Contains("Route", output);
@@ -197,13 +197,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_DisplayArp_ShouldDisplayArpTable()
+        public async Task HuaweiHandler_DisplayArp_ShouldDisplayArpTable()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("display arp");
+            var output = await device.ProcessCommandAsync("display arp");
             
             // Assert
             Assert.Contains("ARP", output);
@@ -211,13 +211,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_DisplayMacAddress_ShouldDisplayMacTable()
+        public async Task HuaweiHandler_DisplayMacAddress_ShouldDisplayMacTable()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("display mac-address");
+            var output = await device.ProcessCommandAsync("display mac-address");
             
             // Assert
             Assert.Contains("MAC", output);
@@ -225,13 +225,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_DisplayDevice_ShouldDisplayDeviceInfo()
+        public async Task HuaweiHandler_DisplayDevice_ShouldDisplayDeviceInfo()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand("display device");
+            var output = await device.ProcessCommandAsync("display device");
             
             // Assert
             Assert.Contains("Device", output);
@@ -261,13 +261,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         [InlineData("display alarm")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("tracert 127.0.0.1")]
-        public void HuaweiHandler_AllDisplayCommands_ShouldHaveHandlers(string command)
+        public async Task HuaweiHandler_AllDisplayCommands_ShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -290,17 +290,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         [InlineData("rip 1")]
         [InlineData("stp enable")]
         [InlineData("dhcp enable")]
-        public void HuaweiHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task HuaweiHandler_ConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
             if (!command.StartsWith("system-view"))
             {
-                device.ProcessCommand("system-view");
+                await device.ProcessCommandAsync("system-view");
             }
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -323,13 +323,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         [InlineData("display rip 1 route")]
         [InlineData("display dhcp server ip-in-use")]
         [InlineData("display snmp-agent community")]
-        public void HuaweiHandler_DetailedDisplayCommands_ShouldWork(string command)
+        public async Task HuaweiHandler_DetailedDisplayCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -348,15 +348,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         [InlineData("duplex full")]
         [InlineData("speed 1000")]
         [InlineData("flow-control")]
-        public void HuaweiHandler_InterfaceConfigurationCommands_ShouldWork(string command)
+        public async Task HuaweiHandler_InterfaceConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/0");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/0");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -367,15 +367,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         [Theory]
         [InlineData("description TestVLAN")]
         [InlineData("name TestVLAN")]
-        public void HuaweiHandler_VlanConfigurationCommands_ShouldWork(string command)
+        public async Task HuaweiHandler_VlanConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("vlan 100");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("vlan 100");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -389,15 +389,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         [InlineData("network 192.168.1.0 0.0.0.255")]
         [InlineData("bandwidth-reference 1000")]
         [InlineData("default-route-advertise")]
-        public void HuaweiHandler_OspfConfigurationCommands_ShouldWork(string command)
+        public async Task HuaweiHandler_OspfConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("ospf 1");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("ospf 1");
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -411,19 +411,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         [InlineData("peer 192.168.1.2 enable")]
         [InlineData("peer 192.168.1.2 next-hop-local")]
         [InlineData("network 192.168.1.0 255.255.255.0")]
-        public void HuaweiHandler_BgpConfigurationCommands_ShouldWork(string command)
+        public async Task HuaweiHandler_BgpConfigurationCommands_ShouldWork(string command)
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("bgp 65001");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("bgp 65001");
             if (command.StartsWith("peer 192.168.1.2 enable") || command.StartsWith("peer 192.168.1.2 next-hop") || command.StartsWith("network"))
             {
-                device.ProcessCommand("ipv4-family unicast");
+                await device.ProcessCommandAsync("ipv4-family unicast");
             }
             
             // Act
-            var output = device.ProcessCommand(command);
+            var output = await device.ProcessCommandAsync(command);
             
             // Assert
             Assert.NotNull(output);
@@ -431,11 +431,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_ComplexOspfConfiguration_ShouldWork()
+        public async Task HuaweiHandler_ComplexOspfConfiguration_ShouldWork()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act & Assert for complex OSPF configuration
             var commands = new[]
@@ -457,18 +457,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void HuaweiHandler_ComplexBgpConfiguration_ShouldWork()
+        public async Task HuaweiHandler_ComplexBgpConfiguration_ShouldWork()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act & Assert for complex BGP configuration
             var commands = new[]
@@ -487,18 +487,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void HuaweiHandler_VlanAndPortConfiguration_ShouldWork()
+        public async Task HuaweiHandler_VlanAndPortConfiguration_ShouldWork()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act & Assert for VLAN and port configuration
             var commands = new[]
@@ -521,18 +521,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void HuaweiHandler_RoutePolicyConfiguration_ShouldWork()
+        public async Task HuaweiHandler_RoutePolicyConfiguration_ShouldWork()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act & Assert for route policy configuration
             var commands = new[]
@@ -551,18 +551,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void HuaweiHandler_SnmpConfiguration_ShouldWork()
+        public async Task HuaweiHandler_SnmpConfiguration_ShouldWork()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act & Assert for SNMP configuration
             var commands = new[]
@@ -578,7 +578,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
                 Assert.Equal("[TestRouter]", device.GetPrompt());
@@ -586,11 +586,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void HuaweiHandler_StpConfiguration_ShouldWork()
+        public async Task HuaweiHandler_StpConfiguration_ShouldWork()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act & Assert for STP configuration
             var commands = new[]
@@ -607,18 +607,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }
         }
 
         [Fact]
-        public void HuaweiHandler_DhcpConfiguration_ShouldWork()
+        public async Task HuaweiHandler_DhcpConfiguration_ShouldWork()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
-            device.ProcessCommand("system-view");
+            await device.ProcessCommandAsync("system-view");
             
             // Act & Assert for DHCP configuration
             var commands = new[]
@@ -636,7 +636,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
 
             foreach (var command in commands)
             {
-                var output = device.ProcessCommand(command);
+                var output = await device.ProcessCommandAsync(command);
                 Assert.NotNull(output);
                 Assert.DoesNotContain("Invalid", output);
             }

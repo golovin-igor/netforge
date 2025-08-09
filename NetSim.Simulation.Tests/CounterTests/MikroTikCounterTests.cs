@@ -12,15 +12,15 @@ namespace NetSim.Simulation.Tests.CounterTests
     public class MikroTikCounterTests
     {
         [Fact]
-        public void MikroTik_PingCounters_ShouldIncrementCorrectly()
+        public async Task MikroTik_PingCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
             var r2 = new MikroTikDevice("R2");
-            
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "ether1", "R2", "ether1").Wait();
+
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "ether1", "R2", "ether1");
 
             ConfigureBasicInterfaces(r1, r2);
 
@@ -40,7 +40,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void MikroTik_PingWithInterfaceDisabled_ShouldNotIncrementCounters()
+        public async Task MikroTik_PingWithInterfaceDisabled_ShouldNotIncrementCounters()
         {
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
@@ -56,9 +56,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var initialCounters = r2.GetInterface("ether1").RxPackets;
 
             // Disable interface in RouterOS style
-            r2.ProcessCommand("/interface set ether1 disabled=yes");
+            await r2.ProcessCommandAsync("/interface set ether1 disabled=yes");
 
-            var pingResult = r1.ProcessCommand("/ping 192.168.1.2");
+            var pingResult = await r1.ProcessCommandAsync("/ping 192.168.1.2");
             var finalCounters = r2.GetInterface("ether1").RxPackets;
             
             Assert.Equal(initialCounters, finalCounters);
@@ -66,7 +66,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void MikroTik_OspfHelloCounters_ShouldIncrementCorrectly()
+        public async Task MikroTik_OspfHelloCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
@@ -86,12 +86,12 @@ namespace NetSim.Simulation.Tests.CounterTests
             var intfR1After = r1.GetInterface("ether1");
             Assert.Equal(initialTxBytes + 120, intfR1After.TxBytes); // 3 * 40 bytes
 
-            var ospfNeighbors = r1.ProcessCommand("/routing ospf neighbor print");
+            var ospfNeighbors = await r1.ProcessCommandAsync("/routing ospf neighbor print");
             Assert.Contains("192.168.1.2", ospfNeighbors);
         }
 
         [Fact]
-        public void MikroTik_BgpUpdateCounters_ShouldIncrementCorrectly()
+        public async Task MikroTik_BgpUpdateCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
@@ -111,12 +111,12 @@ namespace NetSim.Simulation.Tests.CounterTests
             var intfR1After = r1.GetInterface("ether1");
             Assert.Equal(initialTxBytes + 96, intfR1After.TxBytes); // 2 * 48 bytes
 
-            var bgpPeers = r1.ProcessCommand("/routing bgp peer print");
+            var bgpPeers = await r1.ProcessCommandAsync("/routing bgp peer print");
             Assert.Contains("192.168.1.2", bgpPeers);
         }
 
         [Fact]
-        public void MikroTik_FirewallRuleCounters_ShouldNotIncrementWhenBlocked()
+        public async Task MikroTik_FirewallRuleCounters_ShouldNotIncrementWhenBlocked()
         {
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
@@ -129,11 +129,11 @@ namespace NetSim.Simulation.Tests.CounterTests
             ConfigureBasicInterfaces(r1, r2);
 
             // Add firewall rule to block ICMP
-            r2.ProcessCommand("/ip firewall filter add chain=input protocol=icmp action=drop");
+            await r2.ProcessCommandAsync("/ip firewall filter add chain=input protocol=icmp action=drop");
 
             var initialRxPackets = r2.GetInterface("ether1").RxPackets;
 
-            var pingResult = r1.ProcessCommand("/ping 192.168.1.2");
+            var pingResult = await r1.ProcessCommandAsync("/ping 192.168.1.2");
             var finalRxPackets = r2.GetInterface("ether1").RxPackets;
             
             Assert.Equal(initialRxPackets, finalRxPackets);
@@ -141,7 +141,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void MikroTik_MultiProtocolCounters_ShouldAccumulateCorrectly()
+        public async Task MikroTik_MultiProtocolCounters_ShouldAccumulateCorrectly()
         {
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
@@ -182,41 +182,41 @@ namespace NetSim.Simulation.Tests.CounterTests
             }
         }
 
-        private void ConfigureBasicInterfaces(MikroTikDevice r1, MikroTikDevice r2)
+        private async Task ConfigureBasicInterfaces(MikroTikDevice r1, MikroTikDevice r2)
         {
             // R1 interface configuration - RouterOS style
-            r1.ProcessCommand("/ip address add address=192.168.1.1/24 interface=ether1");
+            await r1.ProcessCommandAsync("/ip address add address=192.168.1.1/24 interface=ether1");
 
             // R2 interface configuration - RouterOS style
-            r2.ProcessCommand("/ip address add address=192.168.1.2/24 interface=ether1");
+            await r2.ProcessCommandAsync("/ip address add address=192.168.1.2/24 interface=ether1");
         }
 
-        private void ConfigureOspfDevices(MikroTikDevice r1, MikroTikDevice r2)
+        private async Task ConfigureOspfDevices(MikroTikDevice r1, MikroTikDevice r2)
         {
             // R1 OSPF configuration - RouterOS style
-            r1.ProcessCommand("/ip address add address=192.168.1.1/24 interface=ether1");
-            r1.ProcessCommand("/routing ospf instance set default router-id=1.1.1.1");
-            r1.ProcessCommand("/routing ospf area add name=backbone area-id=0.0.0.0");
-            r1.ProcessCommand("/routing ospf interface add interface=ether1 area=backbone");
+            await r1.ProcessCommandAsync("/ip address add address=192.168.1.1/24 interface=ether1");
+            await r1.ProcessCommandAsync("/routing ospf instance set default router-id=1.1.1.1");
+            await r1.ProcessCommandAsync("/routing ospf area add name=backbone area-id=0.0.0.0");
+            await r1.ProcessCommandAsync("/routing ospf interface add interface=ether1 area=backbone");
 
             // R2 OSPF configuration - RouterOS style
-            r2.ProcessCommand("/ip address add address=192.168.1.2/24 interface=ether1");
-            r2.ProcessCommand("/routing ospf instance set default router-id=2.2.2.2");
-            r2.ProcessCommand("/routing ospf area add name=backbone area-id=0.0.0.0");
-            r2.ProcessCommand("/routing ospf interface add interface=ether1 area=backbone");
+            await r2.ProcessCommandAsync("/ip address add address=192.168.1.2/24 interface=ether1");
+            await r2.ProcessCommandAsync("/routing ospf instance set default router-id=2.2.2.2");
+            await r2.ProcessCommandAsync("/routing ospf area add name=backbone area-id=0.0.0.0");
+            await r2.ProcessCommandAsync("/routing ospf interface add interface=ether1 area=backbone");
         }
 
-        private void ConfigureBgpPeers(MikroTikDevice r1, MikroTikDevice r2, int as1, int as2)
+        private async Task ConfigureBgpPeers(MikroTikDevice r1, MikroTikDevice r2, int as1, int as2)
         {
             // R1 BGP configuration - RouterOS style
-            r1.ProcessCommand("/ip address add address=192.168.1.1/24 interface=ether1");
-            r1.ProcessCommand($"/routing bgp instance set default as={as1} router-id=1.1.1.1");
-            r1.ProcessCommand($"/routing bgp peer add instance=default remote-address=192.168.1.2 remote-as={as2}");
+            await r1.ProcessCommandAsync("/ip address add address=192.168.1.1/24 interface=ether1");
+            await r1.ProcessCommandAsync($"/routing bgp instance set default as={as1} router-id=1.1.1.1");
+            await r1.ProcessCommandAsync($"/routing bgp peer add instance=default remote-address=192.168.1.2 remote-as={as2}");
 
             // R2 BGP configuration - RouterOS style
-            r2.ProcessCommand("/ip address add address=192.168.1.2/24 interface=ether1");
-            r2.ProcessCommand($"/routing bgp instance set default as={as2} router-id=2.2.2.2");
-            r2.ProcessCommand($"/routing bgp peer add instance=default remote-address=192.168.1.1 remote-as={as1}");
+            await r2.ProcessCommandAsync("/ip address add address=192.168.1.2/24 interface=ether1");
+            await r2.ProcessCommandAsync($"/routing bgp instance set default as={as2} router-id=2.2.2.2");
+            await r2.ProcessCommandAsync($"/routing bgp peer add instance=default remote-address=192.168.1.1 remote-as={as1}");
         }
 
         private void SimulateOspfHelloExchange(MikroTikDevice r1, MikroTikDevice r2, 

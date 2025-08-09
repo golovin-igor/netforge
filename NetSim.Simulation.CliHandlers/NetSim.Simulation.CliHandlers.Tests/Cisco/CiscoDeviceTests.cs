@@ -22,37 +22,37 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         {
             var (network, sw1, sw2) = await SetupNetworkWithTwoDevicesAsync("SW1", "SW2");
             
-            sw1.ProcessCommand("enable");
-            sw1.ProcessCommand("configure terminal");
-            sw1.ProcessCommand("vlan 10");
-            sw1.ProcessCommand("name SALES");
-            sw1.ProcessCommand("exit");
-            sw1.ProcessCommand("interface GigabitEthernet0/0");
-            sw1.ProcessCommand("switchport mode access");
-            sw1.ProcessCommand("switchport access vlan 10");
-            sw1.ProcessCommand("ip address 192.168.10.1 255.255.255.0");
-            sw1.ProcessCommand("no shutdown");
-            sw1.ProcessCommand("exit");
-            sw1.ProcessCommand("exit");
+            await sw1.ProcessCommandAsync("enable");
+            await sw1.ProcessCommandAsync("configure terminal");
+            await sw1.ProcessCommandAsync("vlan 10");
+            await sw1.ProcessCommandAsync("name SALES");
+            await sw1.ProcessCommandAsync("exit");
+            await sw1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await sw1.ProcessCommandAsync("switchport mode access");
+            await sw1.ProcessCommandAsync("switchport access vlan 10");
+            await sw1.ProcessCommandAsync("ip address 192.168.10.1 255.255.255.0");
+            await sw1.ProcessCommandAsync("no shutdown");
+            await sw1.ProcessCommandAsync("exit");
+            await sw1.ProcessCommandAsync("exit");
 
-            sw2.ProcessCommand("enable");
-            sw2.ProcessCommand("configure terminal");
-            sw2.ProcessCommand("vlan 10");
-            sw2.ProcessCommand("name SALES");
-            sw2.ProcessCommand("exit");
-            sw2.ProcessCommand("interface GigabitEthernet0/0");
-            sw2.ProcessCommand("switchport mode access");
-            sw2.ProcessCommand("switchport access vlan 10");
-            sw2.ProcessCommand("ip address 192.168.10.2 255.255.255.0");
-            sw2.ProcessCommand("no shutdown");
-            sw2.ProcessCommand("exit");
-            sw2.ProcessCommand("exit");
+            await sw2.ProcessCommandAsync("enable");
+            await sw2.ProcessCommandAsync("configure terminal");
+            await sw2.ProcessCommandAsync("vlan 10");
+            await sw2.ProcessCommandAsync("name SALES");
+            await sw2.ProcessCommandAsync("exit");
+            await sw2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await sw2.ProcessCommandAsync("switchport mode access");
+            await sw2.ProcessCommandAsync("switchport access vlan 10");
+            await sw2.ProcessCommandAsync("ip address 192.168.10.2 255.255.255.0");
+            await sw2.ProcessCommandAsync("no shutdown");
+            await sw2.ProcessCommandAsync("exit");
+            await sw2.ProcessCommandAsync("exit");
 
-            var vlanOutput = sw1.ProcessCommand("show vlan brief");
+            var vlanOutput = await sw1.ProcessCommandAsync("show vlan brief");
             Assert.Contains("10   SALES", vlanOutput);
             Assert.Contains("active    Gi0/0", vlanOutput);
 
-            var pingOutput = sw1.ProcessCommand("ping 192.168.10.2");
+            var pingOutput = await sw1.ProcessCommandAsync("ping 192.168.10.2");
             Assert.Contains("!!!!!", pingOutput);
         }
 
@@ -60,34 +60,34 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         public async Task Cisco_ConfigureOspf_ShouldFormAdjacency()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("enable");
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 10.0.0.1 255.255.255.252");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("router ospf 1");
-            r1.ProcessCommand("router-id 1.1.1.1");
-            r1.ProcessCommand("network 10.0.0.0 0.0.0.3 area 0");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("enable");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.252");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("router ospf 1");
+            await r1.ProcessCommandAsync("router-id 1.1.1.1");
+            await r1.ProcessCommandAsync("network 10.0.0.0 0.0.0.3 area 0");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("enable");
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 10.0.0.2 255.255.255.252");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("router ospf 1");
-            r2.ProcessCommand("router-id 2.2.2.2");
-            r2.ProcessCommand("network 10.0.0.0 0.0.0.3 area 0");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("enable");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 10.0.0.2 255.255.255.252");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("router ospf 1");
+            await r2.ProcessCommandAsync("router-id 2.2.2.2");
+            await r2.ProcessCommandAsync("network 10.0.0.0 0.0.0.3 area 0");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
             
             network.UpdateProtocols();
             await Task.Delay(50); 
 
-            var ospfNeighbors = r1.ProcessCommand("show ip ospf neighbor");
+            var ospfNeighbors = await r1.ProcessCommandAsync("show ip ospf neighbor");
             Assert.Contains("2.2.2.2", ospfNeighbors);
             Assert.Contains("FULL", ospfNeighbors);
         }
@@ -96,34 +96,34 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         public async Task Cisco_ConfigureBgp_ShouldEstablishPeering()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("enable");
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 10.0.0.1 255.255.255.252");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("router bgp 65001");
-            r1.ProcessCommand("bgp router-id 1.1.1.1");
-            r1.ProcessCommand("neighbor 10.0.0.2 remote-as 65002");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("enable");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.252");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("router bgp 65001");
+            await r1.ProcessCommandAsync("bgp router-id 1.1.1.1");
+            await r1.ProcessCommandAsync("neighbor 10.0.0.2 remote-as 65002");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("enable");
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 10.0.0.2 255.255.255.252");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("router bgp 65002");
-            r2.ProcessCommand("bgp router-id 2.2.2.2");
-            r2.ProcessCommand("neighbor 10.0.0.1 remote-as 65001");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("enable");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 10.0.0.2 255.255.255.252");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("router bgp 65002");
+            await r2.ProcessCommandAsync("bgp router-id 2.2.2.2");
+            await r2.ProcessCommandAsync("neighbor 10.0.0.1 remote-as 65001");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
             network.UpdateProtocols();
             await Task.Delay(100);
 
-            var bgpSummary = r1.ProcessCommand("show ip bgp summary");
+            var bgpSummary = await r1.ProcessCommandAsync("show ip bgp summary");
             Assert.Contains("10.0.0.2", bgpSummary);
             Assert.Contains("Established", bgpSummary);
         }
@@ -132,44 +132,44 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         public async Task Cisco_ConfigureRip_ShouldExchangeRoutes()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("enable");
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("interface Loopback0");
-            r1.ProcessCommand("ip address 1.1.1.1 255.255.255.255");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("router rip");
-            r1.ProcessCommand("version 2");
-            r1.ProcessCommand("network 10.0.0.0");
-            r1.ProcessCommand("network 1.0.0.0");
-            r1.ProcessCommand("no auto-summary");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("enable");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("interface Loopback0");
+            await r1.ProcessCommandAsync("ip address 1.1.1.1 255.255.255.255");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("router rip");
+            await r1.ProcessCommandAsync("version 2");
+            await r1.ProcessCommandAsync("network 10.0.0.0");
+            await r1.ProcessCommandAsync("network 1.0.0.0");
+            await r1.ProcessCommandAsync("no auto-summary");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("enable");
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 10.0.0.2 255.255.255.0");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("interface Loopback0");
-            r2.ProcessCommand("ip address 2.2.2.2 255.255.255.255");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("router rip");
-            r2.ProcessCommand("version 2");
-            r2.ProcessCommand("network 10.0.0.0");
-            r2.ProcessCommand("network 2.0.0.0");
-            r2.ProcessCommand("no auto-summary");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("enable");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 10.0.0.2 255.255.255.0");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("interface Loopback0");
+            await r2.ProcessCommandAsync("ip address 2.2.2.2 255.255.255.255");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("router rip");
+            await r2.ProcessCommandAsync("version 2");
+            await r2.ProcessCommandAsync("network 10.0.0.0");
+            await r2.ProcessCommandAsync("network 2.0.0.0");
+            await r2.ProcessCommandAsync("no auto-summary");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
             network.UpdateProtocols();
             await Task.Delay(100);
 
-            var ripRoutes = r1.ProcessCommand("show ip route rip");
+            var ripRoutes = await r1.ProcessCommandAsync("show ip route rip");
             Assert.Contains("2.0.0.0/8", ripRoutes);
             Assert.Contains("10.0.0.2", ripRoutes);
         }
@@ -178,85 +178,85 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         public async Task Cisco_InterfaceShutdown_ShouldAffectConnectivity()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("enable");
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 10.0.0.1 255.255.255.252");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("enable");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.252");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("enable");
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 10.0.0.2 255.255.255.252");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("enable");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 10.0.0.2 255.255.255.252");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
-            Assert.Contains("Success rate is 100 percent", r1.ProcessCommand("ping 10.0.0.2"));
+            Assert.Contains("Success rate is 100 percent", await r1.ProcessCommandAsync("ping 10.0.0.2"));
 
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
             
             network.UpdateProtocols();
             await Task.Delay(50);
 
-            Assert.Contains("administratively down", r1.ProcessCommand("show interfaces GigabitEthernet0/0"));
-            Assert.Contains("Success rate is 0 percent", r1.ProcessCommand("ping 10.0.0.2"));
+            Assert.Contains("administratively down", await r1.ProcessCommandAsync("show interfaces GigabitEthernet0/0"));
+            Assert.Contains("Success rate is 0 percent", await r1.ProcessCommandAsync("ping 10.0.0.2"));
         }
 
         [Fact]
         public async Task Cisco_ConfigureAcl_ShouldBlockTraffic()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("enable");
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("ip address 10.0.0.1 255.255.255.252");
-            r1.ProcessCommand("ip access-group 101 in");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("enable");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.252");
+            await r1.ProcessCommandAsync("ip access-group 101 in");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
 
-            r1.ProcessCommand("access-list 101 deny icmp host 10.0.0.2 host 10.0.0.1");
-            r1.ProcessCommand("access-list 101 permit ip any any");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit"); 
+            await r1.ProcessCommandAsync("access-list 101 deny icmp host 10.0.0.2 host 10.0.0.1");
+            await r1.ProcessCommandAsync("access-list 101 permit ip any any");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit"); 
 
-            r2.ProcessCommand("enable");
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("ip address 10.0.0.2 255.255.255.252");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("enable");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("ip address 10.0.0.2 255.255.255.252");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
-            Assert.Contains("U.U.U", r2.ProcessCommand("ping 10.0.0.1"));
+            Assert.Contains("U.U.U", await r2.ProcessCommandAsync("ping 10.0.0.1"));
         }
 
         [Fact]
         public async Task Cisco_ConfigureStp_ShouldElectRoot()
         {
             var (network, sw1, sw2) = await SetupNetworkWithTwoDevicesAsync("SW1", "SW2");
-            sw1.ProcessCommand("enable");
-            sw1.ProcessCommand("configure terminal");
-            sw1.ProcessCommand("spanning-tree vlan 1 priority 4096");
-            sw1.ProcessCommand("exit");
-            sw1.ProcessCommand("exit");
+            await sw1.ProcessCommandAsync("enable");
+            await sw1.ProcessCommandAsync("configure terminal");
+            await sw1.ProcessCommandAsync("spanning-tree vlan 1 priority 4096");
+            await sw1.ProcessCommandAsync("exit");
+            await sw1.ProcessCommandAsync("exit");
 
-            sw2.ProcessCommand("enable");
-            sw2.ProcessCommand("configure terminal");
-            sw2.ProcessCommand("spanning-tree vlan 1 priority 8192");
-            sw2.ProcessCommand("exit");
-            sw2.ProcessCommand("exit");
+            await sw2.ProcessCommandAsync("enable");
+            await sw2.ProcessCommandAsync("configure terminal");
+            await sw2.ProcessCommandAsync("spanning-tree vlan 1 priority 8192");
+            await sw2.ProcessCommandAsync("exit");
+            await sw2.ProcessCommandAsync("exit");
 
             network.UpdateProtocols();
             await Task.Delay(50);
             
-            var stpOutput = sw1.ProcessCommand("show spanning-tree");
+            var stpOutput = await sw1.ProcessCommandAsync("show spanning-tree");
             Assert.Contains("This bridge is the root", stpOutput);
         }
 
@@ -271,20 +271,20 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
             await network.AddLinkAsync("SW1", "GigabitEthernet0/1", "SW2", "GigabitEthernet0/1");
             await network.AddLinkAsync("SW1", "GigabitEthernet0/2", "SW2", "GigabitEthernet0/2");
             
-            sw1.ProcessCommand("enable");
-            sw1.ProcessCommand("configure terminal");
-            sw1.ProcessCommand("interface GigabitEthernet0/1");
-            sw1.ProcessCommand("channel-group 1 mode active");
-            sw1.ProcessCommand("exit");
-            sw1.ProcessCommand("interface GigabitEthernet0/2");
-            sw1.ProcessCommand("channel-group 1 mode active");
-            sw1.ProcessCommand("exit");
-            sw1.ProcessCommand("interface Port-channel1");
-            sw1.ProcessCommand("switchport mode trunk");
-            sw1.ProcessCommand("exit");
-            sw1.ProcessCommand("exit");
+            await sw1.ProcessCommandAsync("enable");
+            await sw1.ProcessCommandAsync("configure terminal");
+            await sw1.ProcessCommandAsync("interface GigabitEthernet0/1");
+            await sw1.ProcessCommandAsync("channel-group 1 mode active");
+            await sw1.ProcessCommandAsync("exit");
+            await sw1.ProcessCommandAsync("interface GigabitEthernet0/2");
+            await sw1.ProcessCommandAsync("channel-group 1 mode active");
+            await sw1.ProcessCommandAsync("exit");
+            await sw1.ProcessCommandAsync("interface Port-channel1");
+            await sw1.ProcessCommandAsync("switchport mode trunk");
+            await sw1.ProcessCommandAsync("exit");
+            await sw1.ProcessCommandAsync("exit");
 
-            var portChannelSummary = sw1.ProcessCommand("show etherchannel summary");
+            var portChannelSummary = await sw1.ProcessCommandAsync("show etherchannel summary");
             Assert.Contains("Po1(SU)", portChannelSummary);
             Assert.Contains("Gi0/1(P)", portChannelSummary);
             Assert.Contains("Gi0/2(P)", portChannelSummary);
@@ -294,56 +294,56 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         public async Task Cisco_CdpNeighbor_ShouldDisplayCorrectly()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
-            r1.ProcessCommand("enable");
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("cdp run");
-            r1.ProcessCommand("interface GigabitEthernet0/0");
-            r1.ProcessCommand("cdp enable");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("enable");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("cdp run");
+            await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r1.ProcessCommandAsync("cdp enable");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("enable");
-            r2.ProcessCommand("configure terminal");
-            r2.ProcessCommand("cdp run");
-            r2.ProcessCommand("interface GigabitEthernet0/0");
-            r2.ProcessCommand("cdp enable");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("enable");
+            await r2.ProcessCommandAsync("configure terminal");
+            await r2.ProcessCommandAsync("cdp run");
+            await r2.ProcessCommandAsync("interface GigabitEthernet0/0");
+            await r2.ProcessCommandAsync("cdp enable");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
 
             network.UpdateProtocols(); 
             await Task.Delay(50);
 
-            var cdpNeighbors = r1.ProcessCommand("show cdp neighbors");
+            var cdpNeighbors = await r1.ProcessCommandAsync("show cdp neighbors");
             Assert.Contains("R2", cdpNeighbors);
             Assert.Contains("Gig 0/0", cdpNeighbors);
         }
 
         [Fact]
-        public void Cisco_InvalidCommand_ShouldReturnError() 
+        public async Task Cisco_InvalidCommand_ShouldReturnError() 
         {
             var r1 = new CiscoDevice("R1");
-            var output1 = r1.ProcessCommand("invalid command");
+            var output1 = await r1.ProcessCommandAsync("invalid command");
             Assert.Contains("Invalid input detected", output1);
 
-            r1.ProcessCommand("enable");
-            r1.ProcessCommand("configure terminal");
-            var output2 = r1.ProcessCommand("interface InvalidInterface");
+            await r1.ProcessCommandAsync("enable");
+            await r1.ProcessCommandAsync("configure terminal");
+            var output2 = await r1.ProcessCommandAsync("interface InvalidInterface");
             Assert.Contains("Invalid interface name", output2);
-            r1.ProcessCommand("exit"); // Exit config mode
-            r1.ProcessCommand("exit"); // Exit enable mode
+            await r1.ProcessCommandAsync("exit"); // Exit config mode
+            await r1.ProcessCommandAsync("exit"); // Exit enable mode
         }
 
         [Fact]
-        public void Cisco_ShowStaticRoute_ShouldDisplayRoute() 
+        public async Task Cisco_ShowStaticRoute_ShouldDisplayRoute() 
         {
             var r1 = new CiscoDevice("R1");
-            r1.ProcessCommand("enable");
-            r1.ProcessCommand("configure terminal");
-            r1.ProcessCommand("ip route 10.10.10.0 255.255.255.0 192.168.1.254");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("enable");
+            await r1.ProcessCommandAsync("configure terminal");
+            await r1.ProcessCommandAsync("ip route 10.10.10.0 255.255.255.0 192.168.1.254");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            var routeOutput = r1.ProcessCommand("show ip route");
+            var routeOutput = await r1.ProcessCommandAsync("show ip route");
             Assert.Contains("10.10.10.0/24", routeOutput);
             Assert.Contains("192.168.1.254", routeOutput);
         }

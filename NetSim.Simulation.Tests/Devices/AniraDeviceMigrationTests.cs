@@ -19,40 +19,40 @@ namespace NetSim.Simulation.Tests.Devices
         }
 
         [Fact]
-        public void AniraDevice_EnableCommand_ShouldWorkWithVendorAgnosticHandler()
+        public async Task AniraDevice_EnableCommand_ShouldWorkWithVendorAgnosticHandler()
         {
             // Arrange
             var device = new AniraDevice("TestAniraDevice");
 
             // Act
-            var result = device.ProcessCommand("enable");
+            var result = await device.ProcessCommandAsync("enable");
 
             // Assert
             Assert.Contains(">", device.GetPrompt()); // Should be in privileged mode
         }
 
         [Fact]
-        public void AniraDevice_DisableCommand_ShouldWorkWithVendorAgnosticHandler()
+        public async Task AniraDevice_DisableCommand_ShouldWorkWithVendorAgnosticHandler()
         {
             // Arrange
             var device = new AniraDevice("TestAniraDevice");
-            device.ProcessCommand("enable"); // First enter privileged mode
+            await device.ProcessCommandAsync("enable"); // First enter privileged mode
 
             // Act
-            var result = device.ProcessCommand("disable");
+            var result = await device.ProcessCommandAsync("disable");
 
             // Assert
             Assert.Contains(">", device.GetPrompt()); // Should be back in user mode
         }
 
         [Fact]
-        public void AniraDevice_PingCommand_ShouldWorkWithVendorAgnosticHandler()
+        public async Task AniraDevice_PingCommand_ShouldWorkWithVendorAgnosticHandler()
         {
             // Arrange
             var device = new AniraDevice("TestAniraDevice");
 
             // Act
-            var result = device.ProcessCommand("ping 192.168.1.1");
+            var result = await device.ProcessCommandAsync("ping 192.168.1.1");
 
             // Assert
             Assert.Contains("192.168.1.1", result);
@@ -60,29 +60,29 @@ namespace NetSim.Simulation.Tests.Devices
         }
 
         [Fact]
-        public void AniraDevice_ConfigureTerminalCommand_ShouldWorkWithVendorAgnosticHandler()
+        public async Task AniraDevice_ConfigureTerminalCommand_ShouldWorkWithVendorAgnosticHandler()
         {
             // Arrange
             var device = new AniraDevice("TestAniraDevice");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
 
             // Act
-            var result = device.ProcessCommand("configure terminal");
+            var result = await device.ProcessCommandAsync("configure terminal");
 
             // Assert
             Assert.Contains("(config)", device.GetPrompt());
         }
 
         [Fact]
-        public void AniraDevice_HostnameCommand_ShouldWorkWithVendorAgnosticHandler()
+        public async Task AniraDevice_HostnameCommand_ShouldWorkWithVendorAgnosticHandler()
         {
             // Arrange
             var device = new AniraDevice("TestAniraDevice");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
 
             // Act
-            var result = device.ProcessCommand("hostname NewAniraName");
+            var result = await device.ProcessCommandAsync("hostname NewAniraName");
 
             // Assert
             Assert.Equal("NewAniraName", device.GetHostname());
@@ -90,17 +90,17 @@ namespace NetSim.Simulation.Tests.Devices
         }
 
         [Fact]
-        public void AniraDevice_InterfaceConfiguration_ShouldWorkWithVendorAgnosticHandlers()
+        public async Task AniraDevice_InterfaceConfiguration_ShouldWorkWithVendorAgnosticHandlers()
         {
             // Arrange
             var device = new AniraDevice("TestAniraDevice");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
 
             // Act
-            var result1 = device.ProcessCommand("interface ge-0/0/0");
-            var result2 = device.ProcessCommand("ip address 192.168.1.1 255.255.255.0");
-            var result3 = device.ProcessCommand("no shutdown");
+            var result1 = await device.ProcessCommandAsync("interface ge-0/0/0");
+            var result2 = await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
+            var result3 = await device.ProcessCommandAsync("no shutdown");
 
             // Assert
             Assert.Contains("(config-if)", device.GetPrompt());
@@ -112,20 +112,20 @@ namespace NetSim.Simulation.Tests.Devices
         }
 
         [Fact]
-        public void AniraDevice_ExitCommand_ShouldWorkWithVendorAgnosticHandler()
+        public async Task AniraDevice_ExitCommand_ShouldWorkWithVendorAgnosticHandler()
         {
             // Arrange
             var device = new AniraDevice("TestAniraDevice");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface ge-0/0/0");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface ge-0/0/0");
 
             // Act - Exit from interface mode to config mode
-            var result1 = device.ProcessCommand("exit");
+            var result1 = await device.ProcessCommandAsync("exit");
             var prompt1 = device.GetPrompt();
 
             // Exit from config mode to privileged mode
-            var result2 = device.ProcessCommand("exit");
+            var result2 = await device.ProcessCommandAsync("exit");
             var prompt2 = device.GetPrompt();
 
             // Assert
@@ -135,35 +135,35 @@ namespace NetSim.Simulation.Tests.Devices
         }
 
         [Fact]
-        public void AniraDevice_WriteCommand_ShouldWorkWithVendorAgnosticHandler()
+        public async Task AniraDevice_WriteCommand_ShouldWorkWithVendorAgnosticHandler()
         {
             // Arrange
             var device = new AniraDevice("TestAniraDevice");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
 
             // Act
-            var result = device.ProcessCommand("write");
+            var result = await device.ProcessCommandAsync("write");
 
             // Assert
             Assert.Contains("saved", result.ToLower());
         }
 
         [Fact]
-        public void AniraDevice_ReloadCommand_ShouldWorkWithVendorAgnosticHandler()
+        public async Task AniraDevice_ReloadCommand_ShouldWorkWithVendorAgnosticHandler()
         {
             // Arrange
             var device = new AniraDevice("TestAniraDevice");
-            device.ProcessCommand("enable");
+            await device.ProcessCommandAsync("enable");
 
             // Act
-            var result = device.ProcessCommand("reload");
+            var result = await device.ProcessCommandAsync("reload");
 
             // Assert
             Assert.Contains("restart", result.ToLower());
         }
 
         [Fact]
-        public void AniraDevice_VendorAgnosticHandlers_ShouldNotUseOldCommonHandlers()
+        public async Task AniraDevice_VendorAgnosticHandlers_ShouldNotUseOldCommonHandlers()
         {
             // Arrange
             var device = new AniraDevice("TestAniraDevice");
@@ -172,10 +172,10 @@ namespace NetSim.Simulation.Tests.Devices
             // This test verifies that the migration is complete and no old common handlers are used
             
             // Test that basic commands work (proving the new handlers are loaded)
-            var enableResult = device.ProcessCommand("enable");
-            var pingResult = device.ProcessCommand("ping 1.1.1.1");
-            var configResult = device.ProcessCommand("configure terminal");
-            var exitResult = device.ProcessCommand("exit");
+            var enableResult = await device.ProcessCommandAsync("enable");
+            var pingResult = await device.ProcessCommandAsync("ping 1.1.1.1");
+            var configResult = await device.ProcessCommandAsync("configure terminal");
+            var exitResult = await device.ProcessCommandAsync("exit");
 
             // These should all work without errors, indicating successful migration
             Assert.NotNull(enableResult);

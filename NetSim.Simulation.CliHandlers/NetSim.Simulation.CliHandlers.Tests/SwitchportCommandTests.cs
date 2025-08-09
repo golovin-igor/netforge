@@ -10,16 +10,16 @@ namespace NetSim.Simulation.Tests.CliHandlers
     public class SwitchportCommandTests
     {
         [Fact]
-        public void SwitchportModeAccess_ShouldConfigureAccessMode()
+        public async Task SwitchportModeAccess_ShouldConfigureAccessMode()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface GigabitEthernet0/1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/1");
             
             // Act
-            var result = device.ProcessCommand("switchport mode access");
+            var result = await device.ProcessCommandAsync("switchport mode access");
             
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
@@ -30,19 +30,19 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void SwitchportAccessVlan_ShouldAssignVlan()
+        public async Task SwitchportAccessVlan_ShouldAssignVlan()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("vlan 100");
-            device.ProcessCommand("name TestVLAN");
-            device.ProcessCommand("exit");
-            device.ProcessCommand("interface GigabitEthernet0/1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("vlan 100");
+            await device.ProcessCommandAsync("name TestVLAN");
+            await device.ProcessCommandAsync("exit");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/1");
             
             // Act
-            var result = device.ProcessCommand("switchport access vlan 100");
+            var result = await device.ProcessCommandAsync("switchport access vlan 100");
             
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
@@ -53,16 +53,16 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void SwitchportModeTrunk_ShouldConfigureTrunkMode()
+        public async Task SwitchportModeTrunk_ShouldConfigureTrunkMode()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface GigabitEthernet0/1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/1");
             
             // Act
-            var result = device.ProcessCommand("switchport mode trunk");
+            var result = await device.ProcessCommandAsync("switchport mode trunk");
             
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
@@ -73,16 +73,16 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void SwitchportTrunkEncapsulation_ShouldConfigureEncapsulation()
+        public async Task SwitchportTrunkEncapsulation_ShouldConfigureEncapsulation()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface GigabitEthernet0/1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/1");
             
             // Act
-            var result = device.ProcessCommand("switchport trunk encapsulation dot1q");
+            var result = await device.ProcessCommandAsync("switchport trunk encapsulation dot1q");
             
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
@@ -90,16 +90,16 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void SwitchportVoiceVlan_ShouldConfigureVoiceVlan()
+        public async Task SwitchportVoiceVlan_ShouldConfigureVoiceVlan()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface GigabitEthernet0/1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/1");
             
             // Act
-            var result = device.ProcessCommand("switchport voice vlan 200");
+            var result = await device.ProcessCommandAsync("switchport voice vlan 200");
             
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
@@ -107,16 +107,16 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void SwitchportBasic_ShouldEnableSwitchport()
+        public async Task SwitchportBasic_ShouldEnableSwitchport()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface GigabitEthernet0/1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/1");
             
             // Act
-            var result = device.ProcessCommand("switchport");
+            var result = await device.ProcessCommandAsync("switchport");
             
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
@@ -127,16 +127,16 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public void SwitchportAccessVlan_NonExistentVlan_ShouldReturnError()
+        public async Task SwitchportAccessVlan_NonExistentVlan_ShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
-            device.ProcessCommand("enable");
-            device.ProcessCommand("configure terminal");
-            device.ProcessCommand("interface GigabitEthernet0/1");
+            await device.ProcessCommandAsync("enable");
+            await device.ProcessCommandAsync("configure terminal");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/1");
             
             // Act
-            var result = device.ProcessCommand("switchport access vlan 999");
+            var result = await device.ProcessCommandAsync("switchport access vlan 999");
             
             // Assert
             Assert.Equal("% VLAN not foundTestSwitch(config-if)#", result);

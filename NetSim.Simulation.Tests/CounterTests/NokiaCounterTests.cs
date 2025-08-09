@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Tests.CounterTests
     public class NokiaCounterTests
     {
         [Fact]
-        public void Nokia_PingCounters_ShouldIncrementCorrectly()
+        public async Task Nokia_PingCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new NokiaDevice("R1");
@@ -33,7 +33,7 @@ namespace NetSim.Simulation.Tests.CounterTests
         }
 
         [Fact]
-        public void Nokia_OspfHelloCounters_ShouldIncrementCorrectly()
+        public async Task Nokia_OspfHelloCounters_ShouldIncrementCorrectly()
         {
             var network = new Network();
             var r1 = new NokiaDevice("R1");
@@ -53,7 +53,7 @@ namespace NetSim.Simulation.Tests.CounterTests
             var intfR1After = r1.GetInterface("1/1/1");
             Assert.Equal(initialTxBytes + 120, intfR1After.TxBytes);
 
-            var ospfNeighbors = r1.ProcessCommand("show router ospf neighbor");
+            var ospfNeighbors = await r1.ProcessCommandAsync("show router ospf neighbor");
             Assert.Contains("192.168.1.2", ospfNeighbors);
         }
 
@@ -73,56 +73,56 @@ namespace NetSim.Simulation.Tests.CounterTests
             }
         }
 
-        private void ConfigureBasicInterfaces(NokiaDevice r1, NokiaDevice r2)
+        private async Task ConfigureBasicInterfaces(NokiaDevice r1, NokiaDevice r2)
         {
-            r1.ProcessCommand("configure");
-            r1.ProcessCommand("port 1/1/1");
-            r1.ProcessCommand("ethernet mode hybrid");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("router Base");
-            r1.ProcessCommand("interface 1/1/1");
-            r1.ProcessCommand("address 192.168.1.1/24");
-            r1.ProcessCommand("no shutdown");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure");
+            await r1.ProcessCommandAsync("port 1/1/1");
+            await r1.ProcessCommandAsync("ethernet mode hybrid");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("router Base");
+            await r1.ProcessCommandAsync("interface 1/1/1");
+            await r1.ProcessCommandAsync("address 192.168.1.1/24");
+            await r1.ProcessCommandAsync("no shutdown");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("port 1/1/1");
-            r2.ProcessCommand("ethernet mode hybrid");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("router Base");
-            r2.ProcessCommand("interface 1/1/1");
-            r2.ProcessCommand("address 192.168.1.2/24");
-            r2.ProcessCommand("no shutdown");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("port 1/1/1");
+            await r2.ProcessCommandAsync("ethernet mode hybrid");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("router Base");
+            await r2.ProcessCommandAsync("interface 1/1/1");
+            await r2.ProcessCommandAsync("address 192.168.1.2/24");
+            await r2.ProcessCommandAsync("no shutdown");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
         }
 
-        private void ConfigureOspfDevices(NokiaDevice r1, NokiaDevice r2)
+        private async Task ConfigureOspfDevices(NokiaDevice r1, NokiaDevice r2)
         {
-            ConfigureBasicInterfaces(r1, r2);
+            await ConfigureBasicInterfaces(r1, r2);
 
-            r1.ProcessCommand("configure");
-            r1.ProcessCommand("router Base");
-            r1.ProcessCommand("ospf 0");
-            r1.ProcessCommand("area 0.0.0.0");
-            r1.ProcessCommand("interface 1/1/1");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
-            r1.ProcessCommand("exit");
+            await r1.ProcessCommandAsync("configure");
+            await r1.ProcessCommandAsync("router Base");
+            await r1.ProcessCommandAsync("ospf 0");
+            await r1.ProcessCommandAsync("area 0.0.0.0");
+            await r1.ProcessCommandAsync("interface 1/1/1");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
+            await r1.ProcessCommandAsync("exit");
 
-            r2.ProcessCommand("configure");
-            r2.ProcessCommand("router Base");
-            r2.ProcessCommand("ospf 0");
-            r2.ProcessCommand("area 0.0.0.0");
-            r2.ProcessCommand("interface 1/1/1");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
-            r2.ProcessCommand("exit");
+            await r2.ProcessCommandAsync("configure");
+            await r2.ProcessCommandAsync("router Base");
+            await r2.ProcessCommandAsync("ospf 0");
+            await r2.ProcessCommandAsync("area 0.0.0.0");
+            await r2.ProcessCommandAsync("interface 1/1/1");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
+            await r2.ProcessCommandAsync("exit");
         }
 
         private void SimulateOspfHelloExchange(NokiaDevice r1, NokiaDevice r2, 

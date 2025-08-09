@@ -6,24 +6,24 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
     public class HuaweiDeviceDisplayTests
     {
         [Fact]
-        public void Huawei_DisplayCurrentConfiguration_ShouldIncludeAllSettings()
+        public async Task Huawei_DisplayCurrentConfiguration_ShouldIncludeAllSettings()
         {
             var device = new HuaweiDevice("SW1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("sysname Huawei-Core");
-            device.ProcessCommand("vlan 10");
-            device.ProcessCommand("description SALES");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("ospf 1");
-            device.ProcessCommand("area 0.0.0.0");
-            device.ProcessCommand("network 10.0.0.0 0.0.0.255");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("sysname Huawei-Core");
+            await device.ProcessCommandAsync("vlan 10");
+            await device.ProcessCommandAsync("description SALES");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("ospf 1");
+            await device.ProcessCommandAsync("area 0.0.0.0");
+            await device.ProcessCommandAsync("network 10.0.0.0 0.0.0.255");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display current-configuration");
+            var output = await device.ProcessCommandAsync("display current-configuration");
             Assert.Contains("sysname Huawei-Core", output);
             Assert.Contains("vlan 10", output);
             Assert.Contains("description SALES", output);
@@ -33,22 +33,22 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayIpRoutingTable_ShouldShowAllRoutes()
+        public async Task Huawei_DisplayIpRoutingTable_ShouldShowAllRoutes()
         {
             var device = new HuaweiDevice("R1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
-            device.ProcessCommand("undo shutdown");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("ip route-static 192.168.1.0 255.255.255.0 10.0.0.2");
-            device.ProcessCommand("ospf 1");
-            device.ProcessCommand("area 0");
-            device.ProcessCommand("network 10.0.0.0 0.0.0.255");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
+            await device.ProcessCommandAsync("undo shutdown");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("ip route-static 192.168.1.0 255.255.255.0 10.0.0.2");
+            await device.ProcessCommandAsync("ospf 1");
+            await device.ProcessCommandAsync("area 0");
+            await device.ProcessCommandAsync("network 10.0.0.0 0.0.0.255");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display ip routing-table");
+            var output = await device.ProcessCommandAsync("display ip routing-table");
             Assert.Contains("10.0.0.0/24", output);
             Assert.Contains("192.168.1.0/24", output);
             Assert.Contains("Direct", output);
@@ -56,17 +56,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayInterface_ShouldShowInterfaceDetails()
+        public async Task Huawei_DisplayInterface_ShouldShowInterfaceDetails()
         {
             var device = new HuaweiDevice("SW1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("description WAN Link");
-            device.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
-            device.ProcessCommand("undo shutdown");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("description WAN Link");
+            await device.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
+            await device.ProcessCommandAsync("undo shutdown");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display interface GigabitEthernet0/0/1");
+            var output = await device.ProcessCommandAsync("display interface GigabitEthernet0/0/1");
             Assert.Contains("GigabitEthernet0/0/1 current state : UP", output);
             Assert.Contains("Line protocol current state : UP", output);
             Assert.Contains("Description:WAN Link", output);
@@ -74,22 +74,22 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayVlan_ShouldShowVlanConfiguration()
+        public async Task Huawei_DisplayVlan_ShouldShowVlanConfiguration()
         {
             var device = new HuaweiDevice("SW1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("vlan 10");
-            device.ProcessCommand("description SALES");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("vlan 20");
-            device.ProcessCommand("description MARKETING");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("port link-type access");
-            device.ProcessCommand("port default vlan 10");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("vlan 10");
+            await device.ProcessCommandAsync("description SALES");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("vlan 20");
+            await device.ProcessCommandAsync("description MARKETING");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("port link-type access");
+            await device.ProcessCommandAsync("port default vlan 10");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display vlan");
+            var output = await device.ProcessCommandAsync("display vlan");
             Assert.Contains("10", output);
             Assert.Contains("SALES", output);
             Assert.Contains("20", output);
@@ -98,18 +98,18 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayOspfPeer_ShouldShowNeighbors()
+        public async Task Huawei_DisplayOspfPeer_ShouldShowNeighbors()
         {
             var device = new HuaweiDevice("R1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("ospf 1");
-            device.ProcessCommand("router-id 1.1.1.1");
-            device.ProcessCommand("area 0");
-            device.ProcessCommand("network 10.0.0.0 0.0.0.255");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("ospf 1");
+            await device.ProcessCommandAsync("router-id 1.1.1.1");
+            await device.ProcessCommandAsync("area 0");
+            await device.ProcessCommandAsync("network 10.0.0.0 0.0.0.255");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display ospf peer");
+            var output = await device.ProcessCommandAsync("display ospf peer");
             Assert.Contains("2.2.2.2", output);
             Assert.Contains("10.0.0.2", output);
             Assert.Contains("Full", output);
@@ -117,17 +117,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayBgpPeer_ShouldShowPeerStatus()
+        public async Task Huawei_DisplayBgpPeer_ShouldShowPeerStatus()
         {
             var device = new HuaweiDevice("R1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("bgp 65001");
-            device.ProcessCommand("router-id 1.1.1.1");
-            device.ProcessCommand("peer 172.16.0.2 as-number 65002");
-            device.ProcessCommand("network 10.0.0.0 24");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("bgp 65001");
+            await device.ProcessCommandAsync("router-id 1.1.1.1");
+            await device.ProcessCommandAsync("peer 172.16.0.2 as-number 65002");
+            await device.ProcessCommandAsync("network 10.0.0.0 24");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display bgp peer");
+            var output = await device.ProcessCommandAsync("display bgp peer");
             Assert.Contains("BGP local router ID", output);
             Assert.Contains("1.1.1.1", output);
             Assert.Contains("Local AS number : 65001", output);
@@ -136,10 +136,10 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayVersion_ShouldShowSystemInfo()
+        public async Task Huawei_DisplayVersion_ShouldShowSystemInfo()
         {
             var device = new HuaweiDevice("SW1");
-            var output = device.ProcessCommand("display version");
+            var output = await device.ProcessCommandAsync("display version");
 
             Assert.Contains("Huawei Versatile Routing Platform Software", output);
             Assert.Contains("VRP (R) software", output);
@@ -148,17 +148,17 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayArp_ShouldShowArpTable()
+        public async Task Huawei_DisplayArp_ShouldShowArpTable()
         {
             var device = new HuaweiDevice("R1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
-            device.ProcessCommand("undo shutdown");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
+            await device.ProcessCommandAsync("undo shutdown");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display arp");
+            var output = await device.ProcessCommandAsync("display arp");
             Assert.Contains("IP ADDRESS", output);
             Assert.Contains("MAC ADDRESS", output);
             Assert.Contains("VPN-Instance", output);
@@ -166,10 +166,10 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayMacAddress_ShouldShowMacTable()
+        public async Task Huawei_DisplayMacAddress_ShouldShowMacTable()
         {
             var device = new HuaweiDevice("SW1");
-            var output = device.ProcessCommand("display mac-address");
+            var output = await device.ProcessCommandAsync("display mac-address");
 
             Assert.Contains("MAC Address", output);
             Assert.Contains("VLAN", output);
@@ -179,19 +179,19 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayInterfaceBrief_ShouldShowSummary()
+        public async Task Huawei_DisplayInterfaceBrief_ShouldShowSummary()
         {
             var device = new HuaweiDevice("R1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("ip address 10.0.0.1 255.255.255.0");
-            device.ProcessCommand("undo shutdown");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("interface GigabitEthernet0/0/2");
-            device.ProcessCommand("shutdown");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
+            await device.ProcessCommandAsync("undo shutdown");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/2");
+            await device.ProcessCommandAsync("shutdown");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display interface brief");
+            var output = await device.ProcessCommandAsync("display interface brief");
             Assert.Contains("Interface", output);
             Assert.Contains("PHY", output);
             Assert.Contains("Protocol", output);
@@ -202,15 +202,15 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayStp_ShouldShowSpanningTree()
+        public async Task Huawei_DisplayStp_ShouldShowSpanningTree()
         {
             var device = new HuaweiDevice("SW1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("stp mode rstp");
-            device.ProcessCommand("stp priority 4096");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("stp mode rstp");
+            await device.ProcessCommandAsync("stp priority 4096");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display stp");
+            var output = await device.ProcessCommandAsync("display stp");
             Assert.Contains("Protocol Status", output);
             Assert.Contains("Bridge ID", output);
             Assert.Contains("Priority", output);
@@ -218,21 +218,21 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayEthTrunk_ShouldShowLagStatus()
+        public async Task Huawei_DisplayEthTrunk_ShouldShowLagStatus()
         {
             var device = new HuaweiDevice("SW1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface Eth-Trunk1");
-            device.ProcessCommand("mode lacp");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("eth-trunk 1");
-            device.ProcessCommand("quit");
-            device.ProcessCommand("interface GigabitEthernet0/0/2");
-            device.ProcessCommand("eth-trunk 1");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface Eth-Trunk1");
+            await device.ProcessCommandAsync("mode lacp");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("eth-trunk 1");
+            await device.ProcessCommandAsync("quit");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/2");
+            await device.ProcessCommandAsync("eth-trunk 1");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display eth-trunk");
+            var output = await device.ProcessCommandAsync("display eth-trunk");
             Assert.Contains("Eth-Trunk1", output);
             Assert.Contains("LAG ID", output);
             Assert.Contains("WorkingMode", output);
@@ -242,16 +242,16 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public void Huawei_DisplayLogbuffer_ShouldShowLogEntries()
+        public async Task Huawei_DisplayLogbuffer_ShouldShowLogEntries()
         {
             var device = new HuaweiDevice("SW1");
-            device.ProcessCommand("system-view");
-            device.ProcessCommand("interface GigabitEthernet0/0/1");
-            device.ProcessCommand("shutdown");
-            device.ProcessCommand("undo shutdown");
-            device.ProcessCommand("quit");
+            await device.ProcessCommandAsync("system-view");
+            await device.ProcessCommandAsync("interface GigabitEthernet0/0/1");
+            await device.ProcessCommandAsync("shutdown");
+            await device.ProcessCommandAsync("undo shutdown");
+            await device.ProcessCommandAsync("quit");
 
-            var output = device.ProcessCommand("display logbuffer");
+            var output = await device.ProcessCommandAsync("display logbuffer");
             Assert.Contains("%IFNET", output);
             Assert.Contains("GigabitEthernet0/0/1", output);
             Assert.Contains("state", output);
