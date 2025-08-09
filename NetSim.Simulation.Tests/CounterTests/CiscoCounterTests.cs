@@ -22,9 +22,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
 
             await r1.ProcessCommandAsync("configure terminal");
             await r1.ProcessCommandAsync("interface GigabitEthernet0/0");
@@ -66,9 +66,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
 
             // Configure interfaces
             await r1.ProcessCommandAsync("configure terminal");
@@ -131,9 +131,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
 
             // Configure interfaces and OSPF
             ConfigureOspfDevices(r1, r2);
@@ -171,9 +171,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
 
             // Configure BGP peers
             await ConfigureBgpPeers(r1, r2, 65001, 65002);
@@ -207,9 +207,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
 
             // Configure RIP
             await ConfigureRipDevices(r1, r2);
@@ -243,9 +243,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
 
             // Configure interfaces
             await r1.ProcessCommandAsync("configure terminal");
@@ -304,9 +304,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
 
             // Configure both OSPF and BGP
             ConfigureOspfDevices(r1, r2);

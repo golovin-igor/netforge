@@ -13,9 +13,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new ArubaDevice("R1");
             var r2 = new ArubaDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "1/1/1", "R2", "1/1/1").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "1/1/1", "R2", "1/1/1");
 
             await ConfigureBasicInterfaces(r1, r2);
 
@@ -39,9 +39,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new ArubaDevice("R1");
             var r2 = new ArubaDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "1/1/1", "R2", "1/1/1").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "1/1/1", "R2", "1/1/1");
 
             await ConfigureOspfDevices(r1, r2);
 

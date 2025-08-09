@@ -13,9 +13,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new AristaDevice("R1");
             var r2 = new AristaDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "Ethernet1", "R2", "Ethernet1").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "Ethernet1", "R2", "Ethernet1");
 
             await ConfigureBasicInterfaces(r1, r2);
 
@@ -39,9 +39,9 @@ namespace NetSim.Simulation.Tests.CounterTests
             var r1 = new AristaDevice("R1");
             var r2 = new AristaDevice("R2");
             
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddLinkAsync("R1", "Ethernet1", "R2", "Ethernet1").Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddLinkAsync("R1", "Ethernet1", "R2", "Ethernet1");
 
             await ConfigureOspfDevices(r1, r2);
 

@@ -17,12 +17,12 @@ namespace NetSim.Simulation.Tests.AliasTests
             var r2 = new JuniperDevice("R2");
             var r3 = new HuaweiDevice("R3");
 
-            network.AddDeviceAsync(r1).Wait();
-            network.AddDeviceAsync(r2).Wait();
-            network.AddDeviceAsync(r3).Wait();
+            await network.AddDeviceAsync(r1);
+            await network.AddDeviceAsync(r2);
+            await network.AddDeviceAsync(r3);
 
-            network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "ge-0/0/0").Wait();
-            network.AddLinkAsync("R2", "ge-0/0/1", "R3", "GigabitEthernet0/0/0").Wait();
+            await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "ge-0/0/0");
+            await network.AddLinkAsync("R2", "ge-0/0/1", "R3", "GigabitEthernet0/0/0");
 
             // Configure using aliases
             await r1.ProcessCommandAsync("conf t");
