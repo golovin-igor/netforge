@@ -8,7 +8,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
     public class CiscoDeviceDebugTests
     {
         [Fact]
-        public async Task Debug_IpAddressAssignment()
+        public async Task DebugIpAddressAssignment()
         {
             // Create a simple network with two devices
             var network = new Network();
@@ -89,7 +89,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task Debug_CommandHandlerRegistration()
+        public async Task DebugCommandHandlerRegistration()
         {
             var device = new CiscoDevice("TEST");
             

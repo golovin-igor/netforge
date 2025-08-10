@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
     public class CiscoCommandHandlerCompleteTests
     {
         [Fact]
-        public async Task RouterModeNetworkCommand_ShouldAddOspfNetwork()
+        public async Task RouterModeNetworkCommandShouldAddOspfNetwork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -25,7 +25,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task BgpNeighborCommand_ShouldConfigureBgpPeer()
+        public async Task BgpNeighborCommandShouldConfigureBgpPeer()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -47,7 +47,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task AccessListCommand_ShouldCreateAcl()
+        public async Task AccessListCommandShouldCreateAcl()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -63,7 +63,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task SpanningTreeCommand_ShouldConfigureStp()
+        public async Task SpanningTreeCommandShouldConfigureStp()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -82,7 +82,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task CdpCommand_ShouldConfigureCdp()
+        public async Task CdpCommandShouldConfigureCdp()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -106,7 +106,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task ShowCdpNeighbors_ShouldDisplayCdpInfo()
+        public async Task ShowCdpNeighborsShouldDisplayCdpInfo()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -122,7 +122,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task ClearCommands_ShouldClearVariousInfo()
+        public async Task ClearCommandsShouldClearVariousInfo()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -140,7 +140,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task InterfaceCdpCommand_ShouldConfigureCdpOnInterface()
+        public async Task InterfaceCdpCommandShouldConfigureCdpOnInterface()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -157,7 +157,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task IpAccessListCommand_ShouldCreateNamedAcl()
+        public async Task IpAccessListCommandShouldCreateNamedAcl()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -179,7 +179,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task RipVersionCommand_ShouldConfigureRipVersion()
+        public async Task RipVersionCommandShouldConfigureRipVersion()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -201,7 +201,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task ComplexConfigSequence_ShouldWorkCorrectly()
+        public async Task ComplexConfigSequenceShouldWorkCorrectly()
         {
             // Arrange
             var device = new CiscoDevice("CoreSwitch");

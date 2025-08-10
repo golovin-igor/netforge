@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.F5
     public class F5DeviceTests
     {
         [Fact]
-        public async Task Enable_Configure_Hostname_ShouldChangePrompt()
+        public async Task EnableConfigureHostnameShouldChangePrompt()
         {
             var device = new F5Device("F5-1");
 
@@ -23,7 +23,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.F5
         }
 
         [Fact]
-        public async Task DisableCommand_ShouldExitPrivilegedMode()
+        public async Task DisableCommandShouldExitPrivilegedMode()
         {
             var device = new F5Device("F5");
             await device.ProcessCommandAsync("enable");
@@ -35,7 +35,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.F5
         }
 
         [Fact]
-        public async Task ShowVersion_ShouldDisplaySystemInfo()
+        public async Task ShowVersionShouldDisplaySystemInfo()
         {
             var device = new F5Device("F5");
             var output = await device.ProcessCommandAsync("show version");
@@ -45,7 +45,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.F5
         }
 
         [Fact]
-        public async Task ShowLtmPool_ShouldDisplayPoolInformation()
+        public async Task ShowLtmPoolShouldDisplayPoolInformation()
         {
             var device = new F5Device("F5");
             var output = await device.ProcessCommandAsync("show ltm pool");
@@ -55,7 +55,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.F5
         }
 
         [Fact]
-        public async Task PingCommand_ShouldReturnPingStatistics()
+        public async Task PingCommandShouldReturnPingStatistics()
         {
             var device = new F5Device("F5");
             var output = await device.ProcessCommandAsync("ping 8.8.8.8");

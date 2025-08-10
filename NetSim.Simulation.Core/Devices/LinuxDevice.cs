@@ -3,6 +3,7 @@ using NetSim.Simulation.Interfaces;
 using NetSim.Simulation.CliHandlers;
 using NetSim.Simulation.CliHandlers.Services;
 using NetSim.Simulation.CliHandlers.Extensions;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Core;
 using NetSim.Simulation.Protocols.Implementations;
 
@@ -24,8 +25,8 @@ namespace NetSim.Simulation.Devices
 
         protected override void InitializeDefaultInterfaces()
         {
-            Interfaces["eth0"] = new Configuration.InterfaceConfig("eth0", this);
-            Interfaces["eth1"] = new Configuration.InterfaceConfig("eth1", this);
+            Interfaces["eth0"] = new InterfaceConfig("eth0", this);
+            Interfaces["eth1"] = new InterfaceConfig("eth1", this);
         }
 
         protected override void RegisterDeviceSpecificHandlers()

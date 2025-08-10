@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
     public class CiscoCommandHandlerTests
     {
         [Fact]
-        public async Task EnableHandler_ShouldEnterPrivilegedMode()
+        public async Task EnableHandlerShouldEnterPrivilegedMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -21,7 +21,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task EnableHandler_WithAlias_ShouldWork()
+        public async Task EnableHandlerWithAliasShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -36,7 +36,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task EnableHandler_WhenAlreadyPrivileged_ShouldReturnSuccess()
+        public async Task EnableHandlerWhenAlreadyPrivilegedShouldReturnSuccess()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -51,7 +51,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task DisableHandler_ShouldExitPrivilegedMode()
+        public async Task DisableHandlerShouldExitPrivilegedMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -67,7 +67,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task DisableHandler_WhenNotPrivileged_ShouldReturnError()
+        public async Task DisableHandlerWhenNotPrivilegedShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -81,7 +81,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task ClearCdpHandler_ShouldClearCdpInfo()
+        public async Task ClearCdpHandlerShouldClearCdpInfo()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -96,7 +96,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task ClearCdpTableHandler_ShouldClearCdpTable()
+        public async Task ClearCdpTableHandlerShouldClearCdpTable()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -111,7 +111,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task ClearCdpCountersHandler_ShouldClearCdpCounters()
+        public async Task ClearCdpCountersHandlerShouldClearCdpCounters()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -126,7 +126,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task ClearCdpHandler_WhenNotPrivileged_ShouldReturnError()
+        public async Task ClearCdpHandlerWhenNotPrivilegedShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -140,7 +140,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task ClearCdpHandler_WithInvalidSubcommand_ShouldReturnError()
+        public async Task ClearCdpHandlerWithInvalidSubcommandShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -155,7 +155,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoRouter_ShouldConfigureOspf()
+        public async Task CiscoRouterShouldConfigureOspf()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -180,7 +180,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoRouter_ShouldConfigureBgp()
+        public async Task CiscoRouterShouldConfigureBgp()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -208,7 +208,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoRouter_ShouldConfigureEigrp()
+        public async Task CiscoRouterShouldConfigureEigrp()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -234,7 +234,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoRouter_ShouldConfigureRip()
+        public async Task CiscoRouterShouldConfigureRip()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -262,7 +262,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoRouter_ShouldShowRoutingProtocols()
+        public async Task CiscoRouterShouldShowRoutingProtocols()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -283,7 +283,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoRouter_ShouldConfigureRouteRedistribution()
+        public async Task CiscoRouterShouldConfigureRouteRedistribution()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -310,7 +310,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoRouter_ShouldConfigureRouteMaps()
+        public async Task CiscoRouterShouldConfigureRouteMaps()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -336,7 +336,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoRouter_ShouldConfigurePrefixLists()
+        public async Task CiscoRouterShouldConfigurePrefixLists()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -360,7 +360,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoRouter_ShouldConfigureRoutePolicies()
+        public async Task CiscoRouterShouldConfigureRoutePolicies()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -385,7 +385,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoRouter_ShouldConfigureBgpCommunities()
+        public async Task CiscoRouterShouldConfigureBgpCommunities()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");

@@ -1,3 +1,4 @@
+using System.Globalization;
 using NetSim.Simulation.Common;
 using NetSim.Simulation.Events;
 using NetSim.Simulation.Interfaces;
@@ -241,7 +242,7 @@ namespace NetSim.Simulation.Protocols.Implementations
             
             // Calculate neighbor age
             var neighborAge = DateTime.Now - neighbor.LastUpdateTime;
-            device.AddLogEntry($"LldpProtocol: Neighbor {neighbor.SystemName} last seen {neighborAge.TotalSeconds:F0} seconds ago");
+            device.AddLogEntry(string.Format(CultureInfo.InvariantCulture, "LldpProtocol: Neighbor {0} last seen {1:F0} seconds ago", neighbor.SystemName, neighborAge.TotalSeconds));
         }
         
         private bool IsNeighborReachable(NetworkDevice device, string interfaceName, NetworkDevice neighbor)

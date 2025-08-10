@@ -188,8 +188,8 @@ namespace NetSim.Simulation.Common.CommandHistory
                 {
                     line.Append(" (failed)");
                 }
-                
-                output.AppendLine(line.ToString());
+
+                output.Append(line.ToString()).AppendLine();
             }
 
             return output.ToString();
@@ -278,14 +278,14 @@ namespace NetSim.Simulation.Common.CommandHistory
         public string ExportToText()
         {
             var output = new StringBuilder();
-            output.AppendLine("# Command History Export");
-            output.AppendLine($"# Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-            output.AppendLine($"# Total Commands: {_history.Count}");
+            output.Append("# Command History Export").AppendLine();
+            output.Append($"# Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}").AppendLine();
+            output.Append($"# Total Commands: {_history.Count}").AppendLine();
             output.AppendLine();
 
             foreach (var entry in _history)
             {
-                output.AppendLine($"{entry.CommandNumber}\t{entry.Timestamp:yyyy-MM-dd HH:mm:ss}\t{entry.DeviceMode}\t{entry.Success}\t{entry.Command}");
+                output.Append($"{entry.CommandNumber}\t{entry.Timestamp:yyyy-MM-dd HH:mm:ss}\t{entry.DeviceMode}\t{entry.Success}\t{entry.Command}").AppendLine();
             }
 
             return output.ToString();

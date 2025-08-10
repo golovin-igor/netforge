@@ -21,7 +21,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
 
         [Theory]
         [MemberData(nameof(HandlerTypes))]
-        public void Handler_ShouldExecuteWithoutThrowing(Type handlerType)
+        public void HandlerShouldExecuteWithoutThrowing(Type handlerType)
         {
             // Arrange
             var registry = new CiscoHandlerRegistry();

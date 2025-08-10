@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
     public class BroadcomCommandHandlerTests
     {
         [Fact]
-        public async Task BroadcomHandler_ConfigureTerminal_ShouldEnterConfigMode()
+        public async Task BroadcomHandlerConfigureTerminalShouldEnterConfigMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -20,7 +20,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_Hostname_ShouldSetHostname()
+        public async Task BroadcomHandlerHostnameShouldSetHostname()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -34,7 +34,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_ShowRunningConfig_ShouldDisplayConfig()
+        public async Task BroadcomHandlerShowRunningConfigShouldDisplayConfig()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -48,7 +48,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_ShowIpInterface_ShouldDisplayInterfaces()
+        public async Task BroadcomHandlerShowIpInterfaceShouldDisplayInterfaces()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -62,7 +62,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_ShowIpRoute_ShouldDisplayRoutes()
+        public async Task BroadcomHandlerShowIpRouteShouldDisplayRoutes()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -76,7 +76,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_ShowArp_ShouldDisplayArpTable()
+        public async Task BroadcomHandlerShowArpShouldDisplayArpTable()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -90,7 +90,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_InterfaceEthernet_ShouldEnterInterfaceMode()
+        public async Task BroadcomHandlerInterfaceEthernetShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -105,7 +105,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_IpAddress_ShouldConfigureInterface()
+        public async Task BroadcomHandlerIpAddressShouldConfigureInterface()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -120,7 +120,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_NoShutdown_ShouldEnableInterface()
+        public async Task BroadcomHandlerNoShutdownShouldEnableInterface()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -135,7 +135,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_IpRoute_ShouldConfigureRoute()
+        public async Task BroadcomHandlerIpRouteShouldConfigureRoute()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -149,7 +149,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_RouterOspf_ShouldEnterOspfMode()
+        public async Task BroadcomHandlerRouterOspfShouldEnterOspfMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -164,7 +164,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_RouterBgp_ShouldEnterBgpMode()
+        public async Task BroadcomHandlerRouterBgpShouldEnterBgpMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -179,7 +179,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_Vlan_ShouldEnterVlanMode()
+        public async Task BroadcomHandlerVlanShouldEnterVlanMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -194,7 +194,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_PingCommand_ShouldExecutePing()
+        public async Task BroadcomHandlerPingCommandShouldExecutePing()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -208,7 +208,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_TracerouteCommand_ShouldExecuteTraceroute()
+        public async Task BroadcomHandlerTracerouteCommandShouldExecuteTraceroute()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -222,7 +222,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_ShowVersion_ShouldDisplayVersion()
+        public async Task BroadcomHandlerShowVersionShouldDisplayVersion()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -236,7 +236,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_ShowVlan_ShouldDisplayVlans()
+        public async Task BroadcomHandlerShowVlanShouldDisplayVlans()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -250,7 +250,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_SwitchportMode_ShouldConfigureSwitchport()
+        public async Task BroadcomHandlerSwitchportModeShouldConfigureSwitchport()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -265,7 +265,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_SwitchportAccess_ShouldConfigureAccessVlan()
+        public async Task BroadcomHandlerSwitchportAccessShouldConfigureAccessVlan()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -280,7 +280,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_ShowMacAddressTable_ShouldDisplayMacTable()
+        public async Task BroadcomHandlerShowMacAddressTableShouldDisplayMacTable()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -294,7 +294,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_ShowSpanningTree_ShouldDisplayStp()
+        public async Task BroadcomHandlerShowSpanningTreeShouldDisplayStp()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -308,7 +308,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_MlagConfiguration_ShouldEnterMlagMode()
+        public async Task BroadcomHandlerMlagConfigurationShouldEnterMlagMode()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -323,7 +323,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_BashCommand_ShouldExecuteLinuxCommand()
+        public async Task BroadcomHandlerBashCommandShouldExecuteLinuxCommand()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -337,7 +337,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_ShowEvpn_ShouldDisplayEvpnInfo()
+        public async Task BroadcomHandlerShowEvpnShouldDisplayEvpnInfo()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -351,7 +351,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         }
 
         [Fact]
-        public async Task BroadcomHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task BroadcomHandlerWithInvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -380,7 +380,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         [InlineData("show interface ethernet 1/0/1")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public async Task BroadcomHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task BroadcomHandlerAllShowCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -407,7 +407,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         [InlineData("vlan 100")]
         [InlineData("switchport mode access")]
         [InlineData("mlag configuration")]
-        public async Task BroadcomHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task BroadcomHandlerConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
@@ -433,7 +433,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Broadcom
         [InlineData("ip dhcp pool TestPool")]
         [InlineData("evpn enable")]
         [InlineData("port-security enable")]
-        public async Task BroadcomHandler_AdvancedCommands_ShouldHaveHandlers(string command)
+        public async Task BroadcomHandlerAdvancedCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");

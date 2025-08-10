@@ -1,6 +1,8 @@
+using System.Globalization;
 using System.Text;
 using NetSim.Simulation.CliHandlers;
 using NetSim.Simulation.CliHandlers.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Configuration;
 using NetSim.Simulation.Core;
 using NetSim.Simulation.Interfaces;
@@ -591,7 +593,7 @@ namespace NetSim.Simulation.Common
                 return "% Physical connection unavailable";
 
             var sb = new StringBuilder();
-            sb.AppendLine($"PING {destination}");
+            sb.Append($"PING {destination}").AppendLine();
 
             // Simulate pings with realistic latency and potential packet loss
             int successCount = 0;
@@ -602,7 +604,7 @@ namespace NetSim.Simulation.Common
                 if (result.Success)
                 {
                     successCount++;
-                    sb.AppendLine($"64 bytes from {destination}: icmp_seq={i + 1} ttl=64 time={result.ActualLatency}.{i} ms");
+                    sb.Append($"64 bytes from {destination}: icmp_seq={i + 1} ttl=64 time={result.ActualLatency}.{i} ms").AppendLine();
                     
                     // Increment interface counters for successful pings
                     if (outgoingInterfaceConfig != null)
@@ -620,18 +622,18 @@ namespace NetSim.Simulation.Common
                 }
                 else
                 {
-                    sb.AppendLine($"Request timeout for icmp_seq {i + 1}");
+                    sb.Append($"Request timeout for icmp_seq {i + 1}").AppendLine();
                 }
             }
 
             sb.AppendLine();
-            sb.AppendLine("--- ping statistics ---");
+            sb.Append("--- ping statistics ---").AppendLine();
             double packetLoss = ((5.0 - successCount) / 5.0) * 100;
-            sb.AppendLine($"5 packets transmitted, {successCount} received, {packetLoss:F1}% packet loss");
+            sb.AppendFormat(CultureInfo.InvariantCulture, "5 packets transmitted, {0} received, {1:F1}% packet loss", successCount, packetLoss).AppendLine();
 
             if (successCount > 0)
             {
-                sb.AppendLine($"round-trip min/avg/max = {metrics.Latency}.0/{metrics.Latency + 1}.0/{metrics.Latency + 2}.0 ms");
+                sb.AppendFormat(CultureInfo.InvariantCulture, "round-trip min/avg/max = {0}.0/{1}.0/{2}.0 ms", metrics.Latency, metrics.Latency + 1, metrics.Latency + 2).AppendLine();
             }
 
             return sb.ToString();
@@ -643,14 +645,14 @@ namespace NetSim.Simulation.Common
         protected virtual string BuildPingFailureOutput(string destination, string reason)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"PING {destination}");
+            sb.Append($"PING {destination}").AppendLine();
             for (int i = 0; i < 5; i++)
             {
-                sb.AppendLine($"{reason} for icmp_seq {i + 1}");
+                sb.Append($"{reason} for icmp_seq {i + 1}").AppendLine();
             }
             sb.AppendLine();
-            sb.AppendLine("--- ping statistics ---");
-            sb.AppendLine("5 packets transmitted, 0 received, 100.0% packet loss");
+            sb.Append("--- ping statistics ---").AppendLine();
+            sb.Append("5 packets transmitted, 0 received, 100.0% packet loss").AppendLine();
             return sb.ToString();
         }
 
@@ -667,7 +669,7 @@ namespace NetSim.Simulation.Common
                 {
                     foreach (var entry in acl.Entries)
                     {
-                        if (entry.Protocol.ToLower() == "icmp" && entry.Action == "deny")
+                        if (entry.Protocol.ToLowerInvariant() == "icmp" && entry.Action == "deny")
                         {
                             // Check if this ACL entry applies to the destination
                             if (entry.DestAddress == "any" || 
@@ -733,10 +735,10 @@ namespace NetSim.Simulation.Common
         protected string BuildArpTableOutput()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Protocol  Address         Age (min)  Hardware Addr   Interface");
+            sb.Append("Protocol  Address         Age (min)  Hardware Addr   Interface").AppendLine();
             foreach (var entry in ArpTable)
             {
-                sb.AppendLine($"Internet  {entry.Key,-15}  -         {entry.Value,-13}  -");
+                sb.Append($"Internet  {entry.Key,-15}  -         {entry.Value,-13}  -").AppendLine();
             }
 
             return sb.ToString();
@@ -967,7 +969,7 @@ namespace NetSim.Simulation.Common
                 {
                     foreach (var entry in acl.Entries)
                     {
-                        if (entry.Protocol.ToLower() == "icmp" && entry.Action == "deny")
+                        if (entry.Protocol.ToLowerInvariant() == "icmp" && entry.Action == "deny")
                         {
                             // Check if this ACL entry applies to the destination
                             if (entry.DestAddress == "any" || 

@@ -196,8 +196,8 @@ namespace NetSim.Simulation.CliHandlers
             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(target))
                 return 0;
             
-            input = input.ToLower();
-            target = target.ToLower();
+            input = input.ToLowerInvariant();
+            target = target.ToLowerInvariant();
             
             // Exact match
             if (input == target)

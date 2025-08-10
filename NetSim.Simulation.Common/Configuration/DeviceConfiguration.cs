@@ -29,7 +29,7 @@ public class DeviceConfiguration
         _configurationBuilder.Clear();
 
         // Add generic header
-        _configurationBuilder.AppendLine($"# Generated on: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+        _configurationBuilder.Append($"# Generated on: {DateTime.Now:yyyy-MM-dd HH:mm:ss}").AppendLine();
         _configurationBuilder.AppendLine();
 
         // Add configuration items in a generic format
@@ -37,11 +37,11 @@ public class DeviceConfiguration
         {
             if (string.IsNullOrEmpty(item.Value))
             {
-                _configurationBuilder.AppendLine($"{item.Key}");
+                _configurationBuilder.Append($"{item.Key}").AppendLine();
             }
             else
             {
-                _configurationBuilder.AppendLine($"{item.Key} {item.Value}");
+                _configurationBuilder.Append($"{item.Key} {item.Value}").AppendLine();
             }
         }
 
@@ -58,7 +58,7 @@ public class DeviceConfiguration
         }
 
         // Update or add the configuration item
-        string key = item.Trim().ToLower();
+        string key = item.Trim().ToLowerInvariant();
         _configItems[key] = value?.Trim() ?? string.Empty;
     }
 
@@ -85,7 +85,7 @@ public class DeviceConfiguration
             // Check for "no" prefix to remove settings
             if (trimmedLine.StartsWith("no ", StringComparison.OrdinalIgnoreCase))
             {
-                string key = trimmedLine.Substring(3).Trim().ToLower();
+                string key = trimmedLine.Substring(3).Trim().ToLowerInvariant();
                 // Remove the key if it exists
                 if (_configItems.ContainsKey(key))
                 {
@@ -100,7 +100,7 @@ public class DeviceConfiguration
             var match = Regex.Match(trimmedLine, @"^(\S+)\s*(.*)?$");
             if (match.Success)
             {
-                string key = match.Groups[1].Value.ToLower();
+                string key = match.Groups[1].Value.ToLowerInvariant();
                 string value = match.Groups[2].Value.Trim();
                 _configItems[key] = value;
             }

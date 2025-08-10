@@ -1,5 +1,6 @@
 using System.Text;
 using NetSim.Simulation.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Configuration;
 using NetSim.Simulation.Protocols.Implementations;
 using NetSim.Simulation.Protocols.Routing;
@@ -17,7 +18,7 @@ namespace NetSim.Simulation.Devices
             SystemSettings["version"] = "6.48.6";
             SystemSettings["board-name"] = "RB750Gr3";
             SystemSettings["architecture-name"] = "mipsbe";
-            
+
             // Initialize default log entries
             LogEntries.Add("jan/15 10:23:30 system,info system identity was changed by admin");
             LogEntries.Add("jan/15 10:23:45 interface,info ether1 link up (speed 1G, full duplex)");
@@ -69,7 +70,7 @@ namespace NetSim.Simulation.Devices
             {
                 // Process commands based on their path structure
                 var parts = trimmed.Split(' ');
-                
+
                 if (trimmed.StartsWith("/"))
                 {
                     output.Append(ProcessMikroTikCommand(parts));
@@ -92,48 +93,48 @@ namespace NetSim.Simulation.Devices
         {
             var output = new StringBuilder();
             var path = parts[0].ToLower();
-            
+
             switch (path)
             {
                 case "/export":
                     output.Append(GenerateExportOutput());
                     break;
-                    
+
                 case "/system":
                     if (parts.Length > 1)
                     {
                         output.Append(ProcessSystemCommand(parts));
                     }
                     break;
-                    
+
                 case "/interface":
                     if (parts.Length > 1)
                     {
                         output.Append(ProcessInterfaceCommand(parts));
                     }
                     break;
-                    
+
                 case "/ip":
                     if (parts.Length > 1)
                     {
                         output.Append(ProcessIpCommand(parts));
                     }
                     break;
-                    
+
                 case "/routing":
                     if (parts.Length > 1)
                     {
                         output.Append(ProcessRoutingCommand(parts));
                     }
                     break;
-                    
+
                 case "/ping":
                     if (parts.Length > 1)
                     {
                         output.Append(SimulatePingMikroTik(parts[1]));
                     }
                     break;
-                    
+
                 case "/file":
                     if (parts.Length > 1 && parts[1].ToLower() == "print")
                     {
@@ -143,7 +144,7 @@ namespace NetSim.Simulation.Devices
                         output.AppendLine("2 autosupout.rif                backup                       12.3KiB jan/15/2021 10:24:00");
                     }
                     break;
-                    
+
                 case "/log":
                     if (parts.Length > 1 && parts[1].ToLower() == "print")
                     {
@@ -153,22 +154,22 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 default:
                     output.AppendLine("bad command name (line 1 column 1)");
                     break;
             }
-            
+
             return output.ToString();
         }
-        
+
         private string ProcessSystemCommand(string[] parts)
         {
             var output = new StringBuilder();
-            
+
             if (parts.Length < 2)
                 return "syntax error (line 1 column 7)\n";
-                
+
             switch (parts[1].ToLower())
             {
                 case "identity":
@@ -191,7 +192,7 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "resource":
                     if (parts.Length > 2 && parts[2].ToLower() == "print")
                     {
@@ -215,11 +216,11 @@ namespace NetSim.Simulation.Devices
                         output.AppendLine($"                platform: MikroTik");
                     }
                     break;
-                    
+
                 case "reboot":
                     output.AppendLine("Reboot, yes? [y/N]:");
                     break;
-                    
+
                 case "package":
                     if (parts.Length > 2 && parts[2].ToLower() == "print")
                     {
@@ -239,23 +240,23 @@ namespace NetSim.Simulation.Devices
                     }
                     break;
             }
-            
+
             return output.ToString();
         }
-        
+
         private string ProcessInterfaceCommand(string[] parts)
         {
             var output = new StringBuilder();
-            
+
             if (parts.Length < 2)
                 return "syntax error (line 1 column 10)\n";
-                
+
             switch (parts[1].ToLower())
             {
                 case "print":
                     output.AppendLine("Flags: D - dynamic, X - disabled, R - running, S - slave");
                     output.AppendLine(" #     NAME                                TYPE       ACTUAL-MTU L2MTU  MAX-L2MTU MAC-ADDRESS");
-                    
+
                     int idx = 0;
                     foreach (var iface in Interfaces.Values)
                     {
@@ -263,30 +264,30 @@ namespace NetSim.Simulation.Devices
                         if (!iface.IsUp) flags += "X";
                         if (iface.IsUp && !iface.IsShutdown) flags += "R";
                         if (string.IsNullOrEmpty(flags)) flags = " ";
-                        
-                        var type = iface.Name.StartsWith("ether") ? "ether" : 
-                                   iface.Name == "bridge" ? "bridge" : 
+
+                        var type = iface.Name.StartsWith("ether") ? "ether" :
+                                   iface.Name == "bridge" ? "bridge" :
                                    iface.Name.StartsWith("vlan") ? "vlan" : "unknown";
-                        
+
                         output.AppendLine($" {idx,-2} {flags,-2} {iface.Name,-35} {type,-10} 1500       1598             {GetMacAddress(idx)}");
                         idx++;
                     }
                     break;
-                    
+
                 case "ethernet":
                     if (parts.Length > 2)
                     {
                         output.Append(ProcessInterfaceEthernetCommand(parts));
                     }
                     break;
-                    
+
                 case "vlan":
                     if (parts.Length > 2)
                     {
                         output.Append(ProcessInterfaceVlanCommand(parts));
                     }
                     break;
-                    
+
                 case "bonding":
                     if (parts.Length > 2 && parts[2].ToLower() == "print")
                     {
@@ -300,7 +301,7 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "bridge":
                     if (parts.Length > 2)
                     {
@@ -308,7 +309,7 @@ namespace NetSim.Simulation.Devices
                         {
                             output.AppendLine("Flags: X - disabled, I - inactive, D - dynamic, H - hw-offload");
                             output.AppendLine(" #     INTERFACE                                              BRIDGE                                              HW  PVID PRIORITY  PATH-COST INTERNAL-PATH-COST    HORIZON");
-                            
+
                             // Show bridge ports
                             int portIdx = 0;
                             foreach (var iface in Interfaces.Values)
@@ -323,22 +324,22 @@ namespace NetSim.Simulation.Devices
                     }
                     break;
             }
-            
+
             return output.ToString();
         }
-        
+
         private string ProcessInterfaceEthernetCommand(string[] parts)
         {
             var output = new StringBuilder();
-            
+
             if (parts.Length < 3)
                 return "syntax error (line 1 column 20)\n";
-                
+
             switch (parts[2].ToLower())
             {
                 case "print":
                     output.AppendLine(" # NAME          MTU MAC-ADDRESS       ARP     SWITCH");
-                    
+
                     int idx = 0;
                     foreach (var iface in Interfaces.Values.Where(i => i.Name.StartsWith("ether")))
                     {
@@ -347,7 +348,7 @@ namespace NetSim.Simulation.Devices
                         idx++;
                     }
                     break;
-                    
+
                 case "enable":
                     if (parts.Length > 3)
                     {
@@ -361,7 +362,7 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "disable":
                     if (parts.Length > 3)
                     {
@@ -375,7 +376,7 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "reset-counters":
                     // Clear all interface counters
                     foreach (var iface in Interfaces.Values)
@@ -386,7 +387,7 @@ namespace NetSim.Simulation.Devices
                         iface.TxBytes = 0;
                     }
                     break;
-                    
+
                 case "monitor":
                     if (parts.Length > 3)
                     {
@@ -406,17 +407,17 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "set":
                     if (parts.Length > 3)
                     {
                         var cmdLine = string.Join(" ", parts);
                         var ifaceName = ExtractNumberParam(cmdLine) ?? parts[3];
-                        
+
                         if (Interfaces.ContainsKey(ifaceName))
                         {
                             var iface = Interfaces[ifaceName];
-                            
+
                             // Check for various parameters
                             var comment = ExtractValue(cmdLine, "comment");
                             if (!string.IsNullOrEmpty(comment))
@@ -424,7 +425,7 @@ namespace NetSim.Simulation.Devices
                                 iface.Description = comment.Trim('"');
                                 RunningConfig.AppendLine($"/interface ethernet set {ifaceName} comment=\"{iface.Description}\"");
                             }
-                            
+
                             var disabled = ExtractValue(cmdLine, "disabled");
                             if (disabled == "yes")
                             {
@@ -444,17 +445,17 @@ namespace NetSim.Simulation.Devices
                     }
                     break;
             }
-            
+
             return output.ToString();
         }
-        
+
         private string ProcessInterfaceVlanCommand(string[] parts)
         {
             var output = new StringBuilder();
-            
+
             if (parts.Length < 3)
                 return "syntax error (line 1 column 15)\n";
-                
+
             switch (parts[2].ToLower())
             {
                 case "add":
@@ -472,17 +473,17 @@ namespace NetSim.Simulation.Devices
                         }
                         // Create VLAN interface
                         var vlanIfaceName = vlanName ?? $"vlan{vlanId}";
-                        Interfaces[vlanIfaceName] = new InterfaceConfig(vlanIfaceName);
+                        Interfaces[vlanIfaceName] = new InterfaceConfig(vlanIfaceName, this);
                         Interfaces[vlanIfaceName].VlanId = vlanId;
-                        
+
                         RunningConfig.AppendLine($"/interface vlan add vlan-id={vlanId} interface={ifaceName} name={vlanIfaceName}");
                     }
                     break;
-                    
+
                 case "print":
                     output.AppendLine("Flags: X - disabled, R - running");
                     output.AppendLine(" #   NAME              MTU   ARP     VLAN-ID INTERFACE");
-                    
+
                     int idx = 0;
                     foreach (var iface in Interfaces.Values.Where(i => i.VlanId > 0))
                     {
@@ -492,17 +493,17 @@ namespace NetSim.Simulation.Devices
                     }
                     break;
             }
-            
+
             return output.ToString();
         }
-        
+
         private string ProcessIpCommand(string[] parts)
         {
             var output = new StringBuilder();
-            
+
             if (parts.Length < 2)
                 return "syntax error (line 1 column 3)\n";
-                
+
             switch (parts[1].ToLower())
             {
                 case "address":
@@ -524,7 +525,7 @@ namespace NetSim.Simulation.Devices
                                     iface.SubnetMask = CidrToMask(int.Parse(addrParts[1]));
                                     UpdateConnectedRoutes();
                                     ParentNetwork?.UpdateProtocols();
-                                    
+
                                     RunningConfig.AppendLine($"/ip address add address={address} interface={ifaceName}");
                                 }
                             }
@@ -533,7 +534,7 @@ namespace NetSim.Simulation.Devices
                         {
                             output.AppendLine("Flags: X - disabled, I - invalid, D - dynamic");
                             output.AppendLine(" #   ADDRESS            NETWORK         INTERFACE");
-                            
+
                             int idx = 0;
                             foreach (var iface in Interfaces.Values)
                             {
@@ -548,7 +549,7 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "route":
                     if (parts.Length > 2)
                     {
@@ -557,7 +558,7 @@ namespace NetSim.Simulation.Devices
                             output.AppendLine("Flags: X - disabled, A - active, D - dynamic, C - connect, S - static, r - rip, b - bgp, o - ospf, m - mme,");
                             output.AppendLine("B - blackhole, U - unreachable, P - prohibit");
                             output.AppendLine(" #      DST-ADDRESS        PREF-SRC        GATEWAY            DISTANCE");
-                            
+
                             int idx = 0;
                             foreach (var route in RoutingTable.OrderBy(r => r.Network))
                             {
@@ -571,7 +572,7 @@ namespace NetSim.Simulation.Devices
                                     "RIP" => "Dr",
                                     _ => ""
                                 };
-                                
+
                                 var cidr = MaskToCidr(route.Mask);
                                 var gateway = route.Protocol == "Connected" ? route.Interface : route.NextHop;
                                 output.AppendLine($" {idx,-2} {flags,-3} {route.Network}/{cidr,-18}                 {gateway,-18} {route.AdminDistance}");
@@ -583,7 +584,7 @@ namespace NetSim.Simulation.Devices
                             var cmdLine = string.Join(" ", parts);
                             var dstAddress = ExtractValue(cmdLine, "dst-address");
                             var gateway = ExtractValue(cmdLine, "gateway");
-                            
+
                             if (!string.IsNullOrEmpty(dstAddress) && !string.IsNullOrEmpty(gateway))
                             {
                                 var addrParts = dstAddress.Split('/');
@@ -591,24 +592,24 @@ namespace NetSim.Simulation.Devices
                                 {
                                     var network = addrParts[0];
                                     var mask = CidrToMask(int.Parse(addrParts[1]));
-                                    
+
                                     var route = new Route(network, mask, gateway, "", "Static");
                                     route.Metric = 1;
                                     RoutingTable.Add(route);
-                                    
+
                                     RunningConfig.AppendLine($"/ip route add dst-address={dstAddress} gateway={gateway}");
                                 }
                             }
                         }
                     }
                     break;
-                    
+
                 case "arp":
                     if (parts.Length > 2 && parts[2].ToLower() == "print")
                     {
                         output.AppendLine("Flags: X - disabled, I - invalid, H - DHCP, D - dynamic, P - published, C - complete");
                         output.AppendLine(" #    ADDRESS                                 MAC-ADDRESS       INTERFACE");
-                        
+
                         int idx = 0;
                         foreach (var iface in Interfaces.Values)
                         {
@@ -620,7 +621,7 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "firewall":
                     if (parts.Length > 2 && parts[2].ToLower() == "filter")
                     {
@@ -639,17 +640,17 @@ namespace NetSim.Simulation.Devices
                     }
                     break;
             }
-            
+
             return output.ToString();
         }
-        
+
         private string ProcessRoutingCommand(string[] parts)
         {
             var output = new StringBuilder();
-            
+
             if (parts.Length < 2)
                 return "syntax error (line 1 column 8)\n";
-                
+
             switch (parts[1].ToLower())
             {
                 case "ospf":
@@ -658,14 +659,14 @@ namespace NetSim.Simulation.Devices
                         output.Append(ProcessRoutingOspfCommand(parts));
                     }
                     break;
-                    
+
                 case "bgp":
                     if (parts.Length > 2)
                     {
                         output.Append(ProcessRoutingBgpCommand(parts));
                     }
                     break;
-                    
+
                 case "rip":
                     if (parts.Length > 2)
                     {
@@ -673,17 +674,17 @@ namespace NetSim.Simulation.Devices
                     }
                     break;
             }
-            
+
             return output.ToString();
         }
-        
+
         private string ProcessRoutingOspfCommand(string[] parts)
         {
             var output = new StringBuilder();
-            
+
             if (OspfConfig == null)
                 OspfConfig = new OspfConfig(1);
-                
+
             switch (parts[2].ToLower())
             {
                 case "instance":
@@ -698,14 +699,14 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "network":
                     if (parts.Length > 3 && parts[3].ToLower() == "add")
                     {
                         var cmdLine = string.Join(" ", parts);
                         var network = ExtractValue(cmdLine, "network");
                         var area = ExtractValue(cmdLine, "area") ?? "0.0.0.0";
-                        
+
                         if (!string.IsNullOrEmpty(network))
                         {
                             OspfConfig.NetworkAreas[network] = 0; // Simplified area handling
@@ -718,14 +719,14 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "neighbor":
                     if (parts.Length > 3 && parts[3].ToLower() == "print")
                     {
                         if (OspfConfig.Neighbors.Any())
                         {
                             output.AppendLine(" # INSTANCE ROUTER-ID      ADDRESS         INTERFACE              PRIORITY STATE         STATE-CHANGES");
-                            
+
                             int idx = 0;
                             foreach (var neighbor in OspfConfig.Neighbors)
                             {
@@ -736,17 +737,17 @@ namespace NetSim.Simulation.Devices
                     }
                     break;
             }
-            
+
             return output.ToString();
         }
-        
+
         private string ProcessRoutingBgpCommand(string[] parts)
         {
             var output = new StringBuilder();
-            
+
             if (BgpConfig == null)
                 BgpConfig = new BgpConfig(65000);
-                
+
             switch (parts[2].ToLower())
             {
                 case "instance":
@@ -755,7 +756,7 @@ namespace NetSim.Simulation.Devices
                         var cmdLine = string.Join(" ", parts);
                         var asn = ExtractIntValue(cmdLine, "as");
                         var routerId = ExtractValue(cmdLine, "router-id");
-                        
+
                         if (asn > 0)
                         {
                             BgpConfig.LocalAs = asn;
@@ -768,7 +769,7 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "peer":
                     if (parts.Length > 3)
                     {
@@ -777,7 +778,7 @@ namespace NetSim.Simulation.Devices
                             var cmdLine = string.Join(" ", parts);
                             var remoteAddr = ExtractValue(cmdLine, "remote-address");
                             var remoteAs = ExtractIntValue(cmdLine, "remote-as");
-                            
+
                             if (!string.IsNullOrEmpty(remoteAddr) && remoteAs > 0)
                             {
                                 var neighbor = new BgpNeighbor(remoteAddr, remoteAs);
@@ -790,7 +791,7 @@ namespace NetSim.Simulation.Devices
                         {
                             output.AppendLine("Flags: X - disabled, E - established");
                             output.AppendLine(" # INSTANCE REMOTE-ADDRESS                                  REMOTE-AS");
-                            
+
                             int idx = 0;
                             foreach (var neighbor in BgpConfig.Neighbors.Values)
                             {
@@ -801,13 +802,13 @@ namespace NetSim.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "network":
                     if (parts.Length > 3 && parts[3].ToLower() == "add")
                     {
                         var cmdLine = string.Join(" ", parts);
                         var network = ExtractValue(cmdLine, "network");
-                        
+
                         if (!string.IsNullOrEmpty(network))
                         {
                             BgpConfig.Networks.Add(network);
@@ -817,17 +818,17 @@ namespace NetSim.Simulation.Devices
                     }
                     break;
             }
-            
+
             return output.ToString();
         }
-        
+
         private string ProcessRoutingRipCommand(string[] parts)
         {
             var output = new StringBuilder();
-            
+
             if (RipConfig == null)
                 RipConfig = new RipConfig();
-                
+
             if (parts.Length > 2)
             {
                 switch (parts[2].ToLower())
@@ -837,7 +838,7 @@ namespace NetSim.Simulation.Devices
                         {
                             var cmdLine = string.Join(" ", parts);
                             var network = ExtractValue(cmdLine, "network");
-                            
+
                             if (!string.IsNullOrEmpty(network))
                             {
                                 RipConfig.Networks.Add(network);
@@ -846,13 +847,13 @@ namespace NetSim.Simulation.Devices
                             }
                         }
                         break;
-                        
+
                     case "interface":
                         if (parts.Length > 3 && parts[3].ToLower() == "add")
                         {
                             var cmdLine = string.Join(" ", parts);
                             var ifaceName = ExtractValue(cmdLine, "interface");
-                            
+
                             if (!string.IsNullOrEmpty(ifaceName))
                             {
                                 RunningConfig.AppendLine($"/routing rip interface add interface={ifaceName}");
@@ -861,23 +862,23 @@ namespace NetSim.Simulation.Devices
                         break;
                 }
             }
-            
+
             return output.ToString();
         }
-        
+
         private string GenerateExportOutput()
         {
             var output = new StringBuilder();
-            
+
             output.AppendLine($"# jan/15/2021 10:24:13 by RouterOS {SystemSettings["version"]}");
             output.AppendLine("# software id = 1234-5678");
             output.AppendLine("#");
             output.AppendLine($"# model = {SystemSettings["board-name"]}");
             output.AppendLine("# serial number = 1234567890AB");
-            
+
             // System identity
             output.AppendLine($"/system identity set name=\"{Hostname}\"");
-            
+
             // Interface configurations
             foreach (var iface in Interfaces.Values)
             {
@@ -890,13 +891,13 @@ namespace NetSim.Simulation.Devices
                     output.AppendLine($"/interface ethernet set {iface.Name} comment=\"{iface.Description}\"");
                 }
             }
-            
+
             // VLAN configurations
             foreach (var vlan in Vlans.Values.Where(v => v.Id > 1))
             {
                 output.AppendLine($"/interface vlan add vlan-id={vlan.Id} interface=bridge name={vlan.Name}");
             }
-            
+
             // IP addresses
             foreach (var iface in Interfaces.Values)
             {
@@ -906,13 +907,13 @@ namespace NetSim.Simulation.Devices
                     output.AppendLine($"/ip address add address={iface.IpAddress}/{cidr} interface={iface.Name}");
                 }
             }
-            
+
             // Running config additions
             if (RunningConfig.Length > 0)
             {
                 output.Append(RunningConfig.ToString());
             }
-            
+
             return output.ToString();
         }
 
@@ -940,7 +941,7 @@ namespace NetSim.Simulation.Devices
             output.AppendLine($"    sent=5 received={(reachable ? 5 : 0)} packet-loss={(reachable ? 0 : 100)}%");
             return output.ToString();
         }
-        
+
         private bool IsReachable(string destIp)
         {
             // Check if IP is in any connected network
@@ -951,7 +952,7 @@ namespace NetSim.Simulation.Devices
                     return true;
                 }
             }
-            
+
             // Check if there's a route to the destination
             foreach (var route in RoutingTable)
             {
@@ -960,10 +961,10 @@ namespace NetSim.Simulation.Devices
                     return true;
                 }
             }
-            
+
             return false;
         }
-        
+
         private bool IsIpInNetwork(string ip, string network, string mask)
         {
             try
@@ -971,13 +972,13 @@ namespace NetSim.Simulation.Devices
                 var ipBytes = ip.Split('.').Select(byte.Parse).ToArray();
                 var networkBytes = network.Split('.').Select(byte.Parse).ToArray();
                 var maskBytes = mask.Split('.').Select(byte.Parse).ToArray();
-                
+
                 for (int i = 0; i < 4; i++)
                 {
                     if ((ipBytes[i] & maskBytes[i]) != (networkBytes[i] & maskBytes[i]))
                         return false;
                 }
-                
+
                 return true;
             }
             catch
@@ -1006,7 +1007,7 @@ namespace NetSim.Simulation.Devices
             }
             return "";
         }
-        
+
         private string ExtractNumberParam(string input)
         {
             // Extract interface number (e.g., from "set 0" or "set ether1")
@@ -1029,11 +1030,11 @@ namespace NetSim.Simulation.Devices
             }
             return null;
         }
-        
+
         private string GetMacAddress(int index)
         {
             // Generate consistent MAC addresses
             return $"AA:BB:CC:00:0{index:X1}:00";
         }
     }
-} 
+}

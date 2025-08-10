@@ -172,7 +172,7 @@ namespace NetSim.Simulation.CliHandlers.Extensions
         /// </summary>
         public static List<string> GetModeSpecificCompletions(this CliContext context)
         {
-            var currentMode = context.CurrentMode.ToLower();
+            var currentMode = context.CurrentMode.ToLowerInvariant();
             
             return currentMode switch
             {
@@ -195,8 +195,8 @@ namespace NetSim.Simulation.CliHandlers.Extensions
             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(target))
                 return 0;
             
-            input = input.ToLower();
-            target = target.ToLower();
+            input = input.ToLowerInvariant();
+            target = target.ToLowerInvariant();
             
             // Exact match
             if (input == target)

@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
     public class ArubaCommandHandlerTests
     {
         [Fact]
-        public async Task ConfigureHandler_ShouldEnterConfigMode()
+        public async Task ConfigureHandlerShouldEnterConfigMode()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -22,7 +22,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ConfigureHandler_WithAlias_ShouldWork()
+        public async Task ConfigureHandlerWithAliasShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -38,7 +38,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ConfigureHandler_WhenNotInManagerMode_ShouldReturnError()
+        public async Task ConfigureHandlerWhenNotInManagerModeShouldReturnError()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -52,7 +52,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task HostnameHandler_ShouldChangeHostname()
+        public async Task HostnameHandlerShouldChangeHostname()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -68,7 +68,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task HostnameHandler_WhenNotInConfigMode_ShouldReturnError()
+        public async Task HostnameHandlerWhenNotInConfigModeShouldReturnError()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -82,7 +82,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task HostnameHandler_WithoutName_ShouldReturnError()
+        public async Task HostnameHandlerWithoutNameShouldReturnError()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -98,7 +98,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ExitHandler_ShouldExitCurrentMode()
+        public async Task ExitHandlerShouldExitCurrentMode()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -118,7 +118,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ExitHandler_FromManagerMode_ShouldStayInManagerMode()
+        public async Task ExitHandlerFromManagerModeShouldStayInManagerMode()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -133,7 +133,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task WriteHandler_ShouldSaveConfiguration()
+        public async Task WriteHandlerShouldSaveConfiguration()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -150,7 +150,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task WriteHandler_WithoutMemory_ShouldStillSave()
+        public async Task WriteHandlerWithoutMemoryShouldStillSave()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -167,7 +167,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ReloadHandler_ShouldPromptForConfirmation()
+        public async Task ReloadHandlerShouldPromptForConfirmation()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -183,7 +183,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ReloadHandler_WithAlias_ShouldWork()
+        public async Task ReloadHandlerWithAliasShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -199,7 +199,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ReloadHandler_WhenNotInManagerMode_ShouldReturnError()
+        public async Task ReloadHandlerWhenNotInManagerModeShouldReturnError()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");

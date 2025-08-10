@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
     public class NokiaCommandHandlerComprehensiveTests
     {
         [Fact]
-        public async Task NokiaHandler_ConfigureSystemName_ShouldSetSystemName()
+        public async Task NokiaHandlerConfigureSystemNameShouldSetSystemName()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -19,7 +19,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigurePortDescription_ShouldSetPortDescription()
+        public async Task NokiaHandlerConfigurePortDescriptionShouldSetPortDescription()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -33,7 +33,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigurePortAdminState_ShouldSetPortState()
+        public async Task NokiaHandlerConfigurePortAdminStateShouldSetPortState()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -47,7 +47,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureRouterIpAddress_ShouldSetIpAddress()
+        public async Task NokiaHandlerConfigureRouterIpAddressShouldSetIpAddress()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -61,7 +61,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureRouterOspf_ShouldConfigureOspf()
+        public async Task NokiaHandlerConfigureRouterOspfShouldConfigureOspf()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -75,7 +75,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureRouterBgp_ShouldConfigureBgp()
+        public async Task NokiaHandlerConfigureRouterBgpShouldConfigureBgp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -89,7 +89,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureServiceVpls_ShouldConfigureVpls()
+        public async Task NokiaHandlerConfigureServiceVplsShouldConfigureVpls()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -103,7 +103,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureServiceVprn_ShouldConfigureVprn()
+        public async Task NokiaHandlerConfigureServiceVprnShouldConfigureVprn()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -117,7 +117,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureServiceSdp_ShouldConfigureSdp()
+        public async Task NokiaHandlerConfigureServiceSdpShouldConfigureSdp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -131,7 +131,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureMplsLsp_ShouldConfigureLsp()
+        public async Task NokiaHandlerConfigureMplsLspShouldConfigureLsp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -145,7 +145,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureRouterRsvp_ShouldConfigureRsvp()
+        public async Task NokiaHandlerConfigureRouterRsvpShouldConfigureRsvp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -159,7 +159,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureRouterLdp_ShouldConfigureLdp()
+        public async Task NokiaHandlerConfigureRouterLdpShouldConfigureLdp()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -173,7 +173,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureQosPolicyMap_ShouldConfigureQos()
+        public async Task NokiaHandlerConfigureQosPolicyMapShouldConfigureQos()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -187,7 +187,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureFilterIpFilter_ShouldConfigureFilter()
+        public async Task NokiaHandlerConfigureFilterIpFilterShouldConfigureFilter()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -201,7 +201,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ConfigureLogSyslog_ShouldConfigureLogging()
+        public async Task NokiaHandlerConfigureLogSyslogShouldConfigureLogging()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -215,7 +215,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ShowRouter_ShouldDisplayRouterInfo()
+        public async Task NokiaHandlerShowRouterShouldDisplayRouterInfo()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -229,7 +229,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ShowService_ShouldDisplayServiceInfo()
+        public async Task NokiaHandlerShowServiceShouldDisplayServiceInfo()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -265,7 +265,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         [InlineData("show system uptime")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public async Task NokiaHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task NokiaHandlerAllShowCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -296,7 +296,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         [InlineData("configure qos network-policy \"test-policy\" queue 1")]
         [InlineData("configure filter ip-filter 10 entry 1")]
         [InlineData("configure log syslog 1 address 192.168.1.100")]
-        public async Task NokiaHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task NokiaHandlerConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -327,7 +327,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         [InlineData("show card state detail")]
         [InlineData("show mda detail")]
         [InlineData("show chassis detail")]
-        public async Task NokiaHandler_DetailedShowCommands_ShouldWork(string command)
+        public async Task NokiaHandlerDetailedShowCommandsShouldWork(string command)
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -350,7 +350,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         [InlineData("show service vprn 100 route-table")]
         [InlineData("show service vprn 100 ospf neighbor")]
         [InlineData("show service vprn 100 bgp summary")]
-        public async Task NokiaHandler_VrfCommands_ShouldWork(string command)
+        public async Task NokiaHandlerVrfCommandsShouldWork(string command)
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -374,7 +374,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         [InlineData("configure router ldp targeted-session peer 192.168.1.2")]
         [InlineData("configure router mpls static-lsp \"test-lsp\" ingress")]
         [InlineData("configure router rsvp interface \"system\" bandwidth 1000000")]
-        public async Task NokiaHandler_AdvancedRoutingCommands_ShouldWork(string command)
+        public async Task NokiaHandlerAdvancedRoutingCommandsShouldWork(string command)
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -389,7 +389,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_ComplexServiceConfiguration_ShouldWork()
+        public async Task NokiaHandlerComplexServiceConfigurationShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -417,7 +417,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_MplsConfiguration_ShouldWork()
+        public async Task NokiaHandlerMplsConfigurationShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -445,7 +445,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_QosConfiguration_ShouldWork()
+        public async Task NokiaHandlerQosConfigurationShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -473,7 +473,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_FilterConfiguration_ShouldWork()
+        public async Task NokiaHandlerFilterConfigurationShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -501,7 +501,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_LogConfiguration_ShouldWork()
+        public async Task NokiaHandlerLogConfigurationShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -528,7 +528,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_SystemConfiguration_ShouldWork()
+        public async Task NokiaHandlerSystemConfigurationShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
@@ -557,7 +557,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task NokiaHandler_CardMdaConfiguration_ShouldWork()
+        public async Task NokiaHandlerCardMdaConfigurationShouldWork()
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");

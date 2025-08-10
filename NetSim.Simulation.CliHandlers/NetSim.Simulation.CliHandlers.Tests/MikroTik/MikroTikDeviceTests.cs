@@ -19,7 +19,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 1: Export Configuration
         [Fact]
-        public async Task MikroTik_Export_ShouldShowFullConfiguration()
+        public async Task MikroTikExportShouldShowFullConfiguration()
         {
             var device = new MikroTikDevice("MT1");
             await device.ProcessCommandAsync("/system identity set name=\"MikroTik-Core\"");
@@ -36,7 +36,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 2: IP Route Print
         [Fact]
-        public async Task MikroTik_IpRoutePrint_ShouldDisplayAllRoutes()
+        public async Task MikroTikIpRoutePrintShouldDisplayAllRoutes()
         {
             var device = new MikroTikDevice("R1");
             await device.ProcessCommandAsync("/ip address add address=10.0.0.1/24 interface=ether1");
@@ -53,7 +53,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 3: Ping
         [Fact]
-        public async Task MikroTik_Ping_ShouldShowSuccessAndFailure()
+        public async Task MikroTikPingShouldShowSuccessAndFailure()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
 
@@ -69,7 +69,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 4: Interface Print
         [Fact]
-        public async Task MikroTik_InterfacePrint_ShouldShowInterfaceDetails()
+        public async Task MikroTikInterfacePrintShouldShowInterfaceDetails()
         {
             var device = new MikroTikDevice("MT1");
             await device.ProcessCommandAsync("/interface ethernet set ether1 comment=\"WAN Link\"");
@@ -88,7 +88,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 5: System Identity
         [Fact]
-        public async Task MikroTik_SystemIdentity_ShouldChangeHostname()
+        public async Task MikroTikSystemIdentityShouldChangeHostname()
         {
             var device = new MikroTikDevice("MT1");
             var output = await device.ProcessCommandAsync("/system identity set name=\"RouterTest\"");
@@ -100,7 +100,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 6: VLAN Configuration
         [Fact]
-        public async Task MikroTik_VlanConfiguration_ShouldCreateAndDisplay()
+        public async Task MikroTikVlanConfigurationShouldCreateAndDisplay()
         {
             var device = new MikroTikDevice("MT1");
             await device.ProcessCommandAsync("/interface vlan add vlan-id=10 interface=bridge name=SALES");
@@ -116,7 +116,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 7: OSPF Neighbor
         [Fact]
-        public async Task MikroTik_OspfNeighbor_ShouldShowNeighbors()
+        public async Task MikroTikOspfNeighborShouldShowNeighbors()
         {
             var device = new MikroTikDevice("R1");
             await device.ProcessCommandAsync("/routing ospf instance set 0 router-id=1.1.1.1");
@@ -131,7 +131,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 8: IP Address Configuration
         [Fact]
-        public async Task MikroTik_IpAddressConfiguration_ShouldApplySettings()
+        public async Task MikroTikIpAddressConfigurationShouldApplySettings()
         {
             var device = new MikroTikDevice("MT1");
             await device.ProcessCommandAsync("/interface ethernet set 0 comment=\"Server Connection\"");
@@ -148,7 +148,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 9: BGP Peer
         [Fact]
-        public async Task MikroTik_BgpPeer_ShouldShowPeerStatus()
+        public async Task MikroTikBgpPeerShouldShowPeerStatus()
         {
             var device = new MikroTikDevice("R1");
             await device.ProcessCommandAsync("/routing bgp instance set default as=65001 router-id=1.1.1.1");
@@ -163,7 +163,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 10: Enable/Disable Interface
         [Fact]
-        public async Task MikroTik_EnableDisableInterface_ShouldToggleStatus()
+        public async Task MikroTikEnableDisableInterfaceShouldToggleStatus()
         {
             var device = new MikroTikDevice("MT1");
             await device.ProcessCommandAsync("/ip address add address=10.0.0.1/24 interface=ether1");
@@ -180,7 +180,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 11: System Resource Print
         [Fact]
-        public async Task MikroTik_SystemResourcePrint_ShouldShowSystemInfo()
+        public async Task MikroTikSystemResourcePrintShouldShowSystemInfo()
         {
             var device = new MikroTikDevice("MT1");
             var output = await device.ProcessCommandAsync("/system resource print");
@@ -196,7 +196,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 12: IP ARP Print
         [Fact]
-        public async Task MikroTik_IpArpPrint_ShouldShowArpTable()
+        public async Task MikroTikIpArpPrintShouldShowArpTable()
         {
             var device = new MikroTikDevice("R1");
             await device.ProcessCommandAsync("/ip address add address=10.0.0.1/24 interface=ether1");
@@ -210,7 +210,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 13: Interface Bridge Host Print (MAC Table)
         [Fact]
-        public async Task MikroTik_BridgeHostPrint_ShouldShowMacTable()
+        public async Task MikroTikBridgeHostPrintShouldShowMacTable()
         {
             var device = new MikroTikDevice("MT1");
             await device.ProcessCommandAsync("/interface bridge add name=bridge1");
@@ -224,7 +224,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 14: IP Address Print (Brief)
         [Fact]
-        public async Task MikroTik_IpAddressPrintBrief_ShouldShowSummary()
+        public async Task MikroTikIpAddressPrintBriefShouldShowSummary()
         {
             var device = new MikroTikDevice("R1");
             await device.ProcessCommandAsync("/ip address add address=10.0.0.1/24 interface=ether1");
@@ -241,7 +241,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 15: File Print (Save Configuration)
         [Fact]
-        public async Task MikroTik_FilePrint_ShouldShowSavedFiles()
+        public async Task MikroTikFilePrintShouldShowSavedFiles()
         {
             var device = new MikroTikDevice("MT1");
             await device.ProcessCommandAsync("/system identity set name=\"SaveTest\"");
@@ -255,7 +255,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 16: Interface Bridge Settings (STP)
         [Fact]
-        public async Task MikroTik_BridgeSettings_ShouldShowSpanningTree()
+        public async Task MikroTikBridgeSettingsShouldShowSpanningTree()
         {
             var device = new MikroTikDevice("MT1");
             await device.ProcessCommandAsync("/interface bridge add name=bridge1 priority=0x1000 protocol-mode=rstp");
@@ -271,7 +271,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 17: IP Firewall Filter (Access Lists)
         [Fact]
-        public async Task MikroTik_FirewallFilter_ShouldShowAcls()
+        public async Task MikroTikFirewallFilterShouldShowAcls()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("/ip firewall filter add chain=input action=drop src-address=192.168.1.0/24");
@@ -286,7 +286,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 18: Interface Bonding (LAG)
         [Fact]
-        public async Task MikroTik_InterfaceBonding_ShouldShowLag()
+        public async Task MikroTikInterfaceBondingShouldShowLag()
         {
             var device = new MikroTikDevice("MT1");
             await device.ProcessCommandAsync("/interface bonding add name=bond1 mode=802.3ad slaves=ether1,ether2");
@@ -299,7 +299,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 19: System Reboot
         [Fact]
-        public async Task MikroTik_SystemReboot_ShouldPromptConfirmation()
+        public async Task MikroTikSystemRebootShouldPromptConfirmation()
         {
             var device = new MikroTikDevice("MT1");
             var output = await device.ProcessCommandAsync("/system reboot");
@@ -310,7 +310,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
 
         // Test 20: Log Print
         [Fact]
-        public async Task MikroTik_LogPrint_ShouldShowLogEntries()
+        public async Task MikroTikLogPrintShouldShowLogEntries()
         {
             var device = new MikroTikDevice("MT1");
             await device.ProcessCommandAsync("/interface ethernet disable ether1");

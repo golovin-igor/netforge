@@ -1,4 +1,5 @@
 using NetSim.Simulation.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Core;
 using NetSim.Simulation.Protocols.Implementations;
 
@@ -25,10 +26,10 @@ namespace NetSim.Simulation.Devices
 
         protected override void InitializeDefaultInterfaces()
         {
-            Interfaces["ge-0/0/0"] = new Configuration.InterfaceConfig("ge-0/0/0", this);
-            Interfaces["ge-0/0/1"] = new Configuration.InterfaceConfig("ge-0/0/1", this);
-            Interfaces["ge-0/0/2"] = new Configuration.InterfaceConfig("ge-0/0/2", this);
-            Interfaces["ge-0/0/3"] = new Configuration.InterfaceConfig("ge-0/0/3", this);
+            Interfaces["ge-0/0/0"] = new InterfaceConfig("ge-0/0/0", this);
+            Interfaces["ge-0/0/1"] = new InterfaceConfig("ge-0/0/1", this);
+            Interfaces["ge-0/0/2"] = new InterfaceConfig("ge-0/0/2", this);
+            Interfaces["ge-0/0/3"] = new InterfaceConfig("ge-0/0/3", this);
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -58,7 +59,7 @@ namespace NetSim.Simulation.Devices
         {
             if (!Interfaces.ContainsKey(name))
             {
-                Interfaces[name] = new Configuration.InterfaceConfig(name, this);
+                Interfaces[name] = new InterfaceConfig(name, this);
             }
         }
     }

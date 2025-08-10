@@ -18,7 +18,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task Fortinet_ConfigureInterfacesAndPing_ShouldSucceed()
+        public async Task FortinetConfigureInterfacesAndPingShouldSucceed()
         {
             var (network, fw1, fw2) = await SetupNetworkWithTwoDevicesAsync();
             await fw1.ProcessCommandAsync("config system interface");
@@ -40,7 +40,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task Fortinet_StaticRouting_ShouldWork()
+        public async Task FortinetStaticRoutingShouldWork()
         {
             var (network, fw1, fw2) = await SetupNetworkWithTwoDevicesAsync();
             await fw1.ProcessCommandAsync("config system interface");
@@ -77,7 +77,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task Fortinet_FirewallPolicy_ShouldBlockTraffic()
+        public async Task FortinetFirewallPolicyShouldBlockTraffic()
         {
             var (network, fw1, fw2) = await SetupNetworkWithTwoDevicesAsync();
             await fw1.ProcessCommandAsync("config system interface");
@@ -112,7 +112,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task Fortinet_OspfRouting_ShouldFormAdjacency()
+        public async Task FortinetOspfRoutingShouldFormAdjacency()
         {
             var (network, fw1, fw2) = await SetupNetworkWithTwoDevicesAsync();
             await fw1.ProcessCommandAsync("config system interface");
@@ -156,7 +156,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task Fortinet_BgpRouting_ShouldEstablishPeering()
+        public async Task FortinetBgpRoutingShouldEstablishPeering()
         {
             var (network, fw1, fw2) = await SetupNetworkWithTwoDevicesAsync();
             await fw1.ProcessCommandAsync("config system interface");
@@ -200,7 +200,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ShowFullConfiguration_ShouldDisplayConfiguredSettings() 
+        public async Task ShowFullConfigurationShouldDisplayConfiguredSettings() 
         {
             var (network, fw1, _) = await SetupNetworkWithTwoDevicesAsync();
             await fw1.ProcessCommandAsync("config system interface");
@@ -223,7 +223,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task InvalidCommand_ShouldReturnError() // Does not use network setup
+        public async Task InvalidCommandShouldReturnError() // Does not use network setup
         {
             var fw1 = new FortinetDevice("FW1");
             var output = await fw1.ProcessCommandAsync("config system blah");

@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
     public class AristaConfigurationCommandHandlerTests
     {
         [Fact]
-        public async Task Configure_ShouldEnterConfigurationMode()
+        public async Task ConfigureShouldEnterConfigurationMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -22,7 +22,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Hostname_InConfigMode_ShouldChangeHostname()
+        public async Task HostnameInConfigModeShouldChangeHostname()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -38,7 +38,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Interface_ShouldEnterInterfaceMode()
+        public async Task InterfaceShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -56,7 +56,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Vlan_ShouldEnterVlanMode()
+        public async Task VlanShouldEnterVlanMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -72,7 +72,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task RouterOspf_ShouldEnterOspfMode()
+        public async Task RouterOspfShouldEnterOspfMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -90,7 +90,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task RouterBgp_ShouldEnterBgpMode()
+        public async Task RouterBgpShouldEnterBgpMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -109,7 +109,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task RouterRip_ShouldEnterRipMode()
+        public async Task RouterRipShouldEnterRipMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -127,7 +127,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task IpRoute_ShouldCreateStaticRoute()
+        public async Task IpRouteShouldCreateStaticRoute()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -144,7 +144,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task IpAccessListStandard_ShouldEnterAclMode()
+        public async Task IpAccessListStandardShouldEnterAclMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -164,7 +164,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task IpAccessListExtended_ShouldEnterAclMode()
+        public async Task IpAccessListExtendedShouldEnterAclMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -181,7 +181,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
         // Interface configuration tests
         [Fact]
-        public async Task IpAddress_InInterfaceMode_ShouldConfigureInterface()
+        public async Task IpAddressInInterfaceModeShouldConfigureInterface()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -202,7 +202,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Shutdown_InInterfaceMode_ShouldShutdownInterface()
+        public async Task ShutdownInInterfaceModeShouldShutdownInterface()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -223,7 +223,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task NoShutdown_InInterfaceMode_ShouldEnableInterface()
+        public async Task NoShutdownInInterfaceModeShouldEnableInterface()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -245,7 +245,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Description_InInterfaceMode_ShouldSetDescription()
+        public async Task DescriptionInInterfaceModeShouldSetDescription()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -265,7 +265,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task SwitchportModeAccess_InInterfaceMode_ShouldSetAccessMode()
+        public async Task SwitchportModeAccessInInterfaceModeShouldSetAccessMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -285,7 +285,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task SwitchportAccessVlan_InInterfaceMode_ShouldAssignVlan()
+        public async Task SwitchportAccessVlanInInterfaceModeShouldAssignVlan()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -307,7 +307,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task SwitchportModeTrunk_InInterfaceMode_ShouldSetTrunkMode()
+        public async Task SwitchportModeTrunkInInterfaceModeShouldSetTrunkMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -328,7 +328,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
         // VLAN configuration tests
         [Fact]
-        public async Task VlanName_InVlanMode_ShouldSetVlanName()
+        public async Task VlanNameInVlanModeShouldSetVlanName()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -345,7 +345,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
         // Router configuration tests
         [Fact]
-        public async Task NetworkOspf_InRouterMode_ShouldAdvertiseNetwork()
+        public async Task NetworkOspfInRouterModeShouldAdvertiseNetwork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -364,7 +364,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task RouterId_InOspfMode_ShouldSetRouterId()
+        public async Task RouterIdInOspfModeShouldSetRouterId()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -383,7 +383,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task BgpNeighborRemoteAs_InBgpMode_ShouldAddNeighbor()
+        public async Task BgpNeighborRemoteAsInBgpModeShouldAddNeighbor()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -402,7 +402,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task BgpNeighborDescription_InBgpMode_ShouldSetDescription()
+        public async Task BgpNeighborDescriptionInBgpModeShouldSetDescription()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -424,7 +424,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task RipVersion_InRipMode_ShouldSetVersion()
+        public async Task RipVersionInRipModeShouldSetVersion()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -443,7 +443,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task BgpRouterId_InBgpMode_ShouldSetRouterId()
+        public async Task BgpRouterIdInBgpModeShouldSetRouterId()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -463,7 +463,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
         // ACL configuration tests
         [Fact]
-        public async Task Permit_InAclMode_ShouldAddAclEntry()
+        public async Task PermitInAclModeShouldAddAclEntry()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -479,7 +479,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Deny_InAclMode_ShouldAddAclEntry()
+        public async Task DenyInAclModeShouldAddAclEntry()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -496,7 +496,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
 
         // Mode transition tests
         [Fact]
-        public async Task Exit_FromInterfaceMode_ShouldReturnToConfigMode()
+        public async Task ExitFromInterfaceModeShouldReturnToConfigMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -514,7 +514,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task End_FromAnyConfigMode_ShouldReturnToPrivilegedMode()
+        public async Task EndFromAnyConfigModeShouldReturnToPrivilegedMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -532,7 +532,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task InvalidCommand_ShouldReturnError()
+        public async Task InvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");

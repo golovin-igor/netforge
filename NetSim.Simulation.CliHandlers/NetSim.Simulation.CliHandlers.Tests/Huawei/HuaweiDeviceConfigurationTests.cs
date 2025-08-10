@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
     public class HuaweiDeviceConfigurationTests
     {
         [Fact]
-        public async Task Huawei_SystemView_ShouldEnterConfigMode()
+        public async Task HuaweiSystemViewShouldEnterConfigMode()
         {
             var device = new HuaweiDevice("SW1");
             var output = await device.ProcessCommandAsync("system-view");
@@ -23,7 +23,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_InterfaceConfiguration_ShouldApplySettings()
+        public async Task HuaweiInterfaceConfigurationShouldApplySettings()
         {
             var device = new HuaweiDevice("SW1");
             await device.ProcessCommandAsync("system-view");
@@ -46,7 +46,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_ShutdownUndoShutdown_ShouldToggleInterface()
+        public async Task HuaweiShutdownUndoShutdownShouldToggleInterface()
         {
             var device = new HuaweiDevice("SW1");
             await device.ProcessCommandAsync("system-view");
@@ -68,7 +68,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_Save_ShouldPersistConfiguration()
+        public async Task HuaweiSaveShouldPersistConfiguration()
         {
             var device = new HuaweiDevice("SW1");
             await device.ProcessCommandAsync("system-view");
@@ -83,7 +83,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_AclConfiguration_ShouldCreateAccessList()
+        public async Task HuaweiAclConfigurationShouldCreateAccessList()
         {
             var device = new HuaweiDevice("R1");
             await device.ProcessCommandAsync("system-view");
@@ -100,7 +100,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_Reboot_ShouldPromptConfirmation()
+        public async Task HuaweiRebootShouldPromptConfirmation()
         {
             var device = new HuaweiDevice("SW1");
             var output = await device.ProcessCommandAsync("reboot");

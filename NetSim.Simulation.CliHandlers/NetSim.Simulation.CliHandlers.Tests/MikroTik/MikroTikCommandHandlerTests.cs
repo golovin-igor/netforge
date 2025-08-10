@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
     public class MikroTikCommandHandlerTests
     {
         [Fact]
-        public async Task RouterOSHandler_ShouldHandlePathCommands()
+        public async Task RouterOSHandlerShouldHandlePathCommands()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
@@ -20,7 +20,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task RouterOSHandler_ShouldHandlePingCommand()
+        public async Task RouterOSHandlerShouldHandlePingCommand()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
@@ -35,7 +35,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task RouterOSHandler_ShouldHandleQuitCommand()
+        public async Task RouterOSHandlerShouldHandleQuitCommand()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
@@ -50,7 +50,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task RouterOSHandler_ShouldHandleHelpCommand()
+        public async Task RouterOSHandlerShouldHandleHelpCommand()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
@@ -64,7 +64,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task RouterOSHandler_ShouldHandleExportCommand()
+        public async Task RouterOSHandlerShouldHandleExportCommand()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
@@ -80,7 +80,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task RouterOSHandler_ShouldHandlePutCommand()
+        public async Task RouterOSHandlerShouldHandlePutCommand()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
@@ -94,7 +94,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task RouterOSHandler_WithInvalidPath_ShouldReturnError()
+        public async Task RouterOSHandlerWithInvalidPathShouldReturnError()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
@@ -108,7 +108,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task RouterOSHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task RouterOSHandlerWithInvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
@@ -122,7 +122,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task RouterOSHandler_WithIncompleteCommand_ShouldReturnError()
+        public async Task RouterOSHandlerWithIncompleteCommandShouldReturnError()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
@@ -136,7 +136,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task RouterOSHandler_WithInvalidParameter_ShouldReturnError()
+        public async Task RouterOSHandlerWithInvalidParameterShouldReturnError()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");

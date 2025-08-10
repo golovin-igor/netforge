@@ -1,4 +1,5 @@
 using NetSim.Simulation.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Configuration;
 using NetSim.Simulation.Devices;
 using NetSim.Simulation.Events;
@@ -16,7 +17,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task AddDeviceAsync_DeviceAdded_EventPublished()
+        public async Task AddDeviceAsyncDeviceAddedEventPublished()
         {
             var device = new CiscoDevice("R1");
             bool eventFired = false;
@@ -34,7 +35,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task AddLinkAsync_LinkAdded_EventPublishedAndInterfacesUp()
+        public async Task AddLinkAsyncLinkAddedEventPublishedAndInterfacesUp()
         {
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
@@ -81,7 +82,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task RemoveLinkAsync_LinkRemoved_EventPublishedAndInterfacesDown() 
+        public async Task RemoveLinkAsyncLinkRemovedEventPublishedAndInterfacesDown() 
         {
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
@@ -122,13 +123,13 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void GetDevice_NonExistentDevice_ReturnsNull() 
+        public void GetDeviceNonExistentDeviceReturnsNull() 
         {
             Assert.Null(_network.GetDevice("NonExistent"));
         }
 
         [Fact]
-        public async Task FindDeviceByIp_DeviceExists_ReturnsDevice() 
+        public async Task FindDeviceByIpDeviceExistsReturnsDevice() 
         {
             var device = new CiscoDevice("R1");
             await _network.AddDeviceAsync(device); 
@@ -139,7 +140,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task GetConnectedDevices_NoLink_ReturnsEmpty() 
+        public async Task GetConnectedDevicesNoLinkReturnsEmpty() 
         {
             var device = new CiscoDevice("R1");
             await _network.AddDeviceAsync(device); 
@@ -147,7 +148,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task GetConnectedDevices_WithLink_ReturnsConnectedDevice() 
+        public async Task GetConnectedDevicesWithLinkReturnsConnectedDevice() 
         {
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
@@ -162,7 +163,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task UpdateProtocols_CallsUpdateOnAllDevices() 
+        public async Task UpdateProtocolsCallsUpdateOnAllDevices() 
         {
             var device1 = new TestDevice("D1");
             var device2 = new TestDevice("D2");
@@ -177,7 +178,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task AddDevice_NullDevice_DoesNotThrowAndDoesNotAdd()
+        public async Task AddDeviceNullDeviceDoesNotThrowAndDoesNotAdd()
         {
             int initialCount = _network.GetAllDevices().Count();
             await _network.AddDeviceAsync(null); 
@@ -185,7 +186,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task AddLink_DeviceNotExists_DoesNotAddLink() 
+        public async Task AddLinkDeviceNotExistsDoesNotAddLink() 
         {
             var r1 = new CiscoDevice("R1");
             await _network.AddDeviceAsync(r1); 
@@ -198,7 +199,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task RemoveLink_NonExistentLink_DoesNotThrow() 
+        public async Task RemoveLinkNonExistentLinkDoesNotThrow() 
         {
              var r1 = new CiscoDevice("R1");
              var r2 = new CiscoDevice("R2");
@@ -209,7 +210,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task MultipleLinks_BetweenSameDevices_AreAllowed() 
+        public async Task MultipleLinksBetweenSameDevicesAreAllowed() 
         {
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
@@ -226,7 +227,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         {
             public bool UpdateAllProtocolStatesCalled { get; private set; }
             public TestDevice(string name) : base(name) { Vendor = "Test"; }
-            protected override void InitializeDefaultInterfaces() { Interfaces.Add("Default0", new InterfaceConfig("Default0")); } 
+            protected override void InitializeDefaultInterfaces() { Interfaces.Add("Default0", new InterfaceConfig("Default0", this)); } 
             public override string GetPrompt() => $"{Name}>";
             protected override void RegisterDeviceSpecificHandlers() { }
             public override async Task UpdateAllProtocolStates() 

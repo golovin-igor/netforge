@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
     public class CiscoCommandHandlerComprehensiveTests
     {
         [Fact]
-        public async Task CiscoHandler_ConfigureTerminal_ShouldEnterConfigMode()
+        public async Task CiscoHandlerConfigureTerminalShouldEnterConfigMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -21,7 +21,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_Hostname_ShouldSetHostname()
+        public async Task CiscoHandlerHostnameShouldSetHostname()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -36,7 +36,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_ShowRunningConfig_ShouldDisplayConfig()
+        public async Task CiscoHandlerShowRunningConfigShouldDisplayConfig()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -50,7 +50,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_ShowVersion_ShouldDisplayVersion()
+        public async Task CiscoHandlerShowVersionShouldDisplayVersion()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -64,7 +64,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_ShowInterfaces_ShouldDisplayInterfaces()
+        public async Task CiscoHandlerShowInterfacesShouldDisplayInterfaces()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -78,7 +78,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_ShowIpRoute_ShouldDisplayRoutes()
+        public async Task CiscoHandlerShowIpRouteShouldDisplayRoutes()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -92,7 +92,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_ShowArp_ShouldDisplayArpTable()
+        public async Task CiscoHandlerShowArpShouldDisplayArpTable()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -106,7 +106,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_InterfaceGigabitEthernet_ShouldEnterInterfaceMode()
+        public async Task CiscoHandlerInterfaceGigabitEthernetShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -122,7 +122,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_IpAddress_ShouldConfigureInterface()
+        public async Task CiscoHandlerIpAddressShouldConfigureInterface()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -138,7 +138,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_NoShutdown_ShouldEnableInterface()
+        public async Task CiscoHandlerNoShutdownShouldEnableInterface()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -154,7 +154,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_IpRoute_ShouldConfigureStaticRoute()
+        public async Task CiscoHandlerIpRouteShouldConfigureStaticRoute()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -169,7 +169,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_Vlan_ShouldEnterVlanMode()
+        public async Task CiscoHandlerVlanShouldEnterVlanMode()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -185,7 +185,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_VlanName_ShouldSetVlanName()
+        public async Task CiscoHandlerVlanNameShouldSetVlanName()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -201,7 +201,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_ShowVlan_ShouldDisplayVlans()
+        public async Task CiscoHandlerShowVlanShouldDisplayVlans()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -215,7 +215,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_ShowSpanningTree_ShouldDisplayStp()
+        public async Task CiscoHandlerShowSpanningTreeShouldDisplayStp()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -229,7 +229,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_ShowCdpNeighbors_ShouldDisplayCdpInfo()
+        public async Task CiscoHandlerShowCdpNeighborsShouldDisplayCdpInfo()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -266,7 +266,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         [InlineData("show environment")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public async Task CiscoHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task CiscoHandlerAllShowCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -295,7 +295,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         [InlineData("vlan 100")]
         [InlineData("name TestVLAN")]
         [InlineData("spanning-tree mode rapid-pvst")]
-        public async Task CiscoHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task CiscoHandlerConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -330,7 +330,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         [InlineData("show ip access-lists")]
         [InlineData("show ip prefix-list")]
         [InlineData("show route-map")]
-        public async Task CiscoHandler_DetailedShowCommands_ShouldWork(string command)
+        public async Task CiscoHandlerDetailedShowCommandsShouldWork(string command)
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -350,7 +350,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         [InlineData("show ip ospf vrf management")]
         [InlineData("show ip bgp vrf management")]
         [InlineData("show interfaces vrf management")]
-        public async Task CiscoHandler_VrfCommands_ShouldWork(string command)
+        public async Task CiscoHandlerVrfCommandsShouldWork(string command)
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -382,7 +382,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         [InlineData("ip unreachables")]
         [InlineData("keepalive 10")]
         [InlineData("bandwidth 1000000")]
-        public async Task CiscoHandler_InterfaceConfigurationCommands_ShouldWork(string command)
+        public async Task CiscoHandlerInterfaceConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -404,7 +404,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         [InlineData("state active")]
         [InlineData("shutdown")]
         [InlineData("no shutdown")]
-        public async Task CiscoHandler_VlanConfigurationCommands_ShouldWork(string command)
+        public async Task CiscoHandlerVlanConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -422,7 +422,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_ComplexOspfConfiguration_ShouldWork()
+        public async Task CiscoHandlerComplexOspfConfigurationShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -455,7 +455,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_ComplexBgpConfiguration_ShouldWork()
+        public async Task CiscoHandlerComplexBgpConfigurationShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -490,7 +490,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_VlanAndSwitchportConfiguration_ShouldWork()
+        public async Task CiscoHandlerVlanAndSwitchportConfigurationShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -524,7 +524,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_AccessListConfiguration_ShouldWork()
+        public async Task CiscoHandlerAccessListConfigurationShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -555,7 +555,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_RouteMapConfiguration_ShouldWork()
+        public async Task CiscoHandlerRouteMapConfigurationShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -586,7 +586,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_SpanningTreeConfiguration_ShouldWork()
+        public async Task CiscoHandlerSpanningTreeConfigurationShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -617,7 +617,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_VrfConfiguration_ShouldWork()
+        public async Task CiscoHandlerVrfConfigurationShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -648,7 +648,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_SnmpConfiguration_ShouldWork()
+        public async Task CiscoHandlerSnmpConfigurationShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -678,7 +678,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_NtpConfiguration_ShouldWork()
+        public async Task CiscoHandlerNtpConfigurationShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -707,7 +707,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoHandler_LoggingConfiguration_ShouldWork()
+        public async Task CiscoHandlerLoggingConfigurationShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");

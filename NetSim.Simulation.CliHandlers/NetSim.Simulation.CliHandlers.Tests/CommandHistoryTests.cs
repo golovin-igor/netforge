@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
     public class CommandHistoryTests
     {
         [Fact]
-        public async Task CommandHistory_ShouldTrackExecutedCommands()
+        public async Task CommandHistoryShouldTrackExecutedCommands()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -22,7 +22,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HistoryCommand_ShouldDisplayRecentCommands()
+        public async Task HistoryCommandShouldDisplayRecentCommands()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -41,7 +41,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HistoryRecall_DoubleExclamation_ShouldRecallLastCommand()
+        public async Task HistoryRecallDoubleExclamationShouldRecallLastCommand()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -57,7 +57,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HistoryRecall_ByNumber_ShouldRecallSpecificCommand()
+        public async Task HistoryRecallByNumberShouldRecallSpecificCommand()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -73,7 +73,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HistorySearch_ShouldFindMatchingCommands()
+        public async Task HistorySearchShouldFindMatchingCommands()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -94,7 +94,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HistoryStats_ShouldDisplayStatistics()
+        public async Task HistoryStatsShouldDisplayStatistics()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -112,7 +112,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HistoryClear_ShouldClearAllHistory()
+        public async Task HistoryClearShouldClearAllHistory()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -129,7 +129,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task CommandShortcuts_ShouldExpandProperly()
+        public async Task CommandShortcutsShouldExpandProperly()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");

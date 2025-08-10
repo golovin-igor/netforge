@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
     public class AlcatelCommandHandlerTests
     {
         [Fact]
-        public async Task AlcatelHandler_Configure_ShouldEnterConfigMode()
+        public async Task AlcatelHandlerConfigureShouldEnterConfigMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -20,7 +20,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ConfigureSystemName_ShouldSetSystemName()
+        public async Task AlcatelHandlerConfigureSystemNameShouldSetSystemName()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -34,7 +34,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ConfigurePort_ShouldEnterPortMode()
+        public async Task AlcatelHandlerConfigurePortShouldEnterPortMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -49,7 +49,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ConfigureRouterInterface_ShouldEnterInterfaceMode()
+        public async Task AlcatelHandlerConfigureRouterInterfaceShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -64,7 +64,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ConfigureRouterOspf_ShouldEnterOspfMode()
+        public async Task AlcatelHandlerConfigureRouterOspfShouldEnterOspfMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -80,7 +80,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ConfigureRouterBgp_ShouldEnterBgpMode()
+        public async Task AlcatelHandlerConfigureRouterBgpShouldEnterBgpMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -96,7 +96,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_AdminDisplayConfig_ShouldShowConfiguration()
+        public async Task AlcatelHandlerAdminDisplayConfigShouldShowConfiguration()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -110,7 +110,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ShowRouterRouteTable_ShouldDisplayRoutes()
+        public async Task AlcatelHandlerShowRouterRouteTableShouldDisplayRoutes()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -124,7 +124,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ShowRouterArp_ShouldDisplayArpTable()
+        public async Task AlcatelHandlerShowRouterArpShouldDisplayArpTable()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -138,7 +138,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ShowRouterInterface_ShouldDisplayInterfaces()
+        public async Task AlcatelHandlerShowRouterInterfaceShouldDisplayInterfaces()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -152,7 +152,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_PingCommand_ShouldExecutePing()
+        public async Task AlcatelHandlerPingCommandShouldExecutePing()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -166,7 +166,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_TracerouteCommand_ShouldExecuteTraceroute()
+        public async Task AlcatelHandlerTracerouteCommandShouldExecuteTraceroute()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -180,7 +180,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ConfigureVlan_ShouldEnterVlanMode()
+        public async Task AlcatelHandlerConfigureVlanShouldEnterVlanMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -195,7 +195,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ShowVlanInfo_ShouldDisplayVlanInfo()
+        public async Task AlcatelHandlerShowVlanInfoShouldDisplayVlanInfo()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -209,7 +209,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ConfigureRouterMpls_ShouldEnterMplsMode()
+        public async Task AlcatelHandlerConfigureRouterMplsShouldEnterMplsMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -225,7 +225,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ShowRouterMplsLsp_ShouldDisplayMplsLsp()
+        public async Task AlcatelHandlerShowRouterMplsLspShouldDisplayMplsLsp()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -239,7 +239,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ConfigureRouterLdp_ShouldEnterLdpMode()
+        public async Task AlcatelHandlerConfigureRouterLdpShouldEnterLdpMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -255,7 +255,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ShowSystemTime_ShouldDisplayTime()
+        public async Task AlcatelHandlerShowSystemTimeShouldDisplayTime()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -269,7 +269,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ConfigureSystemTimeNtp_ShouldConfigureNtp()
+        public async Task AlcatelHandlerConfigureSystemTimeNtpShouldConfigureNtp()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -284,7 +284,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_AdminSave_ShouldSaveConfiguration()
+        public async Task AlcatelHandlerAdminSaveShouldSaveConfiguration()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -298,7 +298,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ShowSystemUptime_ShouldDisplayUptime()
+        public async Task AlcatelHandlerShowSystemUptimeShouldDisplayUptime()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -312,7 +312,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ConfigureServiceVpls_ShouldEnterVplsMode()
+        public async Task AlcatelHandlerConfigureServiceVplsShouldEnterVplsMode()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -327,7 +327,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_ShowServiceVpls_ShouldDisplayVplsInfo()
+        public async Task AlcatelHandlerShowServiceVplsShouldDisplayVplsInfo()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -341,7 +341,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         }
 
         [Fact]
-        public async Task AlcatelHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task AlcatelHandlerWithInvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -370,7 +370,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         [InlineData("show router rip neighbor")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public async Task AlcatelHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task AlcatelHandlerAllShowCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -394,11 +394,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         [InlineData("router bgp")]
         [InlineData("vlan 100")]
         [InlineData("service vpls 100")]
-        public async Task AlcatelHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task AlcatelHandlerConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
-            if (!command.Equals("configure"))
+            if (!command.Equals("configure", StringComparison.OrdinalIgnoreCase))
             {
                 await device.ProcessCommandAsync("configure");
             }
@@ -421,7 +421,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         [InlineData("system security user test")]
         [InlineData("system snmp community public")]
         [InlineData("system login-control ssh")]
-        public async Task AlcatelHandler_AdvancedCommands_ShouldHaveHandlers(string command)
+        public async Task AlcatelHandlerAdvancedCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");
@@ -447,7 +447,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Alcatel
         [InlineData("show router arp resolve")]
         [InlineData("show router arp reachable")]
         [InlineData("show router arp connected")]
-        public async Task AlcatelHandler_ArpCommands_ShouldWork(string command)
+        public async Task AlcatelHandlerArpCommandsShouldWork(string command)
         {
             // Arrange
             var device = new AlcatelDevice("TestRouter");

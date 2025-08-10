@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
     public class DellCommandHandlerTests
     {
         [Fact]
-        public async Task DellOperationalHandler_RequestCommand_ShouldProcessRequest()
+        public async Task DellOperationalHandlerRequestCommandShouldProcessRequest()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -21,7 +21,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellOperationalHandler_RequestCommand_WithoutParameters_ShouldReturnError()
+        public async Task DellOperationalHandlerRequestCommandWithoutParametersShouldReturnError()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -36,7 +36,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellOperationalHandler_FileCommand_ShouldProcessFile()
+        public async Task DellOperationalHandlerFileCommandShouldProcessFile()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -51,7 +51,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellOperationalHandler_BootCommand_ShouldProcessBoot()
+        public async Task DellOperationalHandlerBootCommandShouldProcessBoot()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -66,7 +66,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellOperationalHandler_SystemCommand_ShouldProcessSystem()
+        public async Task DellOperationalHandlerSystemCommandShouldProcessSystem()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -81,7 +81,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellOperationalHandler_WhenNotPrivileged_ShouldReturnError()
+        public async Task DellOperationalHandlerWhenNotPrivilegedShouldReturnError()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -95,7 +95,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellPingHandler_ShouldExecutePing()
+        public async Task DellPingHandlerShouldExecutePing()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -110,7 +110,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellPingHandler_WithCount_ShouldUseSpecifiedCount()
+        public async Task DellPingHandlerWithCountShouldUseSpecifiedCount()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -125,7 +125,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellPingHandler_WithSize_ShouldUseSpecifiedSize()
+        public async Task DellPingHandlerWithSizeShouldUseSpecifiedSize()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -140,7 +140,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellPingHandler_WithInvalidIp_ShouldReturnError()
+        public async Task DellPingHandlerWithInvalidIpShouldReturnError()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -154,7 +154,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellPingHandler_WithoutDestination_ShouldReturnError()
+        public async Task DellPingHandlerWithoutDestinationShouldReturnError()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");

@@ -15,7 +15,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryCommandHandler_WithEmptyHistory_ShouldReturnEmptyMessage()
+        public async Task CommonHistoryCommandHandlerWithEmptyHistoryShouldReturnEmptyMessage()
         {
             // Act
             var result = await _testDevice.ProcessCommandAsync("history");
@@ -26,7 +26,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryCommandHandler_WithCommandHistory_ShouldDisplayHistory()
+        public async Task CommonHistoryCommandHandlerWithCommandHistoryShouldDisplayHistory()
         {
             // Arrange - Add some commands to history
             await _testDevice.ProcessCommandAsync("show version");
@@ -44,7 +44,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryRecallHandler_WithEmptyHistory_ShouldReturnError()
+        public async Task CommonHistoryRecallHandlerWithEmptyHistoryShouldReturnError()
         {
             // Act
             var result = await _testDevice.ProcessCommandAsync("!!");
@@ -55,7 +55,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryRecallHandler_WithHistory_ShouldRecallLastCommand()
+        public async Task CommonHistoryRecallHandlerWithHistoryShouldRecallLastCommand()
         {
             // Arrange - Add a command to history
             await _testDevice.ProcessCommandAsync("show version");
@@ -70,7 +70,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryNumberRecallHandler_WithInvalidNumber_ShouldReturnError()
+        public async Task CommonHistoryNumberRecallHandlerWithInvalidNumberShouldReturnError()
         {
             // Act
             var result = await _testDevice.ProcessCommandAsync("! 999");
@@ -81,7 +81,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryNumberRecallHandler_WithValidNumber_ShouldRecallCommand()
+        public async Task CommonHistoryNumberRecallHandlerWithValidNumberShouldRecallCommand()
         {
             // Arrange
             await _testDevice.ProcessCommandAsync("show version");
@@ -97,7 +97,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryNumberRecallHandler_WithInvalidFormat_ShouldReturnError()
+        public async Task CommonHistoryNumberRecallHandlerWithInvalidFormatShouldReturnError()
         {
             // Act
             var result = await _testDevice.ProcessCommandAsync("! abc");
@@ -108,7 +108,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryNumberRecallHandler_WithMissingParameter_ShouldReturnError()
+        public async Task CommonHistoryNumberRecallHandlerWithMissingParameterShouldReturnError()
         {
             // Act
             var result = await _testDevice.ProcessCommandAsync("!");
@@ -119,7 +119,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryHandlers_ShouldBeVendorAgnostic()
+        public async Task CommonHistoryHandlersShouldBeVendorAgnostic()
         {
             // Act
             var ciscoResult = await _testDevice.ProcessCommandAsync("history");
@@ -135,7 +135,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryHandlers_ShouldHandleDeviceProcessingErrors()
+        public async Task CommonHistoryHandlersShouldHandleDeviceProcessingErrors()
         {
             // Arrange - Add a command that would cause an error when processed
             await _testDevice.ProcessCommandAsync("invalid-command-that-fails");
@@ -149,7 +149,7 @@ namespace NetSim.Simulation.Tests.CommandHandlers.Common
         }
 
         [Fact]
-        public async Task CommonHistoryHandlers_ShouldWorkWithLongHistory()
+        public async Task CommonHistoryHandlersShouldWorkWithLongHistory()
         {
             // Arrange - Add many commands to test history limit handling
             for (int i = 1; i <= 50; i++)

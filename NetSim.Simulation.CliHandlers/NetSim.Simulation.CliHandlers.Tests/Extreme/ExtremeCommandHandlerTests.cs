@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
     public class ExtremeCommandHandlerTests
     {
         [Fact]
-        public async Task ExtremeHandler_ShowCommand_ShouldDisplayInfo()
+        public async Task ExtremeHandlerShowCommandShouldDisplayInfo()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -20,7 +20,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureCommand_ShouldEnterConfigMode()
+        public async Task ExtremeHandlerConfigureCommandShouldEnterConfigMode()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -35,7 +35,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ExitCommand_ShouldExitConfigMode()
+        public async Task ExtremeHandlerExitCommandShouldExitConfigMode()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -51,7 +51,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_PingCommand_ShouldExecutePing()
+        public async Task ExtremeHandlerPingCommandShouldExecutePing()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -66,7 +66,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_TracerouteCommand_ShouldExecuteTraceroute()
+        public async Task ExtremeHandlerTracerouteCommandShouldExecuteTraceroute()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -81,7 +81,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_InterfaceCommand_ShouldEnterInterfaceMode()
+        public async Task ExtremeHandlerInterfaceCommandShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -97,7 +97,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_EndCommand_ShouldExitToOperationalMode()
+        public async Task ExtremeHandlerEndCommandShouldExitToOperationalMode()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -114,7 +114,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_SaveCommand_ShouldSaveConfiguration()
+        public async Task ExtremeHandlerSaveCommandShouldSaveConfiguration()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -130,7 +130,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ShowConfigCommand_ShouldShowConfig()
+        public async Task ExtremeHandlerShowConfigCommandShouldShowConfig()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -146,7 +146,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_UnconfigureCommand_ShouldRemoveConfiguration()
+        public async Task ExtremeHandlerUnconfigureCommandShouldRemoveConfiguration()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -162,7 +162,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task ExtremeHandlerWithInvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");
@@ -176,7 +176,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_WithIncompleteCommand_ShouldReturnError()
+        public async Task ExtremeHandlerWithIncompleteCommandShouldReturnError()
         {
             // Arrange
             var device = new ExtremeDevice("TestRouter");

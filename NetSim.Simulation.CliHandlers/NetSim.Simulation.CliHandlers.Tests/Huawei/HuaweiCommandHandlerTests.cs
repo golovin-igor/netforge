@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
     public class HuaweiCommandHandlerTests
     {
         [Fact]
-        public async Task HuaweiHandler_DisplayCommand_ShouldShowInfo()
+        public async Task HuaweiHandlerDisplayCommandShouldShowInfo()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -20,7 +20,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_SystemViewCommand_ShouldEnterConfigMode()
+        public async Task HuaweiHandlerSystemViewCommandShouldEnterConfigMode()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -35,7 +35,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_ReturnCommand_ShouldExitConfigMode()
+        public async Task HuaweiHandlerReturnCommandShouldExitConfigMode()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -51,7 +51,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_PingCommand_ShouldExecutePing()
+        public async Task HuaweiHandlerPingCommandShouldExecutePing()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -65,7 +65,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_TracertCommand_ShouldExecuteTraceroute()
+        public async Task HuaweiHandlerTracertCommandShouldExecuteTraceroute()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -79,7 +79,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_InterfaceCommand_ShouldEnterInterfaceMode()
+        public async Task HuaweiHandlerInterfaceCommandShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -95,7 +95,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_QuitCommand_ShouldExitCurrentMode()
+        public async Task HuaweiHandlerQuitCommandShouldExitCurrentMode()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -112,7 +112,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_SaveCommand_ShouldSaveConfiguration()
+        public async Task HuaweiHandlerSaveCommandShouldSaveConfiguration()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -128,7 +128,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_DisplayCurrentConfigCommand_ShouldShowConfig()
+        public async Task HuaweiHandlerDisplayCurrentConfigCommandShouldShowConfig()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -144,7 +144,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_UndoCommand_ShouldUndoConfiguration()
+        public async Task HuaweiHandlerUndoCommandShouldUndoConfiguration()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -160,7 +160,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task HuaweiHandlerWithInvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -174,7 +174,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiHandler_WithIncompleteCommand_ShouldReturnError()
+        public async Task HuaweiHandlerWithIncompleteCommandShouldReturnError()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -188,7 +188,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiRouter_ShouldConfigureOspf()
+        public async Task HuaweiRouterShouldConfigureOspf()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -214,7 +214,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiRouter_ShouldConfigureBgp()
+        public async Task HuaweiRouterShouldConfigureBgp()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -241,7 +241,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiRouter_ShouldConfigureIsIs()
+        public async Task HuaweiRouterShouldConfigureIsIs()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -270,7 +270,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiRouter_ShouldConfigureRip()
+        public async Task HuaweiRouterShouldConfigureRip()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -297,7 +297,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiRouter_ShouldConfigureRouteRedistribution()
+        public async Task HuaweiRouterShouldConfigureRouteRedistribution()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -323,7 +323,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiRouter_ShouldConfigureRoutePolicies()
+        public async Task HuaweiRouterShouldConfigureRoutePolicies()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -348,7 +348,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiRouter_ShouldConfigureIpPrefixLists()
+        public async Task HuaweiRouterShouldConfigureIpPrefixLists()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -371,7 +371,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiRouter_ShouldConfigureBgpCommunities()
+        public async Task HuaweiRouterShouldConfigureBgpCommunities()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");
@@ -395,7 +395,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task HuaweiRouter_ShouldShowRoutingProtocols()
+        public async Task HuaweiRouterShouldShowRoutingProtocols()
         {
             // Arrange
             var device = new HuaweiDevice("TestRouter");

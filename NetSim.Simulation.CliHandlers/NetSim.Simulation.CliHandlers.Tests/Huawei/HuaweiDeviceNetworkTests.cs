@@ -18,7 +18,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_Ping_ShouldShowSuccessAndFailure()
+        public async Task HuaweiPingShouldShowSuccessAndFailure()
         {
             var device = new HuaweiDevice("R1");
             await device.ProcessCommandAsync("system-view");
@@ -39,7 +39,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_ConfigureInterfaceAndPing_ShouldSucceed()
+        public async Task HuaweiConfigureInterfaceAndPingShouldSucceed()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("system-view");
@@ -59,7 +59,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_ConfigureOspf_ShouldFormAdjacency()
+        public async Task HuaweiConfigureOspfShouldFormAdjacency()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("system-view");
@@ -91,7 +91,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_ConfigureBgp_ShouldEstablishPeering()
+        public async Task HuaweiConfigureBgpShouldEstablishPeering()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("system-view");

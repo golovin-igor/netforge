@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
     public class CommandHandlerTests
     {
         [Fact]
-        public async Task ShowVersionHandler_ShouldReturnVersionInfo()
+        public async Task ShowVersionHandlerShouldReturnVersionInfo()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -21,7 +21,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task ShowRunningConfigHandler_ShouldReturnConfig()
+        public async Task ShowRunningConfigHandlerShouldReturnConfig()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -48,7 +48,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task PingHandler_ShouldSimulatePing()
+        public async Task PingHandlerShouldSimulatePing()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -62,7 +62,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task EnableHandler_ShouldChangeModeCorrectly()
+        public async Task EnableHandlerShouldChangeModeCorrectly()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -80,7 +80,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task InvalidCommand_ShouldFallbackToLegacy()
+        public async Task InvalidCommandShouldFallbackToLegacy()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -93,7 +93,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HostnameHandler_ShouldChangeHostname()
+        public async Task HostnameHandlerShouldChangeHostname()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -113,7 +113,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task VlanHandler_ShouldCreateVlan()
+        public async Task VlanHandlerShouldCreateVlan()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -138,7 +138,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task InterfaceHandler_ShouldConfigureInterface()
+        public async Task InterfaceHandlerShouldConfigureInterface()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -165,7 +165,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task RouterOspfHandler_ShouldEnterOspfMode()
+        public async Task RouterOspfHandlerShouldEnterOspfMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -186,7 +186,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task IpRouteHandler_ShouldAddStaticRoute()
+        public async Task IpRouteHandlerShouldAddStaticRoute()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -211,7 +211,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HelpCommand_AtRootLevel_ShouldShowAvailableCommands()
+        public async Task HelpCommandAtRootLevelShouldShowAvailableCommands()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -227,7 +227,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HelpCommand_WithPartialCommand_ShouldShowSubcommands()
+        public async Task HelpCommandWithPartialCommandShouldShowSubcommands()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -244,7 +244,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HelpCommand_WithNestedCommand_ShouldShowNestedOptions()
+        public async Task HelpCommandWithNestedCommandShouldShowNestedOptions()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -258,7 +258,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HelpCommand_InConfigMode_ShouldShowConfigCommands()
+        public async Task HelpCommandInConfigModeShouldShowConfigCommands()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -277,7 +277,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task HelpCommand_WithCompleteCommand_ShouldShowCR()
+        public async Task HelpCommandWithCompleteCommandShouldShowCR()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");

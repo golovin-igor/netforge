@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
     public class DellCommandHandlerComprehensiveTests
     {
         [Fact]
-        public async Task DellHandler_ConfigureTerminal_ShouldEnterConfigMode()
+        public async Task DellHandlerConfigureTerminalShouldEnterConfigMode()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -20,7 +20,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_Hostname_ShouldSetHostname()
+        public async Task DellHandlerHostnameShouldSetHostname()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -34,7 +34,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_ShowRunningConfig_ShouldDisplayConfig()
+        public async Task DellHandlerShowRunningConfigShouldDisplayConfig()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -48,7 +48,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_ShowIpInterface_ShouldDisplayInterfaces()
+        public async Task DellHandlerShowIpInterfaceShouldDisplayInterfaces()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -62,7 +62,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_ShowIpRoute_ShouldDisplayRoutes()
+        public async Task DellHandlerShowIpRouteShouldDisplayRoutes()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -76,7 +76,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_ShowArp_ShouldDisplayArpTable()
+        public async Task DellHandlerShowArpShouldDisplayArpTable()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -90,7 +90,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_InterfaceEthernet_ShouldEnterInterfaceMode()
+        public async Task DellHandlerInterfaceEthernetShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -105,7 +105,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_IpAddress_ShouldConfigureInterface()
+        public async Task DellHandlerIpAddressShouldConfigureInterface()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -120,7 +120,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_NoShutdown_ShouldEnableInterface()
+        public async Task DellHandlerNoShutdownShouldEnableInterface()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -135,7 +135,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_IpRoute_ShouldConfigureRoute()
+        public async Task DellHandlerIpRouteShouldConfigureRoute()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -149,7 +149,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_RouterOspf_ShouldEnterOspfMode()
+        public async Task DellHandlerRouterOspfShouldEnterOspfMode()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -164,7 +164,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_RouterBgp_ShouldEnterBgpMode()
+        public async Task DellHandlerRouterBgpShouldEnterBgpMode()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -179,7 +179,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_Vlan_ShouldEnterVlanMode()
+        public async Task DellHandlerVlanShouldEnterVlanMode()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -194,7 +194,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_ShowVersion_ShouldDisplayVersion()
+        public async Task DellHandlerShowVersionShouldDisplayVersion()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -208,7 +208,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_ShowVlan_ShouldDisplayVlans()
+        public async Task DellHandlerShowVlanShouldDisplayVlans()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -222,7 +222,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_ShowSpanningTree_ShouldDisplayStp()
+        public async Task DellHandlerShowSpanningTreeShouldDisplayStp()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -236,7 +236,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_IpVrf_ShouldConfigureVrf()
+        public async Task DellHandlerIpVrfShouldConfigureVrf()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -251,7 +251,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_ShowEvpn_ShouldDisplayEvpnInfo()
+        public async Task DellHandlerShowEvpnShouldDisplayEvpnInfo()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -265,7 +265,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_VltDomain_ShouldConfigureVlt()
+        public async Task DellHandlerVltDomainShouldConfigureVlt()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -297,7 +297,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("show port-channel summary")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public async Task DellHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task DellHandlerAllShowCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -325,11 +325,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("ip vrf TestVrf")]
         [InlineData("vlt domain 1")]
         [InlineData("evpn enable")]
-        public async Task DellHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task DellHandlerConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            if (!command.StartsWith("configure terminal"))
+            if (!command.StartsWith("configure terminal", StringComparison.OrdinalIgnoreCase))
             {
                 await device.ProcessCommandAsync("configure terminal");
             }
@@ -359,7 +359,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("show ip multicast")]
         [InlineData("show ip dhcp server")]
         [InlineData("show port-security")]
-        public async Task DellHandler_DetailedShowCommands_ShouldWork(string command)
+        public async Task DellHandlerDetailedShowCommandsShouldWork(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -382,7 +382,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("show ip multicast vrf TestVrf")]
         [InlineData("show ip dhcp server vrf TestVrf")]
         [InlineData("show interface ethernet 1/1/1 vrf TestVrf")]
-        public async Task DellHandler_VrfCommands_ShouldWork(string command)
+        public async Task DellHandlerVrfCommandsShouldWork(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -410,7 +410,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("show ip route bgp summary")]
         [InlineData("show ip route static summary")]
         [InlineData("show ip route evpn summary")]
-        public async Task DellHandler_RoutingProtocolCommands_ShouldWork(string command)
+        public async Task DellHandlerRoutingProtocolCommandsShouldWork(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -435,7 +435,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         [InlineData("ip source-guard enable")]
         [InlineData("ip dhcp snooping")]
         [InlineData("aaa authentication login local")]
-        public async Task DellHandler_AdvancedConfigurationCommands_ShouldWork(string command)
+        public async Task DellHandlerAdvancedConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -450,7 +450,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_EvpnVniConfiguration_ShouldWork()
+        public async Task DellHandlerEvpnVniConfigurationShouldWork()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -475,7 +475,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_VltConfiguration_ShouldWork()
+        public async Task DellHandlerVltConfigurationShouldWork()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -498,7 +498,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_ComplexVrfConfiguration_ShouldWork()
+        public async Task DellHandlerComplexVrfConfigurationShouldWork()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
@@ -524,7 +524,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
         }
 
         [Fact]
-        public async Task DellHandler_InterfaceAdvancedConfiguration_ShouldWork()
+        public async Task DellHandlerInterfaceAdvancedConfigurationShouldWork()
         {
             // Arrange
             var device = new DellDevice("TestSwitch");

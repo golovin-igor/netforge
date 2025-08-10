@@ -39,7 +39,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Coverage
 
         [Theory]
         [MemberData(nameof(HandlerTypes))]
-        public void AllHandlers_ShouldInstantiateAndHandleCommand(Type handlerType, string vendor)
+        public void AllHandlersShouldInstantiateAndHandleCommand(Type handlerType, string vendor)
         {
             // Arrange
             var handler = (VendorAgnosticCliHandler)Activator.CreateInstance(handlerType)!;

@@ -10,7 +10,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
     public class SwitchportCommandTests
     {
         [Fact]
-        public async Task SwitchportModeAccess_ShouldConfigureAccessMode()
+        public async Task SwitchportModeAccessShouldConfigureAccessMode()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -30,7 +30,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task SwitchportAccessVlan_ShouldAssignVlan()
+        public async Task SwitchportAccessVlanShouldAssignVlan()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -53,7 +53,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task SwitchportModeTrunk_ShouldConfigureTrunkMode()
+        public async Task SwitchportModeTrunkShouldConfigureTrunkMode()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -73,7 +73,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task SwitchportTrunkEncapsulation_ShouldConfigureEncapsulation()
+        public async Task SwitchportTrunkEncapsulationShouldConfigureEncapsulation()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -90,7 +90,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task SwitchportVoiceVlan_ShouldConfigureVoiceVlan()
+        public async Task SwitchportVoiceVlanShouldConfigureVoiceVlan()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -107,7 +107,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task SwitchportBasic_ShouldEnableSwitchport()
+        public async Task SwitchportBasicShouldEnableSwitchport()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
@@ -127,7 +127,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
         
         [Fact]
-        public async Task SwitchportAccessVlan_NonExistentVlan_ShouldReturnError()
+        public async Task SwitchportAccessVlanNonExistentVlanShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");

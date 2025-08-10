@@ -1,4 +1,5 @@
 using NetSim.Simulation.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Configuration;
 using NetSim.Simulation.Core;
 using NetSim.Simulation.Protocols.Implementations;
@@ -17,17 +18,17 @@ namespace NetSim.Simulation.Devices
         private string currentStaticRoute = "";
         private int currentStaticRouteId = 0;
         private Dictionary<int, (string Network, string Mask, string Gateway, string Device)> pendingStaticRoutes = new Dictionary<int, (string, string, string, string)>();
-        
+
         public FortinetDevice(string name) : base(name)
         {
             Vendor = "Fortinet";
-            
+
             // Fortinet devices should start in Global mode, not User mode
             CurrentMode = DeviceMode.Global;
-            
+
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
-            
+
             // FortiGate uses VLAN 1 by default
             Vlans[1] = new VlanConfig(1, "default");
 
@@ -78,8 +79,8 @@ namespace NetSim.Simulation.Devices
             if (CommandManager != null)
             {
                 var result = await CommandManager.ProcessCommandAsync(command);
-                
-                // If command was handled, return the result 
+
+                // If command was handled, return the result
                 if (result != null)
                 {
                     // Check if result already ends with prompt
@@ -92,10 +93,10 @@ namespace NetSim.Simulation.Devices
                     {
                         return result.Output + prompt;
                     }
-                    
+
                 }
             }
-            
+
             // If no handler found, return FortiOS error
             return "Invalid command" + GetPrompt();
         }
@@ -103,13 +104,13 @@ namespace NetSim.Simulation.Devices
         // Helper methods for command handlers
         public new string GetCurrentInterface() => base.CurrentInterface;
         public new void SetCurrentInterface(string iface) => base.CurrentInterface = iface;
-        
+
         public int GetCurrentVlanId() => currentVlanId;
         public void SetCurrentVlanId(int vlanId) => currentVlanId = vlanId;
-        
+
         public string GetMode() => base.CurrentMode.ToModeString();
         public new void SetCurrentMode(string mode) => base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
-        
+
         // Add missing methods for command handlers
         public void AppendToRunningConfig(string line)
         {
@@ -120,7 +121,7 @@ namespace NetSim.Simulation.Devices
         {
             if (!Interfaces.ContainsKey(interfaceName))
             {
-                Interfaces[interfaceName] = new InterfaceConfig(interfaceName);
+                Interfaces[interfaceName] = new InterfaceConfig(interfaceName, this);
             }
         }
 
@@ -271,10 +272,10 @@ namespace NetSim.Simulation.Devices
                         AdminDistance = 1,
                         Metric = 0
                     };
-                    
+
                     RoutingTable.Add(routeEntry);
                 }
             }
         }
     }
-} 
+}

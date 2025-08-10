@@ -1,4 +1,5 @@
 using NetSim.Simulation.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Configuration;
 using NetSim.Simulation.Core;
 using NetSim.Simulation.Protocols.Implementations;
@@ -77,10 +78,10 @@ namespace NetSim.Simulation.Devices
         // Device-specific public methods for handlers
         public string GetCurrentRouterProtocol() => currentRouterProtocol;
         public void SetCurrentRouterProtocol(string protocol) => currentRouterProtocol = protocol;
-        
+
         public int GetCurrentVlanId() => currentVlanId;
         public void SetCurrentVlanId(int vlanId) => currentVlanId = vlanId;
-        
+
         public new void SetHostname(string name)
         {
             base.SetHostname(name);
@@ -166,7 +167,7 @@ namespace NetSim.Simulation.Devices
         {
             if (!Interfaces.ContainsKey(name))
             {
-                Interfaces[name] = new InterfaceConfig(name);
+                Interfaces[name] = new InterfaceConfig(name, this);
             }
         }
 
@@ -185,7 +186,7 @@ namespace NetSim.Simulation.Devices
         public BgpConfig GetBgpConfig() => BgpConfig;
         public RipConfig GetRipConfig() => RipConfig;
         public new List<Route> GetRoutingTable() => RoutingTable;
-        
+
         // Add missing methods that command handlers expect
         public override void SetMode(string mode)
         {
@@ -195,7 +196,7 @@ namespace NetSim.Simulation.Devices
         public new string GetCurrentInterface() => base.CurrentInterface;
         public new void SetCurrentInterface(string iface) => base.CurrentInterface = iface;
         public List<InterfaceConfig> GetInterfaces() => Interfaces.Values.ToList();
-        
+
         public string GetMode() => base.CurrentMode.ToModeString();
 
         /// <summary>

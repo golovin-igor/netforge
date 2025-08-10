@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
     public class FortinetCommandHandlerTests
     {
         [Fact]
-        public async Task ConfigGlobal_ShouldEnterGlobalConfigMode()
+        public async Task ConfigGlobalShouldEnterGlobalConfigMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -21,7 +21,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ConfigSystemInterface_ShouldEnterSystemInterfaceMode()
+        public async Task ConfigSystemInterfaceShouldEnterSystemInterfaceMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -36,7 +36,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ConfigRouterOspf_ShouldEnterOspfMode()
+        public async Task ConfigRouterOspfShouldEnterOspfMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -52,7 +52,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ConfigRouterBgp_ShouldEnterBgpMode()
+        public async Task ConfigRouterBgpShouldEnterBgpMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -68,7 +68,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task SetHostname_InGlobalConfigMode_ShouldChangeHostname()
+        public async Task SetHostnameInGlobalConfigModeShouldChangeHostname()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -84,7 +84,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task EditInterface_ShouldEnterInterfaceMode()
+        public async Task EditInterfaceShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -100,7 +100,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task SetIpAddress_InInterfaceMode_ShouldConfigureInterface()
+        public async Task SetIpAddressInInterfaceModeShouldConfigureInterface()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -118,7 +118,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task SetInterfaceDescription_ShouldSetDescription()
+        public async Task SetInterfaceDescriptionShouldSetDescription()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -135,7 +135,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task SetInterfaceStatus_ShouldControlInterfaceState()
+        public async Task SetInterfaceStatusShouldControlInterfaceState()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -158,7 +158,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task GetSystemInterface_ShouldReturnInterfaceInfo()
+        public async Task GetSystemInterfaceShouldReturnInterfaceInfo()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -178,7 +178,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task GetSystemStatus_ShouldReturnSystemInfo()
+        public async Task GetSystemStatusShouldReturnSystemInfo()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -195,7 +195,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task GetRouterInfoRoutingTable_ShouldReturnRoutes()
+        public async Task GetRouterInfoRoutingTableShouldReturnRoutes()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -215,7 +215,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ShowFullConfiguration_ShouldReturnCompleteConfig()
+        public async Task ShowFullConfigurationShouldReturnCompleteConfig()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -235,7 +235,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ShowSystemInterface_ShouldReturnInterfaceStatus()
+        public async Task ShowSystemInterfaceShouldReturnInterfaceStatus()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -252,7 +252,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ShowFirewallPolicy_ShouldReturnPolicies()
+        public async Task ShowFirewallPolicyShouldReturnPolicies()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -270,7 +270,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ExecutePing_ShouldSimulatePing()
+        public async Task ExecutePingShouldSimulatePing()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -287,7 +287,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ExecuteSaveConfig_ShouldConfirmSave()
+        public async Task ExecuteSaveConfigShouldConfirmSave()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -301,7 +301,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ExecuteReboot_ShouldPromptConfirmation()
+        public async Task ExecuteRebootShouldPromptConfirmation()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -316,7 +316,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task DiagnoseIpArpList_ShouldReturnArpTable()
+        public async Task DiagnoseIpArpListShouldReturnArpTable()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -337,7 +337,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task DiagnoseNetlinkInterface_ShouldReturnInterfaceList()
+        public async Task DiagnoseNetlinkInterfaceShouldReturnInterfaceList()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -353,7 +353,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task DiagnoseHardwareDeviceinfo_ShouldReturnHardwareInfo()
+        public async Task DiagnoseHardwareDeviceinfoShouldReturnHardwareInfo()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -369,7 +369,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task OspfConfiguration_ShouldConfigureOspfSettings()
+        public async Task OspfConfigurationShouldConfigureOspfSettings()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -389,7 +389,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task BgpConfiguration_ShouldConfigureBgpSettings()
+        public async Task BgpConfigurationShouldConfigureBgpSettings()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -412,7 +412,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task EndCommand_ShouldReturnToGlobalMode()
+        public async Task EndCommandShouldReturnToGlobalMode()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -429,7 +429,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task InvalidCommand_ShouldReturnError()
+        public async Task InvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
@@ -443,7 +443,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ModeTransitions_ShouldWorkCorrectly()
+        public async Task ModeTransitionsShouldWorkCorrectly()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -477,7 +477,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task VlanConfiguration_ShouldCreateAndConfigureVlan()
+        public async Task VlanConfigurationShouldCreateAndConfigureVlan()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -498,7 +498,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task RipConfiguration_ShouldConfigureRipSettings()
+        public async Task RipConfigurationShouldConfigureRipSettings()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -518,7 +518,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FirewallPolicyConfiguration_ShouldAllowPolicyEditing()
+        public async Task FirewallPolicyConfigurationShouldAllowPolicyEditing()
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
@@ -537,7 +537,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FortinetGlobalHandler_ConfigCommand_ShouldEnterConfigMode()
+        public async Task FortinetGlobalHandlerConfigCommandShouldEnterConfigMode()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
@@ -552,7 +552,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FortinetGlobalHandler_GetCommand_ShouldShowSystemInfo()
+        public async Task FortinetGlobalHandlerGetCommandShouldShowSystemInfo()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
@@ -567,7 +567,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FortinetGlobalHandler_ShowCommand_ShouldDisplayInfo()
+        public async Task FortinetGlobalHandlerShowCommandShouldDisplayInfo()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
@@ -581,7 +581,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FortinetGlobalHandler_ExecuteCommand_ShouldExecuteCommand()
+        public async Task FortinetGlobalHandlerExecuteCommandShouldExecuteCommand()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
@@ -596,7 +596,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FortinetGlobalHandler_DiagnoseCommand_ShouldRunDiagnostics()
+        public async Task FortinetGlobalHandlerDiagnoseCommandShouldRunDiagnostics()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
@@ -610,7 +610,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FortinetGlobalHandler_WhenInRouterMode_ShouldHandleRouterCommands()
+        public async Task FortinetGlobalHandlerWhenInRouterModeShouldHandleRouterCommands()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
@@ -625,7 +625,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FortinetGlobalHandler_WhenInRouterMode_ShouldRejectNonRouterCommands()
+        public async Task FortinetGlobalHandlerWhenInRouterModeShouldRejectNonRouterCommands()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
@@ -640,7 +640,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FortinetGlobalHandler_WhenNotInGlobalMode_ShouldReturnError()
+        public async Task FortinetGlobalHandlerWhenNotInGlobalModeShouldReturnError()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
@@ -655,7 +655,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FortinetGlobalHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task FortinetGlobalHandlerWithInvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
@@ -669,7 +669,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task FortinetGlobalHandler_WithIncompleteCommand_ShouldReturnError()
+        public async Task FortinetGlobalHandlerWithIncompleteCommandShouldReturnError()
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");

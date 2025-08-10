@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
     {
         // Test 1: Show Running-Configuration
         [Fact]
-        public async Task Aruba_ShowRunningConfig_ShouldIncludeAllConfigurations()
+        public async Task ArubaShowRunningConfigShouldIncludeAllConfigurations()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -34,7 +34,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 2: Show IP Route
         [Fact]
-        public async Task Aruba_ShowIpRoute_ShouldDisplayAllRouteTypes()
+        public async Task ArubaShowIpRouteShouldDisplayAllRouteTypes()
         {
             var device = new ArubaDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -57,7 +57,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 3: Ping
         [Fact]
-        public async Task Aruba_Ping_ShouldShowSuccessAndFailure()
+        public async Task ArubaPingShouldShowSuccessAndFailure()
         {
             var device = new ArubaDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -76,7 +76,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 4: Show Interface
         [Fact]
-        public async Task Aruba_ShowInterface_ShouldDisplayInterfaceDetails()
+        public async Task ArubaShowInterfaceShouldDisplayInterfaceDetails()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -101,7 +101,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 5: Configure Mode
         [Fact]
-        public async Task Aruba_Configure_ShouldEnterConfigMode()
+        public async Task ArubaConfigureShouldEnterConfigMode()
         {
             var device = new ArubaDevice("SW1");
             var output = await device.ProcessCommandAsync("enable");
@@ -119,7 +119,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 6: Show VLAN
         [Fact]
-        public async Task Aruba_ShowVlan_ShouldDisplayVlanConfiguration()
+        public async Task ArubaShowVlanShouldDisplayVlanConfiguration()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -144,7 +144,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 7: Show OSPF Neighbor
         [Fact]
-        public async Task Aruba_ShowOspfNeighbor_ShouldDisplayNeighbors()
+        public async Task ArubaShowOspfNeighborShouldDisplayNeighbors()
         {
             var device = new ArubaDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -171,7 +171,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 8: Interface Configuration
         [Fact]
-        public async Task Aruba_InterfaceConfiguration_ShouldApplySettings()
+        public async Task ArubaInterfaceConfigurationShouldApplySettings()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -197,7 +197,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 9: Show BGP Summary
         [Fact]
-        public async Task Aruba_ShowBgpSummary_ShouldDisplayPeerStatus()
+        public async Task ArubaShowBgpSummaryShouldDisplayPeerStatus()
         {
             var device = new ArubaDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -218,7 +218,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 10: Shutdown / No Shutdown
         [Fact]
-        public async Task Aruba_ShutdownNoShutdown_ShouldToggleInterface()
+        public async Task ArubaShutdownNoShutdownShouldToggleInterface()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -241,7 +241,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 11: Show Version
         [Fact]
-        public async Task Aruba_ShowVersion_ShouldDisplaySystemInfo()
+        public async Task ArubaShowVersionShouldDisplaySystemInfo()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -254,7 +254,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 12: Show ARP
         [Fact]
-        public async Task Aruba_ShowArp_ShouldDisplayArpTable()
+        public async Task ArubaShowArpShouldDisplayArpTable()
         {
             var device = new ArubaDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -273,7 +273,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 13: Show MAC Address-Table
         [Fact]
-        public async Task Aruba_ShowMacAddressTable_ShouldDisplayMacEntries()
+        public async Task ArubaShowMacAddressTableShouldDisplayMacEntries()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -287,7 +287,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 14: Show IP Interface Brief
         [Fact]
-        public async Task Aruba_ShowInterfaceBrief_ShouldDisplaySummary()
+        public async Task ArubaShowInterfaceBriefShouldDisplaySummary()
         {
             var device = new ArubaDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -311,7 +311,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 15: Write Memory
         [Fact]
-        public async Task Aruba_WriteMemory_ShouldSaveConfiguration()
+        public async Task ArubaWriteMemoryShouldSaveConfiguration()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -328,7 +328,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 16: Show Spanning-Tree
         [Fact]
-        public async Task Aruba_ShowSpanningTree_ShouldDisplayStpInfo()
+        public async Task ArubaShowSpanningTreeShouldDisplayStpInfo()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -347,7 +347,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 17: Show Access-Lists
         [Fact]
-        public async Task Aruba_ShowAccessLists_ShouldDisplayAcls()
+        public async Task ArubaShowAccessListsShouldDisplayAcls()
         {
             var device = new ArubaDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -365,7 +365,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 18: Show Trunk (Port-Channel)
         [Fact]
-        public async Task Aruba_ShowTrunk_ShouldDisplayLagStatus()
+        public async Task ArubaShowTrunkShouldDisplayLagStatus()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -387,7 +387,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 19: Reload
         [Fact]
-        public async Task Aruba_Reload_ShouldPromptForConfirmation()
+        public async Task ArubaReloadShouldPromptForConfirmation()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -399,7 +399,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
 
         // Test 20: Show Logging
         [Fact]
-        public async Task Aruba_ShowLogging_ShouldDisplayLogEntries()
+        public async Task ArubaShowLoggingShouldDisplayLogEntries()
         {
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");

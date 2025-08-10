@@ -19,7 +19,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 1: Show Running-Configuration
         [Fact]
-        public async Task Extreme_ShowConfiguration_ShouldIncludeAllSettings()
+        public async Task ExtremeShowConfigurationShouldIncludeAllSettings()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("configure snmp sysName \"ExtremeCore\"");
@@ -39,7 +39,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 2: Show IP Route
         [Fact]
-        public async Task Extreme_ShowIpRoute_ShouldDisplayAllRoutes()
+        public async Task ExtremeShowIpRouteShouldDisplayAllRoutes()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("create vlan \"Mgmt\"");
@@ -56,7 +56,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 3: Ping
         [Fact]
-        public async Task Extreme_Ping_ShouldShowSuccessAndFailure()
+        public async Task ExtremePingShouldShowSuccessAndFailure()
         {
             var (network, sw1, sw2) = await SetupNetworkWithTwoDevicesAsync();
             
@@ -101,7 +101,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 4: Show Ports Information
         [Fact]
-        public async Task Extreme_ShowPorts_ShouldDisplayPortDetails()
+        public async Task ExtremeShowPortsShouldDisplayPortDetails()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("configure ports 1 display-string \"WAN Link\"");
@@ -116,7 +116,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 5: Configure Commands
         [Fact]
-        public async Task Extreme_Configure_ShouldModifySettings()
+        public async Task ExtremeConfigureShouldModifySettings()
         {
             var device = new ExtremeDevice("SW1");
             var output = await device.ProcessCommandAsync("configure snmp sysName \"TestSwitch\"");
@@ -129,7 +129,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 6: Show VLAN
         [Fact]
-        public async Task Extreme_ShowVlan_ShouldDisplayVlanInfo()
+        public async Task ExtremeShowVlanShouldDisplayVlanInfo()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("create vlan \"SALES\" tag 10");
@@ -150,7 +150,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 7: Show OSPF Neighbor
         [Fact]
-        public async Task Extreme_ShowOspfNeighbor_ShouldDisplayNeighbors()
+        public async Task ExtremeShowOspfNeighborShouldDisplayNeighbors()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("enable ospf");
@@ -175,7 +175,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 8: Configure IP Address
         [Fact]
-        public async Task Extreme_ConfigureIpAddress_ShouldSetIp()
+        public async Task ExtremeConfigureIpAddressShouldSetIp()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("create vlan \"Management\"");
@@ -189,7 +189,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 9: Show BGP Neighbor
         [Fact]
-        public async Task Extreme_ShowBgpNeighbor_ShouldDisplayPeers()
+        public async Task ExtremeShowBgpNeighborShouldDisplayPeers()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("enable bgp");
@@ -206,7 +206,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 10: Enable/Disable Ports
         [Fact]
-        public async Task Extreme_EnableDisablePorts_ShouldToggleStatus()
+        public async Task ExtremeEnableDisablePortsShouldToggleStatus()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("enable ports 1");
@@ -222,7 +222,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 11: Show Version
         [Fact]
-        public async Task Extreme_ShowVersion_ShouldDisplaySystemInfo()
+        public async Task ExtremeShowVersionShouldDisplaySystemInfo()
         {
             var device = new ExtremeDevice("SW1");
             var output = await device.ProcessCommandAsync("show version");
@@ -235,7 +235,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 12: Show IP ARP
         [Fact]
-        public async Task Extreme_ShowIpArp_ShouldDisplayArpTable()
+        public async Task ExtremeShowIpArpShouldDisplayArpTable()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("create vlan \"Test\"");
@@ -251,7 +251,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 13: Show FDB (MAC Address Table)
         [Fact]
-        public async Task Extreme_ShowFdb_ShouldDisplayMacEntries()
+        public async Task ExtremeShowFdbShouldDisplayMacEntries()
         {
             var device = new ExtremeDevice("SW1");
             var output = await device.ProcessCommandAsync("show fdb");
@@ -265,7 +265,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 14: Show Ports Information Brief
         [Fact]
-        public async Task Extreme_ShowPortsBrief_ShouldDisplaySummary()
+        public async Task ExtremeShowPortsBriefShouldDisplaySummary()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("enable ports 1-5");
@@ -282,7 +282,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 15: Save Configuration
         [Fact]
-        public async Task Extreme_SaveConfiguration_ShouldPersistConfig()
+        public async Task ExtremeSaveConfigurationShouldPersistConfig()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("configure snmp sysName \"TestSave\"");
@@ -294,7 +294,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 16: Show STPD
         [Fact]
-        public async Task Extreme_ShowStpd_ShouldDisplaySpanningTree()
+        public async Task ExtremeShowStpdShouldDisplaySpanningTree()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("configure stpd s0 priority 4096");
@@ -309,7 +309,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 17: Create Access-List
         [Fact]
-        public async Task Extreme_CreateAccessList_ShouldAddAcl()
+        public async Task ExtremeCreateAccessListShouldAddAcl()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("create access-list BLOCK_NETWORK");
@@ -320,7 +320,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 18: Show Sharing (Port-Channel)
         [Fact]
-        public async Task Extreme_ShowSharing_ShouldDisplayLag()
+        public async Task ExtremeShowSharingShouldDisplayLag()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("enable sharing 1 grouping 1,2");
@@ -336,7 +336,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 19: Reboot
         [Fact]
-        public async Task Extreme_Reboot_ShouldPromptConfirmation()
+        public async Task ExtremeRebootShouldPromptConfirmation()
         {
             var device = new ExtremeDevice("SW1");
             var output = await device.ProcessCommandAsync("reboot");
@@ -347,7 +347,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
 
         // Test 20: Show Log
         [Fact]
-        public async Task Extreme_ShowLog_ShouldDisplayLogEntries()
+        public async Task ExtremeShowLogShouldDisplayLogEntries()
         {
             var device = new ExtremeDevice("SW1");
             await device.ProcessCommandAsync("enable ports 1");

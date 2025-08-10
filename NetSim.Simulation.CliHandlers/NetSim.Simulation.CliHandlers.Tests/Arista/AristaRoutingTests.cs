@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
     public class AristaRoutingTests
     {
         [Fact]
-        public async Task Arista_ConfigureOspf_ShouldFormNeighborship()
+        public async Task AristaConfigureOspfShouldFormNeighborship()
         {
             var network = new Network();
             var r1 = new AristaDevice("R1");
@@ -48,7 +48,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_ConfigureBgp_ShouldEstablishPeering()
+        public async Task AristaConfigureBgpShouldEstablishPeering()
         {
             var network = new Network();
             var r1 = new AristaDevice("R1");
@@ -91,7 +91,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_ConfigureRip_ShouldExchangeRoutes()
+        public async Task AristaConfigureRipShouldExchangeRoutes()
         {
             var network = new Network();
             var r1 = new AristaDevice("R1");
@@ -144,7 +144,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_ConfigureStaticRoute_ShouldAddToRoutingTable()
+        public async Task AristaConfigureStaticRouteShouldAddToRoutingTable()
         {
             var r1 = new AristaDevice("R1");
             await r1.ProcessCommandAsync("enable");

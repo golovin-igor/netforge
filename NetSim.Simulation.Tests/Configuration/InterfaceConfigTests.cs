@@ -1,3 +1,5 @@
+using NetSim.Simulation.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Configuration;
 using NetSim.Simulation.Devices;
 using Xunit;
@@ -38,7 +40,7 @@ namespace NetSim.Simulation.Tests.Configuration
             var name = "FastEthernet0/1";
 
             // Act
-            var config = new InterfaceConfig(name);
+            var config = new InterfaceConfig(name, null);
 
             // Assert
             Assert.Equal(name, config.Name);
@@ -51,7 +53,7 @@ namespace NetSim.Simulation.Tests.Configuration
         public void InterfaceConfig_IsShutdown_ShouldAffectStatus()
         {
             // Arrange
-            var config = new InterfaceConfig("eth0");
+            var config = new InterfaceConfig("eth0", null);
 
             // Act & Assert - Initial state
             Assert.True(config.IsUp);
@@ -77,7 +79,7 @@ namespace NetSim.Simulation.Tests.Configuration
         public void InterfaceConfig_Properties_CanBeSetAndRetrieved()
         {
             // Arrange
-            var config = new InterfaceConfig("eth0");
+            var config = new InterfaceConfig("eth0", null);
 
             // Act & Assert
             config.IpAddress = "192.168.1.1";
@@ -109,7 +111,7 @@ namespace NetSim.Simulation.Tests.Configuration
         public void InterfaceConfig_OspfProperties_CanBeConfigured()
         {
             // Arrange
-            var config = new InterfaceConfig("eth0");
+            var config = new InterfaceConfig("eth0", null);
 
             // Act
             config.OspfEnabled = true;
@@ -130,7 +132,7 @@ namespace NetSim.Simulation.Tests.Configuration
         public void InterfaceConfig_StpProperties_CanBeConfigured()
         {
             // Arrange
-            var config = new InterfaceConfig("eth0");
+            var config = new InterfaceConfig("eth0", null);
 
             // Act
             config.StpPortfast = true;
@@ -145,7 +147,7 @@ namespace NetSim.Simulation.Tests.Configuration
         public void InterfaceConfig_ChannelProperties_CanBeConfigured()
         {
             // Arrange
-            var config = new InterfaceConfig("eth0");
+            var config = new InterfaceConfig("eth0", null);
 
             // Act
             config.ChannelGroup = 1;
@@ -160,7 +162,7 @@ namespace NetSim.Simulation.Tests.Configuration
         public void InterfaceConfig_PacketCounters_CanBeIncremented()
         {
             // Arrange
-            var config = new InterfaceConfig("eth0");
+            var config = new InterfaceConfig("eth0", null);
 
             // Act
             config.RxPackets = 100;
@@ -179,7 +181,7 @@ namespace NetSim.Simulation.Tests.Configuration
         public void InterfaceConfig_SetParentDevice_ShouldWork()
         {
             // Arrange
-            var config = new InterfaceConfig("eth0");
+            var config = new InterfaceConfig("eth0", null);
             var device = new CiscoDevice("Switch1");
 
             // Act
@@ -197,7 +199,7 @@ namespace NetSim.Simulation.Tests.Configuration
         public void InterfaceConfig_GeneratesMacFromName(string interfaceName)
         {
             // Act
-            var config = new InterfaceConfig(interfaceName);
+            var config = new InterfaceConfig(interfaceName, null);
 
             // Assert
             Assert.NotNull(config.MacAddress);
@@ -213,7 +215,7 @@ namespace NetSim.Simulation.Tests.Configuration
         public void InterfaceConfig_GetStatus_ReturnsCorrectStatus(bool isUp, bool isShutdown, string expectedStatus)
         {
             // Arrange
-            var config = new InterfaceConfig("eth0");
+            var config = new InterfaceConfig("eth0", null);
 
             // Act
             if (isShutdown)
@@ -227,4 +229,4 @@ namespace NetSim.Simulation.Tests.Configuration
             Assert.Equal(expectedStatus, status);
         }
     }
-} 
+}

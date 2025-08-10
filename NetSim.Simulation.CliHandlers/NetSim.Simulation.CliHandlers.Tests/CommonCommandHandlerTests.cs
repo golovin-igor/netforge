@@ -10,7 +10,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
     public class CommonCommandHandlerTests
     {
         [Fact]
-        public async Task CommonEnableHandler_ShouldEnterPrivilegedMode()
+        public async Task CommonEnableHandlerShouldEnterPrivilegedMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -25,7 +25,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task CommonEnableHandler_WithAlias_ShouldWork()
+        public async Task CommonEnableHandlerWithAliasShouldWork()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -40,7 +40,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task CommonEnableHandler_WhenAlreadyPrivileged_ShouldReturnError()
+        public async Task CommonEnableHandlerWhenAlreadyPrivilegedShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -56,7 +56,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task CommonDisableHandler_ShouldExitPrivilegedMode()
+        public async Task CommonDisableHandlerShouldExitPrivilegedMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -72,7 +72,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task CommonDisableHandler_WhenNotPrivileged_ShouldReturnError()
+        public async Task CommonDisableHandlerWhenNotPrivilegedShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -87,7 +87,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task CommonPingHandler_ShouldExecutePing()
+        public async Task CommonPingHandlerShouldExecutePing()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -102,7 +102,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task CommonPingHandler_WithInvalidDestination_ShouldReturnError()
+        public async Task CommonPingHandlerWithInvalidDestinationShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -116,7 +116,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task CommonPingHandler_WithoutDestination_ShouldReturnError()
+        public async Task CommonPingHandlerWithoutDestinationShouldReturnError()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -131,7 +131,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task CommonExitHandler_ShouldExitCurrentMode()
+        public async Task CommonExitHandlerShouldExitCurrentMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
@@ -156,7 +156,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task CommonExitHandler_FromUserMode_ShouldStayInUserMode()
+        public async Task CommonExitHandlerFromUserModeShouldStayInUserMode()
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");

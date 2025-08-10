@@ -18,7 +18,7 @@ namespace NetSim.Simulation.CliHandlers
         public static void RegisterVendorContext<T>(string vendorName, Func<NetworkDevice, T> factory) 
             where T : IVendorContext
         {
-            var key = vendorName.ToLower();
+            var key = vendorName.ToLowerInvariant();
             var wrapper = new Func<NetworkDevice, IVendorContext>(device => factory(device));
             
             // Use TryAdd to prevent race conditions - first registration wins
@@ -35,7 +35,7 @@ namespace NetSim.Simulation.CliHandlers
         /// </summary>
         public static IVendorContext? GetVendorContext(NetworkDevice device)
         {
-            var vendorName = device.Vendor?.ToLower();
+            var vendorName = device.Vendor?.ToLowerInvariant();
             
             if (string.IsNullOrEmpty(vendorName))
                 return new DefaultVendorContext(device);
@@ -62,7 +62,7 @@ namespace NetSim.Simulation.CliHandlers
         /// </summary>
         public static bool IsVendorContextRegistered(string vendorName)
         {
-            return _vendorContextFactories.ContainsKey(vendorName.ToLower());
+            return _vendorContextFactories.ContainsKey(vendorName.ToLowerInvariant());
         }
         
         /// <summary>

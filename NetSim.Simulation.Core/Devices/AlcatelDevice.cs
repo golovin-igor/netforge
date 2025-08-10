@@ -1,4 +1,5 @@
 using NetSim.Simulation.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Core;
 using NetSim.Simulation.Protocols.Implementations;
 
@@ -28,10 +29,10 @@ namespace NetSim.Simulation.Devices
         {
             // Alcatel devices use port numbering like 1/1/1, 1/1/2, etc.
             var interfaces = GetAllInterfaces();
-            interfaces["1/1/1"] = new Configuration.InterfaceConfig("1/1/1", this);
-            interfaces["1/1/2"] = new Configuration.InterfaceConfig("1/1/2", this);
-            interfaces["1/1/3"] = new Configuration.InterfaceConfig("1/1/3", this);
-            interfaces["1/1/4"] = new Configuration.InterfaceConfig("1/1/4", this);
+            interfaces["1/1/1"] = new InterfaceConfig("1/1/1", this);
+            interfaces["1/1/2"] = new InterfaceConfig("1/1/2", this);
+            interfaces["1/1/3"] = new InterfaceConfig("1/1/3", this);
+            interfaces["1/1/4"] = new InterfaceConfig("1/1/4", this);
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -71,7 +72,7 @@ namespace NetSim.Simulation.Devices
         {
             if (!Interfaces.ContainsKey(name))
             {
-                Interfaces[name] = new Configuration.InterfaceConfig(name, this);
+                Interfaces[name] = new InterfaceConfig(name, this);
             }
         }
     }

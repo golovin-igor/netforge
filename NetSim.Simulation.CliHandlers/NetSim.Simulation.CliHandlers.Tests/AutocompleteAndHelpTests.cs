@@ -16,7 +16,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task GetCompletions_AtRoot_ShouldReturnBasicCommands()
+        public async Task GetCompletionsAtRootShouldReturnBasicCommands()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -28,7 +28,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task GetCompletions_ForShow_ShouldReturnSubCommands()
+        public async Task GetCompletionsForShowShouldReturnSubCommands()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -40,7 +40,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task GetCommandHelp_ForShowIp_ShouldNotThrow()
+        public async Task GetCommandHelpForShowIpShouldNotThrow()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -49,7 +49,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task GetCommandHelp_InvalidCommand_ShouldNotThrow()
+        public async Task GetCommandHelpInvalidCommandShouldNotThrow()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -58,7 +58,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task GetCompletions_FuzzyMatch_ShouldReturnCommand()
+        public async Task GetCompletionsFuzzyMatchShouldReturnCommand()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -68,7 +68,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task GetCommandHelp_NoCommand_ShouldShowGeneralHelp()
+        public async Task GetCommandHelpNoCommandShouldShowGeneralHelp()
         {
             var device = new CiscoDevice("R1");
             var manager = GetManager(device);
@@ -79,7 +79,7 @@ namespace NetSim.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task ProcessCommand_InvalidCommand_ShouldSuggestSimilar()
+        public async Task ProcessCommandInvalidCommandShouldSuggestSimilar()
         {
             var device = new CiscoDevice("R1");
             var output = await device.ProcessCommandAsync("shw version");

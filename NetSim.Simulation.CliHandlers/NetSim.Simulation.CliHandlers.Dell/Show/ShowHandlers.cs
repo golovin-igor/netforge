@@ -1,5 +1,6 @@
 using System.Text;
 using NetSim.Simulation.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Interfaces;
 using NetSim.Simulation.Configuration;
 

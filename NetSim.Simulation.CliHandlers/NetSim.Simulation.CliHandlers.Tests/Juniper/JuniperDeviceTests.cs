@@ -18,7 +18,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task Juniper_ConfigureInterfaceAndPing_ShouldSucceed()
+        public async Task JuniperConfigureInterfaceAndPingShouldSucceed()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure");
@@ -36,7 +36,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task Juniper_ConfigureOspf_ShouldFormAdjacency()
+        public async Task JuniperConfigureOspfShouldFormAdjacency()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure");
@@ -62,7 +62,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task Juniper_ConfigureBgp_ShouldEstablishPeering()
+        public async Task JuniperConfigureBgpShouldEstablishPeering()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure");
@@ -92,7 +92,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task Juniper_ConfigureRip_ShouldExchangeRoutes()
+        public async Task JuniperConfigureRipShouldExchangeRoutes()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure");
@@ -120,7 +120,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task Juniper_InterfaceDisable_ShouldAffectConnectivity()
+        public async Task JuniperInterfaceDisableShouldAffectConnectivity()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure");
@@ -149,7 +149,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task Juniper_FirewallFilter_ShouldBlockTraffic()
+        public async Task JuniperFirewallFilterShouldBlockTraffic()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure");
@@ -171,7 +171,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task Juniper_ConfigureLldp_ShouldShowNeighbors()
+        public async Task JuniperConfigureLldpShouldShowNeighbors()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure");
@@ -193,7 +193,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task Juniper_CommitAndRollback_ShouldWork()
+        public async Task JuniperCommitAndRollbackShouldWork()
         {
             var r1 = new JuniperDevice("R1");
             await r1.ProcessCommandAsync("configure");
@@ -215,7 +215,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task Juniper_ConfigureStaticRoute_ShouldAddToRoutingTable()
+        public async Task JuniperConfigureStaticRouteShouldAddToRoutingTable()
         {
             var network = new Network();
             var r1 = new JuniperDevice("R1");
@@ -232,7 +232,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task Juniper_ShowCommands_ShouldReturnOutput()
+        public async Task JuniperShowCommandsShouldReturnOutput()
         {
             var r1 = new JuniperDevice("R1");
             await r1.ProcessCommandAsync("configure");

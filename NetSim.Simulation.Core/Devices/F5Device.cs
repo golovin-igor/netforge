@@ -1,4 +1,5 @@
 using NetSim.Simulation.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Core;
 using NetSim.Simulation.Protocols.Implementations;
 
@@ -27,10 +28,10 @@ namespace NetSim.Simulation.Devices
         protected override void InitializeDefaultInterfaces()
         {
             // F5 BIG-IP typically uses interface names like 1.1, 1.2, etc.
-            Interfaces["1.1"] = new Configuration.InterfaceConfig("1.1", this);
-            Interfaces["1.2"] = new Configuration.InterfaceConfig("1.2", this);
-            Interfaces["1.3"] = new Configuration.InterfaceConfig("1.3", this);
-            Interfaces["1.4"] = new Configuration.InterfaceConfig("1.4", this);
+            Interfaces["1.1"] = new InterfaceConfig("1.1", this);
+            Interfaces["1.2"] = new InterfaceConfig("1.2", this);
+            Interfaces["1.3"] = new InterfaceConfig("1.3", this);
+            Interfaces["1.4"] = new InterfaceConfig("1.4", this);
             
             // Set default IP addresses for management interface
             var mgmtInterface = Interfaces["1.1"];
@@ -75,7 +76,7 @@ namespace NetSim.Simulation.Devices
         {
             if (!Interfaces.ContainsKey(name))
             {
-                Interfaces[name] = new Configuration.InterfaceConfig(name, this);
+                Interfaces[name] = new InterfaceConfig(name, this);
             }
         }
 

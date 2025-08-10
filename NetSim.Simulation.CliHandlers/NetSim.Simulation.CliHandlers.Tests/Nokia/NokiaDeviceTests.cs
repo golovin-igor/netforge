@@ -18,7 +18,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task Constructor_SetsVendorToNokia()
+        public async Task ConstructorSetsVendorToNokia()
         {
             // Arrange & Act
             var device = new NokiaDevice("SR1");
@@ -29,7 +29,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public async Task InitialPrompt_ShowsAdminMode()
+        public async Task InitialPromptShowsAdminMode()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -42,7 +42,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public async Task Configure_EntersConfigMode()
+        public async Task ConfigureEntersConfigMode()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -55,7 +55,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public async Task ConfigurePort_EntersPortContext()
+        public async Task ConfigurePortEntersPortContext()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -69,7 +69,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public async Task PortShutdown_DisablesInterface()
+        public async Task PortShutdownDisablesInterface()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -86,7 +86,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public async Task PortNoShutdown_EnablesInterface()
+        public async Task PortNoShutdownEnablesInterface()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -104,7 +104,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public async Task RouterInterface_ConfiguresIpAddress()
+        public async Task RouterInterfaceConfiguresIpAddress()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -121,7 +121,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public async Task RouterStaticRoute_AddsRoute()
+        public async Task RouterStaticRouteAddsRoute()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -137,7 +137,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
         
         [Fact]
-        public async Task ShowCommand_DisplaysSystemInfo()
+        public async Task ShowCommandDisplaysSystemInfo()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -153,7 +153,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task PingCommand_ExecutesPing()
+        public async Task PingCommandExecutesPing()
         {
             // Arrange
             var network = new Network();
@@ -189,7 +189,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task AdminSaveCommand_SavesConfig()
+        public async Task AdminSaveCommandSavesConfig()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -204,7 +204,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task AdminRebootCommand_PromptsForConfirmation()
+        public async Task AdminRebootCommandPromptsForConfirmation()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -217,7 +217,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task ClearPortStatistics_ClearsCounters()
+        public async Task ClearPortStatisticsClearsCounters()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -241,7 +241,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task ClearPortStatistics_FailsForInvalidPort()
+        public async Task ClearPortStatisticsFailsForInvalidPort()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -254,7 +254,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task ShowVersion_DisplaysVersion()
+        public async Task ShowVersionDisplaysVersion()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -269,7 +269,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task ShowPort_DisplaysPortStatus()
+        public async Task ShowPortDisplaysPortStatus()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -287,7 +287,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task InvalidCommand_ReturnsError()
+        public async Task InvalidCommandReturnsError()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
@@ -300,7 +300,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task Nokia_ConfigureInterfaceAndPing_ShouldSucceed()
+        public async Task NokiaConfigureInterfaceAndPingShouldSucceed()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure");
@@ -328,7 +328,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task Nokia_ConfigureOspf_ShouldFormAdjacency()
+        public async Task NokiaConfigureOspfShouldFormAdjacency()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure router interface \"system\" address 1.1.1.1/32");
@@ -350,7 +350,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task Nokia_ConfigureBgp_ShouldEstablishPeering()
+        public async Task NokiaConfigureBgpShouldEstablishPeering()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure router interface \"system\" address 1.1.1.1/32");
@@ -372,7 +372,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Nokia
         }
 
         [Fact]
-        public async Task Nokia_ConfigureRip_ShouldExchangeRoutes()
+        public async Task NokiaConfigureRipShouldExchangeRoutes()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("configure router interface \"system\" address 1.1.1.1/32");

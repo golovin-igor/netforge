@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
     public class JuniperCommandHandlerTests
     {
         [Fact]
-        public async Task JuniperDevice_ShouldStartInOperationalMode()
+        public async Task JuniperDeviceShouldStartInOperationalMode()
         {
             // Arrange & Act
             var device = new JuniperDevice("TestRouter");
@@ -17,7 +17,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task ConfigureHandler_ShouldEnterConfigMode()
+        public async Task ConfigureHandlerShouldEnterConfigMode()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -31,7 +31,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task ConfigureHandler_ShouldClearCandidateConfig()
+        public async Task ConfigureHandlerShouldClearCandidateConfig()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -49,7 +49,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task ShowHandler_ShouldDisplaySystemInfo()
+        public async Task ShowHandlerShouldDisplaySystemInfo()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -63,7 +63,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task ShowHandler_ShouldDisplayInterfaces()
+        public async Task ShowHandlerShouldDisplayInterfaces()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -77,7 +77,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task ShowHandler_ShouldDisplayVersion()
+        public async Task ShowHandlerShouldDisplayVersion()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -93,7 +93,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task ShowHandler_ShouldDisplayConfiguration()
+        public async Task ShowHandlerShouldDisplayConfiguration()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -110,7 +110,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task ShowHandler_ShouldDisplayCandidateConfig()
+        public async Task ShowHandlerShouldDisplayCandidateConfig()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -126,7 +126,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task ShowHandler_WhenNotInConfigMode_ShouldReturnError()
+        public async Task ShowHandlerWhenNotInConfigModeShouldReturnError()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -140,7 +140,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task ShowHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task ShowHandlerWithInvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -154,7 +154,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task ShowHandler_WithIncompleteCommand_ShouldReturnError()
+        public async Task ShowHandlerWithIncompleteCommandShouldReturnError()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -168,7 +168,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task SetCommand_ShouldAddToCandidateConfig()
+        public async Task SetCommandShouldAddToCandidateConfig()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -184,7 +184,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task SetInterfaceCommand_ShouldConfigureInterface()
+        public async Task SetInterfaceCommandShouldConfigureInterface()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -204,7 +204,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task SetVlanCommand_ShouldConfigureVlan()
+        public async Task SetVlanCommandShouldConfigureVlan()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -221,7 +221,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task CommitCommand_ShouldApplyConfiguration()
+        public async Task CommitCommandShouldApplyConfiguration()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -248,7 +248,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task RollbackCommand_ShouldClearCandidateConfig()
+        public async Task RollbackCommandShouldClearCandidateConfig()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -268,7 +268,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task ShowConfiguration_ShouldDisplayCandidateConfig()
+        public async Task ShowConfigurationShouldDisplayCandidateConfig()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -286,7 +286,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task ExitCommand_ShouldLeaveConfigurationMode()
+        public async Task ExitCommandShouldLeaveConfigurationMode()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -302,7 +302,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task ShowVersion_ShouldDisplayJunosVersion()
+        public async Task ShowVersionShouldDisplayJunosVersion()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -318,7 +318,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task ShowInterfaces_ShouldDisplayInterfaceInfo()
+        public async Task ShowInterfacesShouldDisplayInterfaceInfo()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -338,7 +338,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task PingCommand_ShouldExecutePing()
+        public async Task PingCommandShouldExecutePing()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -352,7 +352,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
         
         [Fact]
-        public async Task CommandHistory_ShouldWorkWithJuniper()
+        public async Task CommandHistoryShouldWorkWithJuniper()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -370,7 +370,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task JuniperRouter_ShouldConfigureOspf()
+        public async Task JuniperRouterShouldConfigureOspf()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -395,7 +395,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task JuniperRouter_ShouldConfigureBgp()
+        public async Task JuniperRouterShouldConfigureBgp()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -424,7 +424,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task JuniperRouter_ShouldConfigureIsIs()
+        public async Task JuniperRouterShouldConfigureIsIs()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -449,7 +449,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task JuniperRouter_ShouldConfigureRip()
+        public async Task JuniperRouterShouldConfigureRip()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -474,7 +474,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task JuniperRouter_ShouldConfigureRouteRedistribution()
+        public async Task JuniperRouterShouldConfigureRouteRedistribution()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -503,7 +503,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task JuniperRouter_ShouldConfigureRoutingPolicies()
+        public async Task JuniperRouterShouldConfigureRoutingPolicies()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -529,7 +529,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task JuniperRouter_ShouldConfigureCommunities()
+        public async Task JuniperRouterShouldConfigureCommunities()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -552,7 +552,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task JuniperRouter_ShouldConfigureAsPathGroups()
+        public async Task JuniperRouterShouldConfigureAsPathGroups()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -575,7 +575,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task JuniperRouter_ShouldConfigurePrefixLists()
+        public async Task JuniperRouterShouldConfigurePrefixLists()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");
@@ -598,7 +598,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Juniper
         }
 
         [Fact]
-        public async Task JuniperRouter_ShouldShowRoutingProtocols()
+        public async Task JuniperRouterShouldShowRoutingProtocols()
         {
             // Arrange
             var device = new JuniperDevice("TestRouter");

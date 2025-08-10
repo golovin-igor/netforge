@@ -1,4 +1,5 @@
 using NetSim.Simulation.Common;
+using NetSim.Simulation.Common.Configuration;
 using NetSim.Simulation.Core;
 using NetSim.Simulation.Protocols.Implementations;
 
@@ -25,8 +26,8 @@ namespace NetSim.Simulation.Devices
 
         protected override void InitializeDefaultInterfaces()
         {
-            Interfaces["ethernet1/1"] = new Configuration.InterfaceConfig("ethernet1/1", this);
-            Interfaces["ethernet1/2"] = new Configuration.InterfaceConfig("ethernet1/2", this);
+            Interfaces["ethernet1/1"] = new InterfaceConfig("ethernet1/1", this);
+            Interfaces["ethernet1/2"] = new InterfaceConfig("ethernet1/2", this);
         }
 
         protected override void RegisterDeviceSpecificHandlers()

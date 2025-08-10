@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
     {
         // Test 1: Show Running-Configuration
         [Fact]
-        public async Task Dell_ShowRunningConfig_ShouldIncludeAllConfigurations()
+        public async Task DellShowRunningConfigShouldIncludeAllConfigurations()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -34,7 +34,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 2: Show IP Route
         [Fact]
-        public async Task Dell_ShowIpRoute_ShouldDisplayAllRouteTypes()
+        public async Task DellShowIpRouteShouldDisplayAllRouteTypes()
         {
             var device = new DellDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -62,7 +62,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 3: Ping
         [Fact]
-        public async Task Dell_Ping_ShouldShowSuccessAndFailure()
+        public async Task DellPingShouldShowSuccessAndFailure()
         {
             var device = new DellDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -83,7 +83,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 4: Show Interface
         [Fact]
-        public async Task Dell_ShowInterface_ShouldDisplayInterfaceDetails()
+        public async Task DellShowInterfaceShouldDisplayInterfaceDetails()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -104,7 +104,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 5: Configure Mode
         [Fact]
-        public async Task Dell_Configure_ShouldEnterConfigMode()
+        public async Task DellConfigureShouldEnterConfigMode()
         {
             var device = new DellDevice("SW1");
             var output = await device.ProcessCommandAsync("enable");
@@ -122,7 +122,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 6: Show VLAN
         [Fact]
-        public async Task Dell_ShowVlan_ShouldDisplayVlanConfiguration()
+        public async Task DellShowVlanShouldDisplayVlanConfiguration()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -147,7 +147,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 7: Show OSPF Neighbor
         [Fact]
-        public async Task Dell_ShowOspfNeighbor_ShouldDisplayNeighbors()
+        public async Task DellShowOspfNeighborShouldDisplayNeighbors()
         {
             var device = new DellDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -173,7 +173,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 8: Interface Configuration
         [Fact]
-        public async Task Dell_InterfaceConfiguration_ShouldApplySettings()
+        public async Task DellInterfaceConfigurationShouldApplySettings()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -200,7 +200,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 9: Show BGP Summary
         [Fact]
-        public async Task Dell_ShowBgpSummary_ShouldDisplayPeerStatus()
+        public async Task DellShowBgpSummaryShouldDisplayPeerStatus()
         {
             var device = new DellDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -220,7 +220,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 10: Shutdown / No Shutdown
         [Fact]
-        public async Task Dell_ShutdownNoShutdown_ShouldToggleInterface()
+        public async Task DellShutdownNoShutdownShouldToggleInterface()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -244,7 +244,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 11: Show Version
         [Fact]
-        public async Task Dell_ShowVersion_ShouldDisplaySystemInfo()
+        public async Task DellShowVersionShouldDisplaySystemInfo()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -258,7 +258,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 12: Show ARP
         [Fact]
-        public async Task Dell_ShowArp_ShouldDisplayArpTable()
+        public async Task DellShowArpShouldDisplayArpTable()
         {
             var device = new DellDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -276,7 +276,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 13: Show MAC Address-Table
         [Fact]
-        public async Task Dell_ShowMacAddressTable_ShouldDisplayMacEntries()
+        public async Task DellShowMacAddressTableShouldDisplayMacEntries()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -291,7 +291,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 14: Show IP Interface Brief
         [Fact]
-        public async Task Dell_ShowInterfaceBrief_ShouldDisplaySummary()
+        public async Task DellShowInterfaceBriefShouldDisplaySummary()
         {
             var device = new DellDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -315,7 +315,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 15: Write Memory
         [Fact]
-        public async Task Dell_WriteMemory_ShouldSaveConfiguration()
+        public async Task DellWriteMemoryShouldSaveConfiguration()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -332,7 +332,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 16: Show Spanning-Tree
         [Fact]
-        public async Task Dell_ShowSpanningTree_ShouldDisplayStpInfo()
+        public async Task DellShowSpanningTreeShouldDisplayStpInfo()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -349,7 +349,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 17: Show Access-Lists
         [Fact]
-        public async Task Dell_ShowAccessLists_ShouldDisplayAcls()
+        public async Task DellShowAccessListsShouldDisplayAcls()
         {
             var device = new DellDevice("R1");
             await device.ProcessCommandAsync("enable");
@@ -367,7 +367,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 18: Show Port-Channel Summary
         [Fact]
-        public async Task Dell_ShowPortChannelSummary_ShouldDisplayLagStatus()
+        public async Task DellShowPortChannelSummaryShouldDisplayLagStatus()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -390,7 +390,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 19: Reload
         [Fact]
-        public async Task Dell_Reload_ShouldPromptForConfirmation()
+        public async Task DellReloadShouldPromptForConfirmation()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");
@@ -402,7 +402,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Dell
 
         // Test 20: Show Logging
         [Fact]
-        public async Task Dell_ShowLogging_ShouldDisplayLogEntries()
+        public async Task DellShowLoggingShouldDisplayLogEntries()
         {
             var device = new DellDevice("SW1");
             await device.ProcessCommandAsync("enable");

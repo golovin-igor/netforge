@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
     public class AristaCommandHandlerTests
     {
         [Fact]
-        public async Task ShowVersionHandler_ShouldReturnVersionInfo()
+        public async Task ShowVersionHandlerShouldReturnVersionInfo()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -21,7 +21,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public async Task PingHandler_ShouldSimulatePing()
+        public async Task PingHandlerShouldSimulatePing()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -37,7 +37,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public async Task EnableHandler_ShouldChangeModeCorrectly()
+        public async Task EnableHandlerShouldChangeModeCorrectly()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -55,7 +55,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public async Task ConfigureHandler_ShouldEnterConfigMode()
+        public async Task ConfigureHandlerShouldEnterConfigMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -71,7 +71,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public async Task HelpCommand_ShouldShowAvailableCommands()
+        public async Task HelpCommandShouldShowAvailableCommands()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -87,7 +87,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public async Task ShowHelp_ShouldShowSubcommands()
+        public async Task ShowHelpShouldShowSubcommands()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -105,7 +105,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public async Task InvalidCommand_ShouldFallbackToLegacy()
+        public async Task InvalidCommandShouldFallbackToLegacy()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -118,7 +118,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public async Task WriteMemory_ShouldSaveConfig()
+        public async Task WriteMemoryShouldSaveConfig()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -132,7 +132,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public async Task CopyRunningStartup_ShouldSaveConfig()
+        public async Task CopyRunningStartupShouldSaveConfig()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -146,7 +146,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
         
         [Fact]
-        public async Task ShowLldpNeighbors_ShouldWork()
+        public async Task ShowLldpNeighborsShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");

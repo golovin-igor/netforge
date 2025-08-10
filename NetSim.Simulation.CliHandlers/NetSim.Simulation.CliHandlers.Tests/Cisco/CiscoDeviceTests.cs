@@ -18,7 +18,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task Cisco_ConfigureVlanAndPing_ShouldSucceed()
+        public async Task CiscoConfigureVlanAndPingShouldSucceed()
         {
             var (network, sw1, sw2) = await SetupNetworkWithTwoDevicesAsync("SW1", "SW2");
             
@@ -57,7 +57,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task Cisco_ConfigureOspf_ShouldFormAdjacency()
+        public async Task CiscoConfigureOspfShouldFormAdjacency()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("enable");
@@ -93,7 +93,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task Cisco_ConfigureBgp_ShouldEstablishPeering()
+        public async Task CiscoConfigureBgpShouldEstablishPeering()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("enable");
@@ -129,7 +129,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task Cisco_ConfigureRip_ShouldExchangeRoutes()
+        public async Task CiscoConfigureRipShouldExchangeRoutes()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("enable");
@@ -175,7 +175,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
         
         [Fact]
-        public async Task Cisco_InterfaceShutdown_ShouldAffectConnectivity()
+        public async Task CiscoInterfaceShutdownShouldAffectConnectivity()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("enable");
@@ -210,7 +210,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task Cisco_ConfigureAcl_ShouldBlockTraffic()
+        public async Task CiscoConfigureAclShouldBlockTraffic()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("enable");
@@ -238,7 +238,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task Cisco_ConfigureStp_ShouldElectRoot()
+        public async Task CiscoConfigureStpShouldElectRoot()
         {
             var (network, sw1, sw2) = await SetupNetworkWithTwoDevicesAsync("SW1", "SW2");
             await sw1.ProcessCommandAsync("enable");
@@ -261,7 +261,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task Cisco_ConfigurePortChannel_ShouldShowMembers()
+        public async Task CiscoConfigurePortChannelShouldShowMembers()
         {
             var network = new Network();
             var sw1 = new CiscoDevice("SW1");
@@ -291,7 +291,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task Cisco_CdpNeighbor_ShouldDisplayCorrectly()
+        public async Task CiscoCdpNeighborShouldDisplayCorrectly()
         {
             var (network, r1, r2) = await SetupNetworkWithTwoDevicesAsync();
             await r1.ProcessCommandAsync("enable");
@@ -319,7 +319,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task Cisco_InvalidCommand_ShouldReturnError() 
+        public async Task CiscoInvalidCommandShouldReturnError() 
         {
             var r1 = new CiscoDevice("R1");
             var output1 = await r1.ProcessCommandAsync("invalid command");
@@ -334,7 +334,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task Cisco_ShowStaticRoute_ShouldDisplayRoute() 
+        public async Task CiscoShowStaticRouteShouldDisplayRoute() 
         {
             var r1 = new CiscoDevice("R1");
             await r1.ProcessCommandAsync("enable");

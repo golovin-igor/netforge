@@ -1,3 +1,4 @@
+using System.Globalization;
 using NetSim.Simulation.Devices;
 using Xunit;
 
@@ -6,293 +7,293 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
     public class MikroTikCommandHandlerComprehensiveTests
     {
         [Fact]
-        public async Task MikroTikHandler_SystemIdentitySet_ShouldSetIdentity()
+        public async Task MikroTikHandlerSystemIdentitySetShouldSetIdentity()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/system identity set name=NewRouter");
-            
+
             // Assert
             Assert.Equal("[NewRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_InterfacePrint_ShouldDisplayInterfaces()
+        public async Task MikroTikHandlerInterfacePrintShouldDisplayInterfaces()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/interface print");
-            
+
             // Assert
             Assert.Contains("Interface", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_InterfaceEthernetSet_ShouldConfigureInterface()
+        public async Task MikroTikHandlerInterfaceEthernetSetShouldConfigureInterface()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/interface ethernet set ether1 name=wan");
-            
+
             // Assert
-            Assert.Contains("configured", output.ToLower());
+            Assert.Contains("configured", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpAddressAdd_ShouldAddIpAddress()
+        public async Task MikroTikHandlerIpAddressAddShouldAddIpAddress()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip address add address=192.168.1.1/24 interface=ether1");
-            
+
             // Assert
-            Assert.Contains("added", output.ToLower());
+            Assert.Contains("added", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpAddressPrint_ShouldDisplayAddresses()
+        public async Task MikroTikHandlerIpAddressPrintShouldDisplayAddresses()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip address print");
-            
+
             // Assert
             Assert.Contains("Address", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpRouteAdd_ShouldAddRoute()
+        public async Task MikroTikHandlerIpRouteAddShouldAddRoute()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip route add dst-address=10.0.0.0/8 gateway=192.168.1.1");
-            
+
             // Assert
-            Assert.Contains("route", output.ToLower());
+            Assert.Contains("route", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpRoutePrint_ShouldDisplayRoutes()
+        public async Task MikroTikHandlerIpRoutePrintShouldDisplayRoutes()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip route print");
-            
+
             // Assert
             Assert.Contains("Route", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpArpPrint_ShouldDisplayArpTable()
+        public async Task MikroTikHandlerIpArpPrintShouldDisplayArpTable()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip arp print");
-            
+
             // Assert
             Assert.Contains("ARP", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_SystemLicensePrint_ShouldDisplayLicense()
+        public async Task MikroTikHandlerSystemLicensePrintShouldDisplayLicense()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/system license print");
-            
+
             // Assert
             Assert.Contains("License", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_ToolTraceroute_ShouldExecuteTraceroute()
+        public async Task MikroTikHandlerToolTracerouteShouldExecuteTraceroute()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/tool traceroute 8.8.8.8");
-            
+
             // Assert
             Assert.Contains("traceroute", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpFirewallFilterAdd_ShouldAddFirewallRule()
+        public async Task MikroTikHandlerIpFirewallFilterAddShouldAddFirewallRule()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip firewall filter add chain=input action=accept");
-            
+
             // Assert
-            Assert.Contains("firewall", output.ToLower());
+            Assert.Contains("firewall", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpFirewallFilterPrint_ShouldDisplayFirewallRules()
+        public async Task MikroTikHandlerIpFirewallFilterPrintShouldDisplayFirewallRules()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip firewall filter print");
-            
+
             // Assert
             Assert.Contains("Firewall", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpDhcpServerAdd_ShouldAddDhcpServer()
+        public async Task MikroTikHandlerIpDhcpServerAddShouldAddDhcpServer()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip dhcp-server add interface=ether1 name=dhcp1");
-            
+
             // Assert
-            Assert.Contains("dhcp", output.ToLower());
+            Assert.Contains("dhcp", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpDhcpServerPrint_ShouldDisplayDhcpServers()
+        public async Task MikroTikHandlerIpDhcpServerPrintShouldDisplayDhcpServers()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip dhcp-server print");
-            
+
             // Assert
             Assert.Contains("DHCP", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpDnsSet_ShouldConfigureDns()
+        public async Task MikroTikHandlerIpDnsSetShouldConfigureDns()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip dns set servers=8.8.8.8");
-            
+
             // Assert
-            Assert.Contains("dns", output.ToLower());
+            Assert.Contains("dns", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_SystemNtpClientSet_ShouldConfigureNtp()
+        public async Task MikroTikHandlerSystemNtpClientSetShouldConfigureNtp()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/system ntp client set enabled=yes server=pool.ntp.org");
-            
+
             // Assert
-            Assert.Contains("ntp", output.ToLower());
+            Assert.Contains("ntp", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_InterfaceVlanAdd_ShouldAddVlan()
+        public async Task MikroTikHandlerInterfaceVlanAddShouldAddVlan()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/interface vlan add interface=ether1 vlan-id=100");
-            
+
             // Assert
-            Assert.Contains("vlan", output.ToLower());
+            Assert.Contains("vlan", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpOspfInstanceAdd_ShouldAddOspfInstance()
+        public async Task MikroTikHandlerIpOspfInstanceAddShouldAddOspfInstance()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip ospf instance add name=default");
-            
+
             // Assert
-            Assert.Contains("ospf", output.ToLower());
+            Assert.Contains("ospf", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_IpBgpInstanceAdd_ShouldAddBgpInstance()
+        public async Task MikroTikHandlerIpBgpInstanceAddShouldAddBgpInstance()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/ip bgp instance add name=default as=65001");
-            
+
             // Assert
-            Assert.Contains("bgp", output.ToLower());
+            Assert.Contains("bgp", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_InterfaceBridgeAdd_ShouldAddBridge()
+        public async Task MikroTikHandlerInterfaceBridgeAddShouldAddBridge()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/interface bridge add name=bridge1");
-            
+
             // Assert
-            Assert.Contains("bridge", output.ToLower());
+            Assert.Contains("bridge", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
 
         [Fact]
-        public async Task MikroTikHandler_SystemResourcePrint_ShouldDisplayResources()
+        public async Task MikroTikHandlerSystemResourcePrintShouldDisplayResources()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/system resource print");
-            
+
             // Assert
             Assert.Contains("Resource", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
@@ -327,14 +328,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         [InlineData("/ip traffic-flow print")]
         [InlineData("/ip proxy print")]
         [InlineData("/ip upnp print")]
-        public async Task MikroTikHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task MikroTikHandlerAllShowCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("bad command name", output);
@@ -362,14 +363,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         [InlineData("/system logging add topics=info")]
         [InlineData("/interface wireless set wlan1 mode=ap-bridge")]
         [InlineData("/ip cloud set enabled=yes")]
-        public async Task MikroTikHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task MikroTikHandlerConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("bad command name", output);
@@ -392,14 +393,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         [InlineData("/ip snmp print detail")]
         [InlineData("/system logging print detail")]
         [InlineData("/interface wireless print detail")]
-        public async Task MikroTikHandler_DetailedShowCommands_ShouldWork(string command)
+        public async Task MikroTikHandlerDetailedShowCommandsShouldWork(string command)
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("bad command name", output);
@@ -415,14 +416,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         [InlineData("/ip bgp print vrf=main")]
         [InlineData("/ip ipsec print vrf=main")]
         [InlineData("/ip snmp print vrf=main")]
-        public async Task MikroTikHandler_VrfCommands_ShouldWork(string command)
+        public async Task MikroTikHandlerVrfCommandsShouldWork(string command)
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("bad command name", output);
@@ -442,14 +443,14 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         [InlineData("/ip snmp print statistics")]
         [InlineData("/system logging print statistics")]
         [InlineData("/interface wireless print statistics")]
-        public async Task MikroTikHandler_StatisticsCommands_ShouldWork(string command)
+        public async Task MikroTikHandlerStatisticsCommandsShouldWork(string command)
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("bad command name", output);
@@ -457,11 +458,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task MikroTikHandler_NestedVrfConfigurationCommands_ShouldWork()
+        public async Task MikroTikHandlerNestedVrfConfigurationCommandsShouldWork()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act & Assert for multiple VRF configuration commands
             var commands = new[]
             {
@@ -482,11 +483,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.MikroTik
         }
 
         [Fact]
-        public async Task MikroTikHandler_ComplexFirewallConfiguration_ShouldWork()
+        public async Task MikroTikHandlerComplexFirewallConfigurationShouldWork()
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act & Assert for complex firewall configuration
             var commands = new[]
             {

@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
     public class AristaCommandHandlerComprehensiveTests
     {
         [Fact]
-        public async Task AristaHandler_ConfigureTerminal_ShouldEnterConfigMode()
+        public async Task AristaHandlerConfigureTerminalShouldEnterConfigMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -21,7 +21,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_Hostname_ShouldSetHostname()
+        public async Task AristaHandlerHostnameShouldSetHostname()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -36,7 +36,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_ShowRunningConfig_ShouldDisplayConfig()
+        public async Task AristaHandlerShowRunningConfigShouldDisplayConfig()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -50,7 +50,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_ShowInterfaces_ShouldDisplayInterfaces()
+        public async Task AristaHandlerShowInterfacesShouldDisplayInterfaces()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -64,7 +64,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_ShowIpRoute_ShouldDisplayRoutes()
+        public async Task AristaHandlerShowIpRouteShouldDisplayRoutes()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -78,7 +78,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_ShowArp_ShouldDisplayArpTable()
+        public async Task AristaHandlerShowArpShouldDisplayArpTable()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -92,7 +92,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_InterfaceEthernet_ShouldEnterInterfaceMode()
+        public async Task AristaHandlerInterfaceEthernetShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -108,7 +108,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_IpAddress_ShouldConfigureInterface()
+        public async Task AristaHandlerIpAddressShouldConfigureInterface()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -124,7 +124,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_NoShutdown_ShouldEnableInterface()
+        public async Task AristaHandlerNoShutdownShouldEnableInterface()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -140,7 +140,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_RouterOspf_ShouldEnterOspfMode()
+        public async Task AristaHandlerRouterOspfShouldEnterOspfMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -156,7 +156,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_RouterBgp_ShouldEnterBgpMode()
+        public async Task AristaHandlerRouterBgpShouldEnterBgpMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -172,7 +172,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_Vlan_ShouldEnterVlanMode()
+        public async Task AristaHandlerVlanShouldEnterVlanMode()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -188,7 +188,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_ShowVlan_ShouldDisplayVlans()
+        public async Task AristaHandlerShowVlanShouldDisplayVlans()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -202,7 +202,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_ShowSpanningTree_ShouldDisplayStp()
+        public async Task AristaHandlerShowSpanningTreeShouldDisplayStp()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -216,7 +216,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_ShowMlag_ShouldDisplayMlagInfo()
+        public async Task AristaHandlerShowMlagShouldDisplayMlagInfo()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -230,7 +230,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_ShowVxlan_ShouldDisplayVxlanInfo()
+        public async Task AristaHandlerShowVxlanShouldDisplayVxlanInfo()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -244,7 +244,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_ShowBgpEvpn_ShouldDisplayEvpnInfo()
+        public async Task AristaHandlerShowBgpEvpnShouldDisplayEvpnInfo()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -280,7 +280,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("show system")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public async Task AristaHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task AristaHandlerAllShowCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -308,11 +308,11 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("mlag configuration")]
         [InlineData("interface vxlan1")]
         [InlineData("spanning-tree mode mstp")]
-        public async Task AristaHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task AristaHandlerConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            if (!command.StartsWith("enable") && !command.StartsWith("configure terminal"))
+            if (!command.StartsWith("enable", StringComparison.OrdinalIgnoreCase) && !command.StartsWith("configure terminal", StringComparison.OrdinalIgnoreCase))
             {
                 await device.ProcessCommandAsync("enable");
                 await device.ProcessCommandAsync("configure terminal");
@@ -343,7 +343,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("show mac address-table dynamic")]
         [InlineData("show lldp neighbors detail")]
         [InlineData("show port-channel summary")]
-        public async Task AristaHandler_DetailedShowCommands_ShouldWork(string command)
+        public async Task AristaHandlerDetailedShowCommandsShouldWork(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -363,7 +363,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("show ip ospf vrf management")]
         [InlineData("show ip bgp vrf management")]
         [InlineData("show interfaces vrf management")]
-        public async Task AristaHandler_VrfCommands_ShouldWork(string command)
+        public async Task AristaHandlerVrfCommandsShouldWork(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -391,7 +391,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("mlag local-interface Vlan4094")]
         [InlineData("mlag peer-address 192.168.1.2")]
         [InlineData("mlag peer-link Port-Channel1")]
-        public async Task AristaHandler_MlagConfiguration_ShouldWork(string command)
+        public async Task AristaHandlerMlagConfigurationShouldWork(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -415,13 +415,13 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         [InlineData("evpn")]
         [InlineData("neighbor 192.168.1.2 activate")]
         [InlineData("advertise-all-vni")]
-        public async Task AristaHandler_VxlanEvpnConfiguration_ShouldWork(string command)
+        public async Task AristaHandlerVxlanEvpnConfigurationShouldWork(string command)
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            if (command.StartsWith("neighbor") || command.StartsWith("advertise"))
+            if (command.StartsWith("neighbor", StringComparison.OrdinalIgnoreCase) || command.StartsWith("advertise", StringComparison.OrdinalIgnoreCase))
             {
                 await device.ProcessCommandAsync("router bgp 65001");
                 await device.ProcessCommandAsync("address-family evpn");
@@ -436,7 +436,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_ComplexMlagConfiguration_ShouldWork()
+        public async Task AristaHandlerComplexMlagConfigurationShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -464,7 +464,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_VxlanConfiguration_ShouldWork()
+        public async Task AristaHandlerVxlanConfigurationShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -491,7 +491,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_BgpEvpnConfiguration_ShouldWork()
+        public async Task AristaHandlerBgpEvpnConfigurationShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -519,7 +519,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_SpanningTreeConfiguration_ShouldWork()
+        public async Task AristaHandlerSpanningTreeConfigurationShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -547,7 +547,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_RouteMapConfiguration_ShouldWork()
+        public async Task AristaHandlerRouteMapConfigurationShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -575,7 +575,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_AccessListConfiguration_ShouldWork()
+        public async Task AristaHandlerAccessListConfigurationShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
@@ -602,7 +602,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task AristaHandler_InterfaceAdvancedConfiguration_ShouldWork()
+        public async Task AristaHandlerInterfaceAdvancedConfigurationShouldWork()
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");

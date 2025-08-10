@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
     public class AristaOperationsTests
     {
         [Fact]
-        public async Task Arista_ConfigureVlanAndPing_ShouldSucceed()
+        public async Task AristaConfigureVlanAndPingShouldSucceed()
         {
             var network = new Network();
             var sw1 = new AristaDevice("SW1");
@@ -52,7 +52,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_InterfaceShutdown_ShouldStopTraffic()
+        public async Task AristaInterfaceShutdownShouldStopTraffic()
         {
             var network = new Network();
             var sw1 = new AristaDevice("SW1");
@@ -93,7 +93,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_ConfigureAcl_ShouldBlockPing()
+        public async Task AristaConfigureAclShouldBlockPing()
         {
             var network = new Network();
             var sw1 = new AristaDevice("SW1");
@@ -130,7 +130,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_ConfigureStp_ShouldSetPriority()
+        public async Task AristaConfigureStpShouldSetPriority()
         {
             var network = new Network();
             var sw1 = new AristaDevice("SW1");
@@ -157,7 +157,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_ConfigurePortChannel_ShouldCreateLag()
+        public async Task AristaConfigurePortChannelShouldCreateLag()
         {
             var sw1 = new AristaDevice("SW1");
             await sw1.ProcessCommandAsync("enable");
@@ -175,7 +175,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_InvalidCommand_ShouldReturnError()
+        public async Task AristaInvalidCommandShouldReturnError()
         {
             var sw1 = new AristaDevice("SW1");
             var output1 = await sw1.ProcessCommandAsync("invalid command");
@@ -191,7 +191,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_ShowCommands_ShouldReturnProperOutput()
+        public async Task AristaShowCommandsShouldReturnProperOutput()
         {
             var sw1 = new AristaDevice("SW1");
             await sw1.ProcessCommandAsync("enable");
@@ -230,7 +230,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_InterfaceCounters_ShouldIncrement()
+        public async Task AristaInterfaceCountersShouldIncrement()
         {
             var network = new Network();
             var sw1 = new AristaDevice("SW1");
@@ -265,7 +265,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_VlanList_ShouldSupportCommaSeparated()
+        public async Task AristaVlanListShouldSupportCommaSeparated()
         {
             var sw1 = new AristaDevice("SW1");
             await sw1.ProcessCommandAsync("enable");
@@ -280,7 +280,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Arista
         }
 
         [Fact]
-        public async Task Arista_InterfaceStatus_ShouldShowProperFormat()
+        public async Task AristaInterfaceStatusShouldShowProperFormat()
         {
             var sw1 = new AristaDevice("SW1");
             await sw1.ProcessCommandAsync("enable");

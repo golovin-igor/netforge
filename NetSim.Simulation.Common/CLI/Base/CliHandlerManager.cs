@@ -187,8 +187,8 @@ namespace NetSim.Simulation.CliHandlers
             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(target))
                 return 0;
             
-            input = input.ToLower();
-            target = target.ToLower();
+            input = input.ToLowerInvariant();
+            target = target.ToLowerInvariant();
             
             // Exact match
             if (input == target)
@@ -448,7 +448,7 @@ namespace NetSim.Simulation.CliHandlers
         /// </summary>
         private double CalculateSimilarity(string s1, string s2)
         {
-            var distance = LevenshteinDistance(s1.ToLower(), s2.ToLower());
+            var distance = LevenshteinDistance(s1.ToLowerInvariant(), s2.ToLowerInvariant());
             var maxLength = Math.Max(s1.Length, s2.Length);
             return 1 - ((double)distance / maxLength);
         }

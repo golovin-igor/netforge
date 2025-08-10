@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
     public class HuaweiDeviceDisplayTests
     {
         [Fact]
-        public async Task Huawei_DisplayCurrentConfiguration_ShouldIncludeAllSettings()
+        public async Task HuaweiDisplayCurrentConfigurationShouldIncludeAllSettings()
         {
             var device = new HuaweiDevice("SW1");
             await device.ProcessCommandAsync("system-view");
@@ -33,7 +33,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayIpRoutingTable_ShouldShowAllRoutes()
+        public async Task HuaweiDisplayIpRoutingTableShouldShowAllRoutes()
         {
             var device = new HuaweiDevice("R1");
             await device.ProcessCommandAsync("system-view");
@@ -56,7 +56,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayInterface_ShouldShowInterfaceDetails()
+        public async Task HuaweiDisplayInterfaceShouldShowInterfaceDetails()
         {
             var device = new HuaweiDevice("SW1");
             await device.ProcessCommandAsync("system-view");
@@ -74,7 +74,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayVlan_ShouldShowVlanConfiguration()
+        public async Task HuaweiDisplayVlanShouldShowVlanConfiguration()
         {
             var device = new HuaweiDevice("SW1");
             await device.ProcessCommandAsync("system-view");
@@ -98,7 +98,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayOspfPeer_ShouldShowNeighbors()
+        public async Task HuaweiDisplayOspfPeerShouldShowNeighbors()
         {
             var device = new HuaweiDevice("R1");
             await device.ProcessCommandAsync("system-view");
@@ -117,7 +117,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayBgpPeer_ShouldShowPeerStatus()
+        public async Task HuaweiDisplayBgpPeerShouldShowPeerStatus()
         {
             var device = new HuaweiDevice("R1");
             await device.ProcessCommandAsync("system-view");
@@ -136,7 +136,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayVersion_ShouldShowSystemInfo()
+        public async Task HuaweiDisplayVersionShouldShowSystemInfo()
         {
             var device = new HuaweiDevice("SW1");
             var output = await device.ProcessCommandAsync("display version");
@@ -148,7 +148,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayArp_ShouldShowArpTable()
+        public async Task HuaweiDisplayArpShouldShowArpTable()
         {
             var device = new HuaweiDevice("R1");
             await device.ProcessCommandAsync("system-view");
@@ -166,7 +166,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayMacAddress_ShouldShowMacTable()
+        public async Task HuaweiDisplayMacAddressShouldShowMacTable()
         {
             var device = new HuaweiDevice("SW1");
             var output = await device.ProcessCommandAsync("display mac-address");
@@ -179,7 +179,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayInterfaceBrief_ShouldShowSummary()
+        public async Task HuaweiDisplayInterfaceBriefShouldShowSummary()
         {
             var device = new HuaweiDevice("R1");
             await device.ProcessCommandAsync("system-view");
@@ -202,7 +202,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayStp_ShouldShowSpanningTree()
+        public async Task HuaweiDisplayStpShouldShowSpanningTree()
         {
             var device = new HuaweiDevice("SW1");
             await device.ProcessCommandAsync("system-view");
@@ -218,7 +218,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayEthTrunk_ShouldShowLagStatus()
+        public async Task HuaweiDisplayEthTrunkShouldShowLagStatus()
         {
             var device = new HuaweiDevice("SW1");
             await device.ProcessCommandAsync("system-view");
@@ -242,7 +242,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Huawei
         }
 
         [Fact]
-        public async Task Huawei_DisplayLogbuffer_ShouldShowLogEntries()
+        public async Task HuaweiDisplayLogbufferShouldShowLogEntries()
         {
             var device = new HuaweiDevice("SW1");
             await device.ProcessCommandAsync("system-view");

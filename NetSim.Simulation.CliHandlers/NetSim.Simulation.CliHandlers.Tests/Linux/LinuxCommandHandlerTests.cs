@@ -1,3 +1,4 @@
+using System.Globalization;
 using NetSim.Simulation.Devices;
 using Xunit;
 
@@ -6,7 +7,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
     public class LinuxCommandHandlerTests
     {
         [Fact]
-        public async Task LinuxHandler_IpAddrShow_ShouldDisplayInterfaces()
+        public async Task LinuxHandlerIpAddrShowShouldDisplayInterfaces()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -15,12 +16,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("ip addr show");
             
             // Assert
-            Assert.Contains("interface", output.ToLower());
+            Assert.Contains("interface", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_IpLinkShow_ShouldDisplayLinkInfo()
+        public async Task LinuxHandlerIpLinkShowShouldDisplayLinkInfo()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -29,12 +30,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("ip link show");
             
             // Assert
-            Assert.Contains("link", output.ToLower());
+            Assert.Contains("link", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_IpRouteShow_ShouldDisplayRoutes()
+        public async Task LinuxHandlerIpRouteShowShouldDisplayRoutes()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -43,12 +44,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("ip route show");
             
             // Assert
-            Assert.Contains("route", output.ToLower());
+            Assert.Contains("route", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_IpAddrAdd_ShouldConfigureInterface()
+        public async Task LinuxHandlerIpAddrAddShouldConfigureInterface()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -57,12 +58,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("ip addr add 192.168.1.10/24 dev eth0");
             
             // Assert
-            Assert.Contains("address configured", output.ToLower());
+            Assert.Contains("address configured", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_IpLinkSet_ShouldSetInterfaceState()
+        public async Task LinuxHandlerIpLinkSetShouldSetInterfaceState()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -71,12 +72,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("ip link set eth0 up");
             
             // Assert
-            Assert.Contains("interface state", output.ToLower());
+            Assert.Contains("interface state", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_IpRouteAdd_ShouldAddRoute()
+        public async Task LinuxHandlerIpRouteAddShouldAddRoute()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -85,12 +86,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("ip route add 10.0.0.0/8 via 192.168.1.1");
             
             // Assert
-            Assert.Contains("route added", output.ToLower());
+            Assert.Contains("route added", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_ArpCommand_ShouldShowArpTable()
+        public async Task LinuxHandlerArpCommandShouldShowArpTable()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -99,12 +100,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("arp -n");
             
             // Assert
-            Assert.Contains("arp", output.ToLower());
+            Assert.Contains("arp", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_PingCommand_ShouldExecutePing()
+        public async Task LinuxHandlerPingCommandShouldExecutePing()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -113,12 +114,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("ping 8.8.8.8");
             
             // Assert
-            Assert.Contains("ping", output.ToLower());
+            Assert.Contains("ping", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_TracerouteCommand_ShouldExecuteTraceroute()
+        public async Task LinuxHandlerTracerouteCommandShouldExecuteTraceroute()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -127,12 +128,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("traceroute 8.8.8.8");
             
             // Assert
-            Assert.Contains("traceroute", output.ToLower());
+            Assert.Contains("traceroute", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_TcpdumpCommand_ShouldStartCapture()
+        public async Task LinuxHandlerTcpdumpCommandShouldStartCapture()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -141,12 +142,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("tcpdump -i eth0");
             
             // Assert
-            Assert.Contains("tcpdump", output.ToLower());
+            Assert.Contains("tcpdump", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_NetstatCommand_ShouldShowNetworkInfo()
+        public async Task LinuxHandlerNetstatCommandShouldShowNetworkInfo()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -155,12 +156,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("netstat -i");
             
             // Assert
-            Assert.Contains("interface", output.ToLower());
+            Assert.Contains("interface", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_EthtoolCommand_ShouldShowInterfaceInfo()
+        public async Task LinuxHandlerEthtoolCommandShouldShowInterfaceInfo()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -169,12 +170,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("ethtool eth0");
             
             // Assert
-            Assert.Contains("ethtool", output.ToLower());
+            Assert.Contains("ethtool", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_SsCommand_ShouldShowSockets()
+        public async Task LinuxHandlerSsCommandShouldShowSockets()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -183,12 +184,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("ss -t");
             
             // Assert
-            Assert.Contains("socket", output.ToLower());
+            Assert.Contains("socket", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_NmapCommand_ShouldScanNetwork()
+        public async Task LinuxHandlerNmapCommandShouldScanNetwork()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -197,12 +198,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("nmap 192.168.1.1");
             
             // Assert
-            Assert.Contains("nmap", output.ToLower());
+            Assert.Contains("nmap", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_IptablesCommand_ShouldManageFirewall()
+        public async Task LinuxHandlerIptablesCommandShouldManageFirewall()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -211,12 +212,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("iptables -L");
             
             // Assert
-            Assert.Contains("iptables", output.ToLower());
+            Assert.Contains("iptables", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_RouteCommand_ShouldManageRoutes()
+        public async Task LinuxHandlerRouteCommandShouldManageRoutes()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -225,12 +226,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("route add -net 10.0.0.0 netmask 255.0.0.0 gw 192.168.1.1");
             
             // Assert
-            Assert.Contains("route", output.ToLower());
+            Assert.Contains("route", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_IfconfigCommand_ShouldConfigureInterface()
+        public async Task LinuxHandlerIfconfigCommandShouldConfigureInterface()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -239,12 +240,12 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("ifconfig eth0 up");
             
             // Assert
-            Assert.Contains("interface", output.ToLower());
+            Assert.Contains("interface", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
         [Fact]
-        public async Task LinuxHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task LinuxHandlerWithInvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -253,7 +254,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             var output = await device.ProcessCommandAsync("invalid_command");
             
             // Assert
-            Assert.Contains("command not found", output.ToLower());
+            Assert.Contains("command not found", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
@@ -274,7 +275,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
         [InlineData("iptables -L")]
         [InlineData("route show")]
         [InlineData("ifconfig")]
-        public async Task LinuxHandler_AllBasicCommands_ShouldHaveHandlers(string command)
+        public async Task LinuxHandlerAllBasicCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -284,7 +285,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             
             // Assert
             Assert.NotNull(output);
-            Assert.DoesNotContain("command not found", output.ToLower());
+            Assert.DoesNotContain("command not found", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
@@ -297,7 +298,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
         [InlineData("iptables -A INPUT -p tcp --dport 22 -j ACCEPT")]
         [InlineData("route add -net 10.0.0.0 netmask 255.0.0.0 gw 192.168.1.1")]
         [InlineData("ifconfig eth0 192.168.1.10 netmask 255.255.255.0")]
-        public async Task LinuxHandler_ConfigurationCommands_ShouldModifyState(string command)
+        public async Task LinuxHandlerConfigurationCommandsShouldModifyState(string command)
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -307,7 +308,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             
             // Assert
             Assert.NotNull(output);
-            Assert.DoesNotContain("command not found", output.ToLower());
+            Assert.DoesNotContain("command not found", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
 
@@ -323,7 +324,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
         [InlineData("ss -l")]
         [InlineData("nmap -sS 127.0.0.1")]
         [InlineData("iptables -t nat -L")]
-        public async Task LinuxHandler_ShowCommands_ShouldDisplayInformation(string command)
+        public async Task LinuxHandlerShowCommandsShouldDisplayInformation(string command)
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
@@ -333,7 +334,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Linux
             
             // Assert
             Assert.NotNull(output);
-            Assert.DoesNotContain("command not found", output.ToLower());
+            Assert.DoesNotContain("command not found", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
         }
     }

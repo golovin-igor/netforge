@@ -1,3 +1,4 @@
+using System.Globalization;
 using NetSim.Simulation.Common;
 using NetSim.Simulation.Events;
 using NetSim.Simulation.Interfaces;
@@ -185,7 +186,7 @@ namespace NetSim.Simulation.Protocols.Implementations
                     // Check if connection quality is suitable for OSPF
                     if (!metrics.IsSuitableForRouting)
                     {
-                        device.AddLogEntry($"OSPFProtocol: Connection quality too poor for OSPF on interface {ospfInterface.Name} (Quality: {metrics.QualityScore:F1}%)");
+                        device.AddLogEntry(string.Format(CultureInfo.InvariantCulture, "OSPFProtocol: Connection quality too poor for OSPF on interface {0} (Quality: {1:F1}%)", ospfInterface.Name, metrics.QualityScore));
                         continue;
                     }
                 }

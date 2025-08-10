@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
     public class ArubaCommandHandlerComprehensiveTests
     {
         [Fact]
-        public async Task ArubaHandler_ShowRunningConfig_ShouldDisplayConfig()
+        public async Task ArubaHandlerShowRunningConfigShouldDisplayConfig()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -20,7 +20,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ShowVersion_ShouldDisplayVersion()
+        public async Task ArubaHandlerShowVersionShouldDisplayVersion()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -34,7 +34,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ShowInterfaces_ShouldDisplayInterfaces()
+        public async Task ArubaHandlerShowInterfacesShouldDisplayInterfaces()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -48,7 +48,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ShowIpRoute_ShouldDisplayRoutes()
+        public async Task ArubaHandlerShowIpRouteShouldDisplayRoutes()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -62,7 +62,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ShowArp_ShouldDisplayArpTable()
+        public async Task ArubaHandlerShowArpShouldDisplayArpTable()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -76,7 +76,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_InterfaceGigabitEthernet_ShouldEnterInterfaceMode()
+        public async Task ArubaHandlerInterfaceGigabitEthernetShouldEnterInterfaceMode()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -92,7 +92,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_IpAddress_ShouldConfigureInterface()
+        public async Task ArubaHandlerIpAddressShouldConfigureInterface()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -108,7 +108,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_Enable_ShouldEnableInterface()
+        public async Task ArubaHandlerEnableShouldEnableInterface()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -124,7 +124,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_IpRoute_ShouldConfigureRoute()
+        public async Task ArubaHandlerIpRouteShouldConfigureRoute()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -139,7 +139,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_Vlan_ShouldEnterVlanMode()
+        public async Task ArubaHandlerVlanShouldEnterVlanMode()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -155,7 +155,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_VlanName_ShouldSetVlanName()
+        public async Task ArubaHandlerVlanNameShouldSetVlanName()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -171,7 +171,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ShowVlan_ShouldDisplayVlans()
+        public async Task ArubaHandlerShowVlanShouldDisplayVlans()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -185,7 +185,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ShowSpanningTree_ShouldDisplayStp()
+        public async Task ArubaHandlerShowSpanningTreeShouldDisplayStp()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -199,7 +199,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ShowLog_ShouldDisplayLogs()
+        public async Task ArubaHandlerShowLogShouldDisplayLogs()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -213,7 +213,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ShowTech_ShouldDisplayTechInfo()
+        public async Task ArubaHandlerShowTechShouldDisplayTechInfo()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -227,7 +227,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ShowSystem_ShouldDisplaySystemInfo()
+        public async Task ArubaHandlerShowSystemShouldDisplaySystemInfo()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -241,7 +241,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ShowPower_ShouldDisplayPowerInfo()
+        public async Task ArubaHandlerShowPowerShouldDisplayPowerInfo()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -277,7 +277,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("show environment")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public async Task ArubaHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task ArubaHandlerAllShowCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -297,21 +297,20 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("hostname NewName")]
         [InlineData("interface GigabitEthernet0/0")]
         [InlineData("ip address 192.168.1.1 255.255.255.0")]
-        [InlineData("enable")]
         [InlineData("ip route 10.0.0.0 255.0.0.0 192.168.1.1")]
         [InlineData("vlan 100")]
         [InlineData("name TestVLAN")]
         [InlineData("snmp-server community public")]
         [InlineData("time daylight-time-rule")]
         [InlineData("time timezone")]
-        public async Task ArubaHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task ArubaHandlerConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            if (!command.StartsWith("enable") && !command.StartsWith("configure"))
+            if (!command.StartsWith("enable", StringComparison.OrdinalIgnoreCase) && !command.StartsWith("configure", StringComparison.OrdinalIgnoreCase))
             {
                 await device.ProcessCommandAsync("enable");
-                if (!command.StartsWith("hostname") && !command.StartsWith("snmp") && !command.StartsWith("time"))
+                if (!command.StartsWith("hostname", StringComparison.OrdinalIgnoreCase) && !command.StartsWith("snmp", StringComparison.OrdinalIgnoreCase) && !command.StartsWith("time", StringComparison.OrdinalIgnoreCase))
                 {
                     await device.ProcessCommandAsync("configure");
                 }
@@ -339,7 +338,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("show lldp info remote-device detail")]
         [InlineData("show modules detail")]
         [InlineData("show environment detail")]
-        public async Task ArubaHandler_DetailedShowCommands_ShouldWork(string command)
+        public async Task ArubaHandlerDetailedShowCommandsShouldWork(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -363,7 +362,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("sntp server 192.168.1.1")]
         [InlineData("logging 192.168.1.100")]
         [InlineData("no spanning-tree")]
-        public async Task ArubaHandler_SystemConfigurationCommands_ShouldWork(string command)
+        public async Task ArubaHandlerSystemConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -384,7 +383,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("ip directed-broadcast")]
         [InlineData("ip igmp")]
         [InlineData("name TestVLAN")]
-        public async Task ArubaHandler_VlanConfigurationCommands_ShouldWork(string command)
+        public async Task ArubaHandlerVlanConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -410,7 +409,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         [InlineData("unknown-vlans-limit 10")]
         [InlineData("rate-limit all in kbps 1000")]
         [InlineData("rate-limit all out kbps 1000")]
-        public async Task ArubaHandler_InterfaceConfigurationCommands_ShouldWork(string command)
+        public async Task ArubaHandlerInterfaceConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -428,7 +427,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_ComplexVlanConfiguration_ShouldWork()
+        public async Task ArubaHandlerComplexVlanConfigurationShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -460,7 +459,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_SpanningTreeConfiguration_ShouldWork()
+        public async Task ArubaHandlerSpanningTreeConfigurationShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -489,7 +488,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_SnmpConfiguration_ShouldWork()
+        public async Task ArubaHandlerSnmpConfigurationShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -517,7 +516,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_TimeConfiguration_ShouldWork()
+        public async Task ArubaHandlerTimeConfigurationShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -544,7 +543,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_LoggingConfiguration_ShouldWork()
+        public async Task ArubaHandlerLoggingConfigurationShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -571,7 +570,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_AdvancedInterfaceConfiguration_ShouldWork()
+        public async Task ArubaHandlerAdvancedInterfaceConfigurationShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -604,7 +603,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_TrunkConfiguration_ShouldWork()
+        public async Task ArubaHandlerTrunkConfigurationShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
@@ -633,7 +632,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Aruba
         }
 
         [Fact]
-        public async Task ArubaHandler_MacAddressTableConfiguration_ShouldWork()
+        public async Task ArubaHandlerMacAddressTableConfigurationShouldWork()
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");

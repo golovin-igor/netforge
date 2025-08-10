@@ -6,7 +6,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
     public class ExtremeCommandHandlerComprehensiveTests
     {
         [Fact]
-        public async Task ExtremeHandler_ConfigureSystemName_ShouldSetSystemName()
+        public async Task ExtremeHandlerConfigureSystemNameShouldSetSystemName()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -19,7 +19,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureVlan_ShouldCreateVlan()
+        public async Task ExtremeHandlerConfigureVlanShouldCreateVlan()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -33,7 +33,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureVlanIpAddress_ShouldSetVlanIp()
+        public async Task ExtremeHandlerConfigureVlanIpAddressShouldSetVlanIp()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -48,7 +48,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureVlanAddPorts_ShouldAddPorts()
+        public async Task ExtremeHandlerConfigureVlanAddPortsShouldAddPorts()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -63,7 +63,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ShowConfiguration_ShouldDisplayConfig()
+        public async Task ExtremeHandlerShowConfigurationShouldDisplayConfig()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -77,7 +77,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ShowIproute_ShouldDisplayRoutes()
+        public async Task ExtremeHandlerShowIprouteShouldDisplayRoutes()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -91,7 +91,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ShowIparp_ShouldDisplayArpTable()
+        public async Task ExtremeHandlerShowIparpShouldDisplayArpTable()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -105,7 +105,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureIprouteAdd_ShouldAddRoute()
+        public async Task ExtremeHandlerConfigureIprouteAddShouldAddRoute()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -119,7 +119,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_EnableOspf_ShouldEnableOspf()
+        public async Task ExtremeHandlerEnableOspfShouldEnableOspf()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -133,7 +133,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureOspfAddVlan_ShouldAddVlanToOspf()
+        public async Task ExtremeHandlerConfigureOspfAddVlanShouldAddVlanToOspf()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -149,7 +149,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureBgp_ShouldConfigureBgp()
+        public async Task ExtremeHandlerConfigureBgpShouldConfigureBgp()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -163,7 +163,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureBgpAddNeighbor_ShouldAddBgpNeighbor()
+        public async Task ExtremeHandlerConfigureBgpAddNeighborShouldAddBgpNeighbor()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -178,7 +178,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ShowVlan_ShouldDisplayVlans()
+        public async Task ExtremeHandlerShowVlanShouldDisplayVlans()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -192,7 +192,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigurePortsDisplayString_ShouldSetDisplayString()
+        public async Task ExtremeHandlerConfigurePortsDisplayStringShouldSetDisplayString()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -206,7 +206,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ShowPortsInfo_ShouldDisplayPortInfo()
+        public async Task ExtremeHandlerShowPortsInfoShouldDisplayPortInfo()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -220,7 +220,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureAccount_ShouldConfigureAccount()
+        public async Task ExtremeHandlerConfigureAccountShouldConfigureAccount()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -234,7 +234,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureSnmp_ShouldConfigureSnmp()
+        public async Task ExtremeHandlerConfigureSnmpShouldConfigureSnmp()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -248,7 +248,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureNtp_ShouldConfigureNtp()
+        public async Task ExtremeHandlerConfigureNtpShouldConfigureNtp()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -262,7 +262,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ConfigureMlag_ShouldConfigureMlag()
+        public async Task ExtremeHandlerConfigureMlagShouldConfigureMlag()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -276,7 +276,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_EnableIpforwarding_ShouldEnableIpForwarding()
+        public async Task ExtremeHandlerEnableIpforwardingShouldEnableIpForwarding()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -312,7 +312,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         [InlineData("show igmp group")]
         [InlineData("ping 127.0.0.1")]
         [InlineData("traceroute 127.0.0.1")]
-        public async Task ExtremeHandler_AllShowCommands_ShouldHaveHandlers(string command)
+        public async Task ExtremeHandlerAllShowCommandsShouldHaveHandlers(string command)
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -341,7 +341,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         [InlineData("enable ssh2")]
         [InlineData("configure access-list test")]
         [InlineData("configure mlag peer peer1")]
-        public async Task ExtremeHandler_ConfigurationCommands_ShouldWork(string command)
+        public async Task ExtremeHandlerConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -366,7 +366,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         [InlineData("show iparp resolve")]
         [InlineData("show iparp reachable")]
         [InlineData("show iparp connected")]
-        public async Task ExtremeHandler_ArpDetailCommands_ShouldWork(string command)
+        public async Task ExtremeHandlerArpDetailCommandsShouldWork(string command)
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -389,7 +389,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         [InlineData("show isis vrf TestVrf")]
         [InlineData("show pim vrf TestVrf")]
         [InlineData("show igmp vrf TestVrf")]
-        public async Task ExtremeHandler_VrfCommands_ShouldWork(string command)
+        public async Task ExtremeHandlerVrfCommandsShouldWork(string command)
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -414,7 +414,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         [InlineData("configure ports 1 mtu 9000")]
         [InlineData("configure ports 1 speed 10000")]
         [InlineData("configure ports 1 description Test Port")]
-        public async Task ExtremeHandler_AdvancedConfigurationCommands_ShouldWork(string command)
+        public async Task ExtremeHandlerAdvancedConfigurationCommandsShouldWork(string command)
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -434,7 +434,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_VxlanConfiguration_ShouldWork()
+        public async Task ExtremeHandlerVxlanConfigurationShouldWork()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -460,7 +460,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_PolicyConfiguration_ShouldWork()
+        public async Task ExtremeHandlerPolicyConfigurationShouldWork()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -485,7 +485,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_SpanningTreeConfiguration_ShouldWork()
+        public async Task ExtremeHandlerSpanningTreeConfigurationShouldWork()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -510,7 +510,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_DhcpConfiguration_ShouldWork()
+        public async Task ExtremeHandlerDhcpConfigurationShouldWork()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -537,7 +537,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_ComplexMlagConfiguration_ShouldWork()
+        public async Task ExtremeHandlerComplexMlagConfigurationShouldWork()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
@@ -565,7 +565,7 @@ namespace NetSim.Simulation.Tests.CliHandlers.Extreme
         }
 
         [Fact]
-        public async Task ExtremeHandler_AdvancedPortConfiguration_ShouldWork()
+        public async Task ExtremeHandlerAdvancedPortConfigurationShouldWork()
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");

@@ -5,7 +5,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
     public class AniraCommandHandlerTests
     {
         [Fact]
-        public async Task AniraHandler_BasicInitialization_ShouldWork()
+        public async Task AniraHandlerBasicInitializationShouldWork()
         {
             // Arrange & Act
             var device = new AniraDevice("TestDevice");
@@ -17,7 +17,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
 
         [Fact]
-        public async Task AniraHandler_GetCurrentMode_ShouldReturnDefaultMode()
+        public async Task AniraHandlerGetCurrentModeShouldReturnDefaultMode()
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -30,7 +30,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
 
         [Fact]
-        public async Task AniraHandler_WithInvalidCommand_ShouldReturnError()
+        public async Task AniraHandlerWithInvalidCommandShouldReturnError()
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -45,7 +45,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
 
         [Fact]
-        public async Task AniraHandler_WithEmptyCommand_ShouldReturnPrompt()
+        public async Task AniraHandlerWithEmptyCommandShouldReturnPrompt()
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -59,7 +59,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
 
         [Fact]
-        public async Task AniraHandler_WithWhitespaceCommand_ShouldReturnPrompt()
+        public async Task AniraHandlerWithWhitespaceCommandShouldReturnPrompt()
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -73,7 +73,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
 
         [Fact]
-        public async Task AniraHandler_Help_ShouldReturnHelpInformation()
+        public async Task AniraHandlerHelpShouldReturnHelpInformation()
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -89,7 +89,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
 
         [Fact]
-        public async Task AniraHandler_QuestionMark_ShouldReturnHelpInformation()
+        public async Task AniraHandlerQuestionMarkShouldReturnHelpInformation()
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -105,7 +105,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
 
         [Fact]
-        public async Task AniraHandler_Exit_ShouldHandleExitCommand()
+        public async Task AniraHandlerExitShouldHandleExitCommand()
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -120,7 +120,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
 
         [Fact]
-        public async Task AniraHandler_Quit_ShouldHandleQuitCommand()
+        public async Task AniraHandlerQuitShouldHandleQuitCommand()
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -145,7 +145,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         [InlineData("ssh")]
         [InlineData("debug")]
         [InlineData("undebug")]
-        public async Task AniraHandler_CommonNetworkCommands_ShouldHandleOrReturnError(string command)
+        public async Task AniraHandlerCommonNetworkCommandsShouldHandleOrReturnError(string command)
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -161,7 +161,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
 
         [Fact]
-        public async Task AniraHandler_CommandHistory_ShouldBeAvailable()
+        public async Task AniraHandlerCommandHistoryShouldBeAvailable()
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -179,7 +179,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
 
         [Fact]
-        public async Task AniraHandler_MultipleCommands_ShouldMaintainState()
+        public async Task AniraHandlerMultipleCommandsShouldMaintainState()
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
@@ -201,7 +201,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         // These tests should be updated based on the actual commands that Anira supports
         
         [Fact]
-        public async Task AniraHandler_NoCliCommandsFile_ShouldStillFunctionBasically()
+        public async Task AniraHandlerNoCliCommandsFileShouldStillFunctionBasically()
         {
             // This test verifies that even without a CSV file defining commands,
             // the Anira device can still be instantiated and handle basic operations
@@ -217,7 +217,7 @@ namespace NetSim.Simulation.CliHandlers.Tests.Anira
         }
         
         [Fact]
-        public async Task AniraHandler_ShouldIndicateNoCommandsAvailable()
+        public async Task AniraHandlerShouldIndicateNoCommandsAvailable()
         {
             // Since Anira doesn't have a CSV file with commands,
             // it should indicate that no commands are available or implemented
