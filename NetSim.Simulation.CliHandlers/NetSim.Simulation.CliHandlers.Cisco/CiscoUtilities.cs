@@ -7,104 +7,108 @@ namespace NetSim.Simulation.CliHandlers.Cisco
     /// </summary>
     public static class CiscoInterfaceAliasHandler
     {
+        private static readonly Dictionary<string, string> InterfaceAliasMap = new(StringComparer.OrdinalIgnoreCase)
+        {
+            // GigabitEthernet aliases
+            { "gi", "GigabitEthernet" },
+            { "gig", "GigabitEthernet" },
+            { "gigabit", "GigabitEthernet" },
+            
+            // FastEthernet aliases
+            { "fa", "FastEthernet" },
+            { "fast", "FastEthernet" },
+            
+            // TenGigabitEthernet aliases
+            { "te", "TenGigabitEthernet" },
+            { "ten", "TenGigabitEthernet" },
+            
+            // Ethernet aliases
+            { "eth", "Ethernet" },
+            
+            // Loopback aliases
+            { "lo", "Loopback" },
+            { "loop", "Loopback" },
+            
+            // Port-channel aliases
+            { "po", "Port-channel" },
+            { "port", "Port-channel" },
+            
+            // VLAN aliases
+            { "vl", "Vlan" },
+            
+            // Serial aliases
+            { "se", "Serial" },
+            
+            // Tunnel aliases
+            { "tu", "Tunnel" }
+        };
+
         /// <summary>
         /// Expands interface aliases to full interface names
         /// </summary>
         public static string ExpandInterfaceAlias(string interfaceName)
         {
-            if (string.IsNullOrEmpty(interfaceName))
+            if (string.IsNullOrWhiteSpace(interfaceName))
                 return interfaceName;
 
-            var normalized = interfaceName.ToLower().Trim();
+            var normalized = interfaceName.ToLowerInvariant().Trim();
             
-            // GigabitEthernet patterns
-            if (normalized.StartsWith("gi") && !normalized.StartsWith("gig"))
+            foreach (var kvp in InterfaceAliasMap)
             {
-                return interfaceName.Replace("gi", "GigabitEthernet", StringComparison.OrdinalIgnoreCase);
+                var alias = kvp.Key;
+                var fullName = kvp.Value;
+                
+                if (ShouldExpandAlias(normalized, alias, fullName))
+                {
+                    return interfaceName.Replace(alias, fullName, StringComparison.OrdinalIgnoreCase);
+                }
             }
-            if (normalized.StartsWith("gig") && !normalized.StartsWith("gigabit"))
-            {
-                return interfaceName.Replace("gig", "GigabitEthernet", StringComparison.OrdinalIgnoreCase);
-            }
-            if (normalized.StartsWith("gigabit") && !normalized.StartsWith("gigabitethernet"))
-            {
-                return interfaceName.Replace("gigabit", "GigabitEthernet", StringComparison.OrdinalIgnoreCase);
-            }
-            
-            // FastEthernet patterns
-            if (normalized.StartsWith("fa") && !normalized.StartsWith("fast"))
-            {
-                return interfaceName.Replace("fa", "FastEthernet", StringComparison.OrdinalIgnoreCase);
-            }
-            if (normalized.StartsWith("fast") && !normalized.StartsWith("fastethernet"))
-            {
-                return interfaceName.Replace("fast", "FastEthernet", StringComparison.OrdinalIgnoreCase);
-            }
-            
-            // TenGigabitEthernet patterns
-            if (normalized.StartsWith("te") && !normalized.StartsWith("ten"))
-            {
-                return interfaceName.Replace("te", "TenGigabitEthernet", StringComparison.OrdinalIgnoreCase);
-            }
-            if (normalized.StartsWith("ten") && !normalized.StartsWith("tengigabitethernet"))
-            {
-                return interfaceName.Replace("ten", "TenGigabitEthernet", StringComparison.OrdinalIgnoreCase);
-            }
-            
-            // Ethernet patterns
-            if (normalized.StartsWith("eth") && !normalized.StartsWith("ethernet"))
-            {
-                return interfaceName.Replace("eth", "Ethernet", StringComparison.OrdinalIgnoreCase);
-            }
-            
-            // Loopback patterns
-            if (normalized.StartsWith("lo") && !normalized.StartsWith("loop"))
-            {
-                return interfaceName.Replace("lo", "Loopback", StringComparison.OrdinalIgnoreCase);
-            }
-            if (normalized.StartsWith("loop") && !normalized.StartsWith("loopback"))
-            {
-                return interfaceName.Replace("loop", "Loopback", StringComparison.OrdinalIgnoreCase);
-            }
-            
-            // Port-channel patterns
-            if (normalized.StartsWith("po") && !normalized.StartsWith("port"))
-            {
-                return interfaceName.Replace("po", "Port-channel", StringComparison.OrdinalIgnoreCase);
-            }
-            if (normalized.StartsWith("port") && !normalized.StartsWith("port-channel"))
-            {
-                return interfaceName.Replace("port", "Port-channel", StringComparison.OrdinalIgnoreCase);
-            }
-            
-            // VLAN patterns
-            if (normalized.StartsWith("vl") && !normalized.StartsWith("vlan"))
-            {
-                return interfaceName.Replace("vl", "Vlan", StringComparison.OrdinalIgnoreCase);
-            }
-            if (normalized.StartsWith("vlan") && !char.IsUpper(interfaceName[0]))
+
+            // Handle special case for vlan/Vlan capitalization
+            if (normalized.StartsWith("vlan", StringComparison.OrdinalIgnoreCase) && 
+                !char.IsUpper(interfaceName[0]))
             {
                 return interfaceName.Replace("vlan", "Vlan", StringComparison.OrdinalIgnoreCase);
             }
-            
-            // Serial patterns
-            if (normalized.StartsWith("se") && !normalized.StartsWith("serial"))
-            {
-                return interfaceName.Replace("se", "Serial", StringComparison.OrdinalIgnoreCase);
-            }
-            
-            // Tunnel patterns
-            if (normalized.StartsWith("tu") && !normalized.StartsWith("tunnel"))
-            {
-                return interfaceName.Replace("tu", "Tunnel", StringComparison.OrdinalIgnoreCase);
-            }
-            if (normalized.StartsWith("tunnel") && !char.IsUpper(interfaceName[0]))
+
+            // Handle special case for tunnel/Tunnel capitalization
+            if (normalized.StartsWith("tunnel", StringComparison.OrdinalIgnoreCase) && 
+                !char.IsUpper(interfaceName[0]))
             {
                 return interfaceName.Replace("tunnel", "Tunnel", StringComparison.OrdinalIgnoreCase);
             }
 
-            // Return original name if no alias expansion needed
             return interfaceName;
+        }
+
+        private static bool ShouldExpandAlias(string normalized, string alias, string fullName)
+        {
+            if (!normalized.StartsWith(alias, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            // Don't expand if it already starts with a longer form
+            var lowerFullName = fullName.ToLowerInvariant();
+            
+            // Special handling for hierarchical aliases (gi -> gig -> gigabit -> gigabitethernet)
+            return alias switch
+            {
+                "gi" => !normalized.StartsWith("gig", StringComparison.OrdinalIgnoreCase),
+                "gig" => !normalized.StartsWith("gigabit", StringComparison.OrdinalIgnoreCase),
+                "gigabit" => !normalized.StartsWith("gigabitethernet", StringComparison.OrdinalIgnoreCase),
+                "fa" => !normalized.StartsWith("fast", StringComparison.OrdinalIgnoreCase),
+                "fast" => !normalized.StartsWith("fastethernet", StringComparison.OrdinalIgnoreCase),
+                "te" => !normalized.StartsWith("ten", StringComparison.OrdinalIgnoreCase),
+                "ten" => !normalized.StartsWith("tengigabitethernet", StringComparison.OrdinalIgnoreCase),
+                "eth" => !normalized.StartsWith("ethernet", StringComparison.OrdinalIgnoreCase),
+                "lo" => !normalized.StartsWith("loop", StringComparison.OrdinalIgnoreCase),
+                "loop" => !normalized.StartsWith("loopback", StringComparison.OrdinalIgnoreCase),
+                "po" => !normalized.StartsWith("port", StringComparison.OrdinalIgnoreCase),
+                "port" => !normalized.StartsWith("port-channel", StringComparison.OrdinalIgnoreCase),
+                "vl" => !normalized.StartsWith("vlan", StringComparison.OrdinalIgnoreCase),
+                "se" => !normalized.StartsWith("serial", StringComparison.OrdinalIgnoreCase),
+                "tu" => !normalized.StartsWith("tunnel", StringComparison.OrdinalIgnoreCase),
+                _ => !normalized.StartsWith(lowerFullName, StringComparison.OrdinalIgnoreCase)
+            };
         }
 
         /// <summary>

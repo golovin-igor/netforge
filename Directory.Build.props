@@ -1,0 +1,244 @@
+<Project>
+  <PropertyGroup>
+    <!-- Common settings for all projects -->
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <WarningsNotAsErrors />
+    
+    <!-- Enable additional code analysis -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    
+    <!-- Performance and security analyzers -->
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    
+    <!-- Documentation -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    
+    <!-- Assembly info -->
+    <Company>NetSim Project</Company>
+    <Product>NetSim Network Simulation Framework</Product>
+    <Copyright>Copyright © 2024</Copyright>
+    
+    <!-- Version information -->
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <!-- Code Analysis Rules -->
+  <PropertyGroup>
+    <!-- Enable specific code quality rules -->
+    <WarningsAsErrors />
+    <NoWarn>$(NoWarn);CS1591</NoWarn> <!-- Missing XML documentation -->
+  </PropertyGroup>
+
+  <!-- Code Analysis Rule Set -->
+  <PropertyGroup>
+    <!-- Enable specific analyzer categories -->
+    <AnalysisMode>Default</AnalysisMode>
+  </PropertyGroup>
+
+  <!-- Enhanced Warning Configuration -->
+  <PropertyGroup>
+    <!-- Design Guidelines -->
+    <WarningLevel>4</WarningLevel>
+    
+    <!-- Code Quality Rules (Enable as warnings, not errors) -->
+    <!-- CA1000: Do not declare static members on generic types -->
+    <!-- CA1001: Types that own disposable fields should be disposable -->
+    <!-- CA1002: Do not expose generic lists -->
+    <!-- CA1003: Use generic event handler instances -->
+    <!-- CA1005: Avoid excessive parameters on generic types -->
+    <!-- CA1008: Enums should have zero value -->
+    <!-- CA1010: Collections should implement generic interface -->
+    <!-- CA1012: Abstract types should not have constructors -->
+    <!-- CA1014: Mark assemblies with CLSCompliant -->
+    <!-- CA1016: Mark assemblies with assembly version -->
+    <!-- CA1017: Mark assemblies with ComVisible -->
+    <!-- CA1018: Mark attributes with AttributeUsageAttribute -->
+    <!-- CA1019: Define accessors for attribute arguments -->
+    <!-- CA1024: Use properties where appropriate -->
+    <!-- CA1027: Mark enums with FlagsAttribute -->
+    <!-- CA1028: Enum Storage should be Int32 -->
+    <!-- CA1030: Use events where appropriate -->
+    <!-- CA1031: Do not catch general exception types -->
+    <!-- CA1032: Implement standard exception constructors -->
+    <!-- CA1033: Interface methods should be callable by child types -->
+    <!-- CA1034: Nested types should not be visible -->
+    <!-- CA1036: Override methods on comparable types -->
+    <!-- CA1040: Avoid empty interfaces -->
+    <!-- CA1041: Provide ObsoleteAttribute message -->
+    <!-- CA1043: Use Integral Or String Argument For Indexers -->
+    <!-- CA1044: Properties should not be write only -->
+    <!-- CA1050: Declare types in namespaces -->
+    <!-- CA1051: Do not declare visible instance fields -->
+    <!-- CA1052: Static holder types should be Static or NotInheritable -->
+    <!-- CA1054: Uri parameters should not be strings -->
+    <!-- CA1055: Uri return values should not be strings -->
+    <!-- CA1056: Uri properties should not be strings -->
+    <!-- CA1058: Types should not extend certain base types -->
+    <!-- CA1060: Move pinvokes to native methods class -->
+    <!-- CA1061: Do not hide base class methods -->
+    <!-- CA1062: Validate arguments of public methods -->
+    <!-- CA1063: Implement IDisposable Correctly -->
+    <!-- CA1064: Exceptions should be public -->
+    <!-- CA1065: Do not raise exceptions in unexpected locations -->
+    
+    <!-- Naming Rules -->
+    <!-- CA1707: Identifiers should not contain underscores -->
+    <!-- CA1708: Identifiers should differ by more than case -->
+    <!-- CA1710: Identifiers should have correct suffix -->
+    <!-- CA1711: Identifiers should not have incorrect suffix -->
+    <!-- CA1712: Do not prefix enum values with type name -->
+    <!-- CA1713: Events should not have 'Before' or 'After' prefix -->
+    <!-- CA1714: Flags enums should have plural names -->
+    <!-- CA1715: Identifiers should have correct prefix -->
+    <!-- CA1716: Identifiers should not match keywords -->
+    <!-- CA1717: Only FlagsAttribute enums should have plural names -->
+    <!-- CA1719: Parameter names should not match member names -->
+    <!-- CA1720: Identifier contains type name -->
+    <!-- CA1721: Property names should not match get methods -->
+    <!-- CA1724: Type names should not match namespaces -->
+    <!-- CA1725: Parameter names should match base declaration -->
+    
+    <!-- Performance Rules -->
+    <!-- CA1800: Do not cast unnecessarily -->
+    <!-- CA1801: Review unused parameters -->
+    <!-- CA1802: Use literals where appropriate -->
+    <!-- CA1804: Remove unused locals -->
+    <!-- CA1805: Do not initialize unnecessarily -->
+    <!-- CA1806: Do not ignore method results -->
+    <!-- CA1809: Avoid excessive locals -->
+    <!-- CA1810: Initialize reference type static fields inline -->
+    <!-- CA1811: Avoid uncalled private code -->
+    <!-- CA1812: Avoid uninstantiated internal classes -->
+    <!-- CA1813: Avoid unsealed attributes -->
+    <!-- CA1814: Prefer jagged arrays over multidimensional -->
+    <!-- CA1815: Override equals and operator equals on value types -->
+    <!-- CA1819: Properties should not return arrays -->
+    <!-- CA1820: Test for empty strings using string length -->
+    <!-- CA1821: Remove empty Finalizers -->
+    <!-- CA1822: Mark members as static -->
+    <!-- CA1823: Avoid unused private fields -->
+    <!-- CA1824: Mark assemblies with NeutralResourcesLanguageAttribute -->
+    
+    <!-- Security Rules -->
+    <!-- CA2100: Review SQL queries for security vulnerabilities -->
+    <!-- CA2101: Specify marshaling for P/Invoke string arguments -->
+    <!-- CA2102: Catch non-CLSCompliant exceptions in general handlers -->
+    <!-- CA2103: Review imperative security -->
+    <!-- CA2104: Do not declare read only mutable reference types -->
+    <!-- CA2105: Array fields should not be read only -->
+    <!-- CA2106: Secure asserts -->
+    <!-- CA2107: Review deny and permit only usage -->
+    <!-- CA2108: Review declarative security on value types -->
+    <!-- CA2109: Review visible event handlers -->
+    <!-- CA2111: Pointers should not be visible -->
+    <!-- CA2112: Secured types should not expose fields -->
+    <!-- CA2114: Method security should be a superset of type -->
+    <!-- CA2115: Call GC.KeepAlive when using native resources -->
+    <!-- CA2116: APTCA methods should only call APTCA methods -->
+    <!-- CA2117: APTCA types should only extend APTCA base types -->
+    <!-- CA2118: Review SuppressUnmanagedCodeSecurityAttribute usage -->
+    <!-- CA2119: Seal methods that satisfy private interfaces -->
+    <!-- CA2120: Secure serialization constructors -->
+    <!-- CA2121: Static constructors should be private -->
+    <!-- CA2122: Do not indirectly expose methods with link demands -->
+    <!-- CA2123: Override link demands should be identical to base -->
+    <!-- CA2124: Wrap vulnerable finally clauses in outer try -->
+    <!-- CA2126: Type link demands require inheritance demands -->
+    <!-- CA2127: Do not use Thread.Resume -->
+    <!-- CA2128: Remove unreliable wait operations -->
+    <!-- CA2129: Security-transparent code should not reference critical code -->
+    <!-- CA2130: Security critical constants should be transparent -->
+    <!-- CA2131: Security critical types may not participate in type equivalence -->
+    <!-- CA2132: Default constructors must be at least as critical as base type default constructors -->
+    <!-- CA2133: Delegates must bind to methods with consistent transparency -->
+    <!-- CA2134: Methods must keep consistent transparency when overriding base methods -->
+    <!-- CA2135: Level 2 assemblies should not contain LinkDemands -->
+    <!-- CA2136: Members should not have conflicting transparency annotations -->
+    <!-- CA2137: Transparent methods must contain only verifiable IL -->
+    <!-- CA2138: Transparent methods must not call methods with the SuppressUnmanagedCodeSecurity attribute -->
+    <!-- CA2139: Transparent methods may not use the HandleProcessCorruptingExceptions attribute -->
+    <!-- CA2140: Transparent code must not reference security critical items -->
+    <!-- CA2141: Transparent methods must not satisfy LinkDemands -->
+    <!-- CA2142: Transparent code should not be protected with LinkDemands -->
+    <!-- CA2143: Transparent methods should not use security demands -->
+    <!-- CA2144: Transparent code should not load assemblies from byte arrays -->
+    <!-- CA2145: Transparent methods should not be decorated with the SuppressUnmanagedCodeSecurityAttribute -->
+    <!-- CA2146: Types must be at least as critical as their base types and interfaces -->
+    <!-- CA2147: Transparent methods may not use security asserts -->
+    <!-- CA2149: Transparent methods must not call into native code -->
+    <!-- CA2151: Fields with critical types should be security critical -->
+    
+    <!-- Usage Rules -->
+    <!-- CA2200: Rethrow to preserve stack details -->
+    <!-- CA2201: Do not raise reserved exception types -->
+    <!-- CA2202: Do not dispose objects multiple times -->
+    <!-- CA2204: Literals should be spelled correctly -->
+    <!-- CA2205: Use managed equivalents of win32 api -->
+    <!-- CA2207: Initialize value type static fields inline -->
+    <!-- CA2208: Instantiate argument exceptions correctly -->
+    <!-- CA2211: Non-constant fields should not be visible -->
+    <!-- CA2212: Do not mark serviced components with WebMethod -->
+    <!-- CA2213: Disposable fields should be disposed -->
+    <!-- CA2214: Do not call overridable methods in constructors -->
+    <!-- CA2215: Dispose methods should call base class dispose -->
+    <!-- CA2216: Disposable types should declare finalizer -->
+    <!-- CA2217: Do not mark enums with FlagsAttribute -->
+    <!-- CA2218: Override GetHashCode on overriding Equals -->
+    <!-- CA2219: Do not raise exceptions in exception clauses -->
+    <!-- CA2220: Finalizers should call base class finalizer -->
+    <!-- CA2221: Finalizers should be protected -->
+    <!-- CA2222: Do not decrease inherited member visibility -->
+    <!-- CA2223: Members should differ by more than return type -->
+    <!-- CA2224: Override equals on overloading operator equals -->
+    <!-- CA2225: Operator overloads have named alternates -->
+    <!-- CA2226: Operators should have symmetrical overloads -->
+    <!-- CA2227: Collection properties should be read only -->
+    <!-- CA2228: Do not ship unreleased resource formats -->
+    <!-- CA2229: Implement serialization constructors -->
+    <!-- CA2230: Use params for variable arguments -->
+    <!-- CA2231: Overload operator equals on overriding value type Equals -->
+    <!-- CA2232: Mark Windows Forms entry points with STAThread -->
+    <!-- CA2233: Operations should not overflow -->
+    <!-- CA2234: Pass system uri objects instead of strings -->
+    <!-- CA2235: Mark all non-serializable fields -->
+    <!-- CA2236: Call base class methods on ISerializable types -->
+    <!-- CA2237: Mark ISerializable types with serializable -->
+    <!-- CA2238: Implement serialization methods correctly -->
+    <!-- CA2239: Provide deserialization methods for optional fields -->
+    <!-- CA2240: Implement ISerializable correctly -->
+    <!-- CA2241: Provide correct arguments to formatting methods -->
+    <!-- CA2242: Test for NaN correctly -->
+    <!-- CA2243: Attribute string literals should parse correctly -->
+    
+    <!-- Make specific rules suggestions instead of warnings to reduce noise -->
+    <WarningsAsErrors />
+    <NoWarn>$(NoWarn);CA1062;CA1031;CA1303;CA1822;CA1051;CA2007</NoWarn>
+  </PropertyGroup>
+
+  <!-- Analyzer packages for enhanced code quality -->
+  <ItemGroup>
+    <!-- Microsoft analyzers are included by default with .NET SDK -->
+  </ItemGroup>
+
+  <!-- Custom analyzer settings -->
+  <PropertyGroup>
+    <!-- Enable nullable reference types project-wide -->
+    <Nullable>enable</Nullable>
+    
+    <!-- Code style enforcement -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    
+    <!-- Async suffix analyzer -->
+    <AsyncSuffixAnalyzer>true</AsyncSuffixAnalyzer>
+  </PropertyGroup>
+  
+</Project>

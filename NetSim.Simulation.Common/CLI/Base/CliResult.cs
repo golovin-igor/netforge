@@ -3,22 +3,26 @@ namespace NetSim.Simulation.CliHandlers
     /// <summary>
     /// Represents the result of a CLI command execution
     /// </summary>
-    public class CliResult
+    public sealed class CliResult
     {
-        public bool Success { get; set; }
-        public string Output { get; set; } = string.Empty;
-        public CliErrorType? Error { get; set; }
-        public string[]? Suggestions { get; set; }
+        public bool Success { get; init; }
+        public string Output { get; init; } = string.Empty;
+        public CliErrorType? Error { get; init; }
+        public string[]? Suggestions { get; init; }
         
-        public static CliResult Ok(string output = "") => new CliResult { 
+        private CliResult() { }
+        
+        public static CliResult Ok(string output = "") => new() 
+        { 
             Success = true, 
-            Output = output 
+            Output = output ?? string.Empty
         };
         
-        public static CliResult Failed(CliErrorType errorType, string output = "", string[]? suggestions = null) => new CliResult {
+        public static CliResult Failed(CliErrorType errorType, string output = "", string[]? suggestions = null) => new() 
+        {
             Success = false,
             Error = errorType,
-            Output = output,
+            Output = output ?? string.Empty,
             Suggestions = suggestions
         };
     }
