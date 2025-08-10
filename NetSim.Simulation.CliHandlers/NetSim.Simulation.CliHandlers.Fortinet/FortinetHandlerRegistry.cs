@@ -51,9 +51,12 @@ namespace NetSim.Simulation.CliHandlers.Fortinet
                 new Basic.ConfigCommandHandler(),
                 new Basic.EditCommandHandler(),
                 new Basic.SetCommandHandler(),
+                new Basic.NextCommandHandler(),
+                new Basic.EndCommandHandler(),
                 
                 // Show handlers
-                new Show.ShowCommandHandler()
+                new Show.ShowCommandHandler(),
+                new Show.GetCommandHandler()
             };
         }
     }

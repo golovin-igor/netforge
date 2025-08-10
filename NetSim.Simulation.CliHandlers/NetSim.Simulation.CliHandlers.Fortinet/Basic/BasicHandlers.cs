@@ -300,10 +300,23 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
                 var ipAddress = context.CommandParts[2];
                 var subnetMask = context.CommandParts[3];
                 
-                // Set IP on current interface (simplified)
+                // Set IP on current interface (actually set the IP)
                 if (context.Device is NetworkDevice device)
                 {
                     device.AddLogEntry($"Set IP: {ipAddress}/{subnetMask}");
+                    
+                    // Find the current interface being edited (need to track this)
+                    var currentInterface = GetCurrentInterfaceName(context);
+                    if (!string.IsNullOrEmpty(currentInterface))
+                    {
+                        var iface = device.GetInterface(currentInterface);
+                        if (iface != null)
+                        {
+                            iface.IpAddress = ipAddress;
+                            iface.SubnetMask = subnetMask;
+                            iface.IsUp = true; // Enable interface when IP is set
+                        }
+                    }
                 }
                 
                 return Success("");
@@ -327,6 +340,24 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
                 return Success("");
             }
             
+            // Handle allowaccess setting (needed for the failing test)
+            if (currentMode == "interface" && parameter.Equals("allowaccess", StringComparison.OrdinalIgnoreCase))
+            {
+                if (context.CommandParts.Length < 3)
+                {
+                    return Error(CliErrorType.IncompleteCommand, "Command parse error");
+                }
+                
+                var allowAccess = string.Join(" ", context.CommandParts.Skip(2));
+                
+                if (context.Device is NetworkDevice device)
+                {
+                    device.AddLogEntry($"Set allowaccess: {allowAccess}");
+                }
+                
+                return Success("");
+            }
+            
             // Handle hostname setting in global config mode
             if (currentMode == "global_config" && parameter.Equals("hostname", StringComparison.OrdinalIgnoreCase))
             {
@@ -345,6 +376,65 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
                 return Success("");
             }
             
+            return Success("");
+        }
+    }
+
+    /// <summary>
+    /// Fortinet next command handler - moves to the next configuration object
+    /// </summary>
+    public class NextCommandHandler : VendorAgnosticCliHandler
+    {
+        public NextCommandHandler() : base("next", "Move to next configuration object")
+        {
+        }
+        
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        {
+            if (!IsVendor(context, "Fortinet"))
+            {
+                return RequireVendor(context, "Fortinet");
+            }
+            
+            var currentMode = GetCurrentMode(context);
+            
+            // Handle moving out of interface configuration
+            if (currentMode == "interface")
+            {
+                SetMode(context, "system_if");
+                return Success("");
+            }
+            
+            // Handle moving out of other configuration contexts
+            if (currentMode.Contains("edit") || currentMode.Contains("config"))
+            {
+                // Move up one level in configuration hierarchy
+                SetMode(context, "global");
+                return Success("");
+            }
+            
+            return Success("");
+        }
+    }
+
+    /// <summary>
+    /// Fortinet end command handler - exits configuration mode
+    /// </summary>
+    public class EndCommandHandler : VendorAgnosticCliHandler
+    {
+        public EndCommandHandler() : base("end", "Exit configuration mode")
+        {
+        }
+        
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        {
+            if (!IsVendor(context, "Fortinet"))
+            {
+                return RequireVendor(context, "Fortinet");
+            }
+            
+            // Return to global/privileged mode
+            SetMode(context, "global");
             return Success("");
         }
     }
