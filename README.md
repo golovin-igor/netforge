@@ -116,9 +116,6 @@ await network.AddLinkAsync("Router1", "GigabitEthernet0/0", "Router2", "ge-0/0/0
 // Test connectivity (protocols update automatically)
 var result = await cisco.ProcessCommandAsync("ping 10.0.0.2");
 ```
-```
-
-## Project Structure
 
 
 ## Project Structure
@@ -138,6 +135,7 @@ var result = await cisco.ProcessCommandAsync("ping 10.0.0.2");
 ```pwsh
 dotnet build NetSim.sln
 ```
+
 
 ### Test
 ```pwsh
