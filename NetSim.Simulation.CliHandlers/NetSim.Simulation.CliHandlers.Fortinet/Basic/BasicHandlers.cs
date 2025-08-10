@@ -257,6 +257,8 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
                 if (context.Device is NetworkDevice device)
                 {
                     device.AddLogEntry($"Editing interface: {objectName}");
+                    // Store the current interface name in the context
+                    SetCurrentInterface(context, objectName);
                 }
                 return Success("");
             }
@@ -306,7 +308,7 @@ namespace NetSim.Simulation.CliHandlers.Fortinet.Basic
                     device.AddLogEntry($"Set IP: {ipAddress}/{subnetMask}");
                     
                     // Find the current interface being edited (need to track this)
-                    var currentInterface = GetCurrentInterfaceName(context);
+                    var currentInterface = GetCurrentInterface(context);
                     if (!string.IsNullOrEmpty(currentInterface))
                     {
                         var iface = device.GetInterface(currentInterface);
