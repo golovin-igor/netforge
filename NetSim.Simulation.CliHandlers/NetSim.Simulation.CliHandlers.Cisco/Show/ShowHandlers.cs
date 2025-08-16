@@ -2,6 +2,8 @@ using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using NetSim.Simulation.Common;
+using NetSim.Simulation.Interfaces;
+using NetSim.Simulation.Protocols.Common;
 
 namespace NetSim.Simulation.CliHandlers.Cisco.Show
 {
@@ -14,7 +16,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
             AddAlias("sh");
             AddAlias("sho");
-            
+
             // Add sub-handlers for various show commands
             AddSubHandler("running-config", new ShowRunningConfigHandler());
             AddSubHandler("run", new ShowRunningConfigHandler());
@@ -33,18 +35,20 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("clock", new ShowClockHandler());
             AddSubHandler("environment", new ShowEnvironmentHandler());
             AddSubHandler("inventory", new ShowInventoryHandler());
+            AddSubHandler("ssh", new ShowSshHandler());
+            AddSubHandler("telnet", new ShowTelnetHandler());
         }
 
         public override List<string> GetCompletions(CliContext context)
         {
             // Use the enhanced base implementation with vendor-specific extensions
             var completions = base.GetCompletions(context);
-            
+
             // Add Cisco-specific completions for show command
             if (context.CommandParts.Length > 1)
             {
                 var subCommand = context.CommandParts[1].ToLower();
-                
+
                 // Provide context-aware completions for common patterns
                 switch (subCommand)
                 {
@@ -74,17 +78,17 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                         break;
                 }
             }
-            
+
             return completions.Distinct().OrderBy(c => c).ToList();
         }
 
         private List<string> GetInterfaceNames(CliContext context)
         {
             var interfaces = new List<string>();
-            
+
             // Common Cisco interface names and aliases
-            interfaces.AddRange(new[] { 
-                "ethernet0/0", "ethernet0/1", "ethernet0/2", "ethernet0/3", 
+            interfaces.AddRange(new[] {
+                "ethernet0/0", "ethernet0/1", "ethernet0/2", "ethernet0/3",
                 "e0/0", "e0/1", "e0/2", "e0/3", // Ethernet aliases
                 "fastethernet0/0", "fastethernet0/1", "fastethernet0/2", "fastethernet0/3",
                 "fa0/0", "fa0/1", "fa0/2", "fa0/3", // FastEthernet aliases
@@ -96,7 +100,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                 "lo0", "lo1", "lo2", "lo3", // Loopback aliases
                 "vlan1", "vlan10", "vlan20", "vlan30", "vlan100"
             });
-            
+
             return interfaces;
         }
 
@@ -110,16 +114,16 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             // If no sub-command specified, return help
             if (context.CommandParts.Length == 1)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     GetVendorError(context, "incomplete_command"));
             }
-            
+
             // This shouldn't be reached if sub-handlers are properly configured
-            return Error(CliErrorType.InvalidCommand, 
+            return Error(CliErrorType.InvalidCommand,
                 GetVendorError(context, "invalid_command"));
         }
     }
-    
+
     /// <summary>
     /// Show running configuration handler
     /// </summary>
@@ -129,7 +133,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
             AddAlias("run");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -142,7 +146,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             return Success(runningConfig);
         }
     }
-    
+
     /// <summary>
     /// Show version handler
     /// </summary>
@@ -151,7 +155,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         public ShowVersionHandler() : base("version", "Display system hardware and software status")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -174,11 +178,11 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("256K bytes of non-volatile configuration memory.");
             output.AppendLine("255488K bytes of ATA System CompactFlash 0 (Read/Write)\n");
             output.AppendLine("Configuration register is 0x2102");
-            
+
             return Success(output.ToString());
         }
     }
-    
+
     /// <summary>
     /// Show interfaces handler
     /// </summary>
@@ -190,7 +194,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddAlias("int");
             AddSubHandler("status", new ShowInterfacesStatusHandler());
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -199,13 +203,13 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             }
 
             var output = new StringBuilder();
-            
+
             if (context.CommandParts.Length > 1)
             {
                 // Show specific interface
                 var interfaceName = string.Join(" ", context.CommandParts.Skip(1));
                 var formattedName = FormatInterfaceName(context, interfaceName);
-                
+
                 // Use vendor-agnostic method to get interface info
                 var interfaces = context.Device.GetAllInterfaces();
                 if (interfaces.TryGetValue(formattedName, out var iface))
@@ -226,7 +230,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                 }
                 else
                 {
-                    return Error(CliErrorType.InvalidParameter, 
+                    return Error(CliErrorType.InvalidParameter,
                         $"% Invalid interface name: {interfaceName}");
                 }
             }
@@ -242,7 +246,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                     output.AppendLine();
                 }
             }
-            
+
             return Success(output.ToString());
         }
     }
@@ -264,11 +268,11 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("Gi0/0                        connected    1          a-full  a-1000 10/100/1000BaseTX");
             output.AppendLine("Gi0/1                        notconnect   1            auto   auto 10/100/1000BaseTX");
             output.AppendLine("Gi0/2                        notconnect   1            auto   auto 10/100/1000BaseTX");
-            
+
             return Success(output.ToString());
         }
     }
-    
+
     /// <summary>
     /// Show VLAN handler
     /// </summary>
@@ -278,7 +282,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
             AddSubHandler("brief", new ShowVlanBriefHandler());
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -293,12 +297,12 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                 var briefContext = new CliContext(context.Device, new[] { "brief" }, context.FullCommand);
                 return briefHandler.Handle(briefContext);
             }
-            
-            return Error(CliErrorType.InvalidCommand, 
+
+            return Error(CliErrorType.InvalidCommand,
                 GetVendorError(context, "invalid_command"));
         }
     }
-    
+
     /// <summary>
     /// Show VLAN brief handler
     /// </summary>
@@ -307,7 +311,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         public ShowVlanBriefHandler() : base("brief", "Display VLAN brief information")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -318,7 +322,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             var output = new StringBuilder();
             output.AppendLine("VLAN Name                             Status    Ports");
             output.AppendLine("---- -------------------------------- --------- -------------------------------");
-            
+
             // Get VLANs from device using reflection to call device-specific methods
             try
             {
@@ -334,7 +338,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                             var vlanId = vlan.Id;
                             var vlanName = vlan.Name ?? "default";
                             var status = vlan.Active ? "active" : "suspend";
-                            
+
                             // Get interfaces assigned to this VLAN
                             var ports = "";
                             var allInterfaces = context.Device.GetAllInterfaces();
@@ -342,12 +346,12 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                                 .Where(i => i.VlanId == vlanId)
                                 .Select(i => FormatInterfaceName(context, i.Name.Replace("GigabitEthernet", "Gi")))
                                 .ToList();
-                            
+
                             if (vlanInterfaces.Any())
                             {
                                 ports = string.Join(", ", vlanInterfaces);
                             }
-                            
+
                             output.AppendLine($"{vlanId,-4} {vlanName,-32} {status,-9} {ports}");
                         }
                     }
@@ -363,17 +367,17 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                 // Fallback to default VLANs on error
                 output.AppendLine("1    default                          active    ");
             }
-            
+
             // Always show default system VLANs
             output.AppendLine("1002 fddi-default                     act/unsup ");
             output.AppendLine("1003 token-ring-default               act/unsup ");
             output.AppendLine("1004 fddinet-default                  act/unsup ");
             output.AppendLine("1005 trnet-default                    act/unsup ");
-            
+
             return Success(output.ToString());
         }
     }
-    
+
     /// <summary>
     /// Show IP handler
     /// </summary>
@@ -385,7 +389,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("interface", new ShowIpInterfaceHandler());
             AddSubHandler("ospf", new ShowIpOspfHandler());
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -393,11 +397,11 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                 return RequireVendor(context, "Cisco");
             }
 
-            return Error(CliErrorType.IncompleteCommand, 
+            return Error(CliErrorType.IncompleteCommand,
                 GetVendorError(context, "incomplete_command"));
         }
     }
-    
+
     /// <summary>
     /// Show IP route handler
     /// </summary>
@@ -406,7 +410,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         public ShowIpRouteHandler() : base("route", "Display IP routing table")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -424,27 +428,27 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("       o - ODR, P - periodic downloaded static route, H - NHRP, l - LISP");
             output.AppendLine("       a - application route");
             output.AppendLine("       + - replicated route, % - next hop override\n");
-            
+
             output.AppendLine("Gateway of last resort is not set\n");
-            
+
             // Use vendor-agnostic method to get routes
             var routes = context.Device.GetRoutingTable();
             foreach (var route in routes.OrderBy(r => r.Network))
             {
                 var code = "C"; // Default to connected
-                
+
                 // Simulate route display - some properties may not exist
                 var network = route.Network ?? "0.0.0.0";
                 var nextHop = route.NextHop ?? "0.0.0.0";
                 var interfaceName = route.Interface ?? "Unknown";
-                
+
                 output.AppendLine($"{code}        {network}/24 is directly connected, {interfaceName}");
             }
-            
+
             return Success(output.ToString());
         }
     }
-    
+
     /// <summary>
     /// Show IP interface handler
     /// </summary>
@@ -454,7 +458,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
             AddSubHandler("brief", new ShowIpInterfaceBriefHandler());
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -468,12 +472,12 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                 var briefHandler = new ShowIpInterfaceBriefHandler();
                 return briefHandler.Handle(context);
             }
-            
-            return Error(CliErrorType.InvalidCommand, 
+
+            return Error(CliErrorType.InvalidCommand,
                 GetVendorError(context, "invalid_command"));
         }
     }
-    
+
     /// <summary>
     /// Show IP interface brief handler
     /// </summary>
@@ -482,7 +486,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         public ShowIpInterfaceBriefHandler() : base("brief", "Display brief IP interface status")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -492,7 +496,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
 
             var output = new StringBuilder();
             output.AppendLine("Interface                  IP-Address      OK? Method Status                Protocol");
-            
+
             // Use vendor-agnostic method to get interfaces
             var allInterfaces = context.Device.GetAllInterfaces();
             foreach (var iface in allInterfaces.Values.OrderBy(i => i.Name))
@@ -500,10 +504,10 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                 var ipAddress = string.IsNullOrEmpty(iface.IpAddress) ? "unassigned" : iface.IpAddress;
                 var status = iface.IsUp ? "up" : "down";
                 var protocol = iface.IsUp ? "up" : "down";
-                
+
                 output.AppendLine($"{iface.Name,-26} {ipAddress,-15} YES manual {status,-21} {protocol}");
             }
-            
+
             return Success(output.ToString());
         }
     }
@@ -519,7 +523,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("database", new ShowIpOspfDatabaseHandler());
             AddSubHandler("interface", new ShowIpOspfInterfaceHandler());
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -527,7 +531,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                 return RequireVendor(context, "Cisco");
             }
 
-            return Error(CliErrorType.IncompleteCommand, 
+            return Error(CliErrorType.IncompleteCommand,
                 GetVendorError(context, "incomplete_command"));
         }
     }
@@ -540,7 +544,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         public ShowIpOspfNeighborHandler() : base("neighbor", "Display OSPF neighbor information")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -550,11 +554,11 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
 
             var output = new StringBuilder();
             output.AppendLine("Neighbor ID     Pri   State           Dead Time   Address         Interface");
-            
+
             // Simulate OSPF neighbors - in a real implementation this would come from device state
             // For test purposes, we'll simulate a neighbor
             output.AppendLine("2.2.2.2           1   FULL/  -        00:00:35    10.0.0.2        GigabitEthernet0/0");
-            
+
             return Success(output.ToString());
         }
     }
@@ -567,7 +571,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         public ShowIpOspfDatabaseHandler() : base("database", "Display OSPF database information")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -583,7 +587,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("Link ID         ADV Router      Age         Seq#       Checksum Link count");
             output.AppendLine("1.1.1.1         1.1.1.1         123         0x80000001 0x1234   1");
             output.AppendLine("2.2.2.2         2.2.2.2         124         0x80000001 0x5678   1");
-            
+
             return Success(output.ToString());
         }
     }
@@ -596,7 +600,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         public ShowIpOspfInterfaceHandler() : base("interface", "Display OSPF interface information")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -627,7 +631,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("  Neighbor Count is 1, Adjacent neighbor count is 1");
             output.AppendLine("    Adjacent with neighbor 2.2.2.2  (Backup Designated Router)");
             output.AppendLine("  Suppress hello for 0 neighbor(s)");
-            
+
             return Success(output.ToString());
         }
     }
@@ -666,7 +670,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddSubHandler("interface", new ShowCdpInterfaceHandler());
             AddSubHandler("entry", new ShowCdpEntryHandler());
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -674,7 +678,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                 return RequireVendor(context, "Cisco");
             }
 
-            return Error(CliErrorType.IncompleteCommand, 
+            return Error(CliErrorType.IncompleteCommand,
                 GetVendorError(context, "incomplete_command"));
         }
     }
@@ -689,7 +693,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             AddAlias("neighbor");
             AddSubHandler("detail", new ShowCdpNeighborsDetailHandler());
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -702,7 +706,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("                  S - Switch, H - Host, I - IGMP, r - Repeater");
             output.AppendLine();
             output.AppendLine("Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID");
-            
+
             // In test environment, simulate CDP neighbors with sample data
             var device = context.Device as NetworkDevice;
             if (device?.ParentNetwork != null)
@@ -717,7 +721,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                     }
                 }
             }
-            
+
             return Success(output.ToString());
         }
     }
@@ -730,7 +734,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         public ShowCdpNeighborsDetailHandler() : base("detail", "Display detailed CDP neighbor information")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -756,7 +760,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("Duplex: full");
             output.AppendLine("Power Available TLV:");
             output.AppendLine();
-            
+
             return Success(output.ToString());
         }
     }
@@ -769,7 +773,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         public ShowCdpInterfaceHandler() : base("interface", "Display CDP interface information")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -783,7 +787,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("  Sending CDP packets every 60 seconds");
             output.AppendLine("  Holdtime is 180 seconds");
             output.AppendLine();
-            
+
             return Success(output.ToString());
         }
     }
@@ -796,7 +800,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         public ShowCdpEntryHandler() : base("entry", "Display CDP entry information")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -806,7 +810,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
 
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command. Usage: show cdp entry <device-name>");
             }
 
@@ -818,7 +822,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("Platform: Cisco 2900,  Capabilities: Router Switch IGMP");
             output.AppendLine("Interface: GigabitEthernet0/0,  Port ID (outgoing port): GigabitEthernet0/0");
             output.AppendLine("Holdtime : 120 sec");
-            
+
             return Success(output.ToString());
         }
     }
@@ -832,7 +836,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
         {
             AddSubHandler("address-table", new ShowMacAddressTableHandler());
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -840,7 +844,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
                 return RequireVendor(context, "Cisco");
             }
 
-            return Error(CliErrorType.IncompleteCommand, 
+            return Error(CliErrorType.IncompleteCommand,
                 GetVendorError(context, "incomplete_command"));
         }
     }
@@ -866,7 +870,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("   1    0001.0001.0001    DYNAMIC     Gi0/1");
             output.AppendLine("   1    0002.0002.0002    DYNAMIC     Gi0/2");
             output.AppendLine("Total Mac Addresses for this criterion: 2");
-            
+
             return Success(output.ToString());
         }
     }
@@ -895,7 +899,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("             Address     0001.0001.0001");
             output.AppendLine("             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec");
             output.AppendLine("             Aging Time  300 sec");
-            
+
             return Success(output.ToString());
         }
     }
@@ -919,7 +923,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("    2  -rw-        2048  Dec 1 1993 00:01:00 +00:00  info");
             output.AppendLine();
             output.AppendLine("255926272 bytes total (131926272 bytes free)");
-            
+
             return Success(output.ToString());
         }
     }
@@ -940,7 +944,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("Head    Total(b)     Used(b)     Free(b)   Lowest(b)  Largest(b)");
             output.AppendLine("Processor   4194304     2097152     2097152     1048576     2097152");
             output.AppendLine("      I/O   2097152      524288     1572864      524288     1572864");
-            
+
             return Success(output.ToString());
         }
     }
@@ -963,7 +967,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("  1        156          12      13000  0.00%  0.00%  0.00%   0 Chunk Manager");
             output.AppendLine("  2         64           8       8000  0.00%  0.00%  0.00%   0 Load Meter");
             output.AppendLine("  3        432          32      13500  0.00%  0.00%  0.00%   0 Exec");
-            
+
             return Success(output.ToString());
         }
     }
@@ -982,7 +986,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
 
             var currentTime = DateTime.Now;
             var output = $"*{currentTime:HH:mm:ss.fff} UTC {currentTime:ddd MMM d yyyy}";
-            
+
             return Success(output);
         }
     }
@@ -1007,7 +1011,7 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("Slot        Sensor       Current State       Reading        Threshold(Minor,Major,Critical,Shutdown)");
             output.AppendLine("R0          Temp: Inlet  Normal              25 Celsius     (42,52,62,72)(Celsius)");
             output.AppendLine("R0          Temp: Outlet Normal              35 Celsius     (65,75,85,95)(Celsius)");
-            
+
             return Success(output.ToString());
         }
     }
@@ -1033,7 +1037,136 @@ namespace NetSim.Simulation.CliHandlers.Cisco.Show
             output.AppendLine();
             output.AppendLine("NAME: \"NIM subslot 0/0\", DESCR: \"Front Panel 3 ports Gigabitethernet Module\"");
             output.AppendLine("PID: NIM-ES2-4         , VID: V01  , SN: FOC12345678");
-            
+
+            return Success(output.ToString());
+        }
+    }
+
+    /// <summary>
+    /// Show SSH handler
+    /// </summary>
+    public class ShowSshHandler() : VendorAgnosticCliHandler("ssh", "Display SSH status and sessions")
+    {
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        {
+            var device = context.Device;
+            var protocolService = context.GetService<IProtocolService>();
+
+            if (protocolService == null)
+            {
+                return Error(CliErrorType.ExecutionError, "Protocol service not available");
+            }
+
+            var output = new StringBuilder();
+            output.AppendLine("SSH server status:");
+
+            // Get SSH protocol and state
+            IDeviceProtocol sshProtocol = protocolService.GetProtocol(ProtocolType.SSH);
+            if (sshProtocol == null)
+            {
+                output.AppendLine("SSH server: Not configured");
+                return Success(output.ToString());
+            }
+
+            var sshState = sshProtocol.GetState();
+            var sshConfig = sshProtocol.GetConfiguration();
+
+            if (sshState == null)
+            {
+                output.AppendLine("SSH server: Configuration error");
+                return Success(output.ToString());
+            }
+
+            // Display SSH status
+            output.AppendLine($"SSH server: {(sshState.IsActive ? "Enabled" : "Disabled")}");
+
+            if (sshState.IsActive)
+            {
+                var stateData = sshState.GetStateData();
+
+                output.AppendLine($"SSH version: {stateData.GetValueOrDefault("ProtocolVersion", "2")}");
+                output.AppendLine($"Listening port: {stateData.GetValueOrDefault("ListeningPort", "22")}");
+                output.AppendLine($"Active sessions: {stateData.GetValueOrDefault("ActiveSessions", "0")}");
+                output.AppendLine($"Total connections: {stateData.GetValueOrDefault("TotalConnections", "0")}");
+                output.AppendLine($"Successful authentications: {stateData.GetValueOrDefault("SuccessfulAuthentications", "0")}");
+                output.AppendLine($"Failed authentications: {stateData.GetValueOrDefault("FailedAuthentications", "0")}");
+
+                var hostKeyFingerprint = stateData.GetValueOrDefault("HostKeyFingerprint", "");
+                if (!string.IsNullOrEmpty(hostKeyFingerprint.ToString()))
+                {
+                    output.AppendLine($"Host key fingerprint: {hostKeyFingerprint}");
+                }
+
+                var lastActivity = stateData.GetValueOrDefault("LastActivity", DateTime.MinValue);
+                if (lastActivity is DateTime lastActivityTime && lastActivityTime != DateTime.MinValue)
+                {
+                    output.AppendLine($"Last activity: {lastActivityTime:yyyy-MM-dd HH:mm:ss}");
+                }
+            }
+
+            return Success(output.ToString());
+        }
+    }
+
+    /// <summary>
+    /// Show Telnet handler
+    /// </summary>
+    public class ShowTelnetHandler() : VendorAgnosticCliHandler("telnet", "Display Telnet status and sessions")
+    {
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        {
+            var device = context.Device;
+            var protocolService = context.GetService<IProtocolService>();
+
+            if (protocolService == null)
+            {
+                return Error(CliErrorType.ExecutionError, "Protocol service not available");
+            }
+
+            var output = new StringBuilder();
+            output.AppendLine("Telnet server status:");
+
+            // Get Telnet protocol and state
+            IDeviceProtocol telnetProtocol = protocolService.GetProtocol(ProtocolType.TELNET);
+            if (telnetProtocol == null)
+            {
+                output.AppendLine("Telnet server: Not configured");
+                return Success(output.ToString());
+            }
+
+            var telnetState = telnetProtocol.GetState();
+            var telnetConfig = telnetProtocol.GetConfiguration();
+
+            if (telnetState == null)
+            {
+                output.AppendLine("Telnet server: Configuration error");
+                return Success(output.ToString());
+            }
+
+            // Display Telnet status
+            output.AppendLine($"Telnet server: {(telnetState.IsActive ? "Enabled" : "Disabled")}");
+
+            if (telnetState.IsActive)
+            {
+                var stateData = telnetState.GetStateData();
+
+                output.AppendLine($"Listening port: {stateData.GetValueOrDefault("ListeningPort", "23")}");
+                output.AppendLine($"Active sessions: {stateData.GetValueOrDefault("ActiveSessions", "0")}");
+                output.AppendLine($"Total connections: {stateData.GetValueOrDefault("TotalConnections", "0")}");
+
+                var lastActivity = stateData.GetValueOrDefault("LastActivity", DateTime.MinValue);
+                if (lastActivity is DateTime lastActivityTime && lastActivityTime != DateTime.MinValue)
+                {
+                    output.AppendLine($"Last activity: {lastActivityTime:yyyy-MM-dd HH:mm:ss}");
+                }
+
+                var sessionStats = stateData.GetValueOrDefault("SessionStatistics", null);
+                if (sessionStats != null)
+                {
+                    output.AppendLine("Session details available via 'show telnet sessions'");
+                }
+            }
+
             return Success(output.ToString());
         }
     }

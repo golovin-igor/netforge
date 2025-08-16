@@ -1,6 +1,5 @@
 using NetSim.Simulation.Interfaces;
 using NetSim.Simulation.Protocols.Common;
-using INetworkProtocol = NetSim.Simulation.Protocols.Common.INetworkProtocol;
 
 namespace NetSim.Simulation.Protocols.Telnet
 {
@@ -14,7 +13,7 @@ namespace NetSim.Simulation.Protocols.Telnet
         public override ProtocolType ProtocolType => ProtocolType.TELNET;
         public override int Priority => 1000; // Highest priority for management protocol
         
-        public override INetworkProtocol CreateProtocol() => new TelnetProtocol();
+        public override IDeviceProtocol CreateProtocol() => new TelnetProtocol();
         
         public override IEnumerable<string> GetSupportedVendors()
         {

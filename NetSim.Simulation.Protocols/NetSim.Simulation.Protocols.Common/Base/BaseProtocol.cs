@@ -8,7 +8,7 @@ namespace NetSim.Simulation.Protocols.Common
     /// Base implementation of network protocols following the state management pattern
     /// from PROTOCOL_STATE_MANAGEMENT.md
     /// </summary>
-    public abstract class BaseProtocol : INetworkProtocol, IDisposable
+    public abstract class BaseProtocol : IDeviceProtocol, IDisposable
     {
         protected NetworkDevice _device;
         protected readonly BaseProtocolState _state;

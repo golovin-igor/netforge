@@ -27,23 +27,23 @@ namespace NetSim.Simulation.CliHandlers
         /// The current device mode
         /// </summary>
         public string CurrentMode => Device.GetCurrentMode();
-        
+
         /// <summary>
         /// Whether this is a help request (command ends with ?)
         /// </summary>
         public bool IsHelpRequest { get; init; }
-        
+
         /// <summary>
         /// Additional parameters for command execution
         /// </summary>
         public Dictionary<string, string> Parameters { get; init; } = new();
-        
+
         /// <summary>
         /// Vendor-specific context for the device (lazy-loaded)
         /// </summary>
         private IVendorContext? _vendorContext;
-        public IVendorContext? VendorContext 
-        { 
+        public IVendorContext? VendorContext
+        {
             get => _vendorContext ??= VendorContextFactory.GetVendorContext(Device);
             set => _vendorContext = value;
         }
@@ -56,8 +56,14 @@ namespace NetSim.Simulation.CliHandlers
             ArgumentNullException.ThrowIfNull(device);
             ArgumentNullException.ThrowIfNull(commandParts);
             ArgumentNullException.ThrowIfNull(fullCommand);
-            
+
             return new CliContext(device, commandParts, fullCommand) { IsHelpRequest = true };
         }
+
+        public T GetService<T>() where T : class
+        {
+            //must resolve services from the device's service provider
+            throw new NotImplementedException();
+        }
     }
-} 
+}

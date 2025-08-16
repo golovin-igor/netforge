@@ -22,7 +22,7 @@ namespace NetSim.Simulation.Protocols.Common.Services
         /// </summary>
         /// <typeparam name="T">The specific protocol type</typeparam>
         /// <returns>Protocol instance or null if not available</returns>
-        public T GetProtocol<T>() where T : class, INetworkProtocol
+        public T GetProtocol<T>() where T : class, IDeviceProtocol
         {
             return GetAllProtocols().OfType<T>().FirstOrDefault();
         }
@@ -32,7 +32,7 @@ namespace NetSim.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to retrieve</param>
         /// <returns>Protocol instance or null if not available</returns>
-        public INetworkProtocol GetProtocol(ProtocolType type)
+        public IDeviceProtocol GetProtocol(ProtocolType type)
         {
             return GetAllProtocols().FirstOrDefault(p => p.Type == type);
         }
@@ -53,11 +53,11 @@ namespace NetSim.Simulation.Protocols.Common.Services
         /// Get all registered protocol instances
         /// </summary>
         /// <returns>Enumerable of all protocols</returns>
-        public IEnumerable<INetworkProtocol> GetAllProtocols()
+        public IEnumerable<IDeviceProtocol> GetAllProtocols()
         {
             // Convert from old interface to new interface
             return _device.GetRegisteredProtocols()
-                .OfType<INetworkProtocol>()
+                .OfType<IDeviceProtocol>()
                 .ToList();
         }
         

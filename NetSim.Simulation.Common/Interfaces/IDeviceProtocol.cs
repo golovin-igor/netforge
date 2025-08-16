@@ -7,7 +7,7 @@ namespace NetSim.Simulation.Protocols.Common
     /// <summary>
     /// Enhanced interface for network protocols with state management and vendor support
     /// </summary>
-    public interface INetworkProtocol
+    public interface IDeviceProtocol
     {
         /// <summary>
         /// The type of protocol (OSPF, BGP, etc.)

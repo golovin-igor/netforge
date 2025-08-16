@@ -13,14 +13,14 @@ namespace NetSim.Simulation.Protocols.Common
         /// </summary>
         /// <typeparam name="T">The specific protocol type</typeparam>
         /// <returns>Protocol instance or null if not available</returns>
-        T GetProtocol<T>() where T : class, INetworkProtocol;
+        T GetProtocol<T>() where T : class, IDeviceProtocol;
         
         /// <summary>
         /// Get a protocol instance by protocol type enum
         /// </summary>
         /// <param name="type">Protocol type to retrieve</param>
         /// <returns>Protocol instance or null if not available</returns>
-        INetworkProtocol GetProtocol(ProtocolType type);
+        IDeviceProtocol GetProtocol(ProtocolType type);
         
         /// <summary>
         /// Get the typed state of a specific protocol
@@ -34,7 +34,7 @@ namespace NetSim.Simulation.Protocols.Common
         /// Get all registered protocol instances
         /// </summary>
         /// <returns>Enumerable of all protocols</returns>
-        IEnumerable<INetworkProtocol> GetAllProtocols();
+        IEnumerable<IDeviceProtocol> GetAllProtocols();
         
         /// <summary>
         /// Check if a specific protocol type is active on the device

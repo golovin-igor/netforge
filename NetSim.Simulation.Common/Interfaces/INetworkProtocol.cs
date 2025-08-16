@@ -17,7 +17,8 @@ namespace NetSim.Simulation.Interfaces
         VRRP,
         HSRP,
         ARP,
-        TELNET
+        TELNET,
+        SSH
         // Add other protocol types as needed
     }
 

@@ -34,7 +34,7 @@ namespace NetSim.Simulation.Protocols.Common
         /// Create a new instance of the protocol
         /// </summary>
         /// <returns>New protocol instance</returns>
-        public abstract INetworkProtocol CreateProtocol();
+        public abstract IDeviceProtocol CreateProtocol();
         
         /// <summary>
         /// Check if this plugin supports a specific vendor

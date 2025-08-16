@@ -53,6 +53,7 @@ namespace NetSim.Simulation.Common
         protected CdpConfig CdpConfig;
         protected LldpConfig LldpConfig;
         protected object TelnetConfig;
+        protected object SshConfig;
         protected readonly Dictionary<string, RoutingPolicy> RoutingPolicies = new();
         protected readonly Dictionary<string, PrefixList> PrefixLists = new();
         protected readonly Dictionary<string, BgpCommunity> BgpCommunities = new();
@@ -326,6 +327,15 @@ namespace NetSim.Simulation.Common
             TelnetConfig = config;
             ParentNetwork?.EventBus?.PublishAsync(new Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.TELNET,
                 wasNull ? "Telnet configuration initialized" : "Telnet configuration updated"));
+        }
+
+        public object GetSshConfiguration() => SshConfig;
+        public void SetSshConfiguration(object config)
+        {
+            bool wasNull = SshConfig == null;
+            SshConfig = config;
+            ParentNetwork?.EventBus?.PublishAsync(new Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.SSH,
+                wasNull ? "SSH configuration initialized" : "SSH configuration updated"));
         }
 
         public string GetHostname() => Hostname;
