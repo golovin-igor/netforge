@@ -6,7 +6,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetSim.Simulation.Common", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetSim.Simulation.Core", "NetSim.Simulation.Core\NetSim.Simulation.csproj", "{B2C3D4E5-F6A7-8901-2345-67890ABCDEF1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vendors", "Vendors", "{66969522-17B7-42DC-BA5C-993840AF25BC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetSim.Simulation.CliHandlers", "NetSim.Simulation.CliHandlers", "{66969522-17B7-42DC-BA5C-993840AF25BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.CliHandlers.Alcatel", "NetSim.Simulation.CliHandlers\NetSim.Simulation.CliHandlers.Alcatel\NetSim.Simulation.CliHandlers.Alcatel.csproj", "{6794A079-B5F3-4D36-A081-9DF92015F9EF}"
 EndProject
@@ -45,6 +45,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.CliHandlers.Tests", "NetSim.Simulation.CliHandlers\NetSim.Simulation.CliHandlers.Tests\NetSim.Simulation.CliHandlers.Tests.csproj", "{DA32C07B-2D25-4638-904D-72BFBB9B9716}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Tests", "NetSim.Simulation.Tests\NetSim.Simulation.Tests.csproj", "{840A2816-F023-4EBF-8171-FFC2170FCA5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetSim.Simulation.Protocols", "NetSim.Simulation.Protocols", "{897E0406-546D-4094-BFAA-3A4CD4F7F311}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Protocols.Common", "NetSim.Simulation.Protocols\NetSim.Simulation.Protocols.Common\NetSim.Simulation.Protocols.Common.csproj", "{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -132,6 +136,10 @@ Global
 		{840A2816-F023-4EBF-8171-FFC2170FCA5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{840A2816-F023-4EBF-8171-FFC2170FCA5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{840A2816-F023-4EBF-8171-FFC2170FCA5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,5 +165,6 @@ Global
 		{7EE86AAE-7D64-45AE-ACB0-69CB0F2CEBB3} = {66969522-17B7-42DC-BA5C-993840AF25BC}
 		{DA32C07B-2D25-4638-904D-72BFBB9B9716} = {868FD21A-97B3-4991-8411-FB9763469FC4}
 		{840A2816-F023-4EBF-8171-FFC2170FCA5C} = {868FD21A-97B3-4991-8411-FB9763469FC4}
+		{B62C41DE-6834-4312-A9ED-A2FDF2468EDC} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
 	EndGlobalSection
 EndGlobal

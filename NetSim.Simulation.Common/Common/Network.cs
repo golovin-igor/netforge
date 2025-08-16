@@ -209,7 +209,7 @@ namespace NetSim.Simulation.Common
         /// <summary>
         /// Update device ID mapping (useful when a device's DeviceId changes after being added)
         /// </summary>
-        public void UpdateDeviceIdMapping(NetworkDevice device, string oldDeviceId = null)
+        public void UpdateDeviceIdMapping(NetworkDevice device, string? oldDeviceId = null)
         {
             // Remove old mapping if provided
             if (!string.IsNullOrEmpty(oldDeviceId))
