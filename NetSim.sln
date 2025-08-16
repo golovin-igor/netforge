@@ -47,8 +47,15 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Tests", "NetSim.Simulation.Tests\NetSim.Simulation.Tests.csproj", "{840A2816-F023-4EBF-8171-FFC2170FCA5C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetSim.Simulation.Protocols", "NetSim.Simulation.Protocols", "{897E0406-546D-4094-BFAA-3A4CD4F7F311}"
+	ProjectSection(SolutionItems) = preProject
+		NetSim.Simulation.Protocols\PROTOCOL_STATE_MANAGEMENT.md = NetSim.Simulation.Protocols\PROTOCOL_STATE_MANAGEMENT.md
+		NetSim.Simulation.Protocols\PROTOCOL_IMPLEMENTATION_STATUS.md = NetSim.Simulation.Protocols\PROTOCOL_IMPLEMENTATION_STATUS.md
+		NetSim.Simulation.Protocols\PROTOCOL_IMPLEMENTATION_PLAN.md = NetSim.Simulation.Protocols\PROTOCOL_IMPLEMENTATION_PLAN.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Protocols.Common", "NetSim.Simulation.Protocols\NetSim.Simulation.Protocols.Common\NetSim.Simulation.Protocols.Common.csproj", "{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Protocols.Telnet", "NetSim.Simulation.Protocols\NetSim.Simulation.Protocols.Telnet\NetSim.Simulation.Protocols.Telnet.csproj", "{585E9D42-8B68-4F4D-B55B-AEDFE7B6DFF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -140,6 +147,10 @@ Global
 		{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{585E9D42-8B68-4F4D-B55B-AEDFE7B6DFF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{585E9D42-8B68-4F4D-B55B-AEDFE7B6DFF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{585E9D42-8B68-4F4D-B55B-AEDFE7B6DFF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{585E9D42-8B68-4F4D-B55B-AEDFE7B6DFF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,5 +177,6 @@ Global
 		{DA32C07B-2D25-4638-904D-72BFBB9B9716} = {868FD21A-97B3-4991-8411-FB9763469FC4}
 		{840A2816-F023-4EBF-8171-FFC2170FCA5C} = {868FD21A-97B3-4991-8411-FB9763469FC4}
 		{B62C41DE-6834-4312-A9ED-A2FDF2468EDC} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
+		{585E9D42-8B68-4F4D-B55B-AEDFE7B6DFF1} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
 	EndGlobalSection
 EndGlobal

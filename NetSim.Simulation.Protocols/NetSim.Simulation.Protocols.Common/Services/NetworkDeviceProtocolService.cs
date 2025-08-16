@@ -1,5 +1,6 @@
 using NetSim.Simulation.Common;
 using NetSim.Simulation.Interfaces;
+using OldNetworkProtocol = NetSim.Simulation.Interfaces.INetworkProtocol;
 
 namespace NetSim.Simulation.Protocols.Common.Services
 {
@@ -54,10 +55,10 @@ namespace NetSim.Simulation.Protocols.Common.Services
         /// <returns>Enumerable of all protocols</returns>
         public IEnumerable<INetworkProtocol> GetAllProtocols()
         {
-            // TODO: This requires access to the private _protocols field from NetworkDevice
-            // We'll need to add a public method to NetworkDevice to expose this
-            // For now, return empty collection to allow compilation
-            return Enumerable.Empty<INetworkProtocol>();
+            // Convert from old interface to new interface
+            return _device.GetRegisteredProtocols()
+                .OfType<INetworkProtocol>()
+                .ToList();
         }
         
         /// <summary>

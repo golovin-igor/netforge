@@ -52,6 +52,7 @@ namespace NetSim.Simulation.Common
         protected HsrpConfig HsrpConfig;
         protected CdpConfig CdpConfig;
         protected LldpConfig LldpConfig;
+        protected object TelnetConfig;
         protected readonly Dictionary<string, RoutingPolicy> RoutingPolicies = new();
         protected readonly Dictionary<string, PrefixList> PrefixLists = new();
         protected readonly Dictionary<string, BgpCommunity> BgpCommunities = new();
@@ -316,6 +317,15 @@ namespace NetSim.Simulation.Common
             LldpConfig = config;
             ParentNetwork?.EventBus?.PublishAsync(new Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.LLDP,
                 wasNull ? "LLDP configuration initialized" : "LLDP configuration updated"));
+        }
+
+        public object GetTelnetConfiguration() => TelnetConfig;
+        public void SetTelnetConfiguration(object config)
+        {
+            bool wasNull = TelnetConfig == null;
+            TelnetConfig = config;
+            ParentNetwork?.EventBus?.PublishAsync(new Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.TELNET,
+                wasNull ? "Telnet configuration initialized" : "Telnet configuration updated"));
         }
 
         public string GetHostname() => Hostname;
@@ -999,6 +1009,15 @@ namespace NetSim.Simulation.Common
                     AddLogEntry($"Protocol {protocol.Type} subscribed to events.");
                 }
             }
+        }
+
+        /// <summary>
+        /// Get all registered network protocols
+        /// </summary>
+        /// <returns>Read-only collection of registered protocols</returns>
+        public IReadOnlyList<INetworkProtocol> GetRegisteredProtocols()
+        {
+            return _protocols.AsReadOnly();
         }
 
         /// <summary>

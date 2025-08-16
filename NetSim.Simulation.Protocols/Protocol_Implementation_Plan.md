@@ -1137,8 +1137,335 @@ public class ShowRouterOspfHandler : BaseCliHandler
 - Add CLI handler integration examples
 - Performance optimization guidelines
 
+## Phase 5: Migration from Legacy Protocols
+
+### Migration Strategy Overview
+
+With the new protocol architecture foundation complete (as tracked in [PROTOCOL_IMPLEMENTATION_STATUS.md](PROTOCOL_IMPLEMENTATION_STATUS.md)), we need a systematic approach to migrate from the legacy protocol implementations in `NetSim.Simulation.Common` to the new plugin-based architecture.
+
+### Current Legacy Protocol Status
+
+#### Protocols Already in Common Project
+The following legacy protocols exist in `NetSim.Simulation.Common` and need migration:
+
+**Routing Protocols:**
+- `OspfConfig`, `BgpConfig`, `RipConfig`, `EigrpConfig`, `IsisConfig`, `IgrpConfig`
+- Basic configuration classes with limited functionality
+- Hardcoded in `NetworkDevice` class with direct field access
+
+**Redundancy Protocols:**
+- `VrrpConfig`, `HsrpConfig`
+- Basic configuration with minimal state management
+
+**Discovery Protocols:**
+- `CdpConfig`, `LldpConfig`
+- Simple configuration classes
+
+**Layer 2 Protocols:**
+- `StpConfig` (Spanning Tree Protocol)
+- Basic spanning tree implementation
+
+**Network Protocols:**
+- ARP functionality embedded in `NetworkDevice`
+- Route management embedded in device
+
+### Migration Phases
+
+#### Phase 5.1: Assessment and Preparation (CURRENT STATUS: READY)
+- ✅ **Foundation Complete**: New protocol architecture fully implemented
+- ✅ **Example Protocol**: Telnet protocol demonstrates full pattern
+- ✅ **Integration Points**: NetworkDevice enhanced for new protocols
+- ⏳ **Legacy Audit**: Complete assessment of existing functionality needed
+
+**Action Items:**
+1. Document exact functionality of each legacy protocol
+2. Identify dependencies between legacy protocols
+3. Map legacy configuration to new configuration patterns
+4. Create migration priority matrix based on complexity and usage
+
+#### Phase 5.2: Compatibility Layer (IMMEDIATE NEXT STEP)
+Create temporary bridges to ensure existing functionality continues during migration.
+
+**Compatibility Strategy:**
+```csharp
+// Create compatibility wrapper in NetworkDevice
+public void SetOspfConfiguration(OspfConfig config)
+{
+    // Legacy support
+    bool wasNull = OspfConfig == null;
+    OspfConfig = config;
+    
+    // New architecture integration
+    var newProtocol = GetRegisteredProtocols()
+        .FirstOrDefault(p => p.Type == ProtocolType.OSPF);
+    
+    if (newProtocol != null)
+    {
+        // Convert legacy config to new format and apply
+        var newConfig = ConvertLegacyOspfConfig(config);
+        newProtocol.ApplyConfiguration(newConfig);
+    }
+    
+    ParentNetwork?.EventBus?.PublishAsync(new Events.ProtocolConfigChangedEventArgs(
+        Name, ProtocolType.OSPF, wasNull ? "OSPF configuration initialized" : "OSPF configuration updated"));
+}
+
+private object ConvertLegacyOspfConfig(OspfConfig legacyConfig)
+{
+    // Convert legacy configuration to new architecture format
+    return new NetSim.Simulation.Protocols.OSPF.OspfConfig
+    {
+        IsEnabled = legacyConfig.IsEnabled,
+        RouterId = legacyConfig.RouterId,
+        Areas = ConvertAreas(legacyConfig.Areas),
+        // ... other conversions
+    };
+}
+```
+
+#### Phase 5.3: Protocol-by-Protocol Migration
+
+**Migration Priority Order:**
+
+1. **High Priority - Management Protocols**
+   - SSH (new implementation, high value)
+   - SNMP (new implementation, monitoring critical)
+   
+2. **High Priority - Core Routing**
+   - OSPF (complex migration, high usage)
+   - BGP (complex migration, critical for enterprise)
+   
+3. **Medium Priority - Discovery**
+   - CDP (simple migration, vendor-specific)
+   - LLDP (simple migration, standard)
+   - ARP (refactor from embedded logic)
+   
+4. **Medium Priority - Redundancy**
+   - VRRP (moderate complexity)
+   - HSRP (moderate complexity, Cisco-specific)
+   
+5. **Lower Priority - Legacy Routing**
+   - RIP (simple migration)
+   - EIGRP (Cisco-specific)
+   - IS-IS (complex, lower usage)
+   - IGRP (legacy, minimal usage)
+
+6. **Infrastructure Protocols**
+   - STP (embedded in device logic, complex extraction)
+
+**Per-Protocol Migration Process:**
+
+1. **Analysis Phase**
+   - Document current behavior and configuration options
+   - Identify all integration points with NetworkDevice
+   - Map CLI commands that depend on the protocol
+   - Create test scenarios for validation
+
+2. **Implementation Phase**
+   - Create new protocol project following Telnet pattern
+   - Implement protocol logic using new architecture
+   - Create configuration conversion utilities
+   - Add new CLI integration points
+
+3. **Integration Phase**
+   - Add compatibility layer for seamless transition
+   - Update protocol discovery to include new implementation
+   - Ensure legacy configurations continue to work
+   - Add dual-mode operation support
+
+4. **Testing Phase**
+   - Unit tests for new protocol implementation
+   - Integration tests with existing systems
+   - Performance comparison with legacy implementation
+   - CLI command compatibility verification
+
+5. **Migration Phase**
+   - Gradual cutover from legacy to new implementation
+   - Configuration migration tools for existing deployments
+   - Monitoring and rollback capabilities
+   - Documentation updates
+
+6. **Cleanup Phase**
+   - Remove legacy implementation after validation
+   - Clean up compatibility layer
+   - Update documentation to reflect new architecture
+   - Performance optimization
+
+#### Phase 5.4: Advanced Migration Features
+
+**Configuration Migration Tools:**
+```csharp
+public class ProtocolMigrationService
+{
+    public async Task<MigrationResult> MigrateProtocol(ProtocolType protocolType, NetworkDevice device)
+    {
+        var migrator = GetMigrator(protocolType);
+        return await migrator.MigrateAsync(device);
+    }
+    
+    public bool CanMigrate(ProtocolType protocolType)
+    {
+        return _migrators.ContainsKey(protocolType);
+    }
+    
+    public ValidationResult ValidateMigration(ProtocolType protocolType, NetworkDevice device)
+    {
+        // Validate that migration is safe and complete
+    }
+}
+```
+
+**State Migration:**
+- Preserve neighbor relationships during migration
+- Maintain routing tables during transition
+- Ensure continuous protocol operation
+- Rollback capabilities for failed migrations
+
+#### Phase 5.5: Testing and Validation Framework
+
+**Migration Testing Strategy:**
+```csharp
+[TestCategory("ProtocolMigration")]
+public class OspfMigrationTests
+{
+    [Test]
+    public async Task MigrateOspf_PreservesNeighborRelationships()
+    {
+        // Arrange: Set up legacy OSPF with neighbors
+        // Act: Migrate to new architecture
+        // Assert: Neighbors preserved, routing table intact
+    }
+    
+    [Test]
+    public async Task MigrateOspf_ConfigurationCompatibility()
+    {
+        // Test legacy configuration still works
+    }
+    
+    [Test]
+    public async Task MigrateOspf_PerformanceComparison()
+    {
+        // Compare performance before/after migration
+    }
+}
+```
+
+**Validation Metrics:**
+- Configuration preservation (100% compatibility required)
+- State preservation (neighbor tables, routes, timers)
+- Performance parity or improvement
+- CLI command compatibility
+- Memory usage optimization
+
+### Migration Timeline
+
+**Phase 5.1 - Assessment** (1-2 weeks)
+- ✅ Complete foundation (already done)
+- ⏳ Document legacy protocols
+- ⏳ Create migration framework
+
+**Phase 5.2 - Compatibility Layer** (1 week)
+- Create legacy-to-new configuration converters
+- Add dual-mode operation support
+- Implement rollback mechanisms
+
+**Phase 5.3 - Protocol Migration** (8-12 weeks)
+- Week 1-2: SSH + SNMP (new implementations)
+- Week 3-4: OSPF migration
+- Week 5-6: BGP migration  
+- Week 7-8: Discovery protocols (CDP, LLDP, ARP)
+- Week 9-10: Redundancy protocols (VRRP, HSRP)
+- Week 11-12: Legacy routing protocols (RIP, EIGRP, etc.)
+
+**Phase 5.4 - Advanced Features** (2-3 weeks)
+- Migration automation tools
+- Performance optimization
+- Advanced monitoring and diagnostics
+
+**Phase 5.5 - Cleanup and Documentation** (1-2 weeks)
+- Remove legacy implementations
+- Update documentation
+- Final testing and validation
+
+### Success Criteria
+
+**Functional Requirements:**
+- ✅ All existing protocol functionality preserved
+- ✅ Configuration compatibility maintained
+- ✅ CLI commands continue to work unchanged
+- ✅ Network connectivity uninterrupted during migration
+
+**Architecture Requirements:**
+- ✅ Modular protocol implementations
+- ✅ Plugin-based discovery and loading
+- ✅ Vendor-specific protocol support
+- ✅ Enhanced state management and monitoring
+
+**Performance Requirements:**
+- ✅ Memory usage reduced or maintained
+- ✅ Protocol convergence time improved or maintained
+- ✅ CPU usage optimized
+- ✅ Network overhead minimized
+
+**Operational Requirements:**
+- ✅ Zero-downtime migration capability
+- ✅ Rollback mechanisms for failed migrations
+- ✅ Configuration backup and restore
+- ✅ Migration validation and testing tools
+
+### Risk Mitigation
+
+**High-Risk Items:**
+1. **State Loss During Migration**
+   - Mitigation: Comprehensive state preservation mechanisms
+   - Testing: Automated state comparison before/after migration
+
+2. **Performance Regression**
+   - Mitigation: Performance monitoring and benchmarking
+   - Testing: Load testing with realistic network scenarios
+
+3. **Configuration Incompatibility**
+   - Mitigation: Extensive configuration conversion testing
+   - Testing: Migration testing with diverse configuration scenarios
+
+4. **CLI Command Breakage**
+   - Mitigation: CLI compatibility layer and thorough testing
+   - Testing: Automated CLI command regression testing
+
+**Medium-Risk Items:**
+1. **Plugin Discovery Issues**
+   - Mitigation: Robust error handling and fallback mechanisms
+   
+2. **Vendor-Specific Feature Loss**
+   - Mitigation: Careful analysis and feature mapping per vendor
+
+3. **Network Convergence Delays**
+   - Mitigation: Optimized protocol implementation and timing
+
+### Migration Support Tools
+
+**Automated Migration Scripts:**
+- Configuration analysis and conversion tools
+- State backup and restore utilities
+- Migration validation and testing scripts
+- Performance comparison and monitoring tools
+
+**Monitoring and Diagnostics:**
+- Real-time migration progress tracking
+- Protocol state comparison tools
+- Performance impact monitoring
+- Error detection and rollback triggers
+
+**Documentation and Training:**
+- Migration guide for network administrators
+- Troubleshooting guide for common migration issues
+- Best practices for protocol configuration in new architecture
+- Training materials for new CLI integration features
+
 ## Conclusion
 
 This implementation plan provides a comprehensive roadmap for transforming the NetSim protocol architecture into a modular, plugin-based system that maintains the sophisticated state management patterns while adding vendor-specific support, IoC integration, and realistic network management via Telnet protocol.
+
+With the foundation phase complete and Telnet protocol fully implemented, the migration phase provides a clear path to systematically move from legacy protocol implementations to the new architecture while ensuring zero disruption to existing functionality.
 
 The architecture follows established patterns from the CLI handler system while being appropriately simplified for protocol use cases, ensuring consistency across the codebase and maximum extensibility for future development.

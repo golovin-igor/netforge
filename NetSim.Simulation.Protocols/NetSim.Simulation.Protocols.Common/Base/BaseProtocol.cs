@@ -8,7 +8,7 @@ namespace NetSim.Simulation.Protocols.Common
     /// Base implementation of network protocols following the state management pattern
     /// from PROTOCOL_STATE_MANAGEMENT.md
     /// </summary>
-    public abstract class BaseProtocol : INetworkProtocol
+    public abstract class BaseProtocol : INetworkProtocol, IDisposable
     {
         protected NetworkDevice _device;
         protected readonly BaseProtocolState _state;
@@ -259,6 +259,25 @@ namespace NetSim.Simulation.Protocols.Common
         protected void LogProtocolEvent(string message)
         {
             _device?.AddLogEntry($"{Name}: {message}");
+        }
+        
+        /// <summary>
+        /// Dispose pattern implementation
+        /// Override this in derived classes to clean up protocol-specific resources
+        /// </summary>
+        public virtual void Dispose()
+        {
+            OnDispose();
+            GC.SuppressFinalize(this);
+        }
+        
+        /// <summary>
+        /// Called when the protocol is being disposed
+        /// Override this in derived classes to clean up protocol-specific resources
+        /// </summary>
+        protected virtual void OnDispose()
+        {
+            // Default implementation does nothing
         }
     }
 }
