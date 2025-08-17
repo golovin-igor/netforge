@@ -83,6 +83,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Protocols
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Protocols.VRRP", "NetSim.Simulation.Protocols\NetSim.Simulation.Protocols.VRRP\NetSim.Simulation.Protocols.VRRP.csproj", "{DCE4AE7E-0A94-4850-99F0-52F9F1D71838}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Protocols.Tests", "NetSim.Simulation.Protocols.Tests\NetSim.Simulation.Protocols.Tests.csproj", "{FCA87599-7865-4260-9535-5C11BB46DE64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -229,6 +231,10 @@ Global
 		{DCE4AE7E-0A94-4850-99F0-52F9F1D71838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCE4AE7E-0A94-4850-99F0-52F9F1D71838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCE4AE7E-0A94-4850-99F0-52F9F1D71838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCA87599-7865-4260-9535-5C11BB46DE64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCA87599-7865-4260-9535-5C11BB46DE64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCA87599-7865-4260-9535-5C11BB46DE64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCA87599-7865-4260-9535-5C11BB46DE64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -269,5 +275,6 @@ Global
 		{EF17CD5A-124E-4D8D-8602-B147E93A7EFC} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
 		{BA65E1A4-3C92-4154-B0A3-656EF6FB04B2} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
 		{DCE4AE7E-0A94-4850-99F0-52F9F1D71838} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
+		{FCA87599-7865-4260-9535-5C11BB46DE64} = {868FD21A-97B3-4991-8411-FB9763469FC4}
 	EndGlobalSection
 EndGlobal
