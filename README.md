@@ -1,20 +1,9 @@
 
-*NetSim - Empowering Network Education, Research, and Innovation*
+*NetForge - Empowering Network Education, Research, and Innovation*
 
-```
-███╗   ██╗███████╗████████╗███████╗██╗███╗   ███╗
-████╗  ██║██╔════╝╚══██╔══╝██╔════╝██║████╗ ████║
-██╔██╗ ██║█████╗     ██║   ███████╗██║██╔████╔██║
-██║╚██╗██║██╔══╝     ██║   ╚════██║██║██║╚██╔╝██║
-██║ ╚████║███████╗   ██║   ███████║██║██║ ╚═╝ ██║
-╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚══════╝╚═╝╚═╝     ╚═╝
-```
+# NetForge - NETwork device SIMulation framework
 
-
-
-# NetSim - NETwork device SIMulation framework
-
-NetSim is a comprehensive, modular C# .NET 9.0 framework for simulating enterprise network devices with realistic CLI behavior, advanced protocol implementations, and sophisticated network topology management. The platform supports 15+ network vendors and provides an extensive protocol architecture for education, testing, network automation, and research.
+NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterprise network devices with realistic CLI behavior, advanced protocol implementations, and sophisticated network topology management. The platform supports 15+ network vendors and provides an extensive protocol architecture for education, testing, network automation, and research.
 
 ## 🚀 Key Features
 
@@ -46,11 +35,11 @@ NetSim is a comprehensive, modular C# .NET 9.0 framework for simulating enterpri
 ## 🏗️ Solution Architecture
 
 ### Core Framework Libraries
-- **NetSim.Simulation.Common**: Core protocols, device models, event system, and shared infrastructure ([details](NetSim.Simulation.Common/README.md))
-- **NetSim.Simulation.Core**: Device implementations, factories, simulation engine, and terminal servers ([details](NetSim.Simulation.Core/README.md))
+- **NetForge.Simulation.Common**: Core protocols, device models, event system, and shared infrastructure ([details](NetForge.Simulation.Common/README.md))
+- **NetForge.Simulation.Core**: Device implementations, factories, simulation engine, and terminal servers ([details](NetForge.Simulation.Core/README.md))
 
 ### CLI Handler System (15 Vendor Implementations)
-- **NetSim.Simulation.CliHandlers.Common**: Shared CLI logic, base handlers, and common functionality
+- **NetForge.Simulation.CliHandlers.Common**: Shared CLI logic, base handlers, and common functionality
 - **Individual Vendor Handlers**: Complete CLI implementations per vendor:
   - **Cisco**: IOS/IOS-XE with comprehensive command set including EIGRP, CDP, and advanced features
   - **Juniper**: JunOS configuration and operational modes with set/commit workflow
@@ -63,7 +52,7 @@ NetSim is a comprehensive, modular C# .NET 9.0 framework for simulating enterpri
   - **And 7 additional vendors**: F5, Aruba, MikroTik, Broadcom, Alcatel, Anira, Linux
 
 ### Advanced Protocol Architecture
-- **NetSim.Simulation.Protocols.Common**: Plugin-based protocol framework with auto-discovery
+- **NetForge.Simulation.Protocols.Common**: Plugin-based protocol framework with auto-discovery
 - **Implemented Protocol Modules**:
   - **SSH**: Secure terminal access with encryption and authentication
   - **Telnet**: Multi-session terminal server with device integration
@@ -75,9 +64,9 @@ NetSim is a comprehensive, modular C# .NET 9.0 framework for simulating enterpri
 - **Additional Protocol Projects**: SNMP, RIP, EIGRP, ISIS, IGRP, HSRP, VRRP, STP (in development)
 
 ### Comprehensive Test Framework
-- **NetSim.Simulation.Tests**: Core simulation and network topology testing
-- **NetSim.Simulation.CliHandlers.Tests**: Extensive CLI handler testing with vendor-specific scenarios
-- **NetSim.Simulation.Protocols.Tests**: Protocol implementation validation and integration testing
+- **NetForge.Simulation.Tests**: Core simulation and network topology testing
+- **NetForge.Simulation.CliHandlers.Tests**: Extensive CLI handler testing with vendor-specific scenarios
+- **NetForge.Simulation.Protocols.Tests**: Protocol implementation validation and integration testing
 - **Specialized Test Categories**: 
   - Counter validation testing for all vendors
   - Multi-vendor compatibility testing
@@ -88,21 +77,21 @@ NetSim is a comprehensive, modular C# .NET 9.0 framework for simulating enterpri
 
 | Vendor     | Module                                    |
 |------------|-------------------------------------------|
-| Alcatel    | NetSim.Simulation.CliHandlers.Alcatel     |
-| Anira      | NetSim.Simulation.CliHandlers.Anira       |
-| Arista     | NetSim.Simulation.CliHandlers.Arista      |
-| Aruba      | NetSim.Simulation.CliHandlers.Aruba       |
-| Broadcom   | NetSim.Simulation.CliHandlers.Broadcom    |
-| Cisco      | NetSim.Simulation.CliHandlers.Cisco       |
-| Dell       | NetSim.Simulation.CliHandlers.Dell        |
-| Extreme    | NetSim.Simulation.CliHandlers.Extreme     |
-| F5         | NetSim.Simulation.CliHandlers.F5          |
-| Fortinet   | NetSim.Simulation.CliHandlers.Fortinet    |
-| Huawei     | NetSim.Simulation.CliHandlers.Huawei      |
-| Juniper    | NetSim.Simulation.CliHandlers.Juniper     |
-| Linux      | NetSim.Simulation.CliHandlers.Linux       |
-| MikroTik   | NetSim.Simulation.CliHandlers.MikroTik    |
-| Nokia      | NetSim.Simulation.CliHandlers.Nokia       |
+| Alcatel    | NetForge.Simulation.CliHandlers.Alcatel     |
+| Anira      | NetForge.Simulation.CliHandlers.Anira       |
+| Arista     | NetForge.Simulation.CliHandlers.Arista      |
+| Aruba      | NetForge.Simulation.CliHandlers.Aruba       |
+| Broadcom   | NetForge.Simulation.CliHandlers.Broadcom    |
+| Cisco      | NetForge.Simulation.CliHandlers.Cisco       |
+| Dell       | NetForge.Simulation.CliHandlers.Dell        |
+| Extreme    | NetForge.Simulation.CliHandlers.Extreme     |
+| F5         | NetForge.Simulation.CliHandlers.F5          |
+| Fortinet   | NetForge.Simulation.CliHandlers.Fortinet    |
+| Huawei     | NetForge.Simulation.CliHandlers.Huawei      |
+| Juniper    | NetForge.Simulation.CliHandlers.Juniper     |
+| Linux      | NetForge.Simulation.CliHandlers.Linux       |
+| MikroTik   | NetForge.Simulation.CliHandlers.MikroTik    |
+| Nokia      | NetForge.Simulation.CliHandlers.Nokia       |
 
 ## 📊 Current Implementation Status
 
@@ -135,8 +124,8 @@ NetSim is a comprehensive, modular C# .NET 9.0 framework for simulating enterpri
 Create a multi-vendor network with OSPF routing between Cisco and Juniper devices:
 
 ```csharp
-using NetSim.Simulation.Core;
-using NetSim.Simulation.Common;
+using NetForge.Simulation.Core;
+using NetForge.Simulation.Common;
 
 // Create devices using factory pattern
 var cisco = DeviceFactory.CreateDevice("cisco", "Router1");
@@ -214,27 +203,27 @@ await sshServer.StartAsync();
 ## 📁 Detailed Project Structure
 
 ### Core Framework
-- **[NetSim.Simulation.Common](NetSim.Simulation.Common/README.md)**: Foundation library with device models, protocol interfaces, event system, and shared infrastructure
-- **[NetSim.Simulation.Core](NetSim.Simulation.Core/README.md)**: Device implementations, factory patterns, terminal servers, and simulation engine
+- **[NetForge.Simulation.Common](NetForge.Simulation.Common/README.md)**: Foundation library with device models, protocol interfaces, event system, and shared infrastructure
+- **[NetForge.Simulation.Core](NetForge.Simulation.Core/README.md)**: Device implementations, factory patterns, terminal servers, and simulation engine
 
 ### CLI Handler System
-- **NetSim.Simulation.CliHandlers.Common**: Base classes and shared CLI functionality
+- **NetForge.Simulation.CliHandlers.Common**: Base classes and shared CLI functionality
 - **15 Vendor-Specific Handlers**: Complete CLI implementations with authentication, configuration modes, and command processing
-- **[Comprehensive CLI Documentation](NetSim.Simulation.CliHandlers/README.md)**: Detailed vendor capabilities and command reference
+- **[Comprehensive CLI Documentation](NetForge.Simulation.CliHandlers/README.md)**: Detailed vendor capabilities and command reference
 
 ### Protocol Architecture  
-- **NetSim.Simulation.Protocols.Common**: Plugin framework with auto-discovery and state management
+- **NetForge.Simulation.Protocols.Common**: Plugin framework with auto-discovery and state management
 - **Individual Protocol Projects**: SSH, Telnet, OSPF, BGP, CDP, LLDP, ARP with dedicated implementations
 - **SNMP Handler Framework**: Specialized SNMP agent architecture with vendor-specific MIB support
 
 ### Testing Framework
-- **NetSim.Simulation.Tests**: Core simulation testing with network topology validation
-- **NetSim.Simulation.CliHandlers.Tests**: Extensive CLI testing across all 15 vendors
-- **NetSim.Simulation.Protocols.Tests**: Protocol implementation and integration testing
+- **NetForge.Simulation.Tests**: Core simulation testing with network topology validation
+- **NetForge.Simulation.CliHandlers.Tests**: Extensive CLI testing across all 15 vendors
+- **NetForge.Simulation.Protocols.Tests**: Protocol implementation and integration testing
 
 ### Utility Projects  
 - **DebugConsole**: Development console for testing and debugging network scenarios
-- **NetSim.Player**: Network scenario playback and automation tools
+- **NetForge.Player**: Network scenario playback and automation tools
 
 ## 🛠️ Development Environment
 
@@ -247,7 +236,7 @@ await sshServer.StartAsync();
 ### Build & Test
 ```bash
 # Build the entire solution
-dotnet build NetSim.sln
+dotnet build NetForge.sln
 
 # Run all tests
 dotnet test
@@ -259,7 +248,7 @@ dotnet test --filter "Category=ProtocolTests"
 dotnet test --collect:"XPlat Code Coverage"
 
 # Build specific project
-dotnet build NetSim.Simulation.Core/NetSim.Simulation.csproj
+dotnet build NetForge.Simulation.Core/NetForge.Simulation.csproj
 
 # Run performance benchmarks
 dotnet run --project DebugConsole --configuration Release
