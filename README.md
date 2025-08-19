@@ -341,6 +341,7 @@ dotnet run --project DebugConsole -- --debug --verbose
 ## 📞 Contributing & Support
 
 ### Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) for instructions on development setup, coding style, testing, and the pull request process.
 We welcome contributions from the networking and development community:
 - **Protocol Implementations**: Add support for additional protocols or vendors
 - **Bug Reports**: Report issues through GitHub Issues with detailed reproduction steps
