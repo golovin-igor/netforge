@@ -12,7 +12,7 @@
 
 
 
-# NetSim - Network Device Simulation Framework
+# NetSim - NETwork device SIMulation framework
 
 NetSim is a comprehensive, modular C# .NET 9.0 framework for simulating enterprise network devices with realistic CLI behavior, advanced protocol implementations, and sophisticated network topology management. The platform supports 15+ network vendors and provides an extensive protocol architecture for education, testing, network automation, and research.
 
