@@ -100,6 +100,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Handlers", "Handlers", "{90
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Protocols.SNMP", "NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.SNMP\NetForge.Simulation.Protocols.SNMP.csproj", "{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForgeBanner", "NetForgeBanner\NetForgeBanner.csproj", "{75B6F27B-B0B2-4050-9DD8-E72958D54288}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -254,6 +256,10 @@ Global
 		{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75B6F27B-B0B2-4050-9DD8-E72958D54288}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75B6F27B-B0B2-4050-9DD8-E72958D54288}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75B6F27B-B0B2-4050-9DD8-E72958D54288}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75B6F27B-B0B2-4050-9DD8-E72958D54288}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
