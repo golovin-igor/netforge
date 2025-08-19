@@ -1,18 +1,18 @@
-# Contributing to NetSim
+# Contributing to NetForge
 
-Thank you for your interest in contributing to NetSim! This guide explains how to set up your development environment, the preferred coding style, how to run the test suite, and the pull request process.
+Thank you for your interest in contributing to NetForge! This guide explains how to set up your development environment, the preferred coding style, how to run the test suite, and the pull request process.
 
 ## Development Setup
 
 1. Install the latest [.NET SDK](https://dotnet.microsoft.com/en-us/download) (version 9.0 or later).
 2. Clone the repository:
    ```bash
-   git clone https://github.com/your-org/NetSim.git
-   cd NetSim
+   git clone https://github.com/your-org/NetForge.git
+   cd NetForge
    ```
 3. Restore dependencies and build the solution:
    ```bash
-   dotnet build NetSim.sln
+   dotnet build NetForge.sln
    ```
 4. Optional: run the debug console during development:
    ```bash
