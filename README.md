@@ -1,3 +1,17 @@
+
+*NetSim - Empowering Network Education, Research, and Innovation*
+
+```
+███╗   ██╗███████╗████████╗███████╗██╗███╗   ███╗
+████╗  ██║██╔════╝╚══██╔══╝██╔════╝██║████╗ ████║
+██╔██╗ ██║█████╗     ██║   ███████╗██║██╔████╔██║
+██║╚██╗██║██╔══╝     ██║   ╚════██║██║██║╚██╔╝██║
+██║ ╚████║███████╗   ██║   ███████║██║██║ ╚═╝ ██║
+╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚══════╝╚═╝╚═╝     ╚═╝
+```
+
+
+
 # NetSim - Network Device Simulation Framework
 
 NetSim is a comprehensive, modular C# .NET 9.0 framework for simulating enterprise network devices with realistic CLI behavior, advanced protocol implementations, and sophisticated network topology management. The platform supports 15+ network vendors and provides an extensive protocol architecture for education, testing, network automation, and research.
@@ -356,14 +370,3 @@ This project is designed for educational, research, and testing purposes. It pro
 - Vendor-specific behaviors are implemented for educational fidelity, not commercial replication
 
 ---
-
-*NetSim - Empowering Network Education, Research, and Innovation*
-
-```
-███╗   ██╗███████╗████████╗███████╗██╗███╗   ███╗
-████╗  ██║██╔════╝╚══██╔══╝██╔════╝██║████╗ ████║
-██╔██╗ ██║█████╗     ██║   ███████╗██║██╔████╔██║
-██║╚██╗██║██╔══╝     ██║   ╚════██║██║██║╚██╔╝██║
-██║ ╚████║███████╗   ██║   ███████║██║██║ ╚═╝ ██║
-╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚══════╝╚═╝╚═╝     ╚═╝
-```
