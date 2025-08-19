@@ -21,8 +21,8 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     
     <!-- Assembly info -->
-    <Company>NetSim Project</Company>
-    <Product>NetSim Network Simulation Framework</Product>
+    <Company>NetForge Project</Company>
+    <Product>NetForge Network Simulation Framework</Product>
     <Copyright>Copyright © 2024</Copyright>
     
     <!-- Version information -->

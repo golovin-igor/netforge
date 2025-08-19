@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>NetForge.Simulation.Tests</AssemblyName>
+    <RootNamespace>NetForge.Simulation.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- Allow running on newer runtimes since .NET 6 is not installed -->
+    <RollForward>LatestMajor</RollForward>
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="Moq" Version="4.20.70" />
+  </ItemGroup>
+
+  <ItemGroup>
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Alcatel\NetForge.Simulation.CliHandlers.Alcatel.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Anira\NetForge.Simulation.CliHandlers.Anira.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Arista\NetForge.Simulation.CliHandlers.Arista.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Aruba\NetForge.Simulation.CliHandlers.Aruba.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Broadcom\NetForge.Simulation.CliHandlers.Broadcom.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Cisco\NetForge.Simulation.CliHandlers.Cisco.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Common\NetForge.Simulation.CliHandlers.Common.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Dell\NetForge.Simulation.CliHandlers.Dell.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Extreme\NetForge.Simulation.CliHandlers.Extreme.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.F5\NetForge.Simulation.CliHandlers.F5.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Fortinet\NetForge.Simulation.CliHandlers.Fortinet.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Huawei\NetForge.Simulation.CliHandlers.Huawei.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Juniper\NetForge.Simulation.CliHandlers.Juniper.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Linux\NetForge.Simulation.CliHandlers.Linux.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.MikroTik\NetForge.Simulation.CliHandlers.MikroTik.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Nokia\NetForge.Simulation.CliHandlers.Nokia.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.Core\NetForge.Simulation.csproj" />
+    <ProjectReference Include="..\NetForge.Simulation.Common\NetForge.Simulation.Common.csproj" />
+  </ItemGroup>
+
+</Project> 

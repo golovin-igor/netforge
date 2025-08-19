@@ -35,15 +35,15 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
         
     - name: 📦 Restore packages
-      run: dotnet restore NetSim.sln
+      run: dotnet restore NetForge.sln
       
     - name: 🔨 Build
-      run: dotnet build NetSim.sln --no-restore --configuration Release
+      run: dotnet build NetForge.sln --no-restore --configuration Release
             
     - name: 🧪 Test Simulation Core  
       run: |
         echo "::group::🌐 Testing Simulation Core"
-        dotnet test NetSim.Simulation.Tests/ \
+        dotnet test NetForge.Simulation.Tests/ \
           --no-build \
           --configuration Release \
           --logger "console;verbosity=normal" \
@@ -55,7 +55,7 @@ jobs:
     - name: 🧪 Test Protocol Implementations
       run: |
         echo "::group::🔌 Testing Protocol Implementations"
-        dotnet test NetSim.Simulation.Protocols.Tests/ \
+        dotnet test NetForge.Simulation.Protocols.Tests/ \
           --no-build \
           --configuration Release \
           --logger "console;verbosity=normal" \
@@ -67,7 +67,7 @@ jobs:
     - name: 🧪 Test CLI Handlers
       run: |
         echo "::group::🔧 Testing CLI Handlers"
-        dotnet test NetSim.Simulation.CliHandlers/NetSim.Simulation.CliHandlers.Tests/ \
+        dotnet test NetForge.Simulation.CliHandlers/NetForge.Simulation.CliHandlers.Tests/ \
           --no-build \
           --configuration Release \
           --logger "console;verbosity=normal" \
@@ -80,12 +80,12 @@ jobs:
     - name: 📊 Test Summary
       if: always()
       run: |
-        echo "## 🧪 NetSim Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "## 🧪 NetForge Test Results" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Test Projects" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ **NetSim.Simulation.Tests**: Core simulation and protocol testing" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ **NetSim.Simulation.Protocols.Tests**: New protocol architecture testing" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ **NetSim.Simulation.CliHandlers.Tests**: Multi-vendor CLI command validation" >> $GITHUB_STEP_SUMMARY  
+        echo "- ✅ **NetForge.Simulation.Tests**: Core simulation and protocol testing" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ **NetForge.Simulation.Protocols.Tests**: New protocol architecture testing" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ **NetForge.Simulation.CliHandlers.Tests**: Multi-vendor CLI command validation" >> $GITHUB_STEP_SUMMARY  
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "### Test Scale" >> $GITHUB_STEP_SUMMARY
         echo "- 🔢 **1,327+ Test Methods**: Comprehensive test coverage across all components" >> $GITHUB_STEP_SUMMARY
