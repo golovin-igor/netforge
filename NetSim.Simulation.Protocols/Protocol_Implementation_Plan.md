@@ -1614,7 +1614,87 @@ public class ShowSnmpHandler : BaseCliHandler
 }
 ```
 
-**2. HTTP/HTTPS (Web Management Interface) - Priority: MEDIUM**
+**2. SNMP (Simple Network Management Protocol) - Priority: HIGH**
+```csharp
+namespace NetSim.Simulation.Protocols.SNMP
+{
+    public class SnmpProtocol : BaseProtocol
+    {
+        private SnmpAgent _snmpAgent;
+        private readonly Dictionary<string, SnmpVariable> _mibDatabase = new();
+        
+        protected override void OnInitialized()
+        {
+            var snmpConfig = GetSnmpConfig();
+            if (snmpConfig.IsEnabled)
+            {
+                InitializeMibDatabase();
+                StartSnmpAgent(snmpConfig);
+            }
+        }
+        
+        private void InitializeMibDatabase()
+        {
+            // Populate MIB with device information
+            _mibDatabase["1.3.6.1.2.1.1.1.0"] = new SnmpVariable("sysDescr", _device.Description);
+            _mibDatabase["1.3.6.1.2.1.1.3.0"] = new SnmpVariable("sysUpTime", GetSystemUpTime());
+            _mibDatabase["1.3.6.1.2.1.1.5.0"] = new SnmpVariable("sysName", _device.Hostname);
+            // Add interface counters, routing table, etc.
+        }
+        
+        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        {
+            // Update MIB variables with current device state
+            await UpdateMibDatabase(device);
+            
+            // Process any pending SNMP requests via SNMP Handlers
+            await ProcessSnmpRequests();
+        }
+    }
+}
+```
+
+**SNMP Handler Integration:**
+SNMP protocol requires specialized SNMP handlers similar to CLI handlers but for SNMP protocol operations. These handlers will be implemented per vendor to support vendor-specific MIB extensions and SNMP behaviors.
+
+**Architecture Pattern:**
+```csharp
+public class CiscoSnmpHandler : BaseSnmpHandler
+{
+    protected override async Task<SnmpResult> HandleGetRequest(SnmpRequest request)
+    {
+        // Cisco-specific SNMP GET handling
+        // Support for Cisco private MIBs (1.3.6.1.4.1.9.x.x.x)
+        return await ProcessCiscoSpecificOids(request);
+    }
+    
+    protected override async Task<SnmpResult> HandleSetRequest(SnmpRequest request)
+    {
+        // Cisco-specific SNMP SET handling with validation
+        return await ProcessCiscoConfiguration(request);
+    }
+}
+```
+
+**Implementation Plan:**
+- SNMP Protocol implementation following the established pattern
+- Integration with dedicated SNMP Handler architecture
+- Vendor-specific SNMP handler implementations
+- MIB database management with standard and private MIBs
+- SNMP agent simulation with GET/SET/GETNEXT/GETBULK support
+- Trap/notification generation for network events
+
+**Integration with SNMP Handlers:**
+The SNMP protocol will integrate with the SNMP Handler system (similar to CLI Handler integration) to provide:
+- Vendor-specific MIB support
+- Custom OID handling per vendor
+- SNMP community string management
+- Trap destination configuration
+- Performance monitoring via SNMP
+
+For detailed SNMP Handler implementation, see: [SNMP_HANDLERS_IMPLEMENTATION_PLAN.md](../NetSim.Simulation.SnmpHandlers/SNMP_HANDLERS_IMPLEMENTATION_PLAN.md)
+
+**3. HTTP/HTTPS (Web Management Interface) - Priority: MEDIUM**
 - Basic web server for device management
 - REST API for configuration
 - Web-based monitoring interface

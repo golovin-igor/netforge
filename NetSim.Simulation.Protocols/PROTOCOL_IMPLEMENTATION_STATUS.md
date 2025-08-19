@@ -8,7 +8,7 @@ This document tracks the current implementation status of the Protocol Architect
 |-------|--------|------------|-------|
 | **Phase 1: Foundation** | ✅ **COMPLETED** | 100% | All infrastructure ready |
 | **Phase 2: Telnet Protocol** | ✅ **COMPLETED** | 100% | First protocol fully implemented |
-| **Phase 3: Core Protocols** | 🔄 **READY** | 0% | Foundation ready for implementation |
+| **Phase 3: Core Protocols** | 🔄 **IN PROGRESS** | 60% | Discovery protocols complete, routing protocols done |
 | **Phase 4: Advanced Features** | ⏳ **PLANNED** | 0% | Awaiting core protocols |
 | **Phase 5: Migration** | ⏳ **PLANNED** | 0% | Awaiting completion of new protocols |
 
@@ -98,9 +98,9 @@ This document tracks the current implementation status of the Protocol Architect
 #### 🔍 **Discovery Protocols** (Medium Priority)
 | Protocol | Status | Priority | Complexity | Legacy Status |
 |----------|--------|----------|------------|---------------|
-| **CDP** | ⏳ **PLANNED** | MEDIUM | Low | ✅ Legacy exists in Common |
-| **LLDP** | ⏳ **PLANNED** | MEDIUM | Low | ✅ Legacy exists in Common |
-| **ARP** | ⏳ **PLANNED** | HIGH | Low | ✅ Legacy logic in NetworkDevice |
+| **CDP** | ✅ **COMPLETED** | MEDIUM | Low | Full Cisco discovery protocol with neighbor detection |
+| **LLDP** | ✅ **COMPLETED** | MEDIUM | Low | IEEE 802.1AB standard with comprehensive TLV support |
+| **ARP** | ✅ **COMPLETED** | HIGH | Low | Full address resolution with table management |
 
 #### 🛡️ **Redundancy Protocols** (Medium Priority)
 | Protocol | Status | Priority | Complexity | Legacy Status |
@@ -190,6 +190,21 @@ NetSim.Simulation.Protocols/
 │   ├── BgpModels.cs                             ✅ Full RIB management and path attributes
 │   └── BgpProtocolPlugin.cs                     ✅ Plugin discovery ready
 │
+├── NetSim.Simulation.Protocols.CDP/            ✅ COMPLETED
+│   ├── CdpProtocol.cs                           ✅ Full Cisco discovery with device info exchange
+│   ├── Models.cs                                ✅ CDP neighbor management and state tracking
+│   └── CdpProtocolPlugin.cs                     ✅ Plugin discovery ready
+│
+├── NetSim.Simulation.Protocols.LLDP/           ✅ COMPLETED
+│   ├── LldpProtocol.cs                          ✅ IEEE 802.1AB standard with full TLV support
+│   ├── LldpModels.cs                            ✅ Standards-compliant neighbor discovery
+│   └── LldpProtocolPlugin.cs                    ✅ Plugin discovery ready
+│
+├── NetSim.Simulation.Protocols.ARP/            ✅ COMPLETED
+│   ├── ArpProtocol.cs                           ✅ Complete address resolution with table sync
+│   ├── Models.cs                                ✅ ARP table management and entry lifecycle
+│   └── ArpProtocolPlugin.cs                     ✅ Plugin discovery ready
+│
 └── [Future Protocol Projects]/                  🔄 READY FOR IMPLEMENTATION
     ├── NetSim.Simulation.Protocols.RIP/        ⏳ PLANNED
     ├── NetSim.Simulation.Protocols.EIGRP/      ⏳ PLANNED
@@ -257,5 +272,5 @@ NetSim.Simulation.Protocols/
 
 ---
 
-*Last Updated: January 19, 2025*
-*Status: Foundation Complete, Telnet Protocol Complete, Ready for Core Protocol Implementation*
+*Last Updated: August 19, 2025*
+*Status: Foundation Complete, Management Protocols Complete, Discovery Protocols Complete, Routing Protocols Complete*

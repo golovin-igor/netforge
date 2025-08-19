@@ -85,6 +85,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Protocols
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Protocols.Tests", "NetSim.Simulation.Protocols.Tests\NetSim.Simulation.Protocols.Tests.csproj", "{FCA87599-7865-4260-9535-5C11BB46DE64}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetSim.Simulation.SnmpHandlers", "NetSim.Simulation.SnmpHandlers", "{44E16502-191B-4E81-98E1-18BB8BAD6B88}"
+	ProjectSection(SolutionItems) = preProject
+		NetSim.Simulation.SnmpHandlers\SNMP_HANDLERS_IMPLEMENTATION_PLAN.md = NetSim.Simulation.SnmpHandlers\SNMP_HANDLERS_IMPLEMENTATION_PLAN.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Handlers", "Handlers", "{9052BD1E-7B4A-45CB-952E-A7E1FED3333A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.Protocols.SNMP", "NetSim.Simulation.Protocols\NetSim.Simulation.Protocols.SNMP\NetSim.Simulation.Protocols.SNMP.csproj", "{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -235,6 +244,10 @@ Global
 		{FCA87599-7865-4260-9535-5C11BB46DE64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCA87599-7865-4260-9535-5C11BB46DE64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCA87599-7865-4260-9535-5C11BB46DE64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -276,5 +289,7 @@ Global
 		{BA65E1A4-3C92-4154-B0A3-656EF6FB04B2} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
 		{DCE4AE7E-0A94-4850-99F0-52F9F1D71838} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
 		{FCA87599-7865-4260-9535-5C11BB46DE64} = {868FD21A-97B3-4991-8411-FB9763469FC4}
+		{44E16502-191B-4E81-98E1-18BB8BAD6B88} = {9052BD1E-7B4A-45CB-952E-A7E1FED3333A}
+		{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
 	EndGlobalSection
 EndGlobal
