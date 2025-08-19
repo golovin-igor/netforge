@@ -7,6 +7,12 @@ using Xunit;
 
 namespace NetSim.Simulation.Tests.Protocols
 {
+    /// <summary>
+    /// LEGACY TESTS: IGRP protocol tests for old implementation in NetSim.Simulation.Common.
+    /// These tests are for the legacy IGRP implementation that will be migrated to the new protocol architecture.
+    /// Once IGRP is migrated to NetSim.Simulation.Protocols.IGRP, create new tests in NetSim.Simulation.Protocols.Tests.
+    /// </summary>
+    [Trait("Category", "Legacy")]
     public class IgrpProtocolTests : IDisposable
     {
         private readonly Network _network;

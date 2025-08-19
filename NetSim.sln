@@ -41,6 +41,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.CliHandlers.Nokia", "NetSim.Simulation.CliHandlers\NetSim.Simulation.CliHandlers.Nokia\NetSim.Simulation.CliHandlers.Nokia.csproj", "{7EE86AAE-7D64-45AE-ACB0-69CB0F2CEBB3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{868FD21A-97B3-4991-8411-FB9763469FC4}"
+	ProjectSection(SolutionItems) = preProject
+		NetSim.Simulation.Tests\TESTING_STRATEGY.md = NetSim.Simulation.Tests\TESTING_STRATEGY.md
+		NetSim.Simulation.Tests\TEST_ACTUALIZATION_SUMMARY.md = NetSim.Simulation.Tests\TEST_ACTUALIZATION_SUMMARY.md
+		NetSim.Simulation.Tests\TEST_ALIGNMENT_STATUS.md = NetSim.Simulation.Tests\TEST_ALIGNMENT_STATUS.md
+		NetSim.Simulation.Tests\TEST_COMPLETION_REPORT.md = NetSim.Simulation.Tests\TEST_COMPLETION_REPORT.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetSim.Simulation.CliHandlers.Tests", "NetSim.Simulation.CliHandlers\NetSim.Simulation.CliHandlers.Tests\NetSim.Simulation.CliHandlers.Tests.csproj", "{DA32C07B-2D25-4638-904D-72BFBB9B9716}"
 EndProject

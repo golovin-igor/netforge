@@ -8,6 +8,12 @@ using Xunit;
 
 namespace NetSim.Simulation.Tests.Protocols
 {
+    /// <summary>
+    /// LEGACY TESTS: IS-IS protocol tests for old implementation in NetSim.Simulation.Common.
+    /// These tests are for the legacy IS-IS implementation that will be migrated to the new protocol architecture.
+    /// Once IS-IS is migrated to NetSim.Simulation.Protocols.ISIS, create new tests in NetSim.Simulation.Protocols.Tests.
+    /// </summary>
+    [Trait("Category", "Legacy")]
     public class IsisProtocolTests : IDisposable
     {
         private readonly Network _network;

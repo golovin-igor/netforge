@@ -8,6 +8,12 @@ using Xunit;
 
 namespace NetSim.Simulation.Tests.Protocols
 {
+    /// <summary>
+    /// LEGACY TESTS: RIP protocol tests for old implementation in NetSim.Simulation.Common.
+    /// These tests are for the legacy RIP implementation that will be migrated to the new protocol architecture.
+    /// Once RIP is migrated to NetSim.Simulation.Protocols.RIP, create new tests in NetSim.Simulation.Protocols.Tests.
+    /// </summary>
+    [Trait("Category", "Legacy")]
     public class RipProtocolTests : IDisposable
     {
         private readonly Network _network;

@@ -8,6 +8,12 @@ using Xunit;
 
 namespace NetSim.Simulation.Tests.Protocols
 {
+    /// <summary>
+    /// LEGACY TESTS: HSRP protocol tests for old implementation in NetSim.Simulation.Common.
+    /// These tests are for the legacy HSRP implementation that will be migrated to the new protocol architecture.
+    /// Once HSRP is migrated to NetSim.Simulation.Protocols.HSRP, create new tests in NetSim.Simulation.Protocols.Tests.
+    /// </summary>
+    [Trait("Category", "Legacy")]
     public class HsrpProtocolTests : IDisposable
     {
         private readonly Network _network;
