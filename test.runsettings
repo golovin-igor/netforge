@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <!-- Configurations that affect the Test Framework -->
+  <RunConfiguration>
+    <!-- Use 0 for maximum process-level parallelization. This does not force parallelization within the test DLL (on the thread-level). You can also change it from the Test menu; choose "Run tests in parallel". Parallel testing may make your tests finish sooner. -->
+    <MaxCpuCount>4</MaxCpuCount>
+    <!-- Path relative to directory that contains .runsettings file-->
+    <ResultsDirectory>.\TestResults</ResultsDirectory>
+
+    <!-- x86 or x64 -->
+    <!-- You can also change it from the Test menu; choose "Test Settings" -->
+    <TargetPlatform>x64</TargetPlatform>
+
+    <!-- Framework35 | [Framework40] | Framework45 -->
+    <TargetFrameworkVersion>net9.0</TargetFrameworkVersion>
+
+    <!-- Path to Test Adapters -->
+    <TestAdaptersPaths>%UserProfile%\.nuget\packages</TestAdaptersPaths>
+
+    <!-- TestSessionTimeout was introduced in Visual Studio 2017 version 15.5 -->
+    <!-- Specify timeout in milliseconds. A valid value should be greater than 0 -->
+    <TestSessionTimeout>1800000</TestSessionTimeout> <!-- 30 minutes -->
+
+    <!-- true or false -->
+    <!-- Value that specifies the exit code when no tests are discovered -->
+    <TreatNoTestsAsError>true</TreatNoTestsAsError>
+  </RunConfiguration>
+
+  <!-- Configurations for data collectors -->
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0" assemblyQualifiedName="Microsoft.VisualStudio.Coverage.DynamicCoverageDataCollector, Microsoft.VisualStudio.TraceCollector, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+        <Configuration>
+          <CodeCoverage>
+            <!-- Match assembly file paths: -->
+            <ModulePaths>
+              <Include>
+                <ModulePath>.*\.dll$</ModulePath>
+                <ModulePath>.*\.exe$</ModulePath>
+              </Include>
+              <Exclude>
+                <ModulePath>.*CPPUnitTestFramework.*</ModulePath>
+                <ModulePath>.*testhost.*</ModulePath>
+                <ModulePath>.*\.Tests\..*</ModulePath>
+              </Exclude>
+            </ModulePaths>
+
+            <!-- Match fully qualified names of functions: -->
+            <!-- (Use "\." to delimit namespaces in C# or Visual Basic, "::" in C++, and "." in JavaScript.) -->
+            <Functions>
+              <Exclude>
+                <Function>^Fabrikam\.UnitTest\..*</Function>
+                <Function>^std::.*</Function>
+                <Function>^ATL::.*</Function>
+                <Function>.*::__GetTestMethodInfo.*</Function>
+                <Function>^Microsoft::VisualStudio::CppCodeCoverageFramework::.*</Function>
+                <Function>^Microsoft::VisualStudio::CppUnitTestFramework::.*</Function>
+              </Exclude>
+            </Functions>
+
+            <!-- Match attributes on any code element: -->
+            <Attributes>
+              <Exclude>
+                <!-- Don't forget "Attribute" at the end of the name -->
+                <Attribute>^System\.Diagnostics\.DebuggerHiddenAttribute$</Attribute>
+                <Attribute>^System\.Diagnostics\.DebuggerNonUserCodeAttribute$</Attribute>
+                <Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
+                <Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
+              </Exclude>
+            </Attributes>
+
+            <!-- Match the path of the source files in which each method is defined: -->
+            <Sources>
+              <Exclude>
+                <Source>.*\\atlmfc\\.*</Source>
+                <Source>.*\\vctools\\.*</Source>
+                <Source>.*\\public\\sdk\\.*</Source>
+                <Source>.*\\microsoft sdks\\.*</Source>
+                <Source>.*\\vc\\include\\.*</Source>
+              </Exclude>
+            </Sources>
+
+            <!-- Match the company name property in the assembly: -->
+            <CompanyNames>
+              <Exclude>
+                <CompanyName>.*microsoft.*</CompanyName>
+              </Exclude>
+            </CompanyNames>
+
+            <!-- Match the public key token of a signed assembly: -->
+            <PublicKeyTokens>
+              <!-- Exclude Visual Studio extensions: -->
+              <Exclude>
+                <PublicKeyToken>^B77A5C561934E089$</PublicKeyToken>
+                <PublicKeyToken>^B03F5F7F11D50A3A$</PublicKeyToken>
+                <PublicKeyToken>^31BF3856AD364E35$</PublicKeyToken>
+                <PublicKeyToken>^89845DCD8080CC91$</PublicKeyToken>
+                <PublicKeyToken>^71E9BCE111E9429C$</PublicKeyToken>
+                <PublicKeyToken>^8F50407C4E9E73B6$</PublicKeyToken>
+                <PublicKeyToken>^E361AF139669C375$</PublicKeyToken>
+              </Exclude>
+            </PublicKeyTokens>
+
+            <!-- We recommend you do not change the following values: -->
+
+            <!-- Set this to True to collect coverage information for functions marked with the "SecuritySafeCritical" attribute. Instead of writing directly into a memory location from such functions, code coverage inserts a probe that redirects to another function, which in turns writes into memory. -->
+            <UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
+            <!-- When set to True, collects coverage information from child processes that are launched with low-level ACLs, for example, UWP apps. -->
+            <AllowLowIntegrityProcesses>True</AllowLowIntegrityProcesses>
+            <!-- When set to True, collects coverage information from child processes that are launched by test or production code. -->
+            <CollectFromChildProcesses>True</CollectFromChildProcesses>
+            <!-- When set to True, restarts the IIS process and collects coverage information from it. -->
+            <CollectAspDotNet>False</CollectAspDotNet>
+          </CodeCoverage>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+
+  <!-- Parameters used by tests at run time -->
+  <TestRunParameters>
+    <Parameter name="webAppUrl" value="http://localhost" />
+    <Parameter name="docsUrl" value="https://docs.microsoft.com" />
+  </TestRunParameters>
+
+  <!-- Configuration for loggers -->
+  <LoggerRunSettings>
+    <Loggers>
+      <Logger friendlyName="console" enabled="True">
+        <Configuration>
+          <Verbosity>normal</Verbosity>
+        </Configuration>
+      </Logger>
+      <Logger friendlyName="trx" enabled="True">
+        <Configuration>
+          <LogFileName>testResults.trx</LogFileName>
+        </Configuration>
+      </Logger>
+      <Logger friendlyName="html" enabled="True">
+        <Configuration>
+          <LogFileName>testResults.html</LogFileName>
+        </Configuration>
+      </Logger>
+    </Loggers>
+  </LoggerRunSettings>
+
+  <!-- Adapter Specific sections -->
+
+  <!-- xUnit.net configuration -->
+  <xUnit>
+    <DiagnosticMessages>false</DiagnosticMessages>
+    <AppDomain>false</AppDomain>
+    <PreEnumerateTheories>false</PreEnumerateTheories>
+    <ShadowCopy>false</ShadowCopy>
+    <MaxParallelThreads>4</MaxParallelThreads>
+    <ParallelizeTestCollections>true</ParallelizeTestCollections>
+    <ParallelizeAssemblies>true</ParallelizeAssemblies>
+  </xUnit>
+</RunSettings>
