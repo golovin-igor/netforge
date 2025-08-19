@@ -7,13 +7,8 @@ namespace NetSim.Simulation.Protocols.Common
     /// <summary>
     /// Enhanced interface for network protocols with state management and vendor support
     /// </summary>
-    public interface IDeviceProtocol
+    public interface IDeviceProtocol : INetworkProtocol
     {
-        /// <summary>
-        /// The type of protocol (OSPF, BGP, etc.)
-        /// </summary>
-        ProtocolType Type { get; }
-        
         /// <summary>
         /// Human-readable name of the protocol
         /// </summary>
@@ -23,26 +18,6 @@ namespace NetSim.Simulation.Protocols.Common
         /// Version of the protocol implementation
         /// </summary>
         string Version { get; }
-        
-        /// <summary>
-        /// Initialize the protocol with device context
-        /// </summary>
-        /// <param name="device">The network device this protocol runs on</param>
-        void Initialize(NetworkDevice device);
-        
-        /// <summary>
-        /// Update the protocol state (called periodically by the simulation engine)
-        /// </summary>
-        /// <param name="device">The network device this protocol runs on</param>
-        /// <returns>Task representing the async operation</returns>
-        Task UpdateState(NetworkDevice device);
-        
-        /// <summary>
-        /// Subscribe to network events for this protocol
-        /// </summary>
-        /// <param name="eventBus">The network event bus</param>
-        /// <param name="self">Reference to the device running this protocol</param>
-        void SubscribeToEvents(NetworkEventBus eventBus, NetworkDevice self);
         
         /// <summary>
         /// Get the current state of the protocol for CLI handlers and monitoring

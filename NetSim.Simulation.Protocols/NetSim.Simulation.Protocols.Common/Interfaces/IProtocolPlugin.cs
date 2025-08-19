@@ -1,4 +1,5 @@
 using NetSim.Simulation.Interfaces;
+using NetSim.Simulation.Protocols.Common;
 
 namespace NetSim.Simulation.Protocols.Common
 {
