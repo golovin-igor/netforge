@@ -59,7 +59,6 @@ jobs:
           --no-build \
           --configuration Release \
           --logger "console;verbosity=normal" \
-          --parallel \
           --maxcpucount:4 \
           --settings:test.runsettings
         echo "::endgroup::"
