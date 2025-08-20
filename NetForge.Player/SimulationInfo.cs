@@ -1,4 +1,14 @@
-﻿using System.Reflection;
+﻿// TODO: Enhance SimulationInfo for comprehensive capability reporting
+// - Add version information display
+// - Include build timestamp and commit hash
+// - Show loaded plugin versions
+// - Display configuration status
+// - Add performance metrics summary
+// - Include system requirements check
+// - Show available network interfaces for external connectivity
+// - Display licensing and usage information
+
+using System.Reflection;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Interfaces;
 using NetForge.Simulation.Protocols.Common;
@@ -25,11 +35,27 @@ public static class SimulationInfo
 
     public static void Print()
     {
+        // TODO: Expand capability reporting with additional information
+        // - System information (OS, .NET version, available memory)
+        // - Network interface discovery for external connectivity
+        // - Plugin health checks and validation
+        // - Configuration file location and status
+        // - Performance benchmarks summary
+        // - Security features status
+        // - Available terminal server ports and protocols
+        
         Console.WriteLine("Capabilities:");
         Console.ForegroundColor = ConsoleColor.Green;
         
         var vendors = ProgressIndicator.WithProgress("Scanning vendors", GetVendors);
         var protocols = ProgressIndicator.WithProgress("Scanning protocols", GetSimulatedProtocols);
+        
+        // TODO: Add additional capability scanning
+        // - Scan available terminal servers
+        // - Check external connectivity prerequisites
+        // - Validate configuration files
+        // - Test network bridge capabilities
+        // - Check administrative privileges for virtual interfaces
         
         Console.WriteLine($"Vendors:\n{vendors}\nProtocols:\n{protocols}\n");
         Console.ResetColor();

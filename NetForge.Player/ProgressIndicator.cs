@@ -1,3 +1,13 @@
+// TODO: Enhance ProgressIndicator for better user experience
+// - Add progress percentage display for operations that support it
+// - Implement different animation styles (spinner, progress bar, dots)
+// - Add color coding for different operation types (info, warning, error)
+// - Support for multiple concurrent progress indicators
+// - Add elapsed time display for long-running operations
+// - Implement cancellation support with user feedback
+// - Add operation completion statistics
+// - Support for nested progress indicators
+
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,11 +16,20 @@ namespace NetForge.Player;
 
 public class ProgressIndicator : IDisposable
 {
+    // TODO: Add configuration options for progress display
+    // - Configurable animation speed and style
+    // - Color themes for different operation types
+    // - Progress bar width and character set
+    // - Message formatting options
+    
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly Task _animationTask;
     private readonly string _message;
     private bool _disposed;
 
+    // TODO: Extend spinner character sets for different themes
+    // - Add progress bar characters: ▓░, ━┅, █▉▊▋▌▍▎▏
+    // - Add themed spinners: ⠁⠂⠄⡀⢀⠠⠐⠈, ◢◣◤◥, ←↖↑↗→↘↓↙
     private static readonly char[] SpinnerChars = { '|', '/', '-', '\\' };
 
     public ProgressIndicator(string message = "Loading")
