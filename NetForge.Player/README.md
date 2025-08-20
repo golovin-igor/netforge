@@ -38,6 +38,13 @@ NetForge.Player serves as the primary user interface and runtime environment for
 - **WebSocket support** for web-based interfaces
 - **Multi-session management** with authentication
 
+### External Network Connectivity
+- **Real IP address binding** for device interfaces
+- **External tool integration** (Wireshark, network scanners, monitoring systems)
+- **Virtual network interface creation** for seamless host integration
+- **Multi-protocol support** (Telnet, SSH, SNMP, HTTP) on actual IP addresses
+- **Bridge mode** for connecting simulated networks to real infrastructure
+
 ## Getting Started
 
 ### Prerequisites
@@ -114,12 +121,31 @@ dotnet run --project NetForge.Player/
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   User Input    │    │  Player Engine   │    │  NetForge Core    │
+│   User Input    │    │  Player Engine   │    │  NetForge Core  │
 │                 │    │                  │    │                 │
 │ • CLI Commands  │───▶│ • Command Parser │───▶│ • Device Mgmt   │
 │ • Terminal      │    │ • Session Mgmt   │    │ • Protocol Sim  │
 │ • Web Interface │    │ • Event Handler  │    │ • Network Ops   │
+│ • External Tools│    │ • Network Bridge │    │                 │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │
+                       ┌────────▼─────────┐
+                       │  Network Bridge  │
+                       │                  │
+                       │ • Virtual IFs    │
+                       │ • IP Binding     │
+                       │ • Traffic Proxy  │
+                       │ • Protocol Route │
+                       └──────────────────┘
+                                │
+        ┌───────────────────────┼───────────────────────┐
+        │                       │                       │
+   ┌────▼────┐             ┌────▼────┐             ┌────▼────┐
+   │External │             │External │             │External │
+   │Router1  │             │Router2  │             │Switch1  │
+   │192.168. │             │192.168. │             │192.168. │
+   │100.10   │             │100.11   │             │100.12   │
+   └─────────┘             └─────────┘             └─────────┘
 ```
 
 ## Configuration Files
@@ -137,6 +163,20 @@ dotnet run --project NetForge.Player/
     "telnet_port": 2323,
     "enable_websocket": true,
     "websocket_port": 8080
+  },
+  "network_connectivity": {
+    "enabled": false,
+    "mode": "virtual_interfaces",
+    "bridge_network": "192.168.100.0/24",
+    "gateway": "192.168.100.1",
+    "interface_prefix": "netsim",
+    "auto_create_interfaces": true,
+    "require_admin": true
+  },
+  "security": {
+    "isolate_simulated_network": true,
+    "allowed_external_hosts": ["192.168.100.0/24"],
+    "enable_firewall": true
   },
   "logging": {
     "level": "Info",
@@ -205,6 +245,343 @@ show-topology                       # Display network topology
 save-scenario <filename>            # Save current network state
 load-scenario <filename>            # Load network scenario
 list-scenarios                      # Show saved scenarios
+```
+
+### External Connectivity Commands
+```
+enable-network-bridge               # Enable external network bridge
+disable-network-bridge              # Disable external connectivity
+show-network-bridge                 # Display bridge status and statistics
+create-virtual-interface <name>     # Create virtual network interface
+delete-virtual-interface <name>     # Remove virtual interface
+bind-device-ip <hostname> <ip>      # Bind device to external IP address
+unbind-device-ip <hostname>         # Remove IP binding
+test-external-access <ip>           # Test connectivity to external IP
+show-external-devices               # List externally accessible devices
+```
+
+## External Network Connectivity
+
+NetForge.Player supports binding simulated device interfaces to real IP addresses, enabling external tools and systems to connect directly to simulated devices as if they were physical hardware.
+
+### Overview
+
+This feature creates network bridges between the simulated environment and the host system, allowing:
+- **Real network tools** (ping, traceroute, Wireshark) to interact with simulated devices
+- **External monitoring systems** to collect SNMP data, connect via Telnet/SSH
+- **Network automation tools** to manage simulated devices using real IP addresses
+- **Hybrid testing scenarios** mixing simulated and physical network components
+
+### Use Cases
+
+#### Network Monitoring and Analysis
+- **SNMP Integration**: Connect enterprise monitoring tools (Nagios, Zabbix, PRTG) to simulated devices
+- **Traffic Analysis**: Use Wireshark or tcpdump to capture and analyze protocol behavior
+- **Performance Testing**: Benchmark network protocols under realistic conditions
+
+#### Automation and Configuration Management
+- **Ansible/Puppet Integration**: Test infrastructure automation scripts against simulated networks
+- **CI/CD Testing**: Validate network configurations in automated testing pipelines  
+- **Training and Certification**: Practice with real network tools on simulated infrastructure
+
+#### Hybrid Network Testing
+- **Migration Testing**: Connect simulated devices to existing physical networks during migrations
+- **Vendor Evaluation**: Test new network equipment alongside simulated existing infrastructure
+- **Disaster Recovery**: Simulate network failures and test recovery procedures with real tools
+
+### Implementation Approaches
+
+#### 1. Virtual Network Interfaces (Recommended)
+Creates TAP/TUN interfaces on the host system for each device interface:
+
+```json
+{
+  "network_connectivity": {
+    "mode": "virtual_interfaces",
+    "auto_create_interfaces": true,
+    "interface_prefix": "netsim",
+    "bridge_to_host": true
+  }
+}
+```
+
+**Benefits:**
+- Full network stack integration
+- Support for all protocols (L2/L3)
+- Realistic packet flow and routing
+- Works with network analysis tools
+
+**Requirements:**
+- Administrator/root privileges
+- TAP driver support (Windows: TAP-Windows, Linux/macOS: built-in)
+
+#### 2. Host Network Integration
+Binds device IP addresses directly to host network interfaces:
+
+```json
+{
+  "network_connectivity": {
+    "mode": "host_binding",
+    "bind_interfaces": ["192.168.100.0/24", "10.0.0.0/8"],
+    "exclude_ranges": ["192.168.100.1-192.168.100.10"]
+  }
+}
+```
+
+**Benefits:**
+- No additional drivers required
+- Direct IP address accessibility
+- Lower overhead than virtual interfaces
+- Easy integration with existing networks
+
+**Limitations:**
+- Requires available IP address space on host
+- May conflict with existing network configuration
+
+#### 3. NAT/Proxy Mode
+Routes external connections through the Player process:
+
+```json
+{
+  "network_connectivity": {
+    "mode": "nat_proxy",
+    "external_interface": "0.0.0.0",
+    "port_mapping": {
+      "telnet": "23xx",
+      "ssh": "22xx", 
+      "snmp": "161xx",
+      "http": "80xx"
+    }
+  }
+}
+```
+
+**Benefits:**
+- No special network configuration required
+- Works in restricted environments
+- Automatic port management
+- Built-in security isolation
+
+### Configuration Examples
+
+#### Basic External Connectivity
+```json
+{
+  "name": "External Access Network",
+  "network_connectivity": {
+    "enabled": true,
+    "mode": "virtual_interfaces",
+    "bridge_network": "192.168.100.0/24",
+    "gateway": "192.168.100.1"
+  },
+  "devices": [
+    {
+      "hostname": "Router1",
+      "vendor": "cisco",
+      "interfaces": [
+        {
+          "name": "GigabitEthernet0/0",
+          "ip_address": "192.168.100.10",
+          "subnet_mask": "255.255.255.0",
+          "external_accessible": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+#### Multi-Device External Access
+```bash
+# Create network with external connectivity
+create-device cisco Router1 --external-ip 192.168.100.10
+create-device juniper Router2 --external-ip 192.168.100.11
+create-device arista Switch1 --external-ip 192.168.100.12
+
+# Configure interfaces for external access
+connect Router1
+configure terminal
+interface GigabitEthernet0/1
+ip address 192.168.100.10 255.255.255.0
+no shutdown
+enable-external-access
+exit
+
+# Start external connectivity
+enable-network-bridge --network 192.168.100.0/24
+```
+
+### External Tool Integration
+
+#### Network Analysis with Wireshark
+```bash
+# Capture traffic on simulated device interfaces
+wireshark -i netsim0 -f "host 192.168.100.10"
+
+# Monitor protocol convergence
+tshark -i netsim0 -f "ospf or bgp" -V
+```
+
+#### SNMP Monitoring
+```bash
+# Query simulated device via SNMP
+snmpwalk -v2c -c public 192.168.100.10 1.3.6.1.2.1.1
+
+# Monitor interface statistics
+snmpget -v2c -c public 192.168.100.10 1.3.6.1.2.1.2.2.1.10.1
+```
+
+#### Telnet/SSH Access
+```bash
+# Connect to simulated device via standard tools
+telnet 192.168.100.10
+ssh admin@192.168.100.10
+
+# Use network automation tools
+ansible-playbook -i inventory playbook.yml
+```
+
+#### Network Testing Tools
+```bash
+# Standard network connectivity tests
+ping 192.168.100.10
+traceroute 192.168.100.10
+mtr --report-cycles 10 192.168.100.10
+
+# Port scanning and service discovery
+nmap -sS -O 192.168.100.0/24
+nmap -sU -p 161 192.168.100.0/24  # SNMP discovery
+```
+
+### Architecture Integration
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     External Network                        │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
+│  │  Wireshark  │  │ Monitoring  │  │ Automation Tools    │  │
+│  │             │  │   Systems   │  │ (Ansible/Puppet)    │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+└─────────────┬───────────────┬───────────────────┬───────────┘
+              │               │                   │
+         ┌────▼────┐     ┌────▼────┐         ┌────▼────┐
+         │Virtual  │     │Virtual  │         │Virtual  │
+         │IF netsim0│     │IF netsim1│       │IF netsim2│
+         │192.168. │     │192.168. │         │192.168. │
+         │100.10   │     │100.11   │         │100.12   │
+         └────┬────┘     └────┬────┘         └────┬────┘
+              │               │                   │
+┌─────────────▼───────────────▼───────────────────▼───────────┐
+│                  NetForge.Player Bridge                     │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
+│  │   Router1   │  │   Router2   │  │      Switch1        │  │
+│  │   (Cisco)   │  │ (Juniper)   │  │     (Arista)        │  │
+│  │             │  │             │  │                     │  │
+│  │ Telnet: 23  │  │  SSH: 22    │  │    SNMP: 161        │  │
+│  │ SNMP: 161   │  │ SNMP: 161   │  │    HTTP: 80         │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Security Considerations
+
+#### Network Isolation
+```json
+{
+  "security": {
+    "isolate_simulated_network": true,
+    "firewall_rules": [
+      {
+        "action": "allow",
+        "protocol": "tcp",
+        "ports": [22, 23, 80, 443],
+        "source": "192.168.100.0/24"
+      },
+      {
+        "action": "allow", 
+        "protocol": "udp",
+        "ports": [161, 162],
+        "source": "192.168.100.0/24"
+      },
+      {
+        "action": "deny",
+        "protocol": "all",
+        "source": "any"
+      }
+    ]
+  }
+}
+```
+
+#### Access Control
+```json
+{
+  "access_control": {
+    "require_authentication": true,
+    "allowed_hosts": ["192.168.100.0/24", "10.0.0.0/8"],
+    "rate_limiting": {
+      "max_connections_per_ip": 10,
+      "max_requests_per_minute": 100
+    }
+  }
+}
+```
+
+### Performance Considerations
+
+#### Large Scale Networks
+```json
+{
+  "performance": {
+    "max_external_devices": 50,
+    "interface_buffer_size": "64KB",
+    "enable_traffic_shaping": true,
+    "bandwidth_limit_per_device": "100Mbps"
+  }
+}
+```
+
+#### Resource Management
+```bash
+# Monitor network bridge performance
+./NetForge.Player.exe --monitor-network-bridge --stats-interval 10
+
+# Optimize for high-throughput scenarios  
+./NetForge.Player.exe --network-mode performance --buffer-size 1MB
+```
+
+### Troubleshooting External Connectivity
+
+#### Common Issues
+
+**Virtual Interface Creation Fails**
+```
+Error: Failed to create TAP interface
+Solution: Run as administrator and install TAP driver
+```
+
+**IP Address Conflicts**
+```
+Error: Address 192.168.100.10 already in use
+Solution: Check for IP conflicts and modify configuration
+```
+
+**External Tool Connection Timeouts**
+```
+Error: Connection timeout to simulated device
+Solution: Verify bridge is active and device protocols are enabled
+```
+
+#### Debug Commands
+```bash
+# Check bridge status
+./NetForge.Player.exe --show-network-bridge --verbose
+
+# Test external connectivity
+./NetForge.Player.exe --test-external-access --target-ip 192.168.100.10
+
+# Monitor bridge traffic
+./NetForge.Player.exe --monitor-bridge-traffic --interface netsim0
 ```
 
 ## Advanced Features

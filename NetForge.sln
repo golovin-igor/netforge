@@ -102,6 +102,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Protoco
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Player", "NetForge.Player\NetForge.Player.csproj", "{AF28DF4A-BEF8-4AEA-BDFC-E4E9CC635B92}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Scripting", "NetForge.Simulation.Scripting\NetForge.Simulation.Scripting.csproj", "{91DBD19B-A1B6-4E99-BE06-FC5F4B27819F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -260,6 +262,10 @@ Global
 		{AF28DF4A-BEF8-4AEA-BDFC-E4E9CC635B92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF28DF4A-BEF8-4AEA-BDFC-E4E9CC635B92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF28DF4A-BEF8-4AEA-BDFC-E4E9CC635B92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91DBD19B-A1B6-4E99-BE06-FC5F4B27819F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91DBD19B-A1B6-4E99-BE06-FC5F4B27819F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91DBD19B-A1B6-4E99-BE06-FC5F4B27819F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91DBD19B-A1B6-4E99-BE06-FC5F4B27819F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
