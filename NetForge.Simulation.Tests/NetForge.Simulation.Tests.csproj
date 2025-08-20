@@ -41,4 +41,11 @@
     <ProjectReference Include="..\NetForge.Simulation.Common\NetForge.Simulation.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="TEST_ACTUALIZATION_SUMMARY.md" />
+    <None Remove="TEST_ALIGNMENT_STATUS.md" />
+    <None Remove="TEST_COMPLETION_REPORT.md" />
+    <None Remove="TESTING_STRATEGY.md" />
+  </ItemGroup>
+
 </Project> 
