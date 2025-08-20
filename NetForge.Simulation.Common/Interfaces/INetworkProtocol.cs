@@ -18,7 +18,8 @@ namespace NetForge.Simulation.Interfaces
         HSRP,
         ARP,
         TELNET,
-        SSH
+        SSH,
+        SNMP
         // Add other protocol types as needed
     }
 
