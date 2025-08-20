@@ -3,34 +3,34 @@ using System.Linq;
 
 namespace NetForge.Player;
 
-public class ConsoleBanner
+public static class ConsoleBanner
 {
     // Each glyph is exactly 6 lines tall. Widths can vary; we just join with a spacer.
-    static readonly Dictionary<char, string[]> Glyphs = new()
+    private static readonly Dictionary<char, string[]> Glyphs = new()
     {
         // N
-        ['N'] = new[] { "███╗   ██╗", "████╗  ██║", "██╔██╗ ██║", "██║╚██╗██║", "██║ ╚████║", "╚═╝  ╚═══╝", },
+        ['N'] = ["███╗   ██╗", "████╗  ██║", "██╔██╗ ██║", "██║╚██╗██║", "██║ ╚████║", "╚═╝  ╚═══╝"],
 
         // E
-        ['E'] = new[] { "███████╗", "██╔════╝", "█████╗  ", "██╔══╝  ", "███████╗", "╚══════╝", },
+        ['E'] = ["███████╗", "██╔════╝", "█████╗  ", "██╔══╝  ", "███████╗", "╚══════╝"],
 
         // T
-        ['T'] = new[] { "████████╗", "╚══██╔══╝", "   ██║   ", "   ██║   ", "   ██║   ", "   ╚═╝   ", },
+        ['T'] = ["████████╗", "╚══██╔══╝", "   ██║   ", "   ██║   ", "   ██║   ", "   ╚═╝   "],
 
         // F
-        ['F'] = new[] { "███████╗", "██╔════╝", "█████╗  ", "██╔══╝  ", "██║     ", "╚═╝     ", },
+        ['F'] = ["███████╗", "██╔════╝", "█████╗  ", "██╔══╝  ", "██║     ", "╚═╝     "],
 
         // O
-        ['O'] = new[] { " ██████╗ ", "██╔═══██╗", "██║   ██║", "██║   ██║", "╚██████╔╝", " ╚═════╝ ", },
+        ['O'] = [" ██████╗ ", "██╔═══██╗", "██║   ██║", "██║   ██║", "╚██████╔╝", " ╚═════╝ "],
 
         // R
-        ['R'] = new[] { "██████╗ ", "██╔══██╗", "██████╔╝", "██╔══██╗", "██║  ██║", "╚═╝  ╚═╝", },
+        ['R'] = ["██████╗ ", "██╔══██╗", "██████╔╝", "██╔══██╗", "██║  ██║", "╚═╝  ╚═╝"],
 
         // G  (open on the right so it doesn't look like 'O')
-        ['G'] = new[] { " ██████╗ ", "██╔════╝ ", "██║  ███║", "██║   ██║", "╚██████╔╝", " ╚═════╝ ", },
+        ['G'] = [" ██████╗ ", "██╔════╝ ", "██║  ███║", "██║   ██║", "╚██████╔╝", " ╚═════╝ "],
 
         // (Optional) space between words
-        [' '] = new[] { "  ", "  ", "  ", "  ", "  ", "  ", },
+        [' '] = ["  ", "  ", "  ", "  ", "  ", "  "],
     };
 
     internal static void Print()
@@ -39,15 +39,6 @@ public class ConsoleBanner
 
         Console.OutputEncoding = Encoding.UTF8; // ensure box chars render
         Console.ForegroundColor = ConsoleColor.Yellow;
-        // Validate that we have glyphs for all chars
-        foreach (char ch in text)
-        {
-            if (!Glyphs.ContainsKey(ch))
-            {
-                Console.Error.WriteLine($"No glyph defined for '{ch}'. Add it to the Glyphs dictionary.");
-                return;
-            }
-        }
 
         // Render line by line (6 lines tall)
         for (int row = 0; row < 6; row++)
