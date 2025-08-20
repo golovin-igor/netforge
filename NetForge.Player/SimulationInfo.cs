@@ -27,7 +27,11 @@ public static class SimulationInfo
     {
         Console.WriteLine("Capabilities:");
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Vendors:\n{GetVendors()}\nProtocols:\n{GetSimulatedProtocols()}\n");
+        
+        var vendors = ProgressIndicator.WithProgress("Scanning vendors", GetVendors);
+        var protocols = ProgressIndicator.WithProgress("Scanning protocols", GetSimulatedProtocols);
+        
+        Console.WriteLine($"Vendors:\n{vendors}\nProtocols:\n{protocols}\n");
         Console.ResetColor();
 
     }
