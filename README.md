@@ -253,26 +253,9 @@ dotnet test
 # Run specific test category
 dotnet test --filter "Category=ProtocolTests"
 
-# Run with coverage report
-dotnet test --collect:"XPlat Code Coverage"
-
 # Build specific project
 dotnet build NetForge.Simulation.Core/NetForge.Simulation.csproj
 
-# Run performance benchmarks
-dotnet run --project DebugConsole --configuration Release
-```
-
-### Development Workflow
-```bash
-# Run development console
-dotnet run --project DebugConsole
-
-# Start with specific network scenario
-dotnet run --project DebugConsole -- --scenario MultiVendorOspf
-
-# Enable debug logging
-dotnet run --project DebugConsole -- --debug --verbose
 ```
 
 
