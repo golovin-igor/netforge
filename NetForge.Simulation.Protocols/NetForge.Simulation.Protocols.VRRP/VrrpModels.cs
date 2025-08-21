@@ -10,7 +10,7 @@ namespace NetForge.Simulation.Protocols.VRRP
     public class VrrpState : BaseProtocolState
     {
         public string RouterId { get; set; } = "";
-        public Dictionary<int, VrrpGroup> Groups { get; set; } = new();
+        public Dictionary<int, VrrpGroupState> Groups { get; set; } = new();
         public Dictionary<string, VrrpNeighbor> Neighbors { get; set; } = new();
         public Dictionary<string, DateTime> InterfaceTimers { get; set; } = new();
         public bool PolicyChanged { get; set; } = true;
@@ -44,14 +44,14 @@ namespace NetForge.Simulation.Protocols.VRRP
             }
         }
 
-        public VrrpGroup GetOrCreateGroup(int groupId)
+        public VrrpGroupState GetOrCreateGroup(int groupId)
         {
             if (!Groups.ContainsKey(groupId))
             {
-                Groups[groupId] = new VrrpGroup
+                Groups[groupId] = new VrrpGroupState
                 {
                     GroupId = groupId,
-                    State = VrrpState.Initialize
+                    State = VrrpProtocolState.Initialize
                 };
                 PolicyChanged = true;
             }
@@ -60,13 +60,13 @@ namespace NetForge.Simulation.Protocols.VRRP
     }
 
     // VRRP Group Configuration and State
-    public class VrrpGroup
+    public class VrrpGroupState
     {
         public int GroupId { get; set; }
         public string VirtualIpAddress { get; set; } = "";
         public string Interface { get; set; } = "";
         public int Priority { get; set; } = 100; // Default priority
-        public VrrpState State { get; set; } = VrrpState.Initialize;
+        public VrrpProtocolState State { get; set; } = VrrpProtocolState.Initialize;
         public int AdvertisementInterval { get; set; } = 1; // seconds
         public bool Preempt { get; set; } = true;
         public int PreemptDelay { get; set; } = 0;
@@ -77,9 +77,10 @@ namespace NetForge.Simulation.Protocols.VRRP
         public List<string> AuthenticationKeys { get; set; } = new();
         public VrrpVersion Version { get; set; } = VrrpVersion.Version3;
         public bool IsOwner { get; set; } = false; // True if this router owns the virtual IP
+        public VrrpTimers Timers { get; set; } = new();
     }
 
-    public enum VrrpState
+    public enum VrrpProtocolState
     {
         Initialize = 0,
         Backup = 1,
@@ -100,7 +101,7 @@ namespace NetForge.Simulation.Protocols.VRRP
         public string InterfaceName { get; set; } = "";
         public int Priority { get; set; } = 100;
         public DateTime LastSeen { get; set; } = DateTime.Now;
-        public VrrpState State { get; set; } = VrrpState.Backup;
+        public VrrpProtocolState State { get; set; } = VrrpProtocolState.Backup;
         public Dictionary<int, VrrpGroupInfo> Groups { get; set; } = new();
     }
 
@@ -109,7 +110,7 @@ namespace NetForge.Simulation.Protocols.VRRP
         public int GroupId { get; set; }
         public string VirtualIpAddress { get; set; } = "";
         public int Priority { get; set; } = 100;
-        public VrrpState State { get; set; } = VrrpState.Backup;
+        public VrrpProtocolState State { get; set; } = VrrpProtocolState.Backup;
         public DateTime LastAdvertisement { get; set; } = DateTime.Now;
     }
 
@@ -139,7 +140,7 @@ namespace NetForge.Simulation.Protocols.VRRP
     public class VrrpInterfaceConfig
     {
         public string InterfaceName { get; set; } = "";
-        public Dictionary<int, VrrpGroup> Groups { get; set; } = new();
+        public Dictionary<int, VrrpGroupState> Groups { get; set; } = new();
         public bool IsEnabled { get; set; } = true;
         public VrrpVersion Version { get; set; } = VrrpVersion.Version3;
     }
@@ -225,11 +226,11 @@ namespace NetForge.Simulation.Protocols.VRRP
     // VRRP State Machine Context
     public class VrrpStateMachine
     {
-        public VrrpGroup Group { get; set; }
+        public VrrpGroupState Group { get; set; }
         public VrrpTimers Timers { get; set; } = new();
         public VrrpStatistics Statistics { get; set; } = new();
         
-        public VrrpStateMachine(VrrpGroup group)
+        public VrrpStateMachine(VrrpGroupState group)
         {
             Group = group;
             Statistics.GroupId = group.GroupId;
@@ -241,13 +242,13 @@ namespace NetForge.Simulation.Protocols.VRRP
             
             switch (Group.State)
             {
-                case VrrpState.Initialize:
+                case VrrpProtocolState.Initialize:
                     HandleInitializeState(eventType, advertisement);
                     break;
-                case VrrpState.Backup:
+                case VrrpProtocolState.Backup:
                     HandleBackupState(eventType, advertisement);
                     break;
-                case VrrpState.Master:
+                case VrrpProtocolState.Master:
                     HandleMasterState(eventType, advertisement);
                     break;
             }
@@ -255,7 +256,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             if (previousState != Group.State)
             {
                 Statistics.LastStateChange = DateTime.Now;
-                if (Group.State == VrrpState.Master)
+                if (Group.State == VrrpProtocolState.Master)
                 {
                     Statistics.BecomeMaster++;
                 }
@@ -349,21 +350,21 @@ namespace NetForge.Simulation.Protocols.VRRP
 
         private void TransitionToInitialize()
         {
-            Group.State = VrrpState.Initialize;
+            Group.State = VrrpProtocolState.Initialize;
             Timers.StopMasterDownTimer();
             Timers.StopPreemptDelayTimer();
         }
 
         private void TransitionToBackup()
         {
-            Group.State = VrrpState.Backup;
+            Group.State = VrrpProtocolState.Backup;
             Timers.StartMasterDownTimer(Group.MasterDownInterval);
             Timers.StopPreemptDelayTimer();
         }
 
         private void TransitionToMaster()
         {
-            Group.State = VrrpState.Master;
+            Group.State = VrrpProtocolState.Master;
             Timers.StopMasterDownTimer();
             Timers.StopPreemptDelayTimer();
             
