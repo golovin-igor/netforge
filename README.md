@@ -35,17 +35,17 @@ NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterp
 - **Performance Optimization**: Conditional protocol execution, memory management, and efficient neighbor aging
 
 ### Remote Access & Management
-- **Telnet Terminal Server**: Multi-session TCP/Telnet access with authentication and session management
-- **SSH Terminal Server**: Secure encrypted access with key-based and password authentication
-- **WebSocket Terminal Server**: Real-time web-based terminal access for modern applications
-- **SNMP Agent**: Complete SNMP implementation with standard and vendor-specific MIBs
+- **Telnet Protocol**: Multi-session TCP/Telnet access implemented as protocol plugin
+- **SSH Protocol**: Secure encrypted access with key-based and password authentication as protocol plugin
+- **SNMP Agent**: Complete SNMP implementation with standard and vendor-specific MIBs (in development)
+- **Protocol-Based Architecture**: All management protocols implemented as discoverable plugins
 
 
 ## 🏗️ Solution Architecture
 
 ### Core Framework Libraries
 - **NetForge.Simulation.Common**: Core protocols, device models, event system, and shared infrastructure ([details](NetForge.Simulation.Common/README.md))
-- **NetForge.Simulation.Core**: Device implementations, factories, simulation engine, and terminal servers ([details](NetForge.Simulation.Core/README.md))
+- **NetForge.Simulation.Core** (Assembly: NetForge.Simulation): Device implementations, factories, and simulation engine ([details](NetForge.Simulation.Core/README.md))
 
 ### CLI Handler System (15 Vendor Implementations)
 - **NetForge.Simulation.CliHandlers.Common**: Shared CLI logic, base handlers, and common functionality
@@ -67,10 +67,15 @@ NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterp
   - **Telnet**: Multi-session terminal server with device integration
   - **OSPF**: Complete link-state routing with SPF calculation and area support
   - **BGP**: Full BGP-4 implementation with path selection and neighbor management
+  - **RIP**: Distance vector routing with poison reverse and proper timers
+  - **EIGRP**: Enhanced Interior Gateway Routing with DUAL algorithm (Cisco)
   - **CDP**: Cisco Discovery Protocol with device information exchange
   - **LLDP**: IEEE 802.1AB standard with comprehensive TLV support
   - **ARP**: Address resolution with dynamic table management
-- **Additional Protocol Projects**: SNMP, RIP, EIGRP, ISIS, IGRP, HSRP, VRRP, STP (in development)
+  - **VRRP**: Virtual Router Redundancy Protocol with RFC 3768 compliance
+  - **HSRP**: Hot Standby Router Protocol with RFC 2281 compliance (Cisco)
+  - **STP**: Spanning Tree Protocol with IEEE 802.1D standard
+- **Additional Protocol Projects**: SNMP (in development), ISIS, IGRP, HTTP/HTTPS (low priority)
 
 ### Comprehensive Test Framework
 - **NetForge.Simulation.Tests**: Core simulation and network topology testing
@@ -112,20 +117,21 @@ NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterp
 - **Comprehensive Test Coverage**: 2,000+ unit and integration tests across all components
 - **Build Status**: Solution builds successfully with 0 errors (minor nullable warnings only)
 
-### 🔄 Protocol Implementation Progress
-- **Management Protocols**: ✅ SSH, ✅ Telnet, 🔄 SNMP (in development), ⏳ HTTP/HTTPS (planned)
-- **Routing Protocols**: ✅ OSPF, ✅ BGP, ⏳ RIP, ⏳ EIGRP, ⏳ IS-IS, ⏳ IGRP (legacy protocols in migration)
+### ✅ Protocol Implementation Progress
+- **Management Protocols**: ✅ SSH, ✅ Telnet, 🔄 SNMP (in development), ⏳ HTTP/HTTPS (low priority)
+- **Routing Protocols**: ✅ OSPF, ✅ BGP, ✅ RIP, ✅ EIGRP (all HIGH/MEDIUM priority routing complete)
 - **Discovery Protocols**: ✅ CDP, ✅ LLDP, ✅ ARP (all discovery protocols complete)
-- **Redundancy Protocols**: ⏳ HSRP, ⏳ VRRP (planned implementations)
-- **Layer 2 Protocols**: ⏳ STP/RSTP/MSTP (planned implementations)
+- **Redundancy Protocols**: ✅ HSRP, ✅ VRRP (all redundancy protocols complete)
+- **Layer 2 Protocols**: ✅ STP (spanning tree complete), ⏳ RSTP/MSTP (low priority)
 
 ### 🎯 Key Technical Achievements
-- **Modular Architecture**: Each protocol is self-contained with plugin-based discovery
-- **State Management**: Sophisticated protocol state tracking with conditional execution for performance
-- **Vendor Compatibility**: Protocols adapt behavior based on device vendor capabilities  
-- **Event-Driven Design**: Real-time topology updates and protocol convergence
+- **Complete Protocol Suite**: All HIGH/MEDIUM priority protocols operational (OSPF, BGP, EIGRP, VRRP, HSRP, STP, RIP, SSH, Telnet, CDP, LLDP, ARP)
+- **Modular Architecture**: Each protocol is self-contained with plugin-based discovery and auto-registration
+- **Advanced State Management**: Sophisticated protocol state tracking with conditional execution for optimal performance
+- **Vendor Compatibility**: Protocols adapt behavior based on device vendor capabilities and RFC compliance
+- **Event-Driven Design**: Real-time topology updates and protocol convergence with proper timer management
 - **Memory Optimized**: Efficient neighbor aging and automatic cleanup of stale state
-- **Performance Validated**: Sub-30-second convergence times for complex routing protocols
+- **Performance Validated**: Sub-30-second convergence times for complex routing protocols with full state machines
 
 ## 🚀 Quick Start Guide
 
@@ -133,8 +139,8 @@ NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterp
 Create a multi-vendor network with OSPF routing between Cisco and Juniper devices:
 
 ```csharp
-using NetForge.Simulation.Core;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Core;
 
 // Create devices using factory pattern
 var cisco = DeviceFactory.CreateDevice("cisco", "Router1");
@@ -175,37 +181,29 @@ var routeResult = await cisco.ProcessCommandAsync("show ip route ospf");
 var pingResult = await cisco.ProcessCommandAsync("ping 10.0.0.2");
 ```
 
-### Terminal Server Access
-Enable remote access to simulated devices:
+### Protocol-Based Remote Access
+Remote access is provided through protocol implementations:
 
 ```csharp
-// Start Telnet server for device access
-var telnetOptions = new SocketTerminalServerOptions
-{
-    ListenAddress = "127.0.0.1",
-    Port = 2323,
-    RequireAuthentication = true,
-    Username = "admin",
-    Password = "cisco123"
-};
+// Protocols are auto-discovered and registered
+var cisco = DeviceFactory.CreateDevice("cisco", "Router1");
+var network = new Network();
+await network.AddDeviceAsync(cisco);
 
-using var terminalServer = new SocketTerminalServer(network, telnetOptions);
-await terminalServer.StartAsync();
+// Telnet and SSH protocols are automatically available
+// if enabled in device configuration
+var telnetConfig = cisco.GetTelnetConfiguration();
+telnetConfig.IsEnabled = true;
+telnetConfig.Port = 23;
+cisco.SetTelnetConfiguration(telnetConfig);
 
-// Connect using standard telnet client:
-// telnet 127.0.0.1 2323
+var sshConfig = cisco.GetSshConfiguration();
+sshConfig.IsEnabled = true;
+sshConfig.Port = 22;
+cisco.SetSshConfiguration(sshConfig);
 
-// Or start SSH server for secure access
-var sshOptions = new SshTerminalServerOptions
-{
-    ListenAddress = "127.0.0.1", 
-    Port = 2222,
-    HostKeyPath = "host_key.pem",
-    RequireKeyAuthentication = true
-};
-
-using var sshServer = new SshTerminalServer(network, sshOptions);
-await sshServer.StartAsync();
+// Update protocols to start services
+await network.UpdateProtocolsAsync();
 ```
 
 
@@ -213,7 +211,7 @@ await sshServer.StartAsync();
 
 ### Core Framework
 - **[NetForge.Simulation.Common](NetForge.Simulation.Common/README.md)**: Foundation library with device models, protocol interfaces, event system, and shared infrastructure
-- **[NetForge.Simulation.Core](NetForge.Simulation.Core/README.md)**: Device implementations, factory patterns, terminal servers, and simulation engine
+- **[NetForge.Simulation.Core](NetForge.Simulation.Core/README.md)**: Device implementations, factory patterns, and simulation engine
 
 ### CLI Handler System
 - **NetForge.Simulation.CliHandlers.Common**: Base classes and shared CLI functionality
@@ -222,8 +220,8 @@ await sshServer.StartAsync();
 
 ### Protocol Architecture  
 - **NetForge.Simulation.Protocols.Common**: Plugin framework with auto-discovery and state management
-- **Individual Protocol Projects**: SSH, Telnet, OSPF, BGP, CDP, LLDP, ARP with dedicated implementations
-- **SNMP Handler Framework**: Specialized SNMP agent architecture with vendor-specific MIB support
+- **Individual Protocol Projects**: SSH, Telnet, OSPF, BGP, RIP, EIGRP, CDP, LLDP, ARP, VRRP, HSRP, STP with dedicated implementations
+- **SNMP Protocol**: SNMP agent implementation with MIB management (in development)
 
 ### Testing Framework
 - **NetForge.Simulation.Tests**: Core simulation testing with network topology validation
@@ -231,8 +229,8 @@ await sshServer.StartAsync();
 - **NetForge.Simulation.Protocols.Tests**: Protocol implementation and integration testing
 
 ### Utility Projects  
-- **DebugConsole**: Development console for testing and debugging network scenarios
-- **NetForge.Player**: Network scenario playback and automation tools
+- **NetForge.Player**: Network scenario playbook and automation CLI tool
+- **NetForge.Simulation.Scripting**: Automation scripting framework (in development)
 
 ## 🛠️ Development Environment
 
@@ -256,6 +254,8 @@ dotnet test --filter "Category=ProtocolTests"
 # Build specific project
 dotnet build NetForge.Simulation.Core/NetForge.Simulation.csproj
 
+# Run protocol tests
+dotnet test NetForge.Simulation.Protocols.Tests/
 ```
 
 
@@ -301,17 +301,17 @@ dotnet build NetForge.Simulation.Core/NetForge.Simulation.csproj
 
 ## 🛣️ Future Roadmap
 
-### Short Term (Q1 2025)
-- **Complete SNMP Implementation**: Full v1/v2c/v3 agent with vendor-specific MIBs
-- **Enhanced Web Interface**: Modern web-based device management and monitoring
-- **RIP Protocol Migration**: Complete RIP v1/v2 implementation in new architecture
-- **Performance Optimizations**: Memory usage reduction and convergence time improvements
+### Short Term (Q1 2025) - ACHIEVED
+- ✅ **Complete Protocol Foundation**: All major protocols implemented with plugin architecture
+- ✅ **Advanced State Management**: Sophisticated protocol state tracking operational
+- ✅ **RIP Protocol Implementation**: Complete RIP v1/v2 with new architecture
+- ✅ **Performance Optimizations**: Memory usage reduction and convergence time improvements achieved
 
-### Medium Term (Q2-Q3 2025)
-- **Remaining Protocol Implementations**: EIGRP, IS-IS, HSRP, VRRP, STP complete
-- **Cloud Integration**: AWS/Azure deployment scenarios and cloud-native networking
-- **Advanced Analytics**: Protocol behavior analysis, performance metrics, and reporting
-- **Container Support**: Docker-based deployment and Kubernetes orchestration
+### Medium Term (Q2-Q3 2025) - PARTIALLY ACHIEVED
+- ✅ **Major Protocol Implementations**: EIGRP, HSRP, VRRP, STP complete (IS-IS remains low priority)
+- ⏳ **Cloud Integration**: AWS/Azure deployment scenarios and cloud-native networking
+- ⏳ **Advanced Analytics**: Protocol behavior analysis, performance metrics, and reporting
+- ⏳ **Container Support**: Docker-based deployment and Kubernetes orchestration
 
 ### Long Term (Q4 2025+)
 - **Software-Defined Networking**: OpenFlow, P4, and SDN controller integration
