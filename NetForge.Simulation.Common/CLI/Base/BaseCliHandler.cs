@@ -40,7 +40,7 @@ namespace NetForge.Simulation.CliHandlers
                 return false;
 
             var firstPart = context.CommandParts[0];
-            
+
             // Check if this matches the command name or an alias
             return CommandName.Equals(firstPart, StringComparison.OrdinalIgnoreCase) ||
                    Aliases.Any(alias => alias.Equals(firstPart, StringComparison.OrdinalIgnoreCase));
@@ -105,7 +105,7 @@ namespace NetForge.Simulation.CliHandlers
             if (context.CommandParts.Length <= 1)
             {
                 var allSubCommands = SubHandlers.Keys.ToList();
-                
+
                 // If we have a partial command, filter by fuzzy matching
                 if (context.CommandParts.Length == 1)
                 {
@@ -113,14 +113,14 @@ namespace NetForge.Simulation.CliHandlers
                     if (!string.IsNullOrEmpty(partialCommand))
                     {
                         // Add exact matches first
-                        var exactMatches = allSubCommands.Where(cmd => 
+                        var exactMatches = allSubCommands.Where(cmd =>
                             cmd.StartsWith(partialCommand, StringComparison.OrdinalIgnoreCase)).ToList();
                         completions.AddRange(exactMatches);
-                        
+
                         // Add fuzzy matches if no exact matches found
                         if (exactMatches.Count == 0)
                         {
-                            var fuzzyMatches = allSubCommands.Where(cmd => 
+                            var fuzzyMatches = allSubCommands.Where(cmd =>
                                 GetFuzzyMatchScore(partialCommand, cmd) > 0.5).ToList();
                             completions.AddRange(fuzzyMatches);
                         }
@@ -134,7 +134,7 @@ namespace NetForge.Simulation.CliHandlers
                 {
                     completions.AddRange(allSubCommands);
                 }
-                
+
                 // Add vendor-specific completions if available
                 if (context.VendorContext != null)
                 {
@@ -152,18 +152,18 @@ namespace NetForge.Simulation.CliHandlers
                     IsHelpRequest = context.IsHelpRequest,
                     Parameters = context.Parameters
                 };
-                
+
                 // First try exact match
                 if (SubHandlers.TryGetValue(subCommand, out var exactHandler))
                 {
                     return exactHandler.GetCompletions(subContext);
                 }
-                
+
                 // Then try fuzzy matching for sub-handlers
-                var fuzzyMatches = SubHandlers.Where(kvp => 
+                var fuzzyMatches = SubHandlers.Where(kvp =>
                     kvp.Key.StartsWith(subCommand, StringComparison.OrdinalIgnoreCase) ||
                     GetFuzzyMatchScore(subCommand, kvp.Key) > 0.7).ToList();
-                
+
                 if (fuzzyMatches.Count == 1)
                 {
                     return fuzzyMatches.First().Value.GetCompletions(subContext);
@@ -173,7 +173,7 @@ namespace NetForge.Simulation.CliHandlers
                     // Multiple matches, return the matching sub-command names
                     completions.AddRange(fuzzyMatches.Select(kvp => kvp.Key));
                 }
-                
+
                 // Fall back to checking if any handler can handle this prefix
                 foreach (var handler in SubHandlers.Values)
                 {
@@ -195,27 +195,27 @@ namespace NetForge.Simulation.CliHandlers
         {
             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(target))
                 return 0;
-            
+
             input = input.ToLowerInvariant();
             target = target.ToLowerInvariant();
-            
+
             // Exact match
             if (input == target)
                 return 1.0;
-            
+
             // Starts with match
             if (target.StartsWith(input))
                 return 0.9;
-            
+
             // Contains match
             if (target.Contains(input))
                 return 0.7;
-            
+
             // Levenshtein distance based scoring
             var distance = CalculateLevenshteinDistance(input, target);
             var maxLength = Math.Max(input.Length, target.Length);
             var similarity = 1.0 - ((double)distance / maxLength);
-            
+
             return similarity;
         }
 
@@ -260,29 +260,29 @@ namespace NetForge.Simulation.CliHandlers
         {
             Aliases.Add(alias);
         }
-        
+
         public Dictionary<string, ICliHandler> GetSubHandlers()
         {
             return SubHandlers;
         }
-        
+
         public (string, string)? GetCommandInfo()
         {
             return (CommandName, HelpText);
         }
-        
+
         public virtual bool CanHandlePrefix(CliContext context)
         {
             if (context.CommandParts.Length == 0)
                 return false;
-                
+
             // Check if the first part matches our command or alias (exact or prefix match)
             var firstPart = context.CommandParts[0];
             bool matches = CommandName.Equals(firstPart, StringComparison.OrdinalIgnoreCase) ||
                           CommandName.StartsWith(firstPart, StringComparison.OrdinalIgnoreCase) ||
                           Aliases.Any(alias => alias.Equals(firstPart, StringComparison.OrdinalIgnoreCase) ||
                                              alias.StartsWith(firstPart, StringComparison.OrdinalIgnoreCase));
-                          
+
             if (!matches)
             {
                 // Try fuzzy matching for better completion experience
@@ -293,34 +293,34 @@ namespace NetForge.Simulation.CliHandlers
                 }
                 matches = fuzzyScore >= 0.5;
             }
-                          
+
             if (!matches)
                 return false;
-                
+
             // If we have more parts, check if we have sub-handlers that could handle them
             if (context.CommandParts.Length > 1 && SubHandlers.Count > 0)
             {
                 var subCommand = context.CommandParts[1];
-                
+
                 // Check if any sub-handler can handle the prefix
-                return SubHandlers.Any(kvp => 
+                return SubHandlers.Any(kvp =>
                     kvp.Key.StartsWith(subCommand, StringComparison.OrdinalIgnoreCase) ||
                     GetFuzzyMatchScore(subCommand, kvp.Key) > 0.5);
             }
-            
+
             return true; // We can handle this prefix
         }
-        
+
         public virtual List<(string, string)> GetSubCommands(CliContext context)
         {
             var commands = new List<(string, string)>();
-            
+
             // Add our own command if we're at the root
             if (context.CommandParts.Length <= 1)
             {
                 commands.Add((CommandName, HelpText));
             }
-            
+
             // Add sub-handler commands
             if (context.CommandParts.Length <= 1)
             {
@@ -343,18 +343,18 @@ namespace NetForge.Simulation.CliHandlers
                     IsHelpRequest = context.IsHelpRequest,
                     Parameters = context.Parameters
                 };
-                
+
                 // First try exact match
                 if (SubHandlers.TryGetValue(subCommand, out var exactHandler))
                 {
                     return exactHandler.GetSubCommands(subContext);
                 }
-                
+
                 // Then try fuzzy matching
-                var fuzzyMatches = SubHandlers.Where(kvp => 
+                var fuzzyMatches = SubHandlers.Where(kvp =>
                     kvp.Key.StartsWith(subCommand, StringComparison.OrdinalIgnoreCase) ||
                     GetFuzzyMatchScore(subCommand, kvp.Key) > 0.7).ToList();
-                
+
                 if (fuzzyMatches.Count == 1)
                 {
                     return fuzzyMatches.First().Value.GetSubCommands(subContext);
@@ -371,7 +371,7 @@ namespace NetForge.Simulation.CliHandlers
                         }
                     }
                 }
-                
+
                 // Fall back to checking all handlers
                 foreach (var handler in SubHandlers.Values)
                 {
@@ -382,7 +382,7 @@ namespace NetForge.Simulation.CliHandlers
                     }
                 }
             }
-            
+
             return commands.Distinct().OrderBy(c => c.Item1).ToList();
         }
 
@@ -394,37 +394,37 @@ namespace NetForge.Simulation.CliHandlers
         /// <summary>
         /// Helper method to create an error result
         /// </summary>
-        protected CliResult Error(CliErrorType error, string message = "", string[]? suggestions = null) => 
+        protected CliResult Error(CliErrorType error, string message = "", string[]? suggestions = null) =>
             CliResult.Failed(error, message, suggestions);
 
         /// <summary>
         /// Helper method for invalid command errors
         /// </summary>
-        protected CliResult InvalidCommand(string message = "% Invalid input detected at '^' marker.") => 
+        protected CliResult InvalidCommand(string message = "% Invalid input detected at '^' marker.") =>
             Error(CliErrorType.InvalidCommand, message);
 
         /// <summary>
         /// Helper method for incomplete command errors
         /// </summary>
-        protected CliResult IncompleteCommand(string message = "Incomplete command") => 
+        protected CliResult IncompleteCommand(string message = "Incomplete command") =>
             Error(CliErrorType.IncompleteCommand, message);
 
         /// <summary>
         /// Helper method for invalid parameter errors
         /// </summary>
-        protected CliResult InvalidParameter(string message = "Invalid parameter") => 
+        protected CliResult InvalidParameter(string message = "Invalid parameter") =>
             Error(CliErrorType.InvalidParameter, message);
 
         /// <summary>
         /// Helper method for invalid mode errors
         /// </summary>
-        protected CliResult InvalidMode(string message = "Command not available in current mode") => 
+        protected CliResult InvalidMode(string message = "Command not available in current mode") =>
             Error(CliErrorType.InvalidMode, message);
 
         /// <summary>
         /// Helper method for permission denied errors
         /// </summary>
-        protected CliResult PermissionDenied(string message = "Permission denied") => 
+        protected CliResult PermissionDenied(string message = "Permission denied") =>
             Error(CliErrorType.PermissionDenied, message);
 
         /// <summary>
@@ -433,16 +433,16 @@ namespace NetForge.Simulation.CliHandlers
         protected virtual string GetContextualHelp(CliContext context)
         {
             var help = new List<string>();
-            
+
             // Add command description
             help.Add($"{CommandName} - {HelpText}");
-            
+
             // If we have sub-handlers, show available options
             if (SubHandlers.Count > 0)
             {
                 help.Add("");
                 help.Add("Available options:");
-                
+
                 foreach (var kvp in SubHandlers.OrderBy(x => x.Key))
                 {
                     var subHandler = kvp.Value;
@@ -454,7 +454,7 @@ namespace NetForge.Simulation.CliHandlers
                     }
                 }
             }
-            
+
             // Add vendor-specific help if available
             if (context.VendorContext != null)
             {
@@ -466,7 +466,7 @@ namespace NetForge.Simulation.CliHandlers
                     help.Add(vendorHelp);
                 }
             }
-            
+
             // Add syntax information based on command parts
             if (context.CommandParts.Length > 1)
             {
@@ -474,7 +474,7 @@ namespace NetForge.Simulation.CliHandlers
                 help.Add("Syntax:");
                 help.Add($"  {string.Join(" ", context.CommandParts)} [options]");
             }
-            
+
             // Add mode information
             var currentMode = context.CurrentMode;
             if (!string.IsNullOrEmpty(currentMode))
@@ -482,8 +482,8 @@ namespace NetForge.Simulation.CliHandlers
                 help.Add("");
                 help.Add($"Current mode: {currentMode}");
             }
-            
+
             return string.Join("\n", help);
         }
     }
-} 
+}

@@ -1,6 +1,7 @@
 using System.Text;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.CliHandlers;
+using NetForge.Simulation.Common.CLI.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Alcatel.Show
 {
@@ -9,29 +10,33 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
     /// </summary>
     public class ShowCommandHandler : VendorAgnosticCliHandler
     {
+        ShowVersionSubhandler showVersionSubhandler;
+
         public ShowCommandHandler() : base("show", "Display device information")
         {
             AddAlias("sh");
             AddAlias("sho");
+
+            showVersionSubhandler = new ShowVersionSubhandler(this);
         }
-        
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Alcatel"))
             {
                 return RequireVendor(context, "Alcatel");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
                 return Success(GetAvailableShowCommands());
             }
-            
+
             var showType = context.CommandParts[1].ToLower();
-            
+
             return showType switch
             {
-                "version" => HandleShowVersion(context),
+                "version" => showVersionSubhandler.Handle(context),
                 "system" => HandleShowSystem(context),
                 "interfaces" => HandleShowInterfaces(context),
                 "interface" => HandleShowInterface(context),
@@ -48,7 +53,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                 _ => Error(CliErrorType.InvalidCommand, $"% Invalid show option: {showType}")
             };
         }
-        
+
         private string GetAvailableShowCommands()
         {
             return @"Available show commands:
@@ -67,32 +72,13 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
   vlan                   Display VLAN information
 ";
         }
-        
-        private CliResult HandleShowVersion(CliContext context)
-        {
-            var device = context.Device as NetworkDevice;
-            var output = new StringBuilder();
-            
-            output.AppendLine("Alcatel-Lucent Operating System Software");
-            output.AppendLine($"System Name: {device?.Name}");
-            output.AppendLine($"Vendor: {device?.Vendor}");
-            output.AppendLine($"Model: OmniSwitch 6850");
-            output.AppendLine($"Software Version: AOS Release 8.9.221.R01");
-            output.AppendLine($"Build Date: {DateTime.Now:MMM dd yyyy HH:mm:ss}");
-            output.AppendLine($"System uptime: {GetSystemUptime()}");
-            output.AppendLine($"CPU utilization: 8%");
-            output.AppendLine($"Memory utilization: 22%");
-            output.AppendLine();
-            
-            return Success(output.ToString());
-        }
-        
+
         private CliResult HandleShowSystem(CliContext context)
         {
             if (context.CommandParts.Length >= 3)
             {
                 var systemOption = context.CommandParts[2];
-                
+
                 return systemOption switch
                 {
                     "uptime" => HandleShowSystemUptime(context),
@@ -100,7 +86,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                     _ => Error(CliErrorType.InvalidCommand, $"% Invalid system option: {systemOption}")
                 };
             }
-            
+
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
 
@@ -117,7 +103,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInterfaces(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -129,7 +115,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             }
 
             var interfaces = device.GetAllInterfaces();
-            
+
             output.AppendLine("Interface Status Summary");
             output.AppendLine("Port     Admin   Oper    Speed   Duplex  Flow Control");
             output.AppendLine("-------- ------- ------- ------- ------- ------------");
@@ -148,7 +134,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine();
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInterface(CliContext context)
         {
             if (context.CommandParts.Length < 3)
@@ -182,7 +168,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowRunningConfig(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -209,14 +195,17 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                 {
                     output.AppendLine($"  description {iface.Description}");
                 }
+
                 if (!string.IsNullOrEmpty(iface.IpAddress))
                 {
                     output.AppendLine($"  ip interface {iface.IpAddress}/{MaskToCidr(iface.SubnetMask)}");
                 }
+
                 if (iface.IsShutdown)
                 {
                     output.AppendLine("  admin-state disable");
                 }
+
                 output.AppendLine("!");
             }
 
@@ -225,25 +214,25 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowStartupConfig(CliContext context)
         {
             return Success("Startup configuration is empty or not saved.\n");
         }
-        
+
         private CliResult HandleShowVlan(CliContext context)
         {
             if (context.CommandParts.Length >= 3)
             {
                 var vlanOption = context.CommandParts[2];
-                
+
                 return vlanOption switch
                 {
                     "info" => HandleShowVlanInfo(context),
                     _ => Error(CliErrorType.InvalidCommand, $"% Invalid vlan option: {vlanOption}")
                 };
             }
-            
+
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
 
@@ -253,7 +242,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             }
 
             var vlans = device.GetAllVlans();
-            
+
             output.AppendLine("VLAN Configuration");
             output.AppendLine("VLAN ID  Name                     Status   Ports");
             output.AppendLine("-------- ------------------------ -------- --------");
@@ -273,7 +262,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine();
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowMacAddressTable(CliContext context)
         {
             var output = new StringBuilder();
@@ -289,12 +278,12 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowArp(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var arpTable = device?.GetArpTableOutput();
-            
+
             if (string.IsNullOrEmpty(arpTable))
             {
                 return Success("ARP table is empty.\n");
@@ -302,7 +291,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
 
             return Success(arpTable);
         }
-        
+
         private CliResult HandleShowIp(CliContext context)
         {
             if (context.CommandParts.Length < 3)
@@ -318,7 +307,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                 _ => Error(CliErrorType.InvalidCommand, $"% Invalid IP show option: {subCommand}")
             };
         }
-        
+
         private CliResult HandleShowIpInterface(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -330,7 +319,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             }
 
             var interfaces = device.GetAllInterfaces();
-            
+
             output.AppendLine("IP Interface Status");
             output.AppendLine("Interface        IP Address        Status     Protocol");
             output.AppendLine("---------------- ----------------- ---------- ----------");
@@ -344,7 +333,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine();
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpRoute(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -356,7 +345,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             }
 
             var routes = device.GetRoutingTable();
-            
+
             output.AppendLine("IP Route Table");
             output.AppendLine("Destination       Gateway           Interface   Metric  Type");
             output.AppendLine("----------------- ----------------- ----------- ------- --------");
@@ -377,7 +366,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine();
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowSpanningTree(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -411,7 +400,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine();
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowHardware(CliContext context)
         {
             var output = new StringBuilder();
@@ -430,7 +419,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowPort(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -442,7 +431,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             }
 
             var interfaces = device.GetAllInterfaces();
-            
+
             output.AppendLine("Port Configuration and Status");
             output.AppendLine("Port     Type     Admin  Oper   Speed    Duplex   Auto-neg");
             output.AppendLine("-------- -------- ------ ------ -------- -------- --------");
@@ -462,16 +451,16 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine();
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowRouter(CliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
                 return Error(CliErrorType.IncompleteCommand, "% Incomplete command - need router option");
             }
-            
+
             var routerOption = context.CommandParts[2];
-            
+
             return routerOption switch
             {
                 "route-table" => HandleShowRouterRouteTable(context),
@@ -486,7 +475,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                 _ => Error(CliErrorType.InvalidCommand, $"% Invalid router option: {routerOption}")
             };
         }
-        
+
         private CliResult HandleShowSystemUptime(CliContext context)
         {
             var output = new StringBuilder();
@@ -494,10 +483,10 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine($"System started: {DateTime.Now.AddDays(-7):MMM dd yyyy HH:mm:ss}");
             output.AppendLine($"Last restart reason: Power-on");
             output.AppendLine();
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowSystemTime(CliContext context)
         {
             var output = new StringBuilder();
@@ -505,15 +494,15 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine($"Time zone: UTC");
             output.AppendLine($"NTP status: Not synchronized");
             output.AppendLine();
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowVlanInfo(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             output.AppendLine("VLAN Information Details");
             output.AppendLine("VLAN ID  Name                     Status   Type    Ports");
             output.AppendLine("-------- ------------------------ -------- ------- --------");
@@ -522,10 +511,10 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine("20       Sales                    active   ethernet 9-16");
             output.AppendLine("30       Management               active   ethernet 17-24");
             output.AppendLine();
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowRouterRouteTable(CliContext context)
         {
             var output = new StringBuilder();
@@ -536,10 +525,10 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine("192.168.1.0/24     0.0.0.0            system       0      local");
             output.AppendLine("127.0.0.0/8        0.0.0.0            loopback     0      local");
             output.AppendLine();
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowRouterLdp(CliContext context)
         {
             if (context.CommandParts.Length >= 4 && context.CommandParts[3] == "interface")
@@ -550,13 +539,13 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                 output.AppendLine("-------------- ----------- --------- ---------");
                 output.AppendLine("system         enabled     enabled   enabled");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidCommand, "% Invalid LDP option");
         }
-        
+
         private CliResult HandleShowRouterMpls(CliContext context)
         {
             if (context.CommandParts.Length >= 4 && context.CommandParts[3] == "lsp")
@@ -568,13 +557,13 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                 output.AppendLine("to-node-1       up        dynamic     100M");
                 output.AppendLine("to-node-2       down      explicit    50M");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidCommand, "% Invalid MPLS option");
         }
-        
+
         private CliResult HandleShowRouterIsis(CliContext context)
         {
             if (context.CommandParts.Length >= 4 && context.CommandParts[3] == "adjacency")
@@ -585,13 +574,13 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                 output.AppendLine("-------------- ---------- ----- ------- ---------");
                 output.AppendLine("1234.5678.9abc system     2     Up      27");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidCommand, "% Invalid ISIS option");
         }
-        
+
         private CliResult HandleShowRouterOspf(CliContext context)
         {
             if (context.CommandParts.Length >= 4 && context.CommandParts[3] == "neighbor")
@@ -603,13 +592,13 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                 output.AppendLine("192.168.1.2     1        Full       00:00:37  system");
                 output.AppendLine("192.168.1.3     1        Full       00:00:31  system");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidCommand, "% Invalid OSPF option");
         }
-        
+
         private CliResult HandleShowRouterBgp(CliContext context)
         {
             if (context.CommandParts.Length >= 4 && context.CommandParts[3] == "summary")
@@ -621,13 +610,13 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                 output.AppendLine("192.168.1.2     65001 Established 2d17h     10     5");
                 output.AppendLine("192.168.1.3     65002 Established 1d05h     8      3");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidCommand, "% Invalid BGP option");
         }
-        
+
         private CliResult HandleShowRouterArp(CliContext context)
         {
             var output = new StringBuilder();
@@ -638,10 +627,10 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             output.AppendLine("192.168.1.2     00:11:22:33:44:02  system");
             output.AppendLine("192.168.1.3     00:11:22:33:44:03  system");
             output.AppendLine();
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowRouterRip(CliContext context)
         {
             if (context.CommandParts.Length >= 4 && context.CommandParts[3] == "neighbor")
@@ -653,30 +642,30 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                 output.AppendLine("192.168.1.2     system     2        00:00:15");
                 output.AppendLine("192.168.1.3     system     2        00:00:22");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidCommand, "% Invalid RIP option");
         }
-        
+
         private CliResult HandleShowRouterInterface(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             output.AppendLine("Router Interface Status");
             output.AppendLine("Interface      Status       IP Address      Subnet Mask");
             output.AppendLine("-------------- ------------ --------------- ---------------");
             output.AppendLine("system         up           192.168.1.1     255.255.255.0");
             output.AppendLine("loopback       up           127.0.0.1       255.0.0.0");
             output.AppendLine();
-            
+
             return Success(output.ToString());
         }
-        
+
         // Helper methods
-        private string GetSystemUptime()
+        internal string GetSystemUptime()
         {
             // Simulate uptime - in real implementation this would track actual uptime
             return "7 days, 14 hours, 35 minutes";
@@ -687,14 +676,14 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
             // Generate a simple MAC address for display
             return "00:80:f0:12:34:56";
         }
-        
+
         private string GetInterfaceStatus(dynamic iface)
         {
             if (iface.IsShutdown)
                 return "admin-down";
             return iface.IsUp ? "up" : "down";
         }
-        
+
         private int MaskToCidr(string mask)
         {
             if (string.IsNullOrEmpty(mask)) return 0;
@@ -707,6 +696,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show
                     if ((part & (1 << i)) != 0) cidr++;
                 }
             }
+
             return cidr;
         }
     }

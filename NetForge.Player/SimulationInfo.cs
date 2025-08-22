@@ -1,4 +1,4 @@
-﻿// TODO: Enhance SimulationInfo for comprehensive capability reporting
+﻿﻿// TODO: Enhance SimulationInfo for comprehensive capability reporting
 // - Add version information display
 // - Include build timestamp and commit hash
 // - Show loaded plugin versions
@@ -17,22 +17,6 @@ namespace NetForge.Player;
 
 public static class SimulationInfo
 {
-    public class DummyNetworkDevice() : NetworkDevice("DummyDevice")
-    {
-        protected override void InitializeDefaultInterfaces()
-        {
-        }
-
-        public override string GetPrompt()
-        {
-            return "DummyDevice>";
-        }
-
-        protected override void RegisterDeviceSpecificHandlers()
-        {
-        }
-    }
-
     public static void Print()
     {
         // TODO: Expand capability reporting with additional information

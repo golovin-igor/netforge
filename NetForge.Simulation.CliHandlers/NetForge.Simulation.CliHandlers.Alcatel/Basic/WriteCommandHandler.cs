@@ -1,0 +1,27 @@
+using System.Threading.Tasks;
+using NetForge.Simulation.Common;
+
+namespace NetForge.Simulation.CliHandlers.Alcatel.Basic
+{
+    /// <summary>
+    /// Alcatel write command handler
+    /// </summary>
+    public class WriteCommandHandler : VendorAgnosticCliHandler
+    {
+        public WriteCommandHandler() : base("write", "Save configuration")
+        {
+            AddAlias("wr");
+            AddAlias("copy running-config startup-config");
+        }
+        
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        {
+            if (!IsVendor(context, "Alcatel"))
+            {
+                return RequireVendor(context, "Alcatel");
+            }
+            
+            return Success("Configuration saved successfully");
+        }
+    }
+}

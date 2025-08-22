@@ -6,60 +6,6 @@ using NetForge.Simulation.Common;
 namespace NetForge.Simulation.CliHandlers.Cisco.Basic
 {
     /// <summary>
-    /// Cisco enable command handler
-    /// </summary>
-    public class EnableCommandHandler : VendorAgnosticCliHandler
-    {
-        public EnableCommandHandler() : base("enable", "Enter privileged mode")
-        {
-            AddAlias("en");
-            AddAlias("ena");
-        }
-        
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
-        {
-            if (!IsVendor(context, "Cisco"))
-            {
-                return RequireVendor(context, "Cisco");
-            }
-            
-            // Check if already in privileged mode
-            if (IsInMode(context, "privileged"))
-            {
-                return Success(""); // Already in privileged mode
-            }
-            
-            // Move to privileged mode
-            SetMode(context, "privileged");
-            
-            return Success("");
-        }
-    }
-    
-    /// <summary>
-    /// Cisco disable command handler
-    /// </summary>
-    public class DisableCommandHandler : VendorAgnosticCliHandler
-    {
-        public DisableCommandHandler() : base("disable", "Exit privileged mode")
-        {
-        }
-        
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
-        {
-            if (!IsVendor(context, "Cisco"))
-            {
-                return RequireVendor(context, "Cisco");
-            }
-            
-            // Move to user mode
-            SetMode(context, "user");
-            
-            return Success("");
-        }
-    }
-    
-    /// <summary>
     /// Cisco ping command handler
     /// </summary>
     public class PingCommandHandler : VendorAgnosticCliHandler
@@ -67,34 +13,34 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         public PingCommandHandler() : base("ping", "Send ping packets")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     GetVendorError(context, "incomplete_command"));
             }
-            
+
             var targetIp = context.CommandParts[1];
-            
+
             // Validate IP address format
             if (!IsValidIpAddress(targetIp))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     $"% Invalid IP address: {targetIp}");
             }
-            
+
             // Simulate ping and update interface counters
             var pingCount = 5;
             var packetSize = 100; // Default Cisco ping packet size
             UpdatePingCounters(context, pingCount, packetSize);
-            
+
             // Simulate ping result
             var output = new StringBuilder();
             output.AppendLine($"Type escape sequence to abort.");
@@ -102,15 +48,15 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             output.AppendLine("!!!!!");
             output.AppendLine($"Success rate is 100 percent ({pingCount}/{pingCount}), round-trip min/avg/max = 1/1/4 ms");
             output.AppendLine($"{pingCount} packets transmitted, {pingCount} packets received, 0% packet loss");
-            
+
             return Success(output.ToString());
         }
-        
+
         private bool IsValidIpAddress(string ip)
         {
             return System.Net.IPAddress.TryParse(ip, out _);
         }
-        
+
         /// <summary>
         /// Update interface counters for ping simulation
         /// </summary>
@@ -120,11 +66,11 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             {
                 var device = context.Device;
                 if (device == null) return;
-                
+
                 // Find the source interface for ping (use first available interface with IP)
                 var sourceInterface = GetPingSourceInterface(device as NetworkDevice);
                 if (sourceInterface == null) return;
-                
+
                 // Each ping involves:
                 // - 1 outgoing ICMP echo request (TX)
                 // - 1 incoming ICMP echo reply (RX)
@@ -133,13 +79,13 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 var ipHeaderSize = 20; // IP header size
                 var totalPacketSize = packetSize + icmpHeaderSize + ipHeaderSize;
                 var totalBytes = totalPackets * totalPacketSize;
-                
+
                 // Update counters
                 sourceInterface.TxPackets += pingCount; // Outgoing requests
                 sourceInterface.RxPackets += pingCount; // Incoming replies
                 sourceInterface.TxBytes += pingCount * totalPacketSize; // Outgoing bytes
                 sourceInterface.RxBytes += pingCount * totalPacketSize; // Incoming bytes
-                
+
                 // Log the ping activity
                 var networkDevice = device as NetworkDevice;
                 networkDevice?.AddLogEntry($"Ping to {context.CommandParts[1]}: {pingCount} packets sent/received via {sourceInterface.Name}");
@@ -151,21 +97,21 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 networkDevice?.AddLogEntry($"Warning: Failed to update ping counters - {ex.Message}");
             }
         }
-        
+
         /// <summary>
         /// Find the interface to use as the source for ping
         /// </summary>
         private dynamic GetPingSourceInterface(NetworkDevice device)
         {
             var interfaces = device.GetAllInterfaces();
-            
+
             // Prefer the first interface with an IP address that's up
             var activeInterface = interfaces.Values
                 .FirstOrDefault(i => !string.IsNullOrEmpty(i.IpAddress) && i.IsUp && !i.IsShutdown);
-            
+
             if (activeInterface != null)
                 return activeInterface;
-            
+
             // Fallback to any interface that's up
             return interfaces.Values.FirstOrDefault(i => i.IsUp && !i.IsShutdown);
         }
@@ -181,29 +127,29 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             AddAlias("tracert");
             AddAlias("trace");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     GetVendorError(context, "incomplete_command"));
             }
-            
+
             var targetIp = context.CommandParts[1];
-            
+
             // Validate IP address format
             if (!IsValidIpAddress(targetIp))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     $"% Invalid IP address: {targetIp}");
             }
-            
+
             // Simulate traceroute
             var output = new StringBuilder();
             output.AppendLine($"Type escape sequence to abort.");
@@ -212,16 +158,16 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             output.AppendLine($"  1 192.168.1.1 4 msec 4 msec 4 msec");
             output.AppendLine($"  2 10.0.0.1 8 msec 8 msec 8 msec");
             output.AppendLine($"  3 {targetIp} 12 msec *  16 msec");
-            
+
             return Success(output.ToString());
         }
-        
+
         private bool IsValidIpAddress(string ip)
         {
             return System.Net.IPAddress.TryParse(ip, out _);
         }
     }
-    
+
     /// <summary>
     /// Cisco write command handler
     /// </summary>
@@ -231,39 +177,39 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         {
             AddAlias("wr");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             if (!IsInMode(context, "privileged"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires privileged mode");
             }
-            
+
             // Handle sub-commands
             if (context.CommandParts.Length > 1)
             {
                 var subCommand = context.CommandParts[1];
-                
+
                 return subCommand switch
                 {
                     "memory" => HandleWriteMemory(context),
                     "terminal" => HandleWriteTerminal(context),
                     "erase" => HandleWriteErase(context),
-                    _ => Error(CliErrorType.InvalidCommand, 
+                    _ => Error(CliErrorType.InvalidCommand,
                         GetVendorError(context, "invalid_command"))
                 };
             }
-            
+
             // Default to write memory
             return HandleWriteMemory(context);
         }
-        
+
         private CliResult HandleWriteMemory(CliContext context)
         {
             try
@@ -271,25 +217,25 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 var device = context.Device as NetworkDevice;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 // Get current running configuration
                 var runningConfig = GetRunningConfig(context);
-                
+
                 // Log configuration save
                 device.AddLogEntry("Configuration saved to startup-config");
-                
+
                 return Success("Building configuration...\n[OK]");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error saving configuration: {ex.Message}");
             }
         }
-        
+
         private CliResult HandleWriteTerminal(CliContext context)
         {
             try
@@ -297,21 +243,21 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 var device = context.Device as NetworkDevice;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 // Generate and display current running configuration
                 var runningConfig = GetRunningConfig(context);
                 return Success(runningConfig);
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error displaying configuration: {ex.Message}");
             }
         }
-        
+
         private CliResult HandleWriteErase(CliContext context)
         {
             try
@@ -319,25 +265,25 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 var device = context.Device as NetworkDevice;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 // Log startup configuration erase
                 device.AddLogEntry("Startup configuration erased");
-                
+
                 return Success("Erasing the nvram filesystem will remove all configuration files!\n[OK]");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error erasing configuration: {ex.Message}");
             }
         }
 
 
     }
-    
+
     /// <summary>
     /// Cisco reload command handler
     /// </summary>
@@ -346,39 +292,39 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         public ReloadCommandHandler() : base("reload", "Reload the device")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             if (!IsInMode(context, "privileged"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires privileged mode");
             }
-            
+
             try
             {
                 var device = context.Device as NetworkDevice;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 var output = new StringBuilder();
                 output.AppendLine("Proceed with reload? [confirm]");
                 output.AppendLine("System configuration has been modified. Save? [yes/no]:");
                 output.AppendLine("Building configuration...");
                 output.AppendLine("[OK]");
                 output.AppendLine("Reload requested by console. Reload Reason: Reload Command.");
-                
+
                 // Log device reload
                 device.AddLogEntry("Device reload initiated");
-                
+
                 // Reset interface states
                 var interfaces = device.GetAllInterfaces();
                 foreach (var iface in interfaces.Values)
@@ -389,19 +335,19 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                     iface.RxPackets = 0;
                     iface.TxPackets = 0;
                 }
-                
+
                 device.AddLogEntry("Device reload completed");
-                
+
                 return Success(output.ToString());
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error during reload: {ex.Message}");
             }
         }
     }
-    
+
     /// <summary>
     /// Cisco history command handler
     /// </summary>
@@ -410,27 +356,27 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         public HistoryCommandHandler() : base("history", "Display command history")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             // Get command history
             var history = GetCommandHistory(context);
-            
+
             var output = new StringBuilder();
             for (int i = 0; i < history.Count; i++)
             {
                 output.AppendLine($"{i + 1,3}  {history[i]}");
             }
-            
+
             return Success(output.ToString());
         }
     }
-    
+
     /// <summary>
     /// Cisco copy command handler
     /// </summary>
@@ -439,40 +385,40 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         public CopyCommandHandler() : base("copy", "Copy configuration or files")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             if (!IsInMode(context, "privileged"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires privileged mode");
             }
-            
+
             if (context.CommandParts.Length < 3)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need source and destination");
             }
-            
+
             var source = context.CommandParts[1];
             var destination = context.CommandParts[2];
-            
+
             return (source, destination) switch
             {
                 ("running-config", "startup-config") => HandleCopyRunningToStartup(context),
                 ("startup-config", "running-config") => HandleCopyStartupToRunning(context),
                 ("running-config", "tftp") => HandleCopyRunningToTftp(context),
                 ("tftp", "running-config") => HandleCopyTftpToRunning(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     $"% Invalid copy operation: {source} to {destination}")
             };
         }
-        
+
         private CliResult HandleCopyRunningToStartup(CliContext context)
         {
             try
@@ -480,21 +426,21 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 var device = context.Device as NetworkDevice;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 device.AddLogEntry("Running configuration copied to startup configuration");
-                
+
                 return Success("Destination filename [startup-config]? \nBuilding configuration...\n[OK]");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error copying running-config to startup-config: {ex.Message}");
             }
         }
-        
+
         private CliResult HandleCopyStartupToRunning(CliContext context)
         {
             try
@@ -502,21 +448,21 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 var device = context.Device as NetworkDevice;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 device.AddLogEntry("Startup configuration loaded to running configuration");
-                
+
                 return Success("Destination filename [running-config]? \nLoading configuration...\n[OK]");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error copying startup-config to running-config: {ex.Message}");
             }
         }
-        
+
         private CliResult HandleCopyRunningToTftp(CliContext context)
         {
             try
@@ -524,30 +470,30 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 var device = context.Device as NetworkDevice;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 var runningConfig = GetRunningConfig(context);
                 var configSize = System.Text.Encoding.UTF8.GetByteCount(runningConfig);
-                
+
                 var output = new StringBuilder();
                 output.AppendLine("Address or name of remote host []? 192.168.1.100");
                 output.AppendLine($"Destination filename [{device.Name}-config]? ");
                 output.AppendLine($"Writing {device.Name}-config !!! [{configSize} bytes]");
                 output.AppendLine("[OK]");
-                
+
                 device.AddLogEntry($"Running configuration backed up to TFTP server (simulated) - {configSize} bytes");
-                
+
                 return Success(output.ToString());
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error copying running-config to TFTP: {ex.Message}");
             }
         }
-        
+
         private CliResult HandleCopyTftpToRunning(CliContext context)
         {
             try
@@ -555,10 +501,10 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 var device = context.Device as NetworkDevice;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 var output = new StringBuilder();
                 output.AppendLine("Address or name of remote host []? 192.168.1.100");
                 output.AppendLine($"Source filename []? {device.Name}-config");
@@ -566,19 +512,19 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 output.AppendLine($"Accessing tftp://192.168.1.100/{device.Name}-config...");
                 output.AppendLine($"Loading {device.Name}-config from 192.168.1.100 (via GigabitEthernet0/0): !");
                 output.AppendLine("[OK - 1234 bytes]");
-                
+
                 device.AddLogEntry("Configuration loaded from TFTP server (simulated)");
-                
+
                 return Success(output.ToString());
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error copying TFTP to running-config: {ex.Message}");
             }
         }
     }
-    
+
     /// <summary>
     /// Cisco clear command handler
     /// </summary>
@@ -587,28 +533,28 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         public ClearCommandHandler() : base("clear", "Clear counters and statistics")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             if (!IsInMode(context, "privileged"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires privileged mode");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     GetVendorError(context, "incomplete_command"));
             }
-            
+
             var subCommand = context.CommandParts[1];
-            
+
             return subCommand switch
             {
                 "counters" => HandleClearCounters(context),
@@ -616,82 +562,82 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 "ip" => HandleClearIp(context),
                 "interface" => HandleClearInterface(context),
                 "cdp" => HandleClearCdp(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     GetVendorError(context, "invalid_command"))
             };
         }
-        
+
         private CliResult HandleClearCounters(CliContext context)
         {
             // Simulate clearing interface counters
             return Success("Clear \"show interface\" counters on all interfaces [confirm]y");
         }
-        
+
         private CliResult HandleClearArp(CliContext context)
         {
             // Simulate clearing ARP table
             return Success("");
         }
-        
+
         private CliResult HandleClearIp(CliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command");
             }
-            
+
             var ipSubCommand = context.CommandParts[2];
-            
+
             return ipSubCommand switch
             {
                 "route" => HandleClearIpRoute(context),
                 "bgp" => HandleClearIpBgp(context),
                 "ospf" => HandleClearIpOspf(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     GetVendorError(context, "invalid_command"))
             };
         }
-        
+
         private CliResult HandleClearIpRoute(CliContext context)
         {
             // Simulate clearing IP routing table
             return Success("");
         }
-        
+
         private CliResult HandleClearIpBgp(CliContext context)
         {
             // Simulate clearing BGP sessions
             return Success("");
         }
-        
+
         private CliResult HandleClearIpOspf(CliContext context)
         {
             // Simulate clearing OSPF process
             return Success("");
         }
-        
+
         private CliResult HandleClearInterface(CliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need interface name");
             }
-            
+
             var interfaceName = string.Join(" ", context.CommandParts.Skip(2));
-            
+
             // Simulate clearing interface statistics
             return Success("");
         }
-        
+
         private CliResult HandleClearCdp(CliContext context)
         {
             // Check for subcommands
             if (context.CommandParts.Length > 2)
             {
                 var cdpSubCommand = context.CommandParts[2];
-                
+
                 return cdpSubCommand switch
                 {
                     "table" => Success("CDP table cleared"),
@@ -699,9 +645,9 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                     _ => Success("CDP information cleared") // For invalid subcommands, still clear CDP info
                 };
             }
-            
+
             // Default CDP clear
             return Success("CDP information cleared");
         }
     }
-} 
+}
