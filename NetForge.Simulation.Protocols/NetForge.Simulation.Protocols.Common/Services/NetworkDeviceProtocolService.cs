@@ -7,6 +7,7 @@ using NetForge.Simulation.Protocols.Common.Metrics;
 using NetForge.Simulation.Protocols.Common.Dependencies;
 using NetForge.Simulation.Protocols.Common.Configuration;
 using BasicDeviceProtocol = NetForge.Simulation.Common.Interfaces.IDeviceProtocol;
+using BasicProtocolService = NetForge.Simulation.Common.Interfaces.IProtocolService;
 using EnhancedProtocolState = NetForge.Simulation.Protocols.Common.State.IProtocolState;
 using OldNetworkProtocol = NetForge.Simulation.Common.Interfaces.INetworkProtocol;
 
@@ -16,7 +17,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
     /// Implementation of IProtocolService for NetworkDevice
     /// This provides the bridge between CLI handlers and protocols via IoC/DI
     /// </summary>
-    public class NetworkDeviceProtocolService : IEnhancedProtocolService
+    public class NetworkDeviceProtocolService : IEnhancedProtocolService, BasicProtocolService
     {
         private readonly NetworkDevice _device;
         private readonly ProtocolDependencyManager _dependencyManager;
@@ -466,6 +467,74 @@ namespace NetForge.Simulation.Protocols.Common.Services
         public NetworkDevice GetDevice()
         {
             return _device;
+        }
+
+        // Compatibility methods for basic IProtocolService interface
+        
+        /// <summary>
+        /// Get a protocol instance by its type (basic interface compatibility)
+        /// </summary>
+        /// <typeparam name="T">The specific protocol type</typeparam>
+        /// <returns>Protocol instance or null if not available</returns>
+        T BasicProtocolService.GetProtocol<T>()
+        {
+            // Try to convert from enhanced protocol to basic protocol
+            var enhancedProtocol = GetProtocol(typeof(T).Name) as T;
+            if (enhancedProtocol != null) return enhancedProtocol;
+            
+            // Fallback: look for legacy protocol implementations
+            return _device.GetRegisteredProtocols().OfType<T>().FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Get a protocol instance by protocol type enum (basic interface compatibility)
+        /// </summary>
+        /// <param name="type">Protocol type to retrieve</param>
+        /// <returns>Protocol instance or null if not available</returns>
+        BasicDeviceProtocol BasicProtocolService.GetProtocol(ProtocolType type)
+        {
+            // Try enhanced protocol first
+            var enhanced = GetProtocol(type);
+            if (enhanced is BasicDeviceProtocol basic) return basic;
+            
+            // Fallback: look for legacy protocol implementations
+            return _device.GetRegisteredProtocols()
+                .OfType<BasicDeviceProtocol>()
+                .FirstOrDefault(p => p.Type == type);
+        }
+
+        /// <summary>
+        /// Get the typed state of a specific protocol (basic interface compatibility)
+        /// </summary>
+        /// <typeparam name="TState">The specific state type</typeparam>
+        /// <param name="type">Protocol type</param>
+        /// <returns>Typed protocol state or null if not available</returns>
+        TState BasicProtocolService.GetProtocolState<TState>(ProtocolType type)
+        {
+            // Try enhanced state first
+            var enhancedState = GetProtocolState(type);
+            if (enhancedState is TState state) return state;
+            
+            // Fallback: try legacy protocol state
+            var protocol = ((BasicProtocolService)this).GetProtocol(type);
+            return protocol?.GetState()?.GetTypedState<TState>();
+        }
+
+        /// <summary>
+        /// Get all registered protocol instances (basic interface compatibility)
+        /// </summary>
+        /// <returns>Enumerable of all protocols</returns>
+        IEnumerable<BasicDeviceProtocol> BasicProtocolService.GetAllProtocols()
+        {
+            // Convert enhanced protocols to basic protocols
+            var enhancedProtocols = GetAllProtocols().OfType<BasicDeviceProtocol>();
+            
+            // Add any legacy protocols that aren't enhanced
+            var legacyProtocols = _device.GetRegisteredProtocols()
+                .OfType<BasicDeviceProtocol>()
+                .Where(p => !enhancedProtocols.Any(ep => ep.Type == p.Type));
+            
+            return enhancedProtocols.Concat(legacyProtocols);
         }
     }
 }

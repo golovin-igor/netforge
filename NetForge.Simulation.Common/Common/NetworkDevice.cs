@@ -111,10 +111,20 @@ namespace NetForge.Simulation.Common.Common
                 // Try to create enhanced protocol service if available
                 try
                 {
-                    var enhancedServiceType = Type.GetType("NetForge.Simulation.Protocols.Common.Services.NetworkDeviceProtocolService, NetForge.Simulation.Protocols.Common");
-                    if (enhancedServiceType != null)
+                    // More robust approach to loading the enhanced service
+                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    var protocolsCommonAssembly = assemblies.FirstOrDefault(a => 
+                        a.GetName().Name == "NetForge.Simulation.Protocols.Common");
+                    
+                    if (protocolsCommonAssembly != null)
                     {
-                        _protocolService = (IProtocolService)Activator.CreateInstance(enhancedServiceType, this);
+                        var enhancedServiceType = protocolsCommonAssembly.GetType(
+                            "NetForge.Simulation.Protocols.Common.Services.NetworkDeviceProtocolService");
+                        
+                        if (enhancedServiceType != null)
+                        {
+                            _protocolService = (IProtocolService)Activator.CreateInstance(enhancedServiceType, this);
+                        }
                     }
                 }
                 catch
