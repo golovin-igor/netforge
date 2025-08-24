@@ -75,7 +75,7 @@ NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterp
   - **VRRP**: Virtual Router Redundancy Protocol with RFC 3768 compliance
   - **HSRP**: Hot Standby Router Protocol with RFC 2281 compliance (Cisco)
   - **STP**: Spanning Tree Protocol with IEEE 802.1D standard
-- **Additional Protocol Projects**: SNMP (in development), ISIS, IGRP, HTTP/HTTPS (low priority)
+- **Additional Protocol Projects**: SNMP (in development), ISIS, IGRP, HTTP/HTTPS ✅
 
 ### Comprehensive Test Framework
 - **NetForge.Simulation.Tests**: Core simulation and network topology testing
@@ -118,7 +118,7 @@ NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterp
 - **Build Status**: Solution builds successfully with 0 errors (minor nullable warnings only)
 
 ### ✅ Protocol Implementation Progress
-- **Management Protocols**: ✅ SSH, ✅ Telnet, 🔄 SNMP (in development), ⏳ HTTP/HTTPS (low priority)
+- **Management Protocols**: ✅ SSH, ✅ Telnet, 🔄 SNMP (in development), ✅ HTTP/HTTPS
 - **Routing Protocols**: ✅ OSPF, ✅ BGP, ✅ RIP, ✅ EIGRP (all HIGH/MEDIUM priority routing complete)
 - **Discovery Protocols**: ✅ CDP, ✅ LLDP, ✅ ARP (all discovery protocols complete)
 - **Redundancy Protocols**: ✅ HSRP, ✅ VRRP (all redundancy protocols complete)
