@@ -1,8 +1,9 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Events;
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Protocols.Routing;
 using Xunit;
 // For ProtocolType
 // Added for OspfConfig, BgpConfig
@@ -28,7 +29,7 @@ namespace NetForge.Simulation.Tests
         {
             // Arrange
             ProtocolConfigChangedEventArgs? receivedArgs = null;
-            _eventBus.Subscribe<ProtocolConfigChangedEventArgs>(args => 
+            _eventBus.Subscribe<ProtocolConfigChangedEventArgs>(args =>
             {
                 if (args.DeviceName == _testDevice.Name && args.ProtocolType == ProtocolType.OSPF)
                 {
@@ -56,7 +57,7 @@ namespace NetForge.Simulation.Tests
         {
             // Arrange
             ProtocolConfigChangedEventArgs? receivedArgs = null;
-            _eventBus.Subscribe<ProtocolConfigChangedEventArgs>(args => 
+            _eventBus.Subscribe<ProtocolConfigChangedEventArgs>(args =>
             {
                 if (args.DeviceName == _testDevice.Name && args.ProtocolType == ProtocolType.BGP)
                 {
@@ -70,7 +71,7 @@ namespace NetForge.Simulation.Tests
 
             // Act
             _testDevice.SetBgpConfiguration(bgpConfig);
-            await Task.Delay(10); 
+            await Task.Delay(10);
 
             // Assert
             Assert.NotNull(receivedArgs);
@@ -86,7 +87,7 @@ namespace NetForge.Simulation.Tests
         {
             // Arrange
             var testProtocol = new TestEventSubscribingProtocol();
-            
+
             // Act
             _testDevice.RegisterProtocol(testProtocol);
             await Task.Delay(10); // Allow for any async operations in registration if any
@@ -126,4 +127,4 @@ namespace NetForge.Simulation.Tests
             SubscribedDevice = self;
         }
     }
-} 
+}

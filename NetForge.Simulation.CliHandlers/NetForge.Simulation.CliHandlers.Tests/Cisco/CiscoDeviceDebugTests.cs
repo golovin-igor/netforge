@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Devices;
 using Xunit;
 

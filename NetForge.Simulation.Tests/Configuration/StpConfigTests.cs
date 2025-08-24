@@ -1,4 +1,4 @@
-using NetForge.Simulation.Configuration;
+using NetForge.Simulation.Common.Configuration;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Configuration
@@ -323,4 +323,4 @@ namespace NetForge.Simulation.Tests.Configuration
             Assert.Equal(bridgeId, stpConfig.BridgeId);
         }
     }
-} 
+}

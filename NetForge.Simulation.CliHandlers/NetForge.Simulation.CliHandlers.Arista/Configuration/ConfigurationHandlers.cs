@@ -1,7 +1,8 @@
 using System.Text;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.CliHandlers.Arista.Configuration
 {
@@ -14,27 +15,27 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
         {
             AddAlias("conf");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
                 return RequireVendor(context, "Arista");
             }
-            
+
             if (!IsInMode(context, "privileged"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires privileged mode");
             }
-            
+
             // Handle 'configure terminal' or just 'configure'
             if (context.CommandParts.Length > 1 && context.CommandParts[1] != "terminal")
             {
-                return Error(CliErrorType.InvalidCommand, 
+                return Error(CliErrorType.InvalidCommand,
                     "% Invalid configure command");
             }
-            
+
             SetMode(context, "config");
             return Success("");
         }
@@ -48,16 +49,16 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
         public ExitCommandHandler() : base("exit", "Exit current mode")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
                 return RequireVendor(context, "Arista");
             }
-            
+
             var currentMode = GetCurrentMode(context);
-            
+
             var newMode = currentMode switch
             {
                 "config" => "privileged",
@@ -67,7 +68,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
                 "privileged" => "user",
                 _ => "user"
             };
-            
+
             SetMode(context, newMode);
             return Success("");
         }
@@ -82,42 +83,42 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
         {
             AddAlias("int");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
                 return RequireVendor(context, "Arista");
             }
-            
+
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires configuration mode");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need interface name");
             }
-            
+
             var interfaceName = context.CommandParts[1];
-            
+
             // Validate interface name format
             if (!IsValidInterfaceName(interfaceName))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     $"% Invalid interface name: {interfaceName}");
             }
-            
+
             // Set current interface and switch to interface mode
             SetCurrentInterface(context, interfaceName);
             SetMode(context, "interface");
-            
+
             return Success("");
         }
-        
+
         private bool IsValidInterfaceName(string name)
         {
             // Common Arista interface naming patterns
@@ -134,35 +135,35 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
         public HostnameCommandHandler() : base("hostname", "Set device hostname")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
                 return RequireVendor(context, "Arista");
             }
-            
+
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires configuration mode");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need hostname");
             }
-            
+
             var hostname = context.CommandParts[1];
-            
+
             // Validate hostname
             if (!IsValidHostname(hostname))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     $"% Invalid hostname: {hostname}");
             }
-            
+
             // Set hostname
             var device = context.Device as NetworkDevice;
             if (device != null)
@@ -170,16 +171,16 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
                 device.SetHostname(hostname);
                 device.AddLogEntry($"Hostname changed to {hostname}");
             }
-            
+
             return Success("");
         }
-        
+
         private bool IsValidHostname(string hostname)
         {
             if (string.IsNullOrWhiteSpace(hostname) || hostname.Length > 63)
                 return false;
-            
-            return hostname.All(c => char.IsLetterOrDigit(c) || c == '-') && 
+
+            return hostname.All(c => char.IsLetterOrDigit(c) || c == '-') &&
                    !hostname.StartsWith('-') && !hostname.EndsWith('-');
         }
     }
@@ -192,42 +193,42 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
         public VlanCommandHandler() : base("vlan", "Configure VLAN")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
                 return RequireVendor(context, "Arista");
             }
-            
+
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires configuration mode");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need VLAN ID");
             }
-            
+
             var vlanId = context.CommandParts[1];
-            
+
             // Validate VLAN ID
             if (!int.TryParse(vlanId, out int vlanNumber) || vlanNumber < 1 || vlanNumber > 4094)
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     $"% Invalid VLAN ID: {vlanId}");
             }
-            
+
             // Set current VLAN and switch to VLAN mode
             SetCurrentVlan(context, vlanNumber);
             SetMode(context, "vlan");
-            
+
             return Success("");
         }
-        
+
         private void SetCurrentVlan(CliContext context, int vlanId)
         {
             var device = context.Device as NetworkDevice;
@@ -249,43 +250,43 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
         public NoCommandHandler() : base("no", "Negate a command")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
                 return RequireVendor(context, "Arista");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need command to negate");
             }
-            
+
             var command = context.CommandParts[1];
-            
+
             return command switch
             {
                 "shutdown" => HandleNoShutdown(context),
                 "ip" => HandleNoIp(context),
                 "hostname" => HandleNoHostname(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     $"% Cannot negate command: {command}")
             };
         }
-        
+
         private CliResult HandleNoShutdown(CliContext context)
         {
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires interface mode");
             }
-            
+
             var device = context.Device as NetworkDevice;
             var interfaceName = device?.GetCurrentInterface();
-            
+
             if (device != null && !string.IsNullOrEmpty(interfaceName))
             {
                 var interfaces = device.GetAllInterfaces();
@@ -295,24 +296,24 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
                     device.AddLogEntry($"Interface {interfaceName} enabled");
                 }
             }
-            
+
             return Success("");
         }
-        
+
         private CliResult HandleNoIp(CliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
                 return Success(""); // Generic no ip command
             }
-            
+
             var ipCommand = context.CommandParts[2];
-            
+
             if (ipCommand == "address" && IsInMode(context, "interface"))
             {
                 var device = context.Device as NetworkDevice;
                 var interfaceName = device?.GetCurrentInterface();
-                
+
                 if (device != null && !string.IsNullOrEmpty(interfaceName))
                 {
                     var interfaces = device.GetAllInterfaces();
@@ -324,25 +325,25 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
                     }
                 }
             }
-            
+
             return Success("");
         }
-        
+
         private CliResult HandleNoHostname(CliContext context)
         {
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires configuration mode");
             }
-            
+
             var device = context.Device as NetworkDevice;
             if (device != null)
             {
                 device.SetHostname("Switch"); // Default name
                 device.AddLogEntry("Hostname reset to default");
             }
-            
+
             return Success("");
         }
     }
@@ -355,89 +356,89 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
         public IpCommandHandler() : base("ip", "IP configuration commands")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
                 return RequireVendor(context, "Arista");
             }
-            
+
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command requires configuration mode");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command");
             }
-            
+
             var subCommand = context.CommandParts[1];
-            
+
             if (subCommand.Equals("access-list", StringComparison.OrdinalIgnoreCase))
             {
                 return HandleAccessList(context);
             }
-            
+
             if (subCommand.Equals("route", StringComparison.OrdinalIgnoreCase))
             {
                 return HandleStaticRoute(context);
             }
-            
-            return Error(CliErrorType.InvalidCommand, 
+
+            return Error(CliErrorType.InvalidCommand,
                 "% Invalid IP command");
         }
-        
+
         private CliResult HandleAccessList(CliContext context)
         {
             if (context.CommandParts.Length < 4)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need access list type and name");
             }
-            
+
             var aclType = context.CommandParts[2]; // standard or extended
             var aclName = context.CommandParts[3];
-            
-            if (!aclType.Equals("standard", StringComparison.OrdinalIgnoreCase) && 
+
+            if (!aclType.Equals("standard", StringComparison.OrdinalIgnoreCase) &&
                 !aclType.Equals("extended", StringComparison.OrdinalIgnoreCase))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     "% Invalid access list type");
             }
-            
+
             // Enter ACL configuration mode
             SetMode(context, "acl");
-            
+
             // Store ACL context
             if (context.Device is NetworkDevice device)
             {
                 device.AddLogEntry($"Entered {aclType} access list {aclName}");
             }
-            
+
             return Success("");
         }
-        
+
         private CliResult HandleStaticRoute(CliContext context)
         {
             if (context.CommandParts.Length < 5)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need network, mask, and next-hop");
             }
-            
+
             var network = context.CommandParts[2];
             var mask = context.CommandParts[3];
             var nextHop = context.CommandParts[4];
-            
+
             if (context.Device is NetworkDevice device)
             {
                 device.AddLogEntry($"Static route added: {network}/{mask} via {nextHop}");
             }
-            
+
             return Success("");
         }
     }

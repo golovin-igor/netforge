@@ -1,5 +1,5 @@
-using NetForge.Simulation.Events;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.Common.Events
 {
@@ -13,37 +13,37 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// Name of the device that reported the protocol state change
         /// </summary>
         public string DeviceName { get; }
-        
+
         /// <summary>
         /// The type of protocol that changed state
         /// </summary>
         public ProtocolType ProtocolType { get; }
-        
+
         /// <summary>
         /// The name of the protocol that changed state
         /// </summary>
         public string ProtocolName { get; }
-        
+
         /// <summary>
         /// Details about what changed in the protocol state
         /// </summary>
         public string ChangeDetails { get; }
-        
+
         /// <summary>
         /// The new state data (optional)
         /// </summary>
         public Dictionary<string, object>? NewStateData { get; set; }
-        
+
         /// <summary>
         /// The previous state data (optional)
         /// </summary>
         public Dictionary<string, object>? PreviousStateData { get; set; }
-        
+
         /// <summary>
         /// Whether this is a critical state change that requires immediate attention
         /// </summary>
         public bool IsCritical { get; set; } = false;
-        
+
         /// <summary>
         /// Create protocol state changed event
         /// </summary>
@@ -52,9 +52,9 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// <param name="protocolName">Name of protocol</param>
         /// <param name="changeDetails">Details of the change</param>
         public ProtocolStateChangedEventArgs(
-            string deviceName, 
-            ProtocolType protocolType, 
-            string protocolName, 
+            string deviceName,
+            ProtocolType protocolType,
+            string protocolName,
             string changeDetails)
         {
             DeviceName = deviceName;
@@ -62,7 +62,7 @@ namespace NetForge.Simulation.Protocols.Common.Events
             ProtocolName = protocolName;
             ChangeDetails = changeDetails;
         }
-        
+
         /// <summary>
         /// Create protocol state changed event with state data
         /// </summary>
@@ -83,7 +83,7 @@ namespace NetForge.Simulation.Protocols.Common.Events
             NewStateData = newStateData;
             PreviousStateData = previousStateData;
         }
-        
+
         /// <summary>
         /// String representation of the event
         /// </summary>

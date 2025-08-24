@@ -1,6 +1,7 @@
-using NetForge.Simulation.Core;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.Common;
 
-namespace NetForge.Simulation.CliHandlers.Common
+namespace NetForge.Simulation.Common.CLI.CommonHandlers
 {
     /// <summary>
     /// Common disable command handler for exiting privileged mode
@@ -14,7 +15,7 @@ namespace NetForge.Simulation.CliHandlers.Common
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var currentMode = context.Device.GetCurrentModeEnum();
-            
+
             if (currentMode == DeviceMode.Privileged)
             {
                 context.Device.SetCurrentModeEnum(DeviceMode.User);
@@ -26,6 +27,6 @@ namespace NetForge.Simulation.CliHandlers.Common
             }
         }
     }
-} 
+}
 
 

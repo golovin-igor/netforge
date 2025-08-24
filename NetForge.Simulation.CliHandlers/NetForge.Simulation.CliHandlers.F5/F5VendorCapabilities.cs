@@ -1,6 +1,7 @@
-using NetForge.Simulation.Interfaces;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.CliHandlers.F5
 {
@@ -16,21 +17,21 @@ namespace NetForge.Simulation.CliHandlers.F5
         public F5VendorCapabilities(NetworkDevice device)
         {
             _device = device ?? throw new ArgumentNullException(nameof(device));
-            
+
             _supportedCommands = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 // Basic commands
                 "enable", "disable", "exit", "quit", "help", "?", "ping", "traceroute",
-                
+
                 // Show commands
                 "show", "show running-config", "show startup-config", "show version",
                 "show interfaces", "show ip interface", "show ip route", "show arp",
                 "show vlan", "show trunk", "show spanning-tree", "show cdp",
-                
+
                 // Configuration commands
                 "configure", "configure terminal", "hostname", "interface", "ip",
                 "no", "shutdown", "no shutdown", "description", "ip address",
-                
+
                 // F5 BIG-IP specific commands
                 "tmsh", "bash", "list", "create", "modify", "delete", "show ltm",
                 "show gtm", "show asm", "show apm", "show net", "show sys",
@@ -88,9 +89,9 @@ namespace NetForge.Simulation.CliHandlers.F5
                 return helpText;
 
             // Try to find partial match
-            var partialMatch = _helpTexts.Keys.FirstOrDefault(key => 
+            var partialMatch = _helpTexts.Keys.FirstOrDefault(key =>
                 command.StartsWith(key, StringComparison.OrdinalIgnoreCase));
-            
+
             if (partialMatch != null)
                 return _helpTexts[partialMatch];
 
@@ -137,7 +138,7 @@ namespace NetForge.Simulation.CliHandlers.F5
 
             var mask = (octet1 << 24) | (octet2 << 16) | (octet3 << 8) | octet4;
             var cidr = 32 - (int)Math.Log2(~mask + 1);
-            
+
             return Math.Max(0, Math.Min(32, cidr));
         }
 
@@ -202,4 +203,4 @@ namespace NetForge.Simulation.CliHandlers.F5
         public bool SaveConfiguration() => true;
         public bool ReloadDevice() => true;
     }
-} 
+}

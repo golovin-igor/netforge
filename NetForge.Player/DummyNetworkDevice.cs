@@ -2,6 +2,7 @@
 // This class provides a minimal network device implementation for utility purposes
 
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Player;
 

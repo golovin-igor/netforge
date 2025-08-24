@@ -1,4 +1,4 @@
-using NetForge.Simulation.Protocols.Routing;
+using NetForge.Simulation.Common.Protocols;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Protocols
@@ -412,4 +412,4 @@ namespace NetForge.Simulation.Tests.Protocols
             Assert.Equal(100, interface1.Priority);
         }
     }
-} 
+}

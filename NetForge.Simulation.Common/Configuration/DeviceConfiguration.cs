@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace NetForge.Simulation.Configuration;
+namespace NetForge.Simulation.Common.Configuration;
 
 /// <summary>
 /// Represents the NVRAM running configuration for a device.
@@ -120,6 +120,6 @@ public class DeviceConfiguration
     {
         return Build();
     }
-    
+
     public int Length => _configurationBuilder.Length;
 }

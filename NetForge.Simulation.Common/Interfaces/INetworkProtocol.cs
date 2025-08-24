@@ -1,7 +1,7 @@
-using NetForge.Simulation.Common;
-using NetForge.Simulation.Events;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Events;
 
-namespace NetForge.Simulation.Interfaces
+namespace NetForge.Simulation.Common.Interfaces
 {
     public enum ProtocolType
     {

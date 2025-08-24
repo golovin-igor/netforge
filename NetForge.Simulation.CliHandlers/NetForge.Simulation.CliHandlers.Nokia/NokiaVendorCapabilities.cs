@@ -1,8 +1,9 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Configuration;
 using System.Text;
-using PortChannelConfig = NetForge.Simulation.Configuration.PortChannel;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Configuration;
+using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
 namespace NetForge.Simulation.CliHandlers.Nokia
 {

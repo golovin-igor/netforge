@@ -1,6 +1,9 @@
-using NetForge.Simulation.Interfaces;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Dell
 {
@@ -35,11 +38,11 @@ namespace NetForge.Simulation.CliHandlers.Dell
             manager.RegisterHandler(new Basic.HelpCommandHandler());
             manager.RegisterHandler(new Basic.CopyCommandHandler());
             manager.RegisterHandler(new Basic.ClearCommandHandler());
-            
+
             // Register Dell show handlers - COMPREHENSIVE 795-line functionality
             manager.RegisterHandler(new Show.ShowCommandHandler());
-            
-            // Register Dell configuration handlers - COMPREHENSIVE 763-line functionality  
+
+            // Register Dell configuration handlers - COMPREHENSIVE 763-line functionality
             manager.RegisterHandler(new Configuration.ConfigureCommandHandler());
             manager.RegisterHandler(new Configuration.InterfaceCommandHandler());
             manager.RegisterHandler(new Configuration.InterfaceModeCommandHandler());
@@ -78,14 +81,14 @@ namespace NetForge.Simulation.CliHandlers.Dell
                 // Basic Commands - will be implemented later
                 // new Basic.BasicHandlers.DellPingHandler(),
                 // new Basic.BasicHandlers.DellHostnameHandler(),
-                
-                // Configuration Commands - will be implemented later  
+
+                // Configuration Commands - will be implemented later
                 // new Configuration.ConfigurationHandlers.DellConfigureHandler(),
                 // new Configuration.ConfigurationHandlers.DellExitHandler(),
-                
+
                 // Show Commands - will be implemented later
                 // new Show.ShowHandlers.DellShowHandler()
             };
         }
     }
-} 
+}

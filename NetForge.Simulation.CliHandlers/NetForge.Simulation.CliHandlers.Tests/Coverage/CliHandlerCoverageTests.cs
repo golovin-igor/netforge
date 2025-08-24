@@ -8,6 +8,8 @@ using NetForge.Simulation.CliHandlers.Aruba;
 using NetForge.Simulation.CliHandlers.Cisco;
 using NetForge.Simulation.CliHandlers.Linux;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Devices;
 using Xunit;
 

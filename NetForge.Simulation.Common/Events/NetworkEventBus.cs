@@ -1,8 +1,8 @@
-namespace NetForge.Simulation.Events
+namespace NetForge.Simulation.Common.Events
 {
     public class NetworkEventBus
     {
-        private readonly Dictionary<Type, List<Func<NetworkEventArgs, Task>>> _subscriptions = 
+        private readonly Dictionary<Type, List<Func<NetworkEventArgs, Task>>> _subscriptions =
             new Dictionary<Type, List<Func<NetworkEventArgs, Task>>>();
 
         public void Subscribe<TEventArgs>(Func<TEventArgs, Task> handler) where TEventArgs : NetworkEventArgs
@@ -30,11 +30,11 @@ namespace NetForge.Simulation.Events
                     catch (Exception ex)
                     {
                         // Log the exception, but don't let one subscriber crash others.
-                        Console.Error.WriteLine($"Error in event handler for {eventType.Name}: {ex.Message}"); 
+                        Console.Error.WriteLine($"Error in event handler for {eventType.Name}: {ex.Message}");
                         // In a real app, use a proper logging framework.
                     }
                 }
             }
         }
     }
-} 
+}

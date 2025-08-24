@@ -1,6 +1,6 @@
-using NetForge.Simulation.Events;
+using NetForge.Simulation.Common.Events;
 
-namespace NetForge.Simulation.Common
+namespace NetForge.Simulation.Common.Common
 {
     /// <summary>
     /// Manages network topology and device interconnections with physical connection simulation
@@ -18,7 +18,7 @@ namespace NetForge.Simulation.Common
         {
             _eventBus = new NetworkEventBus();
         }
-        
+
         /// <summary>
         /// Add a device to the network
         /// </summary>
@@ -29,40 +29,40 @@ namespace NetForge.Simulation.Common
             if (!devices.ContainsKey(device.Name))
             {
                 devices[device.Name] = device;
-                
+
                 // Also add to devicesByDeviceId dictionary if DeviceId is provided
                 if (!string.IsNullOrEmpty(device.DeviceId))
                 {
                     devicesByDeviceId[device.DeviceId] = device;
                 }
-                
+
                 device.ParentNetwork = this;
-                
+
                 // Subscribe protocols to events now that ParentNetwork is set
                 device.SubscribeProtocolsToEvents();
-                
+
                 await _eventBus.PublishAsync(new DeviceChangedEventArgs(device, DeviceChangeType.Added));
             }
         }
-        
+
         /// <summary>
         /// Add a physical connection between two device interfaces
         /// </summary>
-        public async Task AddPhysicalConnectionAsync(string device1Name, string interface1, string device2Name, string interface2, 
+        public async Task AddPhysicalConnectionAsync(string device1Name, string interface1, string device2Name, string interface2,
             PhysicalConnectionType connectionType = PhysicalConnectionType.Ethernet)
         {
             if (!devices.ContainsKey(device1Name) || !devices.ContainsKey(device2Name))
                 throw new ArgumentException("One or both devices do not exist in the network");
 
             var connection = new PhysicalConnection(device1Name, interface1, device2Name, interface2, connectionType);
-            
+
             if (physicalConnections.ContainsKey(connection.Id))
                 throw new InvalidOperationException($"Physical connection {connection.Id} already exists");
 
             physicalConnections[connection.Id] = connection;
-            
+
             // Subscribe to connection state changes
-            connection.StateChanged += async (args) => 
+            connection.StateChanged += async (args) =>
             {
                 await _eventBus.PublishAsync(args);
                 await HandlePhysicalConnectionStateChangeAsync(args);
@@ -86,7 +86,7 @@ namespace NetForge.Simulation.Common
         public async Task RemovePhysicalConnectionAsync(string device1Name, string interface1, string device2Name, string interface2)
         {
             var connectionId = GenerateConnectionId(device1Name, interface1, device2Name, interface2);
-            
+
             if (physicalConnections.TryGetValue(connectionId, out var connection))
             {
                 await connection.DisconnectAsync();
@@ -144,7 +144,7 @@ namespace NetForge.Simulation.Common
         /// <summary>
         /// Simulate connection degradation
         /// </summary>
-        public async Task SimulateConnectionDegradationAsync(string device1Name, string interface1, string device2Name, string interface2, 
+        public async Task SimulateConnectionDegradationAsync(string device1Name, string interface1, string device2Name, string interface2,
             double packetLoss, int additionalLatency, string reason = "Signal degradation")
         {
             var connection = GetPhysicalConnection(device1Name, interface1, device2Name, interface2);
@@ -173,7 +173,7 @@ namespace NetForge.Simulation.Common
         {
             return devices.ContainsKey(name) ? devices[name] : null;
         }
-        
+
         /// <summary>
         /// Remove a device from the network
         /// </summary>
@@ -182,13 +182,13 @@ namespace NetForge.Simulation.Common
             if (devices.TryGetValue(deviceName, out var device))
             {
                 devices.Remove(deviceName);
-                
+
                 // Also remove from devicesByDeviceId dictionary if DeviceId exists
                 if (!string.IsNullOrEmpty(device.DeviceId))
                 {
                     devicesByDeviceId.Remove(device.DeviceId);
                 }
-                
+
                 device.ParentNetwork = null;
                 await _eventBus.PublishAsync(new DeviceChangedEventArgs(device, DeviceChangeType.Removed));
             }
@@ -216,7 +216,7 @@ namespace NetForge.Simulation.Common
             {
                 devicesByDeviceId.Remove(oldDeviceId);
             }
-            
+
             // Add new mapping if DeviceId is provided
             if (!string.IsNullOrEmpty(device.DeviceId))
             {
@@ -231,7 +231,7 @@ namespace NetForge.Simulation.Common
         {
             if (string.IsNullOrEmpty(deviceId))
                 return false;
-                
+
             return devicesByDeviceId.ContainsKey(deviceId);
         }
 
@@ -242,10 +242,10 @@ namespace NetForge.Simulation.Common
         {
             if (string.IsNullOrEmpty(deviceId))
                 return null;
-                
+
             return devicesByDeviceId.TryGetValue(deviceId, out var device) ? device : null;
         }
-        
+
         /// <summary>
         /// Find device by IP address
         /// </summary>
@@ -261,7 +261,7 @@ namespace NetForge.Simulation.Common
             }
             return null;
         }
-        
+
         /// <summary>
         /// Get all devices in the network
         /// </summary>
@@ -269,14 +269,14 @@ namespace NetForge.Simulation.Common
         {
             return devices.Values;
         }
-        
+
         /// <summary>
         /// Get devices connected to a specific device interface
         /// </summary>
         public List<(NetworkDevice device, string interfaceName)> GetConnectedDevices(string deviceName, string interfaceName)
         {
             var result = new List<(NetworkDevice device, string interfaceName)>();
-            
+
             var connections = GetPhysicalConnectionsForInterface(deviceName, interfaceName);
             foreach (var connection in connections.Where(c => c.IsOperational))
             {
@@ -286,10 +286,10 @@ namespace NetForge.Simulation.Common
                     result.Add((devices[remoteEnd.Value.deviceName], remoteEnd.Value.interfaceName));
                 }
             }
-            
+
             return result;
         }
-        
+
         /// <summary>
         /// Check if two interfaces are connected via operational physical connection
         /// </summary>
@@ -324,7 +324,7 @@ namespace NetForge.Simulation.Common
 
             return stats;
         }
-        
+
         /// <summary>
         /// Update all protocol states (legacy method - protocols now update via events)
         /// </summary>
@@ -358,7 +358,7 @@ namespace NetForge.Simulation.Common
                 {
                     bool wasUp = iface1.IsUp;
                     iface1.IsUp = shouldBeUp && !iface1.IsShutdown;
-                    
+
                     if (wasUp != iface1.IsUp)
                     {
                         await _eventBus.PublishAsync(new InterfaceStateChangedEventArgs(
@@ -370,7 +370,7 @@ namespace NetForge.Simulation.Common
                 {
                     bool wasUp = iface2.IsUp;
                     iface2.IsUp = shouldBeUp && !iface2.IsShutdown;
-                    
+
                     if (wasUp != iface2.IsUp)
                     {
                         await _eventBus.PublishAsync(new InterfaceStateChangedEventArgs(
@@ -379,10 +379,10 @@ namespace NetForge.Simulation.Common
                 }
 
                 // Publish legacy LinkChangedEvent for backward compatibility
-                var changeType = args.NewState == PhysicalConnectionState.Connected 
-                    ? LinkChangeType.Added 
+                var changeType = args.NewState == PhysicalConnectionState.Connected
+                    ? LinkChangeType.Added
                     : LinkChangeType.Removed;
-                    
+
                 await _eventBus.PublishAsync(new LinkChangedEventArgs(
                     connection.Device1Name, connection.Interface1Name,
                     connection.Device2Name, connection.Interface2Name, changeType));
@@ -409,8 +409,8 @@ namespace NetForge.Simulation.Common
         public int FailedConnections { get; set; }
         public int DegradedConnections { get; set; }
 
-        public double ConnectionReliability => TotalConnections > 0 
-            ? (double)OperationalConnections / TotalConnections * 100 
+        public double ConnectionReliability => TotalConnections > 0
+            ? (double)OperationalConnections / TotalConnections * 100
             : 0;
     }
-} 
+}

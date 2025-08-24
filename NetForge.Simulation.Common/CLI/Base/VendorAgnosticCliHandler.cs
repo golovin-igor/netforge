@@ -1,7 +1,7 @@
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
 
-namespace NetForge.Simulation.CliHandlers
+namespace NetForge.Simulation.Common.CLI.Base
 {
     /// <summary>
     /// Abstract base class for vendor-agnostic CLI handlers
@@ -58,7 +58,7 @@ namespace NetForge.Simulation.CliHandlers
         /// </summary>
         protected string GetVendorError(CliContext context, string errorType, string? errorContext = null)
         {
-            return context.VendorContext?.Capabilities.GetVendorErrorMessage(errorType, errorContext) 
+            return context.VendorContext?.Capabilities.GetVendorErrorMessage(errorType, errorContext)
                    ?? $"% Error: {errorType}";
         }
 
@@ -67,7 +67,7 @@ namespace NetForge.Simulation.CliHandlers
         /// </summary>
         protected string FormatInterfaceName(CliContext context, string interfaceName)
         {
-            return context.VendorContext?.Capabilities.FormatInterfaceName(interfaceName) 
+            return context.VendorContext?.Capabilities.FormatInterfaceName(interfaceName)
                    ?? interfaceName;
         }
 
@@ -76,7 +76,7 @@ namespace NetForge.Simulation.CliHandlers
         /// </summary>
         protected bool ValidateVendorSyntax(CliContext context, string command)
         {
-            return context.VendorContext?.Capabilities.ValidateVendorSyntax(context.CommandParts, command) 
+            return context.VendorContext?.Capabilities.ValidateVendorSyntax(context.CommandParts, command)
                    ?? true;
         }
 
@@ -93,7 +93,7 @@ namespace NetForge.Simulation.CliHandlers
         /// </summary>
         protected string GetRunningConfig(CliContext context)
         {
-            return context.VendorContext?.Capabilities.GetRunningConfiguration() 
+            return context.VendorContext?.Capabilities.GetRunningConfiguration()
                    ?? "% Configuration not available";
         }
 
@@ -102,7 +102,7 @@ namespace NetForge.Simulation.CliHandlers
         /// </summary>
         protected string GetStartupConfig(CliContext context)
         {
-            return context.VendorContext?.Capabilities.GetStartupConfiguration() 
+            return context.VendorContext?.Capabilities.GetStartupConfiguration()
                    ?? "% Configuration not available";
         }
 
@@ -111,7 +111,7 @@ namespace NetForge.Simulation.CliHandlers
         /// </summary>
         protected string FormatOutput(CliContext context, string command, object? data = null)
         {
-            return context.VendorContext?.Capabilities.FormatCommandOutput(command, data) 
+            return context.VendorContext?.Capabilities.FormatCommandOutput(command, data)
                    ?? data?.ToString() ?? "";
         }
 
@@ -124,7 +124,7 @@ namespace NetForge.Simulation.CliHandlers
         {
             if (GetCandidateConfig(context) == null)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "This command requires candidate configuration support");
             }
             return Success();
@@ -211,7 +211,7 @@ namespace NetForge.Simulation.CliHandlers
             {
                 var history = context.Device.GetCommandHistory();
                 var entries = new List<string>();
-                
+
                 // Iterate through available commands in the history
                 for (int i = 0; i < history.Count && i < 20; i++) // Limit to 20 most recent
                 {
@@ -227,7 +227,7 @@ namespace NetForge.Simulation.CliHandlers
         }
 
         // Note: Device-specific operations should be handled through vendor capabilities
-        // These helper methods have been removed to eliminate compilation errors and promote 
+        // These helper methods have been removed to eliminate compilation errors and promote
         // proper use of the vendor-agnostic architecture via GetVendorContext().
         // Handlers should use vendor context methods instead of direct device method calls.
 
@@ -300,17 +300,17 @@ namespace NetForge.Simulation.CliHandlers
         protected override string GetContextualHelp(CliContext context)
         {
             var help = new List<string>();
-            
+
             // Add base help
             help.Add(base.GetContextualHelp(context));
-            
+
             // Add vendor-specific command examples
             if (context.VendorContext != null)
             {
                 var vendorName = context.VendorContext.VendorName;
                 help.Add("");
                 help.Add($"Vendor: {vendorName}");
-                
+
                 // Add vendor-specific completions as examples
                 var vendorCompletions = context.VendorContext.GetCommandCompletions(context.CommandParts);
                 if (vendorCompletions.Any())
@@ -323,7 +323,7 @@ namespace NetForge.Simulation.CliHandlers
                     }
                 }
             }
-            
+
             return string.Join("\n", help);
         }
 
@@ -342,8 +342,8 @@ namespace NetForge.Simulation.CliHandlers
         protected CliResult RequireVendor(CliContext context, string expectedVendor)
         {
             var currentVendor = GetVendorContext(context)?.VendorName ?? "Unknown";
-            return Error(CliErrorType.InvalidCommand, 
+            return Error(CliErrorType.InvalidCommand,
                 $"% This command requires {expectedVendor} device. Current vendor: {currentVendor}");
         }
     }
-} 
+}

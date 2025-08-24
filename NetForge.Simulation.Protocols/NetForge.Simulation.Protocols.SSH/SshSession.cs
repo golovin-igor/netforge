@@ -1,7 +1,7 @@
 using System.Net.Sockets;
 using System.Text;
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.Protocols.SSH
 {
@@ -18,12 +18,12 @@ namespace NetForge.Simulation.Protocols.SSH
         private readonly DateTime _connectionTime;
         private readonly StreamReader _reader;
         private readonly StreamWriter _writer;
-        
+
         private bool _isAuthenticated;
         private string? _username;
         private DateTime _lastActivity;
         private bool _isDisposed;
-        
+
         public string SessionId => _sessionId;
         public string ClientEndpoint { get; }
         public DateTime ConnectionTime => _connectionTime;
@@ -32,27 +32,27 @@ namespace NetForge.Simulation.Protocols.SSH
         public string? Username => _username;
         public bool IsConnected => _tcpClient.Connected && !_isDisposed;
         public string EncryptionAlgorithm { get; private set; } = "aes128-ctr"; // Simulated encryption
-        
+
         public SshSession(TcpClient tcpClient, SshConfig config, NetworkDevice device)
         {
             _tcpClient = tcpClient ?? throw new ArgumentNullException(nameof(tcpClient));
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _device = device ?? throw new ArgumentNullException(nameof(device));
-            
+
             _sessionId = Guid.NewGuid().ToString("N")[..8];
             _connectionTime = DateTime.Now;
             _lastActivity = DateTime.Now;
-            
+
             ClientEndpoint = _tcpClient.Client.RemoteEndPoint?.ToString() ?? "unknown";
-            
+
             _networkStream = _tcpClient.GetStream();
             _reader = new StreamReader(_networkStream, Encoding.UTF8);
             _writer = new StreamWriter(_networkStream, Encoding.UTF8) { AutoFlush = true };
-            
+
             // Set encryption algorithm based on config
             SetEncryptionAlgorithm();
         }
-        
+
         private void SetEncryptionAlgorithm()
         {
             // Parse encryption algorithms from config and select the first one
@@ -62,7 +62,7 @@ namespace NetForge.Simulation.Protocols.SSH
                 EncryptionAlgorithm = algorithms[0].Trim();
             }
         }
-        
+
         /// <summary>
         /// Set the session as authenticated
         /// </summary>
@@ -73,7 +73,7 @@ namespace NetForge.Simulation.Protocols.SSH
             _username = username;
             _lastActivity = DateTime.Now;
         }
-        
+
         /// <summary>
         /// Send a message to the client
         /// </summary>
@@ -82,7 +82,7 @@ namespace NetForge.Simulation.Protocols.SSH
         {
             if (!IsConnected)
                 return;
-            
+
             try
             {
                 await _writer.WriteAsync(message);
@@ -93,7 +93,7 @@ namespace NetForge.Simulation.Protocols.SSH
                 _device.AddLogEntry($"Error sending message to SSH session {_sessionId}: {ex.Message}");
             }
         }
-        
+
         /// <summary>
         /// Send a response to the client
         /// </summary>
@@ -102,7 +102,7 @@ namespace NetForge.Simulation.Protocols.SSH
         {
             await SendMessage(response);
         }
-        
+
         /// <summary>
         /// Send a prompt to the client
         /// </summary>
@@ -112,7 +112,7 @@ namespace NetForge.Simulation.Protocols.SSH
             var prompt = $"{hostname}# ";
             await SendMessage(prompt);
         }
-        
+
         /// <summary>
         /// Read a line from the client
         /// </summary>
@@ -123,20 +123,20 @@ namespace NetForge.Simulation.Protocols.SSH
         {
             if (!IsConnected)
                 return string.Empty;
-            
+
             try
             {
                 var line = new StringBuilder();
                 var buffer = new char[1];
-                
+
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     var bytesRead = await _reader.ReadAsync(buffer, 0, 1);
                     if (bytesRead == 0)
                         break; // Connection closed
-                    
+
                     var ch = buffer[0];
-                    
+
                     if (ch == '\r' || ch == '\n')
                     {
                         // Handle line ending
@@ -145,12 +145,12 @@ namespace NetForge.Simulation.Protocols.SSH
                             // Look for following \n
                             _reader.Peek(); // This will read the \n if present
                         }
-                        
+
                         if (echoInput)
                         {
                             await _writer.WriteAsync("\r\n");
                         }
-                        
+
                         _lastActivity = DateTime.Now;
                         return line.ToString();
                     }
@@ -175,7 +175,7 @@ namespace NetForge.Simulation.Protocols.SSH
                     }
                     // Ignore other control characters
                 }
-                
+
                 _lastActivity = DateTime.Now;
                 return line.ToString();
             }
@@ -185,7 +185,7 @@ namespace NetForge.Simulation.Protocols.SSH
                 return string.Empty;
             }
         }
-        
+
         /// <summary>
         /// Check if the session has timed out
         /// </summary>
@@ -195,7 +195,7 @@ namespace NetForge.Simulation.Protocols.SSH
             var timeoutMinutes = _config.SessionTimeoutMinutes;
             return (DateTime.Now - _lastActivity).TotalMinutes > timeoutMinutes;
         }
-        
+
         /// <summary>
         /// Disconnect the session
         /// </summary>
@@ -210,7 +210,7 @@ namespace NetForge.Simulation.Protocols.SSH
                 // Ignore errors when disconnecting
             }
         }
-        
+
         /// <summary>
         /// Get session statistics
         /// </summary>
@@ -230,14 +230,14 @@ namespace NetForge.Simulation.Protocols.SSH
                 ["DurationMinutes"] = (DateTime.Now - _connectionTime).TotalMinutes
             };
         }
-        
+
         public void Dispose()
         {
             if (_isDisposed)
                 return;
-            
+
             _isDisposed = true;
-            
+
             try
             {
                 _writer?.Dispose();

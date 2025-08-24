@@ -1,7 +1,11 @@
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Implementations;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Interfaces;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.VendorAgnostic
@@ -348,4 +352,4 @@ namespace NetForge.Simulation.Tests.VendorAgnostic
             return "TestVendor".Equals(vendorName, StringComparison.OrdinalIgnoreCase);
         }
     }
-} 
+}

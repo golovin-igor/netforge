@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.EIGRP
 {
@@ -124,7 +125,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             helloPacket.Tlvs["K-values"] = new int[] { 1, 0, 1, 0, 0 }; // Default K-values
 
             device.AddLogEntry($"EIGRP: Sending Hello on interface {interfaceName}");
-            
+
             // Simulate hello packet transmission
             await SimulatePacketTransmission(device, interfaceName, helloPacket);
         }
@@ -242,7 +243,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
         {
             // Simulate processing received EIGRP packets
             // In a real implementation, this would process incoming network packets
-            
+
             // For simulation, we'll update topology based on connected neighbors
             await ProcessTopologyUpdates(device, state);
         }
@@ -267,7 +268,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
                 if (!state.TopologyTable.ContainsKey(entryKey))
                 {
                     var metric = CalculateInterfaceMetric(interfaceConfig, config);
-                    
+
                     state.TopologyTable[entryKey] = new EigrpTopologyEntry
                     {
                         Network = networkAddress,
@@ -319,15 +320,15 @@ namespace NetForge.Simulation.Protocols.EIGRP
                 {
                     // Learn routes that the neighbor device knows about
                     var neighborRoutes = GetNeighborRoutes(connectedDevice);
-                    
+
                     foreach (var route in neighborRoutes)
                     {
                         var entryKey = $"{route.Network}_{route.Mask}_via_{neighbor.RouterId}";
-                        
+
                         if (!state.TopologyTable.ContainsKey(entryKey))
                         {
                             var metric = CalculateRouteMetric(route, neighbor);
-                            
+
                             state.TopologyTable[entryKey] = new EigrpTopologyEntry
                             {
                                 Network = route.Network,
@@ -340,7 +341,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
                                 Metric = route.CompositeMetric,
                                 RouteState = EigrpRouteState.Passive
                             };
-                            
+
                             state.TopologyChanged = true;
                             device.AddLogEntry($"EIGRP: Learned route {route.Network}/{route.Mask} via {neighbor.RouterId}");
                         }
@@ -380,7 +381,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
 
                     // Find feasible successors (backup routes)
                     var feasibleSuccessors = topologyEntries
-                        .Where(t => t != successor && 
+                        .Where(t => t != successor &&
                                t.ReportedDistance < successor.FeasibleDistance &&
                                t.RouteState == EigrpRouteState.Passive)
                         .OrderBy(t => t.FeasibleDistance)
@@ -420,7 +421,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
                     Metric = (int)Math.Min(route.Metric, int.MaxValue),
                     AdminDistance = route.AdminDistance
                 };
-                
+
                 device.AddRoute(deviceRoute);
                 state.RoutingTable[$"{route.Network}_{route.Mask}"] = route;
             }
@@ -431,7 +432,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
         private async Task HandleNeighborTimeouts(NetworkDevice device, EigrpState state)
         {
             var staleNeighbors = state.GetStaleNeighbors(state.AsNumber == 1 ? 15 : 180); // Use hold time
-            
+
             foreach (var neighborId in staleNeighbors)
             {
                 device.AddLogEntry($"EIGRP: Neighbor {neighborId} timed out, removing");
@@ -585,7 +586,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
                 if (!string.IsNullOrEmpty(interfaceConfig.IpAddress))
                 {
                     var networkAddress = CalculateNetworkAddress(interfaceConfig.IpAddress, interfaceConfig.SubnetMask ?? "255.255.255.0");
-                    
+
                     routes.Add(new EigrpRoute
                     {
                         Network = networkAddress,

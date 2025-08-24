@@ -1,6 +1,7 @@
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
 
-namespace NetForge.Simulation.CliHandlers.Services
+namespace NetForge.Simulation.Common.CLI.Services
 {
     /// <summary>
     /// Service for discovering and managing vendor-specific CLI handler registries
@@ -39,4 +40,4 @@ namespace NetForge.Simulation.CliHandlers.Services
         /// <returns>True if the vendor is supported</returns>
         bool IsVendorSupported(string vendorName);
     }
-} 
+}

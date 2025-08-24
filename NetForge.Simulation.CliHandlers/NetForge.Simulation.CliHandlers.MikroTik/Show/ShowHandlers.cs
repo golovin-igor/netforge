@@ -1,6 +1,7 @@
 using System.Text;
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.CliHandlers.MikroTik.Show
 {

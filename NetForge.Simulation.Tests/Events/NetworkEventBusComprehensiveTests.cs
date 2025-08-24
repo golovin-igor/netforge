@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using NetForge.Simulation.Events;
+using NetForge.Simulation.Common.Events;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Events;
@@ -263,7 +263,7 @@ public class NetworkEventBusComprehensiveTests
         Assert.Contains(1, completedHandlers);
         Assert.Contains(2, completedHandlers);
         Assert.Contains(3, completedHandlers);
-        
+
         // Should wait for all handlers to complete (longest is 150ms)
         Assert.True(elapsedTime.TotalMilliseconds >= 150);
     }
@@ -407,4 +407,4 @@ public class NetworkEventBusComprehensiveTests
 public class AnotherTestEventArgs(int testNumber) : NetworkEventArgs
 {
     public int TestNumber { get; } = testNumber;
-} 
+}

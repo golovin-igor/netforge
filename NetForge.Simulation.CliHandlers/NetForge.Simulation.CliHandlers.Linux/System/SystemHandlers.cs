@@ -1,8 +1,8 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.Interfaces;
 using System.Text;
-using NetForge.Simulation.Protocols.Routing;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.Protocols;
 
 namespace NetForge.Simulation.CliHandlers.Linux.System;
 

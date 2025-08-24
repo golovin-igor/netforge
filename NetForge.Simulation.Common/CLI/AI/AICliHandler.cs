@@ -1,8 +1,9 @@
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Common;
 using System.Text;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
 
-namespace NetForge.Simulation.CliHandlers.AI
+namespace NetForge.Simulation.Common.CLI.AI
 {
     /// <summary>
     /// Interface for AI-powered CLI streaming
@@ -20,7 +21,7 @@ namespace NetForge.Simulation.CliHandlers.AI
         private readonly IAICliService _aiService;
         private readonly SessionContextManager _sessionManager;
         private readonly Func<Task<object?>>? _topologyProvider;
-        
+
         // Event for streaming response chunks
         public event Func<string, Task>? ResponseChunkReceived;
 
@@ -59,21 +60,21 @@ namespace NetForge.Simulation.CliHandlers.AI
             try
             {
                 var sessionId = GetSessionId(context);
-                
+
                 // Get topology if available
                 var topology = await GetTopologyAsync();
-                
+
                 // Stream the AI response
                 var response = await StreamAIResponseAsync(context.Device, sessionId, context.FullCommand, topology);
-                
+
                 // Update session context
                 await _sessionManager.UpdateSessionContextAsync(sessionId, context.FullCommand, response);
-                
+
                 return CliResult.Ok(response);
             }
             catch (Exception ex)
             {
-                return CliResult.Failed(CliErrorType.ExecutionError, 
+                return CliResult.Failed(CliErrorType.ExecutionError,
                     $"% AI processing error: {ex.Message}");
             }
         }
@@ -99,13 +100,13 @@ namespace NetForge.Simulation.CliHandlers.AI
         private async Task<string> StreamAIResponseAsync(NetworkDevice device, string sessionId, string command, object? topology)
         {
             var responseBuilder = new StringBuilder();
-            
+
             await foreach (var chunk in _aiService.StreamCommandResponseAsync(sessionId, device, command, topology))
             {
                 if (!string.IsNullOrEmpty(chunk))
                 {
                     responseBuilder.Append(chunk);
-                    
+
                     // Fire event for real-time streaming
                     if (ResponseChunkReceived != null)
                     {
@@ -133,7 +134,7 @@ namespace NetForge.Simulation.CliHandlers.AI
             {
                 return sessionId;
             }
-            
+
             // Fallback to device-based session ID
             return $"{context.Device.Name}_{context.Device.DeviceId ?? "default"}";
         }
@@ -149,4 +150,4 @@ namespace NetForge.Simulation.CliHandlers.AI
 
         public Dictionary<string, ICliHandler> GetSubHandlers() => new();
     }
-} 
+}

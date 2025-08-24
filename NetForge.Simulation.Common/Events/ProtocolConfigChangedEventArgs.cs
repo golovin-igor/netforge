@@ -1,8 +1,8 @@
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
 
 // For ProtocolType
 
-namespace NetForge.Simulation.Events
+namespace NetForge.Simulation.Common.Events
 {
     public class ProtocolConfigChangedEventArgs : NetworkEventArgs
     {
@@ -17,4 +17,4 @@ namespace NetForge.Simulation.Events
             ChangeDetails = changeDetails;
         }
     }
-} 
+}

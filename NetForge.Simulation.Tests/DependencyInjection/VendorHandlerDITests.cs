@@ -1,9 +1,9 @@
 using Xunit;
-using NetForge.Simulation.CliHandlers.Services;
-using NetForge.Simulation.CliHandlers.Extensions;
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
 using NetForge.Simulation;
+using NetForge.Simulation.Common.CLI.Extensions;
+using NetForge.Simulation.Common.CLI.Services;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.Tests.DependencyInjection
 {
@@ -72,7 +72,7 @@ namespace NetForge.Simulation.Tests.DependencyInjection
 
             // Assert
             Assert.NotNull(manager);
-            
+
             // Get vendor info to verify discovery worked
             var vendorInfo = manager.GetVendorInfo();
             Assert.NotNull(vendorInfo);
@@ -159,7 +159,7 @@ namespace NetForge.Simulation.Tests.DependencyInjection
         {
             // Arrange
             var originalService = VendorHandlerFactory.GetDiscoveryService();
-            
+
             // Act
             VendorHandlerFactory.Reset();
             var newService = VendorHandlerFactory.GetDiscoveryService();
@@ -205,4 +205,4 @@ namespace NetForge.Simulation.Tests.DependencyInjection
             // No interfaces needed for DI testing
         }
     }
-} 
+}

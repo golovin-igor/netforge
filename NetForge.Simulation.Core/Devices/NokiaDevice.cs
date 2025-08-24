@@ -1,9 +1,9 @@
 using System.Text;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Core;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Devices
 {
@@ -17,7 +17,7 @@ namespace NetForge.Simulation.Devices
         private string currentRouterInterface = "";
         private string currentVlan = "";
         private string currentRouterProtocol = "";
-        
+
         public NokiaDevice(string name) : base(name)
         {
             Vendor = "Nokia";
@@ -29,7 +29,7 @@ namespace NetForge.Simulation.Devices
             // This will discover and register protocols that support the "Nokia" vendor
             AutoRegisterProtocols();
         }
-        
+
         protected override void InitializeDefaultInterfaces()
         {
             // Add default ports for a Nokia router
@@ -38,14 +38,14 @@ namespace NetForge.Simulation.Devices
             Interfaces["1/1/3"] = new InterfaceConfig("1/1/3", this);
             Interfaces["1/1/4"] = new InterfaceConfig("1/1/4", this);
         }
-        
+
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Nokia handlers to ensure they are available for tests
             var registry = new NetForge.Simulation.CliHandlers.Nokia.NokiaHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
-        
+
         public override string GetPrompt()
         {
             var mode = GetCurrentMode();
@@ -54,27 +54,27 @@ namespace NetForge.Simulation.Devices
             var router = string.IsNullOrEmpty(currentRouterInterface) ? "" : $"[Router {currentRouterInterface}]";
             var vlan = string.IsNullOrEmpty(currentVlan) ? "" : $"[VLAN {currentVlan}]";
             var protocol = string.IsNullOrEmpty(currentRouterProtocol) ? "" : $"[{currentRouterProtocol}]";
-            
+
             // Handle basic privileged mode vs complex configuration contexts
-            if (mode == "privileged" && string.IsNullOrEmpty(currentContext) && string.IsNullOrEmpty(currentPort) && 
+            if (mode == "privileged" && string.IsNullOrEmpty(currentContext) && string.IsNullOrEmpty(currentPort) &&
                 string.IsNullOrEmpty(currentRouterInterface) && string.IsNullOrEmpty(currentVlan) && string.IsNullOrEmpty(currentRouterProtocol))
             {
-                // Basic privileged mode: A:TestRouter# 
+                // Basic privileged mode: A:TestRouter#
                 return $"A:{Name}# ";
             }
-            else if (mode == "config" && string.IsNullOrEmpty(currentContext) && string.IsNullOrEmpty(currentPort) && 
+            else if (mode == "config" && string.IsNullOrEmpty(currentContext) && string.IsNullOrEmpty(currentPort) &&
                 string.IsNullOrEmpty(currentRouterInterface) && string.IsNullOrEmpty(currentVlan) && string.IsNullOrEmpty(currentRouterProtocol))
             {
                 // Basic config mode: A:TestRouter(config)#
                 return $"A:{Name}(config)# ";
             }
-            else if (mode == "admin" && string.IsNullOrEmpty(currentContext) && string.IsNullOrEmpty(currentPort) && 
+            else if (mode == "admin" && string.IsNullOrEmpty(currentContext) && string.IsNullOrEmpty(currentPort) &&
                      string.IsNullOrEmpty(currentRouterInterface) && string.IsNullOrEmpty(currentVlan) && string.IsNullOrEmpty(currentRouterProtocol))
             {
-                // Basic admin mode: A:TestRouter>admin# 
+                // Basic admin mode: A:TestRouter>admin#
                 return $"A:{Name}>admin# ";
             }
-            else if (!string.IsNullOrEmpty(currentContext) || !string.IsNullOrEmpty(currentPort) || 
+            else if (!string.IsNullOrEmpty(currentContext) || !string.IsNullOrEmpty(currentPort) ||
                      !string.IsNullOrEmpty(currentRouterInterface) || !string.IsNullOrEmpty(currentVlan) || !string.IsNullOrEmpty(currentRouterProtocol))
             {
                 // Complex configuration contexts: A:TestRouter>config>router>ospf#
@@ -99,7 +99,7 @@ namespace NetForge.Simulation.Devices
                 return $"{Name}>";
             }
         }
-        
+
         // Helper methods for command handlers
         public string GetCurrentContext() => currentContext;
         public void SetContext(string context) => currentContext = context;
@@ -107,7 +107,7 @@ namespace NetForge.Simulation.Devices
         public void SetRouterInterface(string iface) => currentRouterInterface = iface;
         public void SetCurrentPort(string port) => currentPort = port;
         public void SetCurrentVlan(string vlan) => currentVlan = vlan;
-        
+
         public string GetMode() => base.CurrentMode.ToModeString();
         public new void SetCurrentMode(string mode) => base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
 
@@ -116,13 +116,13 @@ namespace NetForge.Simulation.Devices
         {
             var sb = new StringBuilder();
             var random = new Random();
-            
+
             for (int i = 0; i < 5; i++)
             {
                 var time = Math.Round(random.NextDouble() * 10 + 1, 3);
                 sb.AppendLine($"64 bytes from {destination}: icmp_seq={i + 1} ttl=64 time={time} ms");
             }
-            
+
             return sb.ToString();
         }
 
@@ -132,8 +132,8 @@ namespace NetForge.Simulation.Devices
             if (CommandManager != null)
             {
                 var result = await CommandManager.ProcessCommandAsync(command);
-                
-                // If command was handled, return the result 
+
+                // If command was handled, return the result
                 if (result != null)
                 {
                     // Check if result already ends with prompt
@@ -146,10 +146,10 @@ namespace NetForge.Simulation.Devices
                     {
                         return result.Output + prompt;
                     }
-                    
+
                 }
             }
-            
+
             // If no handler found, return Nokia error
             return "Error: Invalid command" + GetPrompt();
         }
@@ -159,7 +159,7 @@ namespace NetForge.Simulation.Devices
         {
             currentContext = "configure";
         }
-        
+
         public void ExitCurrentContext()
         {
             if (!string.IsNullOrEmpty(currentRouterProtocol))
@@ -173,7 +173,7 @@ namespace NetForge.Simulation.Devices
             else if (currentContext == "configure")
                 currentContext = "";
         }
-        
+
         public void BackToRoot()
         {
             currentContext = "";
@@ -227,13 +227,13 @@ namespace NetForge.Simulation.Devices
         {
             return AsPathGroups ?? new Dictionary<string, AsPathGroup>();
         }
-        
+
         // Keep the complex context processing methods for backwards compatibility
         // but these can be called by command handlers if needed
         private string ProcessRootContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             switch (cmd)
             {
                 case "show":
@@ -242,14 +242,14 @@ namespace NetForge.Simulation.Devices
                         return ProcessShowCommand(parts);
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "ping":
                     if (parts.Length > 1)
                     {
                         return SimulateNokiaPing(parts[1]);
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "admin":
                     if (parts.Length > 1)
                     {
@@ -263,7 +263,7 @@ namespace NetForge.Simulation.Devices
                         }
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "clear":
                     if (parts.Length > 2 && parts[1].ToLower() == "port" && parts.Length > 3 && parts[3].ToLower() == "statistics")
                     {
@@ -280,16 +280,16 @@ namespace NetForge.Simulation.Devices
                         return "Error: Invalid port\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 default:
                     return "Error: Invalid command\n";
             }
         }
-        
+
         private string ProcessConfigureContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             switch (cmd)
             {
                 case "port":
@@ -299,7 +299,7 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "router":
                     if (parts.Length > 1)
                     {
@@ -321,7 +321,7 @@ namespace NetForge.Simulation.Devices
                         currentContext = "configure router";
                     }
                     return "\n";
-                    
+
                 case "vlan":
                     if (parts.Length > 1)
                     {
@@ -337,11 +337,11 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "system":
                     currentContext = "configure system";
                     return "\n";
-                    
+
                 default:
                     // Handle commands within contexts
                     if (!string.IsNullOrEmpty(currentPort))
@@ -352,22 +352,22 @@ namespace NetForge.Simulation.Devices
                         return ProcessVlanContext(parts);
                     else if (currentContext == "configure system")
                         return ProcessSystemContext(parts);
-                    
+
                     return "Error: Invalid command\n";
             }
         }
-        
+
         private string ProcessPortContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             if (!Interfaces.ContainsKey(currentPort))
             {
                 Interfaces[currentPort] = new InterfaceConfig(currentPort, this);
             }
-            
+
             var iface = Interfaces[currentPort];
-            
+
             switch (cmd)
             {
                 case "shutdown":
@@ -377,7 +377,7 @@ namespace NetForge.Simulation.Devices
                     RunningConfig.AppendLine("        shutdown");
                     ParentNetwork?.UpdateProtocols();
                     return "\n";
-                    
+
                 case "no":
                     if (parts.Length > 1 && parts[1].ToLower() == "shutdown")
                     {
@@ -389,7 +389,7 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "description":
                     if (parts.Length > 1)
                     {
@@ -399,21 +399,21 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "ethernet":
                     RunningConfig.AppendLine($"    port {currentPort}");
                     RunningConfig.AppendLine("        ethernet");
                     return "\n";
-                    
+
                 default:
                     return "Error: Invalid command\n";
             }
         }
-        
+
         private string ProcessRouterContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             if (!string.IsNullOrEmpty(currentRouterInterface))
             {
                 return ProcessRouterInterfaceContext(parts);
@@ -422,7 +422,7 @@ namespace NetForge.Simulation.Devices
             {
                 return ProcessRoutingProtocolContext(parts);
             }
-            
+
             switch (cmd)
             {
                 case "interface":
@@ -432,7 +432,7 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "static-route":
                     if (parts.Length > 3 && parts[2].ToLower() == "next-hop")
                     {
@@ -442,42 +442,42 @@ namespace NetForge.Simulation.Devices
                             var network = routeParts[0];
                             var mask = CidrToMask(int.Parse(routeParts[1]));
                             var nextHop = parts[3];
-                            
+
                             var route = new Route(network, mask, nextHop, "", "Static");
                             route.Metric = 1;
                             RoutingTable.Add(route);
-                            
+
                             RunningConfig.AppendLine($"        static-route {parts[1]} next-hop {nextHop}");
                             return "\n";
                         }
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "ospf":
                 case "bgp":
                 case "rip":
                     currentRouterProtocol = cmd;
                     InitializeRoutingProtocol(cmd);
                     return "\n";
-                    
+
                 default:
                     return "Error: Invalid command\n";
             }
         }
-        
+
         private string ProcessRouterInterfaceContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             // Create a virtual interface for router interfaces
             var ifaceName = $"router-{currentRouterInterface}";
             if (!Interfaces.ContainsKey(ifaceName))
             {
                 Interfaces[ifaceName] = new InterfaceConfig(ifaceName, this);
             }
-            
+
             var iface = Interfaces[ifaceName];
-            
+
             switch (cmd)
             {
                 case "address":
@@ -496,7 +496,7 @@ namespace NetForge.Simulation.Devices
                         }
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "port":
                     if (parts.Length > 1)
                     {
@@ -505,16 +505,16 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 default:
                     return "Error: Invalid command\n";
             }
         }
-        
+
         private string ProcessRoutingProtocolContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             switch (currentRouterProtocol)
             {
                 case "ospf":
@@ -527,11 +527,11 @@ namespace NetForge.Simulation.Devices
                     return "Error: Invalid command\n";
             }
         }
-        
+
         private string ProcessOspfContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             switch (cmd)
             {
                 case "area":
@@ -552,16 +552,16 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 default:
                     return "Error: Invalid command\n";
             }
         }
-        
+
         private string ProcessBgpContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             switch (cmd)
             {
                 case "group":
@@ -572,7 +572,7 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "neighbor":
                     if (parts.Length > 1)
                     {
@@ -590,16 +590,16 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 default:
                     return "Error: Invalid command\n";
             }
         }
-        
+
         private string ProcessRipContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             switch (cmd)
             {
                 case "group":
@@ -610,7 +610,7 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 case "neighbor":
                     if (parts.Length > 1)
                     {
@@ -620,20 +620,20 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 default:
                     return "Error: Invalid command\n";
             }
         }
-        
+
         private string ProcessVlanContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             if (int.TryParse(currentVlan, out int vlanId) && Vlans.ContainsKey(vlanId))
             {
                 var vlan = Vlans[vlanId];
-                
+
                 switch (cmd)
                 {
                     case "name":
@@ -645,19 +645,19 @@ namespace NetForge.Simulation.Devices
                             return "\n";
                         }
                         return "Error: Invalid command\n";
-                        
+
                     default:
                         return "Error: Invalid command\n";
                 }
             }
-            
+
             return "Error: Invalid command\n";
         }
-        
+
         private string ProcessSystemContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
-            
+
             switch (cmd)
             {
                 case "name":
@@ -669,12 +669,12 @@ namespace NetForge.Simulation.Devices
                         return "\n";
                     }
                     return "Error: Invalid command\n";
-                    
+
                 default:
                     return "Error: Invalid command\n";
             }
         }
-        
+
         private void InitializeRoutingProtocol(string protocol)
         {
             switch (protocol)
@@ -693,14 +693,14 @@ namespace NetForge.Simulation.Devices
                     break;
             }
         }
-        
+
         private string ProcessShowCommand(string[] parts)
         {
             if (parts.Length < 2)
                 return "Error: Invalid command\n";
-                
+
             var output = new StringBuilder();
-            
+
             switch (parts[1].ToLower())
             {
                 case "configuration":
@@ -718,16 +718,16 @@ namespace NetForge.Simulation.Devices
                     output.AppendLine("    system");
                     output.AppendLine($"        name \"{Hostname}\"");
                     output.AppendLine("    exit");
-                    
+
                     if (RunningConfig.Length > 0)
                     {
                         output.Append(RunningConfig.ToString());
                     }
-                    
+
                     output.AppendLine("exit all");
                     output.AppendLine("\n# Finished FRI JAN 01 00:00:00 2021 UTC");
                     break;
-                    
+
                 case "router":
                     if (parts.Length > 2)
                     {
@@ -740,21 +740,21 @@ namespace NetForge.Simulation.Devices
                                 output.AppendLine("Dest Prefix[Flags]                            Type    Proto     Age        Pref");
                                 output.AppendLine("      Next Hop[Interface Name]                                    Metric");
                                 output.AppendLine("-------------------------------------------------------------------------------");
-                                
+
                                 foreach (var route in RoutingTable.OrderBy(r => r.Network))
                                 {
                                     var cidr = MaskToCidr(route.Mask);
                                     var type = route.Protocol == "Connected" ? "Local" : "Remote";
                                     var proto = route.Protocol.ToLower();
-                                    
+
                                     output.AppendLine($"{route.Network}/{cidr,-42} {type,-7} {proto,-9} 00h00m00s  {route.AdminDistance}");
                                     output.AppendLine($"       {route.NextHop,-45} {route.Metric}");
                                 }
-                                
+
                                 output.AppendLine("-------------------------------------------------------------------------------");
                                 output.AppendLine($"No. of Routes: {RoutingTable.Count}");
                                 break;
-                                
+
                             case "interface":
                                 output.AppendLine("===============================================================================");
                                 output.AppendLine("Interface Table (Router: Base)");
@@ -762,13 +762,13 @@ namespace NetForge.Simulation.Devices
                                 output.AppendLine("Interface-Name                   Adm       Opr(v4/v6)  Mode    Port/SapId");
                                 output.AppendLine("   IP-Address                                                  PfxState");
                                 output.AppendLine("-------------------------------------------------------------------------------");
-                                
+
                                 foreach (var iface in Interfaces.Values.Where(i => i.Name.StartsWith("router-")))
                                 {
                                     var adminState = iface.IsShutdown ? "Down" : "Up";
                                     var operState = iface.IsUp ? "Up" : "Down";
                                     var displayName = iface.Name.Replace("router-", "");
-                                    
+
                                     output.AppendLine($"{displayName,-32} {adminState,-9} {operState,-11} Network");
                                     if (!string.IsNullOrEmpty(iface.IpAddress))
                                     {
@@ -776,14 +776,14 @@ namespace NetForge.Simulation.Devices
                                         output.AppendLine($"   {iface.IpAddress}/{cidr,-44} n/a");
                                     }
                                 }
-                                
+
                                 output.AppendLine("-------------------------------------------------------------------------------");
                                 output.AppendLine("Interfaces : " + Interfaces.Values.Count(i => i.Name.StartsWith("router-")));
                                 break;
                         }
                     }
                     break;
-                    
+
                 case "port":
                     if (parts.Length > 2)
                     {
@@ -804,7 +804,7 @@ namespace NetForge.Simulation.Devices
                         }
                     }
                     break;
-                    
+
                 case "system":
                     if (parts.Length > 2 && parts[2].ToLower() == "information")
                     {
@@ -818,7 +818,7 @@ namespace NetForge.Simulation.Devices
                         output.AppendLine("===============================================================================");
                     }
                     break;
-                    
+
                 case "version":
                     output.AppendLine("===============================================================================");
                     output.AppendLine("TiMOS-B-14.0.R4 both/x86_64 Nokia 7750 SR Copyright (c) 2000-2016 Nokia.");
@@ -826,7 +826,7 @@ namespace NetForge.Simulation.Devices
                     output.AppendLine("Built on Thu Jul 28 17:32:13 PDT 2016 by builder in /rel14.0/b1/R4/panos/main");
                     output.AppendLine("===============================================================================");
                     break;
-                    
+
                 case "log":
                     if (parts.Length > 2 && parts[2].ToLower() == "99")
                     {
@@ -847,7 +847,7 @@ namespace NetForge.Simulation.Devices
                         output.AppendLine("===============================================================================");
                     }
                     break;
-                    
+
                 case "service":
                     if (parts.Length > 2 && parts[2].ToLower() == "vlan")
                     {
@@ -856,25 +856,25 @@ namespace NetForge.Simulation.Devices
                         output.AppendLine("===============================================================================");
                         output.AppendLine("VLAN ID  VLAN Name                        Type         Adm  Opr  MTU");
                         output.AppendLine("-------------------------------------------------------------------------------");
-                        
+
                         foreach (var vlan in Vlans.Values.OrderBy(v => v.Id))
                         {
                             output.AppendLine($"{vlan.Id,-8} {vlan.Name,-32} service      Up   Up   1514");
                         }
-                        
+
                         output.AppendLine("-------------------------------------------------------------------------------");
                         output.AppendLine($"Number of VLANs : {Vlans.Count}");
                         output.AppendLine("===============================================================================");
                     }
                     break;
-                    
+
                 case "arp":
                     output.AppendLine("===============================================================================");
                     output.AppendLine("ARP Table (Router: Base)");
                     output.AppendLine("===============================================================================");
                     output.AppendLine("IP Address      MAC Address       Expiry    Type   Interface");
                     output.AppendLine("-------------------------------------------------------------------------------");
-                    
+
                     foreach (var iface in Interfaces.Values)
                     {
                         if (!string.IsNullOrEmpty(iface.IpAddress))
@@ -882,12 +882,12 @@ namespace NetForge.Simulation.Devices
                             output.AppendLine($"{iface.IpAddress,-15} aa:bb:cc:00:01:00 00h00m00s Local  {iface.Name}");
                         }
                     }
-                    
+
                     output.AppendLine("-------------------------------------------------------------------------------");
                     output.AppendLine($"No. of ARP Entries: {Interfaces.Values.Count(i => !string.IsNullOrEmpty(i.IpAddress))}");
                     output.AppendLine("===============================================================================");
                     break;
-                    
+
                 case "lag":
                     output.AppendLine("===============================================================================");
                     output.AppendLine("Link Aggregation Group Table");
@@ -895,18 +895,18 @@ namespace NetForge.Simulation.Devices
                     output.AppendLine("LAG    Adm    Opr    Port-         Port-  Num.   Num.   Act/   MC-");
                     output.AppendLine("Id           State  Threshold     Type   Ports  Active Stdby  Act");
                     output.AppendLine("-------------------------------------------------------------------------------");
-                    
+
                     foreach (var pc in PortChannels)
                     {
                         output.AppendLine($"lag-{pc.Key,-3} up     up     0             ether  {pc.Value.MemberInterfaces.Count,-6} {pc.Value.MemberInterfaces.Count,-6} 0/0    N/A");
                     }
-                    
+
                     output.AppendLine("-------------------------------------------------------------------------------");
                     output.AppendLine($"Total LAGs : {PortChannels.Count}");
                     output.AppendLine("===============================================================================");
                     break;
             }
-            
+
             // Handle OSPF and BGP show commands
             if (parts.Length > 3 && parts[1].ToLower() == "router" && parts[2].ToLower() == "ospf")
             {
@@ -918,7 +918,7 @@ namespace NetForge.Simulation.Devices
                     output.AppendLine("Interface-Name                   Rtr Id          State      Pri  Dead Time");
                     output.AppendLine("  Nbr IP Addr");
                     output.AppendLine("-------------------------------------------------------------------------------");
-                    
+
                     if (OspfConfig != null)
                     {
                         foreach (var neighbor in OspfConfig.Neighbors)
@@ -927,7 +927,7 @@ namespace NetForge.Simulation.Devices
                             output.AppendLine($"  {neighbor.IpAddress}");
                         }
                     }
-                    
+
                     output.AppendLine("-------------------------------------------------------------------------------");
                     output.AppendLine($"No. of Neighbors: {OspfConfig?.Neighbors.Count ?? 0}");
                     output.AppendLine("===============================================================================");
@@ -946,7 +946,7 @@ namespace NetForge.Simulation.Devices
                     output.AppendLine("                   AS PktRcvd InQ  Up/Down   State|Rcv/Act/Sent (Addr Family)");
                     output.AppendLine("                      PktSent OutQ");
                     output.AppendLine("-------------------------------------------------------------------------------");
-                    
+
                     if (BgpConfig != null)
                     {
                         foreach (var neighbor in BgpConfig.Neighbors.Values)
@@ -956,13 +956,13 @@ namespace NetForge.Simulation.Devices
                             output.AppendLine($"                            1    0");
                         }
                     }
-                    
+
                     output.AppendLine("-------------------------------------------------------------------------------");
                     output.AppendLine("===============================================================================");
                 }
             }
-            
+
             return output.ToString();
         }
     }
-} 
+}

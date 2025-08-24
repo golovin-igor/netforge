@@ -1,6 +1,6 @@
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Interfaces;
 
-namespace NetForge.Simulation.CliHandlers
+namespace NetForge.Simulation.Common.CLI.Base
 {
     /// <summary>
     /// Base abstract class for CLI handlers providing common functionality

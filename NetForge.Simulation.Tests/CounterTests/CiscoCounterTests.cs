@@ -2,6 +2,7 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Devices;
 using Xunit;
 using System;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.Tests.CounterTests
 {

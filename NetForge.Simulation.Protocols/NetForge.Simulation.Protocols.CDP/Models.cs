@@ -1,3 +1,4 @@
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Routing;
 
@@ -16,7 +17,7 @@ namespace NetForge.Simulation.Protocols.CDP
         public DateTime LastAdvertisement { get; set; } = DateTime.MinValue;
         public int AdvertisementCount { get; set; } = 0;
         public Dictionary<string, CdpInterfaceConfig> InterfaceSettings { get; set; } = new();
-        
+
         /// <summary>
         /// Get or create CDP neighbor with type safety
         /// </summary>
@@ -24,7 +25,7 @@ namespace NetForge.Simulation.Protocols.CDP
         {
             return GetOrCreateNeighbor<CdpNeighbor>(neighborKey, factory);
         }
-        
+
         /// <summary>
         /// Record successful advertisement
         /// </summary>
@@ -33,7 +34,7 @@ namespace NetForge.Simulation.Protocols.CDP
             LastAdvertisement = DateTime.Now;
             AdvertisementCount++;
         }
-        
+
         /// <summary>
         /// Check if it's time to send advertisements
         /// </summary>
@@ -41,7 +42,7 @@ namespace NetForge.Simulation.Protocols.CDP
         {
             return (DateTime.Now - LastAdvertisement).TotalSeconds >= timerSeconds;
         }
-        
+
         public override Dictionary<string, object> GetStateData()
         {
             var baseData = base.GetStateData();
@@ -56,7 +57,7 @@ namespace NetForge.Simulation.Protocols.CDP
             return baseData;
         }
     }
-    
+
     /// <summary>
     /// Represents a CDP neighbor
     /// </summary>
@@ -71,16 +72,16 @@ namespace NetForge.Simulation.Protocols.CDP
         public string IpAddress { get; set; } = "";
         public DateTime LastSeen { get; set; } = DateTime.Now;
         public int HoldTime { get; set; } = 180;
-        
+
         public CdpNeighbor(string deviceId, string localInterface, string remoteInterface)
         {
             DeviceId = deviceId;
             LocalInterface = localInterface;
             RemoteInterface = remoteInterface;
         }
-        
+
         public bool IsExpired => (DateTime.Now - LastSeen).TotalSeconds > HoldTime;
-        
+
         public void UpdateLastSeen()
         {
             LastSeen = DateTime.Now;

@@ -1,7 +1,8 @@
-using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Factories;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
 
-namespace NetForge.Simulation.CliHandlers
+namespace NetForge.Simulation.Common.CLI.Base
 {
     /// <summary>
     /// Represents the context for a CLI command execution

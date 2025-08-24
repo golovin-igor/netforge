@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using NetForge.Simulation.Protocols.Common;
 // Use the existing HsrpConfig from Common project
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.HSRP
 {
@@ -90,7 +89,7 @@ namespace NetForge.Simulation.Protocols.HSRP
     {
         Initial = 0,    // Initial state
         Learn = 1,      // Learning state
-        Listen = 2,     // Listening state  
+        Listen = 2,     // Listening state
         Speak = 3,      // Speaking state
         Standby = 4,    // Standby state
         Active = 5      // Active state
@@ -251,7 +250,7 @@ namespace NetForge.Simulation.Protocols.HSRP
     public class HsrpStateMachine
     {
         public HsrpGroupState GroupState { get; set; }
-        
+
         public HsrpStateMachine(HsrpGroupState groupState)
         {
             GroupState = groupState;
@@ -260,7 +259,7 @@ namespace NetForge.Simulation.Protocols.HSRP
         public void ProcessEvent(HsrpEvent eventType, HsrpHelloPacket? packet = null)
         {
             var previousState = GroupState.State;
-            
+
             switch (GroupState.State)
             {
                 case HsrpProtocolState.Initial:
@@ -287,7 +286,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             {
                 GroupState.Statistics.StateTransitions++;
                 GroupState.Statistics.LastStateChange = DateTime.Now;
-                
+
                 if (GroupState.State == HsrpProtocolState.Active)
                 {
                     GroupState.Statistics.BecomeActive++;
@@ -436,7 +435,7 @@ namespace NetForge.Simulation.Protocols.HSRP
         private void TransitionTo(HsrpProtocolState newState)
         {
             GroupState.State = newState;
-            
+
             switch (newState)
             {
                 case HsrpProtocolState.Learn:
@@ -486,7 +485,7 @@ namespace NetForge.Simulation.Protocols.HSRP
         public string Type { get; set; } = "none"; // none, text, md5
         public string Key { get; set; } = "";
         public int KeyId { get; set; } = 0;
-        
+
         public bool ValidatePacket(HsrpHelloPacket packet)
         {
             switch (Type.ToLowerInvariant())
@@ -505,7 +504,7 @@ namespace NetForge.Simulation.Protocols.HSRP
         private bool ValidateTextAuth(HsrpHelloPacket packet)
         {
             // Simple text comparison
-            return packet.AuthType == "text" && 
+            return packet.AuthType == "text" &&
                    System.Text.Encoding.ASCII.GetString(packet.AuthData).TrimEnd('\0') == Key;
         }
 

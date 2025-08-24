@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Core
+namespace NetForge.Simulation.Common.Common
 {
     /// <summary>
     /// Strongly typed device modes for compile-time safety and reduced typos
@@ -9,136 +9,136 @@ namespace NetForge.Simulation.Core
         /// Base user mode (limited privileges)
         /// </summary>
         User,
-        
+
         /// <summary>
         /// Privileged/enable mode (elevated privileges)
         /// </summary>
         Privileged,
-        
+
         /// <summary>
         /// Global configuration mode
         /// </summary>
         Config,
-        
+
         /// <summary>
         /// Interface configuration mode
         /// </summary>
         Interface,
-        
+
         /// <summary>
         /// VLAN configuration mode
         /// </summary>
         Vlan,
-        
+
         /// <summary>
         /// Router configuration mode
         /// </summary>
         Router,
-        
+
         /// <summary>
         /// BGP router sub-mode
         /// </summary>
         RouterBgp,
-        
+
         /// <summary>
         /// OSPF router sub-mode
         /// </summary>
         RouterOspf,
-        
+
         /// <summary>
         /// RIP router sub-mode
         /// </summary>
         RouterRip,
-        
+
         /// <summary>
         /// Access list configuration mode
         /// </summary>
         Acl,
-        
+
         // Juniper-specific modes
         /// <summary>
         /// Juniper operational mode
         /// </summary>
         Operational,
-        
+
         /// <summary>
         /// Juniper configuration mode
         /// </summary>
         Configuration,
-        
+
         // Nokia-specific modes
         /// <summary>
         /// Nokia admin mode
         /// </summary>
         Admin,
-        
+
         // Fortinet-specific modes
         /// <summary>
         /// Fortinet global mode
         /// </summary>
         Global,
-        
+
         /// <summary>
         /// Fortinet global configuration mode
         /// </summary>
         GlobalConfig,
-        
+
         /// <summary>
         /// Fortinet system interface mode
         /// </summary>
         SystemInterface,
-        
+
         /// <summary>
         /// Fortinet router OSPF mode
         /// </summary>
         RouterOspfFortinet,
-        
+
         /// <summary>
         /// Fortinet router BGP mode
         /// </summary>
         RouterBgpFortinet,
-        
+
         /// <summary>
         /// Fortinet BGP neighbor mode
         /// </summary>
         BgpNeighbor,
-        
+
         /// <summary>
         /// Fortinet BGP neighbor edit mode
         /// </summary>
         BgpNeighborEdit,
-        
+
         /// <summary>
         /// Fortinet BGP network mode
         /// </summary>
         BgpNetwork,
-        
+
         /// <summary>
         /// Fortinet BGP network edit mode
         /// </summary>
         BgpNetworkEdit,
-        
+
         /// <summary>
         /// Fortinet router RIP mode
         /// </summary>
         RouterRipFortinet,
-        
+
         /// <summary>
         /// Fortinet router static mode
         /// </summary>
         RouterStatic,
-        
+
         /// <summary>
         /// Fortinet static route edit mode
         /// </summary>
         StaticRouteEdit,
-        
+
         /// <summary>
         /// Fortinet firewall mode
         /// </summary>
         Firewall
     }
-    
+
     /// <summary>
     /// Helper methods for DeviceMode enum
     /// </summary>
@@ -180,7 +180,7 @@ namespace NetForge.Simulation.Core
                 _ => "unknown"
             };
         }
-        
+
         /// <summary>
         /// Convert string to DeviceMode enum
         /// </summary>
@@ -217,22 +217,22 @@ namespace NetForge.Simulation.Core
                 _ => DeviceMode.User // Default fallback
             };
         }
-        
+
         /// <summary>
         /// Check if mode is a router sub-mode
         /// </summary>
         public static bool IsRouterMode(this DeviceMode mode)
         {
-            return mode == DeviceMode.Router || 
-                   mode == DeviceMode.RouterBgp || 
-                   mode == DeviceMode.RouterOspf || 
+            return mode == DeviceMode.Router ||
+                   mode == DeviceMode.RouterBgp ||
+                   mode == DeviceMode.RouterOspf ||
                    mode == DeviceMode.RouterRip ||
                    mode == DeviceMode.RouterOspfFortinet ||
                    mode == DeviceMode.RouterBgpFortinet ||
                    mode == DeviceMode.RouterRipFortinet ||
                    mode == DeviceMode.RouterStatic;
         }
-        
+
         /// <summary>
         /// Check if mode is a configuration mode (allows config commands)
         /// </summary>
@@ -261,4 +261,4 @@ namespace NetForge.Simulation.Core
                    mode == DeviceMode.Firewall;
         }
     }
-} 
+}

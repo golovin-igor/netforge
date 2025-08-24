@@ -1,7 +1,8 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Events;
 
 namespace NetForge.Simulation.Protocols.SNMP;
 
@@ -35,7 +36,7 @@ public class SnmpProtocol : BaseProtocol
     protected override async Task RunProtocolCalculation(NetworkDevice device)
     {
         var snmpConfig = GetSnmpConfig();
-        
+
         if (!snmpConfig.IsEnabled)
         {
             if (_snmpAgent != null)
@@ -66,12 +67,12 @@ public class SnmpProtocol : BaseProtocol
             _snmpAgent = new SnmpAgent(_device!, config, _snmpState);
             _snmpAgent.RequestReceived += OnSnmpRequestReceived;
             _snmpAgent.ResponseSent += OnSnmpResponseSent;
-            
+
             // Initialize MIB database
             await InitializeMibDatabase(config);
-            
+
             await _snmpAgent.StartAsync();
-            
+
             _device!.AddLogEntry($"SNMP agent started on port {config.Port}");
             _snmpState.IsActive = true;
             _snmpState.MarkStateChanged();
@@ -92,7 +93,7 @@ public class SnmpProtocol : BaseProtocol
                 await _snmpAgent.StopAsync();
                 _snmpAgent.Dispose();
                 _snmpAgent = null;
-                
+
                 _device!.AddLogEntry("SNMP agent stopped");
                 _snmpState.IsActive = false;
                 _snmpState.MarkStateChanged();
@@ -174,7 +175,7 @@ public class SnmpProtocol : BaseProtocol
         foreach (var (interfaceName, interfaceConfig) in interfaces)
         {
             var baseOid = $"1.3.6.1.2.1.2.2.1";
-            
+
             // ifDescr
             var ifDescrOid = $"{baseOid}.2.{ifIndex}";
             _snmpState.MibDatabase[ifDescrOid] = new SnmpVariable(
@@ -291,7 +292,7 @@ public class SnmpProtocol : BaseProtocol
                 {
                     await StopSnmpAgent();
                 }
-                
+
                 if (snmpConfig.IsEnabled)
                 {
                     await StartSnmpAgent(snmpConfig);
@@ -314,7 +315,7 @@ public class SnmpProtocol : BaseProtocol
                 await StopSnmpAgent();
             }).Wait(5000);
         }
-        
+
         base.Dispose();
     }
 }

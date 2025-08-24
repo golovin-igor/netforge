@@ -1,4 +1,5 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Core;
 using NetForge.Simulation.Devices;
 

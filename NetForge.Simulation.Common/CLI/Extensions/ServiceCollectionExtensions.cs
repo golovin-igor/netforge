@@ -1,7 +1,7 @@
-using NetForge.Simulation.CliHandlers.Services;
-using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Services;
+using NetForge.Simulation.Common.Common;
 
-namespace NetForge.Simulation.CliHandlers.Extensions
+namespace NetForge.Simulation.Common.CLI.Extensions
 {
     /// <summary>
     /// Factory for creating vendor-aware CLI handler managers
@@ -9,7 +9,7 @@ namespace NetForge.Simulation.CliHandlers.Extensions
     public static class VendorHandlerFactory
     {
         private static IVendorHandlerDiscoveryService? _discoveryService;
-        
+
         /// <summary>
         /// Gets or creates the global discovery service instance
         /// </summary>
@@ -33,7 +33,7 @@ namespace NetForge.Simulation.CliHandlers.Extensions
         /// <param name="device">The network device</param>
         /// <param name="discoveryService">Optional discovery service (uses global if not provided)</param>
         /// <returns>A configured vendor-aware CLI handler manager</returns>
-        public static VendorAwareCliHandlerManager CreateCliHandlerManager(NetworkDevice device, 
+        public static VendorAwareCliHandlerManager CreateCliHandlerManager(NetworkDevice device,
             IVendorHandlerDiscoveryService? discoveryService = null)
         {
             discoveryService ??= GetDiscoveryService();
@@ -49,10 +49,10 @@ namespace NetForge.Simulation.CliHandlers.Extensions
         {
             var discoveryService = GetDiscoveryService();
             var manager = new VendorAwareCliHandlerManager(device, discoveryService);
-            
+
             // Trigger discovery and registration
             manager.RegisterVendorHandlers();
-            
+
             return manager;
         }
 
@@ -66,4 +66,4 @@ namespace NetForge.Simulation.CliHandlers.Extensions
     }
 
 
-} 
+}

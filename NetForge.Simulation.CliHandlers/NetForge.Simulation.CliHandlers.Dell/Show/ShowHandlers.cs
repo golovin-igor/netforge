@@ -1,8 +1,8 @@
 using System.Text;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Configuration;
 
 namespace NetForge.Simulation.CliHandlers.Dell.Show
 {
@@ -16,21 +16,21 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             AddAlias("sh");
             AddAlias("sho");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
                 return Error(CliErrorType.IncompleteCommand, "% Incomplete command");
             }
-            
+
             var option = context.CommandParts[1].ToLower();
-            
+
             return option switch
             {
                 "running-configuration" or "running-config" or "run" => HandleShowRunningConfig(context),
@@ -49,7 +49,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 _ => Error(CliErrorType.InvalidCommand, $"% Invalid show option: {option}")
             };
         }
-        
+
         private CliResult HandleShowRunningConfig(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -57,7 +57,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var output = new StringBuilder();
             output.AppendLine("!");
             output.AppendLine($"! Version 10.5.2.7");
@@ -65,25 +65,25 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             output.AppendLine("!");
             output.AppendLine($"hostname {device.Name}");
             output.AppendLine("!");
-            
+
             // Boot settings
             output.AppendLine("boot system A:");
             output.AppendLine("!");
-            
+
             // Interface configurations
             var interfaces = device.GetAllInterfaces();
             foreach (var iface in interfaces.Values.OrderBy(i => i.Name))
             {
-                if (!string.IsNullOrEmpty(iface.IpAddress) || iface.IsShutdown || !string.IsNullOrEmpty(iface.Description) || 
+                if (!string.IsNullOrEmpty(iface.IpAddress) || iface.IsShutdown || !string.IsNullOrEmpty(iface.Description) ||
                     !string.IsNullOrEmpty(iface.SwitchportMode))
                 {
                     output.AppendLine($"interface {iface.Name}");
-                    
+
                     if (!string.IsNullOrEmpty(iface.Description))
                     {
                         output.AppendLine($" description {iface.Description}");
                     }
-                    
+
                     if (iface.IsShutdown)
                     {
                         output.AppendLine(" shutdown");
@@ -101,13 +101,13 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                             output.AppendLine($" switchport access vlan {iface.VlanId}");
                         }
                     }
-                    
+
                     if (!string.IsNullOrEmpty(iface.IpAddress))
                     {
                         var cidr = MaskToCidr(iface.SubnetMask);
                         output.AppendLine($" ip address {iface.IpAddress}/{cidr}");
                     }
-                    
+
                     output.AppendLine(" exit");
                     output.AppendLine("!");
                 }
@@ -176,7 +176,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             output.AppendLine("end");
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowVersion(CliContext context)
         {
             var output = new StringBuilder();
@@ -191,7 +191,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInterfaces(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -199,9 +199,9 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var interfaces = device.GetAllInterfaces();
-            
+
             if (context.CommandParts.Length > 2)
             {
                 var subcommand = context.CommandParts[2].ToLower();
@@ -212,90 +212,90 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                     _ => HandleShowSpecificInterface(context, interfaces, string.Join(" ", context.CommandParts.Skip(2)))
                 };
             }
-            
+
             // Default interface display
             return HandleShowInterfacesBrief(context, interfaces);
         }
-        
+
         private CliResult HandleShowInterfacesStatus(CliContext context, Dictionary<string, InterfaceConfig> interfaces)
         {
             var output = new StringBuilder();
             output.AppendLine("Port          Description     Status   Speed      Duplex  Mode   Type");
             output.AppendLine("-------------------------------------------------------------------------");
-            
+
             foreach (var iface in interfaces.Values.OrderBy(i => i.Name))
             {
                 var status = iface.IsUp ? "up" : "down";
                 var speed = "1000";
                 var duplex = "full";
                 var mode = iface.SwitchportMode ?? "routed";
-                
+
                 output.AppendLine($"{iface.Name,-13} {iface.Description ?? "",-15} {status,-8} {speed,-10} {duplex,-7} {mode,-6} ETH");
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInterfacesBrief(CliContext context, Dictionary<string, InterfaceConfig> interfaces)
         {
             var output = new StringBuilder();
             output.AppendLine("Interface                          Status Protocol Description");
             output.AppendLine("================================================================================");
-            
+
             foreach (var iface in interfaces.Values.OrderBy(i => i.Name))
             {
                 var adminStatus = iface.IsShutdown ? "down" : "up";
                 var protocolStatus = iface.IsUp ? "up" : "down";
                 output.AppendLine($"{iface.Name,-34} {adminStatus,-6} {protocolStatus,-8} {iface.Description ?? ""}");
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowSpecificInterface(CliContext context, Dictionary<string, InterfaceConfig> interfaces, string interfaceName)
         {
             interfaceName = FormatInterfaceName(interfaceName);
-            
+
             if (interfaces.ContainsKey(interfaceName))
             {
                 var iface = interfaces[interfaceName];
                 var output = new StringBuilder();
-                
+
                 output.AppendLine($"{iface.Name} is {(iface.IsUp ? "up" : "down")}, line protocol is {(iface.IsUp ? "up" : "down")}");
                 output.AppendLine($"Hardware is Ethernet, address is {iface.MacAddress}");
-                
+
                 if (!string.IsNullOrEmpty(iface.Description))
                 {
                     output.AppendLine($"Description: {iface.Description}");
                 }
-                
+
                 if (!string.IsNullOrEmpty(iface.IpAddress))
                 {
                     output.AppendLine($"Internet address is {iface.IpAddress}/{MaskToCidr(iface.SubnetMask)}");
                 }
-                
+
                 output.AppendLine($"MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec");
                 output.AppendLine($"reliability 255/255, txload 1/255, rxload 1/255");
                 output.AppendLine($"Last clearing of \"show interface\" counters never");
                 output.AppendLine($"Queueing strategy: fifo");
                 output.AppendLine($"  Input: {iface.RxPackets} packets, {iface.RxBytes} bytes");
                 output.AppendLine($"  Output: {iface.TxPackets} packets, {iface.TxBytes} bytes");
-                
+
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidParameter, $"% Interface {interfaceName} not found");
         }
-        
+
         private CliResult HandleShowIp(CliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
                 return Error(CliErrorType.IncompleteCommand, "% Incomplete command");
             }
-            
+
             var ipOption = context.CommandParts[2].ToLower();
-            
+
             return ipOption switch
             {
                 "route" => HandleShowIpRoute(context),
@@ -307,7 +307,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 _ => Error(CliErrorType.InvalidCommand, $"% Invalid IP show option: {ipOption}")
             };
         }
-        
+
         private CliResult HandleShowIpRoute(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -315,10 +315,10 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var output = new StringBuilder();
             var routingTable = device.GetRoutingTable();
-            
+
             output.AppendLine("Codes: C - connected, S - static, R - RIP, O - OSPF, B - BGP");
             output.AppendLine("       IA - OSPF inter area, N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2");
             output.AppendLine("       E1 - OSPF external type 1, E2 - OSPF external type 2");
@@ -339,13 +339,13 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 var cidr = MaskToCidr(route.Mask);
                 var nextHop = route.Protocol == "Connected" ? "directly connected" : $"via {route.NextHop}";
                 var interfaceInfo = !string.IsNullOrEmpty(route.Interface) ? $", {route.Interface}" : "";
-                
+
                 output.AppendLine($"{code}   {route.Network}/{cidr} [{route.AdminDistance}/{route.Metric}] {nextHop}{interfaceInfo}");
             }
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpInterface(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -353,29 +353,29 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             // Check for brief sub-command
             if (context.CommandParts.Length > 3 && context.CommandParts[3] == "brief")
             {
                 return HandleShowIpInterfaceBrief(context);
             }
-            
+
             // Check for specific interface
             if (context.CommandParts.Length > 3)
             {
                 return HandleShowIpSpecificInterface(context);
             }
-            
+
             return HandleShowIpInterfaceBrief(context);
         }
-        
+
         private CliResult HandleShowIpInterfaceBrief(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
             output.AppendLine("Interface                      IP-Address      OK? Method Status                Protocol");
             output.AppendLine("====================================================================================");
-            
+
             var interfaces = device.GetAllInterfaces();
             foreach (var iface in interfaces.Values.OrderBy(i => i.Name))
             {
@@ -384,25 +384,25 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 var method = string.IsNullOrEmpty(iface.IpAddress) ? "unset" : "manual";
                 var status = iface.IsShutdown ? "administratively down" : (iface.IsUp ? "up" : "down");
                 var protocol = iface.IsUp ? "up" : "down";
-                
+
                 output.AppendLine($"{iface.Name,-30} {ipAddress,-15} {ok,-3} {method,-6} {status,-25} {protocol}");
             }
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpSpecificInterface(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var ifaceName = string.Join(" ", context.CommandParts.Skip(3));
             ifaceName = FormatInterfaceName(ifaceName);
-            
+
             var interfaces = device.GetAllInterfaces();
             if (interfaces.ContainsKey(ifaceName))
             {
                 var iface = interfaces[ifaceName];
                 var output = new StringBuilder();
-                
+
                 output.AppendLine($"{iface.Name} is {(iface.IsUp ? "up" : "down")}, line protocol is {(iface.IsUp ? "up" : "down")}");
                 if (!string.IsNullOrEmpty(iface.IpAddress))
                 {
@@ -415,13 +415,13 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 output.AppendLine($"  Directed broadcast forwarding is disabled");
                 output.AppendLine($"  Outgoing access list is not set");
                 output.AppendLine($"  Inbound access list is not set");
-                
+
                 return Success(output.ToString());
             }
-            
+
             return HandleShowIpInterfaceBrief(context);
         }
-        
+
         private CliResult HandleShowIpOspf(CliContext context)
         {
             if (context.CommandParts.Length > 3)
@@ -435,20 +435,20 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                     _ => Error(CliErrorType.InvalidCommand, $"% Invalid OSPF show option: {ospfOption}")
                 };
             }
-            
+
             return HandleShowIpOspfGeneral(context);
         }
-        
+
         private CliResult HandleShowIpOspfNeighbor(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
             var ospfConfig = device?.GetOspfConfiguration();
-            
+
             if (ospfConfig != null)
             {
                 output.AppendLine("Neighbor ID     Pri   State           Dead Time   Address         Interface");
-                
+
                 if (!ospfConfig.Neighbors.Any() && ospfConfig.Interfaces.Any())
                 {
                     // Add default neighbor based on first OSPF interface
@@ -470,28 +470,28 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpOspfInterface(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
             var ospfConfig = device?.GetOspfConfiguration();
-            
+
             if (ospfConfig != null)
             {
                 output.AppendLine("Interface    Area    IP Address/Mask    Cost  State Nbrs F/C");
-                
+
                 foreach (var ospfInterface in ospfConfig.Interfaces.Values)
                 {
                     var area = ospfInterface.Area;
                     var cost = ospfInterface.Cost;
                     var state = "DR";
                     var neighbors = "1/1";
-                    
+
                     // Get the IP address from the actual interface
                     var actualInterface = device.GetInterface(ospfInterface.Name);
                     var ipAddress = actualInterface?.IpAddress ?? "0.0.0.0";
-                    
+
                     output.AppendLine($"{ospfInterface.Name,-12} {area,-7} {ipAddress,-18} {cost,-5} {state,-5} {neighbors}");
                 }
             }
@@ -502,7 +502,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpOspfDatabase(CliContext context)
         {
             var output = new StringBuilder();
@@ -516,13 +516,13 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpOspfGeneral(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
             var ospfConfig = device?.GetOspfConfiguration();
-            
+
             if (ospfConfig != null)
             {
                 output.AppendLine($"Routing Process \"ospf {ospfConfig.ProcessId}\" with ID {ospfConfig.RouterId ?? "1.1.1.1"}");
@@ -541,18 +541,18 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpBgp(CliContext context)
         {
             if (context.CommandParts.Length > 3 && context.CommandParts[3] == "summary")
             {
                 return HandleShowIpBgpSummary(context);
             }
-            
+
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
             var bgpConfig = device?.GetBgpConfiguration();
-            
+
             if (bgpConfig != null)
             {
                 output.AppendLine("BGP table version is 1, local router ID is " + (bgpConfig.RouterId ?? "1.1.1.1"));
@@ -562,7 +562,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 output.AppendLine("Origin codes: i - IGP, e - EGP, ? - incomplete");
                 output.AppendLine("");
                 output.AppendLine("     Network          Next Hop            Metric LocPrf Weight Path");
-                
+
                 foreach (var network in bgpConfig.Networks)
                 {
                     output.AppendLine($"*>   {network,-16} 0.0.0.0                  0         32768 i");
@@ -575,13 +575,13 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpBgpSummary(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
             var bgpConfig = device?.GetBgpConfiguration();
-            
+
             if (bgpConfig != null)
             {
                 output.AppendLine($"BGP router identifier {bgpConfig.RouterId ?? "1.1.1.1"}, local AS number {bgpConfig.LocalAs}");
@@ -591,7 +591,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 output.AppendLine("1/1 BGP path/bestpath attribute entries using 144 bytes of memory");
                 output.AppendLine("");
                 output.AppendLine("Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd");
-                
+
                 foreach (var neighbor in bgpConfig.Neighbors.Values)
                 {
                     output.AppendLine($"{neighbor.IpAddress,-15} 4 {neighbor.RemoteAs,12}       1       1        1    0    0 00:00:01        0");
@@ -604,20 +604,20 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowVlan(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("VLAN Name                             Status    Ports");
             output.AppendLine("---- -------------------------------- --------- -------------------------------");
-            
+
             var vlans = device.GetAllVlans();
             foreach (var vlan in vlans.Values.OrderBy(v => v.Id))
             {
@@ -628,23 +628,23 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 {
                     ports += "...";
                 }
-                
+
                 output.AppendLine($"{vlan.Id}    {name,-32} {status,-9} {ports}");
             }
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowSpanningTree(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("Spanning tree enabled protocol rstp");
             output.AppendLine("Root ID    Priority    32768");
             output.AppendLine($"           Address     {GenerateMacAddress()}");
@@ -653,7 +653,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             output.AppendLine("");
             output.AppendLine("Interface           Role Sts Cost      Prio.Nbr Type");
             output.AppendLine("------------------- ---- --- --------- -------- --------------------------------");
-            
+
             var interfaces = device.GetAllInterfaces();
             foreach (var iface in interfaces.Values.Take(5))
             {
@@ -661,13 +661,13 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 var status = iface.IsUp ? "FWD" : "BLK";
                 var cost = "20000";
                 var priority = "128.1";
-                
+
                 output.AppendLine($"{iface.Name,-19} {role,-4} {status,-3} {cost,-9} {priority,-8} P2p");
             }
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowMac(CliContext context)
         {
             if (context.CommandParts.Length > 2 && context.CommandParts[2] == "address-table")
@@ -685,27 +685,27 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidCommand, "% Invalid command");
         }
-        
+
         private CliResult HandleShowArp(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("Protocol  Address          Age (min)  Hardware Addr   Type   Interface");
             output.AppendLine("Internet  192.168.1.1             0   aabb.cc00.0100  ARPA   ethernet1/1/1");
             output.AppendLine("Internet  192.168.1.2             5   aabb.cc00.0200  ARPA   ethernet1/1/2");
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowPortChannel(CliContext context)
         {
             var output = new StringBuilder();
@@ -726,7 +726,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowLogging(CliContext context)
         {
             var output = new StringBuilder();
@@ -745,7 +745,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowLldp(CliContext context)
         {
             if (context.CommandParts.Length > 2 && context.CommandParts[2] == "neighbors")
@@ -760,10 +760,10 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidCommand, "% Invalid command");
         }
-        
+
         private CliResult HandleShowSystem(CliContext context)
         {
             if (context.CommandParts.Length > 2 && context.CommandParts[2] == "environment")
@@ -785,10 +785,10 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidCommand, "% Invalid command");
         }
-        
+
         // Helper methods
         private string FormatInterfaceName(string interfaceName)
         {
@@ -799,12 +799,12 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 return "ethernet" + interfaceName.Substring(2);
             return interfaceName;
         }
-        
+
         private string GenerateMacAddress()
         {
             return "00:01:e8:8b:44:56";
         }
-        
+
         private int MaskToCidr(string mask)
         {
             if (string.IsNullOrEmpty(mask)) return 24;
@@ -824,12 +824,12 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("  Name                             Default RD            Interfaces");
             output.AppendLine("  management                       <not set>             ");
             output.AppendLine("  TestVrf                          65001:1               ethernet1/1/1");
@@ -852,7 +852,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
                 return Success(output.ToString());
             }
-            
+
             return Error(CliErrorType.InvalidCommand, "% Invalid DHCP show option");
         }
 

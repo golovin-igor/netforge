@@ -1,5 +1,5 @@
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.OSPF
 {
@@ -19,7 +19,7 @@ namespace NetForge.Simulation.Protocols.OSPF
         public DateTime LastSpfCalculation { get; set; } = DateTime.MinValue;
         public int SpfCalculationCount { get; set; } = 0;
         public Dictionary<string, LinkStateAdvertisement> LinkStateDatabase { get; set; } = new();
-        
+
         /// <summary>
         /// Get or create OSPF neighbor with type safety
         /// </summary>
@@ -27,7 +27,7 @@ namespace NetForge.Simulation.Protocols.OSPF
         {
             return GetOrCreateNeighbor<OspfNeighbor>(neighborKey, factory);
         }
-        
+
         /// <summary>
         /// Mark topology as changed to trigger SPF calculation
         /// </summary>
@@ -36,7 +36,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             TopologyChanged = true;
             MarkStateChanged();
         }
-        
+
         /// <summary>
         /// Record successful SPF calculation
         /// </summary>
@@ -46,7 +46,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             SpfCalculationCount++;
             TopologyChanged = false;
         }
-        
+
         /// <summary>
         /// Check if SPF calculation is needed
         /// </summary>
@@ -54,7 +54,7 @@ namespace NetForge.Simulation.Protocols.OSPF
         {
             return TopologyChanged || (DateTime.Now - LastSpfCalculation).TotalMinutes > 10;
         }
-        
+
         public override Dictionary<string, object> GetStateData()
         {
             var baseData = base.GetStateData();
@@ -71,7 +71,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             return baseData;
         }
     }
-    
+
     /// <summary>
     /// Represents an OSPF route in the routing table
     /// </summary>
@@ -86,7 +86,7 @@ namespace NetForge.Simulation.Protocols.OSPF
         public int Area { get; set; } = 0;
         public DateTime LastUpdate { get; set; } = DateTime.Now;
     }
-    
+
     /// <summary>
     /// Link State Advertisement for OSPF topology database
     /// </summary>
@@ -99,11 +99,11 @@ namespace NetForge.Simulation.Protocols.OSPF
         public DateTime Timestamp { get; set; } = DateTime.Now;
         public int Area { get; set; } = 0;
         public Dictionary<string, object> Data { get; set; } = new();
-        
+
         public int Age => (int)(DateTime.Now - Timestamp).TotalSeconds;
         public bool IsMaxAge => Age >= 3600; // 1 hour max age
     }
-    
+
     /// <summary>
     /// OSPF neighbor state enumeration
     /// </summary>

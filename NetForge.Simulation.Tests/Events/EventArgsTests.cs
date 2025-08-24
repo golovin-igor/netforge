@@ -1,4 +1,4 @@
-using NetForge.Simulation.Events;
+using NetForge.Simulation.Common.Events;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Events
@@ -190,4 +190,4 @@ namespace NetForge.Simulation.Tests.Events
             Assert.Contains(LinkChangeType.Removed, enumValues);
         }
     }
-} 
+}

@@ -1,3 +1,4 @@
+using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Core;
 using NetForge.Simulation.Devices;
 

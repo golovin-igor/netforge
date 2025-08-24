@@ -1,8 +1,9 @@
 using System.Globalization;
-using NetForge.Simulation.Interfaces;
 using System.Text;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Interfaces;
 
-namespace NetForge.Simulation.CliHandlers.Extensions
+namespace NetForge.Simulation.Common.CLI.Extensions
 {
     /// <summary>
     /// Extensions for enhanced question mark (?) help support across all vendors

@@ -1,7 +1,8 @@
 using System.Reflection;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
 
-namespace NetForge.Simulation.CliHandlers.Services
+namespace NetForge.Simulation.Common.CLI.Services
 {
     /// <summary>
     /// Service for discovering and managing vendor-specific CLI handler registries
@@ -108,9 +109,9 @@ namespace NetForge.Simulation.CliHandlers.Services
                             continue;
 
                         var registryTypes = assembly.GetTypes()
-                            .Where(t => typeof(IVendorHandlerRegistry).IsAssignableFrom(t) 
-                                       && !t.IsInterface 
-                                       && !t.IsAbstract 
+                            .Where(t => typeof(IVendorHandlerRegistry).IsAssignableFrom(t)
+                                       && !t.IsInterface
+                                       && !t.IsAbstract
                                        && t.GetConstructor(Type.EmptyTypes) != null)
                             .ToList();
 
@@ -149,7 +150,7 @@ namespace NetForge.Simulation.CliHandlers.Services
         private static bool IsSystemAssembly(Assembly assembly)
         {
             var assemblyName = assembly.FullName ?? "";
-            
+
             return assemblyName.StartsWith("System.") ||
                    assemblyName.StartsWith("Microsoft.") ||
                    assemblyName.StartsWith("netstandard") ||
@@ -161,4 +162,4 @@ namespace NetForge.Simulation.CliHandlers.Services
                    assemblyName.Contains("resources");
         }
     }
-} 
+}

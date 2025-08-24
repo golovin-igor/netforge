@@ -1,5 +1,9 @@
 using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Factories;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Anira
 {
@@ -18,7 +22,7 @@ namespace NetForge.Simulation.CliHandlers.Anira
             manager.RegisterHandler(new Basic.DisableCommandHandler());
             manager.RegisterHandler(new Basic.ExitCommandHandler());
             manager.RegisterHandler(new Basic.PingCommandHandler());
-            
+
             // Register configuration handlers (these exist in ConfigurationHandlers.cs)
             manager.RegisterHandler(new Configuration.ConfigureCommandHandler());
             manager.RegisterHandler(new Configuration.InterfaceCommandHandler());
@@ -30,11 +34,11 @@ namespace NetForge.Simulation.CliHandlers.Anira
 
         public override IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            if (device is NetForge.Simulation.Common.NetworkDevice networkDevice)
+            if (device is NetworkDevice networkDevice)
             {
                 return new AniraVendorContext(networkDevice);
             }
-            
+
             throw new ArgumentException($"Device type {device.GetType().Name} is not compatible with Anira handler registry");
         }
 
@@ -47,7 +51,7 @@ namespace NetForge.Simulation.CliHandlers.Anira
         {
             // Register Anira vendor context factory
             VendorContextFactory.RegisterVendorContext("anira", device => new AniraVendorContext(device));
-            
+
             // Any other Anira-specific initialization
             base.Initialize();
         }
@@ -65,4 +69,4 @@ namespace NetForge.Simulation.CliHandlers.Anira
             base.Cleanup();
         }
     }
-} 
+}

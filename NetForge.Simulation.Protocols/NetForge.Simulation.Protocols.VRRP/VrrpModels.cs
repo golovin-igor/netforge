@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NetForge.Simulation.Protocols.Common;
-// Use the existing VrrpConfig from Common project  
-using NetForge.Simulation.Protocols.Routing;
+// Use the existing VrrpConfig from Common project
 
 namespace NetForge.Simulation.Protocols.VRRP
 {
@@ -229,7 +228,7 @@ namespace NetForge.Simulation.Protocols.VRRP
         public VrrpGroupState Group { get; set; }
         public VrrpTimers Timers { get; set; } = new();
         public VrrpStatistics Statistics { get; set; } = new();
-        
+
         public VrrpStateMachine(VrrpGroupState group)
         {
             Group = group;
@@ -239,7 +238,7 @@ namespace NetForge.Simulation.Protocols.VRRP
         public void ProcessEvent(VrrpEvent eventType, VrrpAdvertisement advertisement = null)
         {
             var previousState = Group.State;
-            
+
             switch (Group.State)
             {
                 case VrrpProtocolState.Initialize:
@@ -367,7 +366,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             Group.State = VrrpProtocolState.Master;
             Timers.StopMasterDownTimer();
             Timers.StopPreemptDelayTimer();
-            
+
             // Start sending advertisements
             Group.LastAdvertisement = DateTime.Now;
         }

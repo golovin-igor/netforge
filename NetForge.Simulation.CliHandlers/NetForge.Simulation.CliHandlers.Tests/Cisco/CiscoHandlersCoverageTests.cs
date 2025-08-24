@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.CliHandlers.Cisco;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Interfaces;
 using NetForge.Simulation.Devices;
 using Xunit;
 

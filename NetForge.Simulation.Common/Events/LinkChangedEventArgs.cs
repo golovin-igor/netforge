@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Events
+namespace NetForge.Simulation.Common.Events
 {
     public enum LinkChangeType
     {
@@ -23,4 +23,4 @@ namespace NetForge.Simulation.Events
             ChangeType = changeType;
         }
     }
-} 
+}

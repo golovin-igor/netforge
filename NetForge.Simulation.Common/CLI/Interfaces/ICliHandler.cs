@@ -1,7 +1,7 @@
 
-using NetForge.Simulation.CliHandlers;
+using NetForge.Simulation.Common.CLI.Base;
 
-namespace NetForge.Simulation.Interfaces
+namespace NetForge.Simulation.Common.CLI.Interfaces
 {
     /// <summary>
     /// Interface for CLI command handlers
@@ -53,4 +53,4 @@ namespace NetForge.Simulation.Interfaces
         /// </summary>
         Dictionary<string, ICliHandler> GetSubHandlers();
     }
-} 
+}

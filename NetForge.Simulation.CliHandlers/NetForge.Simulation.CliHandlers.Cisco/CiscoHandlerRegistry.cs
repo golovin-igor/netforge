@@ -1,5 +1,9 @@
 using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Factories;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Cisco
 {
@@ -24,11 +28,11 @@ namespace NetForge.Simulation.CliHandlers.Cisco
             manager.RegisterHandler(new Basic.HelpCommandHandler());
             manager.RegisterHandler(new Basic.CopyCommandHandler());
             manager.RegisterHandler(new Basic.ClearCommandHandler());
-            
+
             // Register show handlers (migrated from old architecture)
             manager.RegisterHandler(new Show.ShowCommandHandler());
 
-            
+
             // Register configuration handlers (migrated from old architecture)
             manager.RegisterHandler(new Configuration.ConfigureCommandHandler());
             manager.RegisterHandler(new Configuration.ExitCommandHandler());
@@ -38,21 +42,21 @@ namespace NetForge.Simulation.CliHandlers.Cisco
             manager.RegisterHandler(new Configuration.HostnameCommandHandler());
             manager.RegisterHandler(new Configuration.VlanCommandHandler());
             manager.RegisterHandler(new Configuration.RouterCommandHandler());
-            
+
             // Register VLAN configuration handlers
             manager.RegisterHandler(new Configuration.CiscoVlanNameHandler());
-            
+
             // Register router mode command handler
             manager.RegisterHandler(new Configuration.CiscoRouterModeCommandHandler());
-            
+
             // Router sub-handlers are automatically registered via RouterCommandHandler.AddSubHandler()
-            
+
             // Register interface configuration handlers
             manager.RegisterHandler(new Configuration.IpAddressCommandHandler());
             manager.RegisterHandler(new Configuration.IpAccessGroupCommandHandler());
             manager.RegisterHandler(new Configuration.ShutdownCommandHandler());
             manager.RegisterHandler(new Configuration.NoShutdownHandler());
-            
+
             // Register Access List handlers (newly migrated)
             manager.RegisterHandler(new Configuration.AccessListCommandHandler());
             manager.RegisterHandler(new Configuration.IpAccessListCommandHandler());
@@ -108,11 +112,11 @@ namespace NetForge.Simulation.CliHandlers.Cisco
 
         public override IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            if (device is NetForge.Simulation.Common.NetworkDevice networkDevice)
+            if (device is NetworkDevice networkDevice)
             {
                 return new CiscoVendorContext(networkDevice);
             }
-            
+
             throw new ArgumentException($"Device type {device.GetType().Name} is not compatible with Cisco handler registry");
         }
 
@@ -125,7 +129,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             // Register Cisco vendor context factory
             VendorContextFactory.RegisterVendorContext("cisco", device => new CiscoVendorContext(device));
-            
+
             // Any other Cisco-specific initialization
             base.Initialize();
         }
@@ -143,4 +147,4 @@ namespace NetForge.Simulation.CliHandlers.Cisco
             base.Cleanup();
         }
     }
-} 
+}

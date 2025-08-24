@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Core
+namespace NetForge.Simulation.Common.Interfaces
 {
     /// <summary>
     /// Interface for command processing
@@ -9,10 +9,10 @@ namespace NetForge.Simulation.Core
         /// Asynchronously process a command and return the output
         /// </summary>
         Task<string> ProcessCommandAsync(string command);
-        
+
         /// <summary>
         /// Get the current prompt
         /// </summary>
         string GetCurrentPrompt();
     }
-} 
+}

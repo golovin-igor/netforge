@@ -1,6 +1,7 @@
-using NetForge.Simulation.Interfaces;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.CliHandlers.Cisco
 {
@@ -95,7 +96,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (commandParts.Length == 1)
                 return new[] { "version", "interfaces", "running-config", "startup-config", "ip", "arp", "mac", "vlan", "spanning-tree", "cdp", "flash", "memory", "processes", "users", "clock", "history" };
-            
+
             if (commandParts.Length == 2)
             {
                 return commandParts[1].ToLower() switch
@@ -117,7 +118,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (commandParts.Length == 1)
                 return new[] { "terminal" };
-            
+
             return Array.Empty<string>();
         }
 
@@ -125,7 +126,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (commandParts.Length == 1)
                 return GetInterfaceNames();
-            
+
             return Array.Empty<string>();
         }
 
@@ -133,7 +134,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (commandParts.Length == 1)
                 return new[] { "ospf", "bgp", "eigrp", "rip", "isis" };
-            
+
             if (commandParts.Length == 2)
             {
                 return commandParts[1].ToLower() switch
@@ -152,7 +153,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (commandParts.Length == 1)
                 return new[] { "address", "route", "default-gateway", "domain-name", "name-server", "host", "routing" };
-            
+
             return Array.Empty<string>();
         }
 
@@ -160,7 +161,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (commandParts.Length == 1)
                 return new[] { "1", "10", "20", "30", "100", "200", "300", "999" }; // Common VLAN IDs
-            
+
             return Array.Empty<string>();
         }
 
@@ -168,7 +169,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (commandParts.Length == 1)
                 return new[] { "1", "10", "20", "100", "101", "102" }; // Common ACL numbers
-            
+
             return Array.Empty<string>();
         }
 
@@ -176,7 +177,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (commandParts.Length == 1)
                 return new[] { "127.0.0.1", "8.8.8.8", "google.com", "localhost" }; // Common ping targets
-            
+
             return Array.Empty<string>();
         }
 
@@ -184,10 +185,10 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (commandParts.Length == 1)
                 return new[] { "running-config", "startup-config", "flash:", "tftp:", "ftp:" };
-            
+
             if (commandParts.Length == 2)
                 return new[] { "running-config", "startup-config", "flash:", "tftp:", "ftp:" };
-            
+
             return Array.Empty<string>();
         }
 
@@ -195,7 +196,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (commandParts.Length == 1)
                 return new[] { "ip", "shutdown", "vlan", "access-list", "router", "interface", "hostname" };
-            
+
             return Array.Empty<string>();
         }
 
@@ -203,9 +204,9 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             // Common Cisco interface names and aliases
             var interfaces = new List<string>();
-            
-            interfaces.AddRange(new[] { 
-                "ethernet0/0", "ethernet0/1", "ethernet0/2", "ethernet0/3", 
+
+            interfaces.AddRange(new[] {
+                "ethernet0/0", "ethernet0/1", "ethernet0/2", "ethernet0/3",
                 "e0/0", "e0/1", "e0/2", "e0/3", // Ethernet aliases
                 "fastethernet0/0", "fastethernet0/1", "fastethernet0/2", "fastethernet0/3",
                 "fa0/0", "fa0/1", "fa0/2", "fa0/3", // FastEthernet aliases
@@ -217,7 +218,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
                 "lo0", "lo1", "lo2", "lo3", // Loopback aliases
                 "vlan1", "vlan10", "vlan20", "vlan30", "vlan100"
             });
-            
+
             return interfaces;
         }
 
@@ -249,4 +250,4 @@ namespace NetForge.Simulation.CliHandlers.Cisco
     }
 
 
-} 
+}

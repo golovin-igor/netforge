@@ -1,6 +1,7 @@
 using System.Text;
+using NetForge.Simulation.Common.CLI.Base;
 
-namespace NetForge.Simulation.CliHandlers.Common
+namespace NetForge.Simulation.Common.CLI.CommonHandlers
 {
     public class CommonHelpCommandHandler : BaseCliHandler
     {
@@ -29,5 +30,5 @@ namespace NetForge.Simulation.CliHandlers.Common
             return Success(output.ToString());
         }
     }
-} 
+}
 

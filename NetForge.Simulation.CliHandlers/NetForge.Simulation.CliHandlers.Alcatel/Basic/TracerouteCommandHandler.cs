@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Base;
 
 namespace NetForge.Simulation.CliHandlers.Alcatel.Basic
 {

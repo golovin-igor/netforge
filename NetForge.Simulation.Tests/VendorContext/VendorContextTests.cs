@@ -1,7 +1,11 @@
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Factories;
+using NetForge.Simulation.Common.CLI.Implementations;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Interfaces;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.VendorContext
@@ -223,7 +227,7 @@ namespace NetForge.Simulation.Tests.VendorContext
         {
             // Arrange
             var factoryCallCount = 0;
-            Func<NetworkDevice, IVendorContext> factory = device => 
+            Func<NetworkDevice, IVendorContext> factory = device =>
             {
                 factoryCallCount++;
                 return new DefaultVendorContext(device);
@@ -231,7 +235,7 @@ namespace NetForge.Simulation.Tests.VendorContext
 
             // Act
             VendorContextFactory.RegisterVendorContext("test", factory);
-            
+
             // Create a test device with the specific vendor
             var testDevice = new CiscoDevice("TestRouter");
             // Set the vendor to match the registered factory
@@ -302,7 +306,7 @@ namespace NetForge.Simulation.Tests.VendorContext
         public void GetVendorContext_WhenDeviceIsNull_ShouldThrowArgumentNullException()
         {
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() =>
                 VendorContextFactory.GetVendorContext(null));
         }
     }
@@ -373,4 +377,4 @@ namespace NetForge.Simulation.Tests.VendorContext
             Assert.Same(customContext, context.VendorContext);
         }
     }
-} 
+}

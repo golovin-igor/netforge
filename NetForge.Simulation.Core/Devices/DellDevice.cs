@@ -1,7 +1,7 @@
 using System.Text;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
 using NetForge.Simulation.Core;
 
 namespace NetForge.Simulation.Devices
@@ -12,7 +12,7 @@ namespace NetForge.Simulation.Devices
     public class DellDevice : NetworkDevice
     {
         // Device state is now managed by command handlers
-        
+
         public DellDevice(string name) : base(name)
         {
             Vendor = "Dell";
@@ -25,7 +25,7 @@ namespace NetForge.Simulation.Devices
             // This will discover and register protocols that support the "Dell" vendor
             AutoRegisterProtocols();
         }
-        
+
         protected override void InitializeDefaultInterfaces()
         {
             // Add default interfaces for a Dell switch (OS10 style)
@@ -38,14 +38,14 @@ namespace NetForge.Simulation.Devices
             }
             Interfaces["mgmt 1/1/1"] = new InterfaceConfig("mgmt 1/1/1", this);
         }
-        
+
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Dell handlers to ensure they are available for tests
             var registry = new NetForge.Simulation.CliHandlers.Dell.DellHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
-        
+
         public override string GetPrompt()
         {
             return base.CurrentMode switch
@@ -60,7 +60,7 @@ namespace NetForge.Simulation.Devices
                 _ => $"{Hostname}>"
             };
         }
-        
+
         private string GetRouterPrompt()
         {
             var protocol = "ospf";
@@ -69,15 +69,15 @@ namespace NetForge.Simulation.Devices
             if (bgpConfig != null) protocol = "bgp";
             return $"{Hostname}(config-router-{protocol})# ";
         }
-        
+
         public override async Task<string> ProcessCommandAsync(string command)
         {
             // Use the command handler manager for all command processing
             if (CommandManager != null)
             {
                 var result = await CommandManager.ProcessCommandAsync(command);
-                
-                // If command was handled, return the result 
+
+                // If command was handled, return the result
                 if (result != null)
                 {
                     // Check if result already ends with prompt
@@ -90,10 +90,10 @@ namespace NetForge.Simulation.Devices
                     {
                         return result.Output + prompt;
                     }
-                    
+
                 }
             }
-            
+
             // If no handler found, return Dell error format
             return "% Invalid input detected at '^' marker.\n" + GetPrompt();
         }
@@ -103,18 +103,18 @@ namespace NetForge.Simulation.Devices
         public new void SetCurrentMode(string mode) => base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
         public new string GetCurrentInterface() => CurrentInterface;
         public new void SetCurrentInterface(string iface) => CurrentInterface = iface;
-        
+
         // Dell-specific helper methods
         public void AppendToRunningConfig(string line)
         {
             RunningConfig.AppendLine(line);
         }
-        
+
         public void UpdateProtocols()
         {
             ParentNetwork?.UpdateProtocols();
         }
-        
+
         public void UpdateConnectedRoutesPublic()
         {
             UpdateConnectedRoutes();
@@ -153,14 +153,14 @@ namespace NetForge.Simulation.Devices
         }
 
         // Legacy ProcessShowCommand removed - now handled by ShowCommandHandler
-        
+
         public string SimulatePingDell(string destIp)
         {
             var output = new StringBuilder();
             output.AppendLine($"PING {destIp} ({destIp}): 56 data bytes");
-            
+
             bool reachable = IsReachable(destIp);
-            
+
             for (int i = 0; i < 5; i++)
             {
                 if (reachable)
@@ -172,7 +172,7 @@ namespace NetForge.Simulation.Devices
                     // Timeout - no output for that sequence
                 }
             }
-            
+
             output.AppendLine("");
             output.AppendLine($"--- {destIp} ping statistics ---");
             output.AppendLine($"5 packets transmitted, {(reachable ? 5 : 0)} packets received, {(reachable ? 0 : 100)}% packet loss");
@@ -180,10 +180,10 @@ namespace NetForge.Simulation.Devices
             {
                 output.AppendLine("round-trip min/avg/max/stddev = 0.100/0.120/0.150/0.020 ms");
             }
-            
+
             return output.ToString();
         }
-        
+
         private bool IsReachable(string destIp)
         {
             // Check if IP is in any connected network
@@ -194,7 +194,7 @@ namespace NetForge.Simulation.Devices
                     return true;
                 }
             }
-            
+
             // Check if there's a route to the destination
             foreach (var route in RoutingTable)
             {
@@ -203,10 +203,10 @@ namespace NetForge.Simulation.Devices
                     return true;
                 }
             }
-            
+
             return false;
         }
-        
+
         private bool IsIpInNetwork(string ip, string network, string mask)
         {
             try
@@ -214,13 +214,13 @@ namespace NetForge.Simulation.Devices
                 var ipBytes = ip.Split('.').Select(byte.Parse).ToArray();
                 var networkBytes = network.Split('.').Select(byte.Parse).ToArray();
                 var maskBytes = mask.Split('.').Select(byte.Parse).ToArray();
-                
+
                 for (int i = 0; i < 4; i++)
                 {
                     if ((ipBytes[i] & maskBytes[i]) != (networkBytes[i] & maskBytes[i]))
                         return false;
                 }
-                
+
                 return true;
             }
             catch
@@ -228,7 +228,7 @@ namespace NetForge.Simulation.Devices
                 return false;
             }
         }
-        
+
         private string GetBridgeId()
         {
             return $"{StpConfig.GetPriority(1):x4}.aabb.cc00.0100";
@@ -256,9 +256,9 @@ namespace NetForge.Simulation.Devices
                 {
                     return kvp.Value;
                 }
-                
+
                 // Try simple format matching (e.g., "eth 1/1/1" matches "ethernet 1/1/1")
-                if (kvp.Key.StartsWith("ethernet", StringComparison.OrdinalIgnoreCase) && 
+                if (kvp.Key.StartsWith("ethernet", StringComparison.OrdinalIgnoreCase) &&
                     interfaceName.StartsWith("eth", StringComparison.OrdinalIgnoreCase))
                 {
                     var fullName = kvp.Key.Replace("ethernet", "").Trim();
@@ -285,12 +285,12 @@ namespace NetForge.Simulation.Devices
 
             // Use canonical interface name for storage - simplified for now
             var canonicalName = interfaceName.ToLower().Replace("eth ", "ethernet ");
-            
+
             if (!Interfaces.ContainsKey(canonicalName))
             {
                 Interfaces[canonicalName] = interfaceConfig ?? new InterfaceConfig(canonicalName, this);
             }
         }
     }
-} 
+}
 

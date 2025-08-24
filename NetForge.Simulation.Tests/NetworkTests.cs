@@ -1,6 +1,7 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Events;
 using Xunit;
 
 // Added for xUnit
@@ -15,7 +16,7 @@ namespace NetForge.Simulation.Tests
         public RootNetworkTests() // Constructor acts as TestInitialize / Setup
         {
             _network = new Network();
-            _eventBus = _network.EventBus; 
+            _eventBus = _network.EventBus;
         }
 
         [Fact]
@@ -23,14 +24,14 @@ namespace NetForge.Simulation.Tests
         {
             // Arrange
             DeviceChangedEventArgs? receivedArgs = null;
-            _eventBus.Subscribe<DeviceChangedEventArgs>(args => 
+            _eventBus.Subscribe<DeviceChangedEventArgs>(args =>
             {
                 receivedArgs = args;
                 return Task.CompletedTask;
             });
 
             var device = new CiscoDevice("TestRouter1");
-            
+
             // Act
             await _network.AddDeviceAsync(device);
 
@@ -50,12 +51,12 @@ namespace NetForge.Simulation.Tests
             InterfaceStateChangedEventArgs? if2Args = null;
             int interfaceStateChangedCount = 0;
 
-            _eventBus.Subscribe<LinkChangedEventArgs>(args => 
+            _eventBus.Subscribe<LinkChangedEventArgs>(args =>
             {
                 receivedLinkArgs = args;
                 return Task.CompletedTask;
             });
-            _eventBus.Subscribe<InterfaceStateChangedEventArgs>(args => 
+            _eventBus.Subscribe<InterfaceStateChangedEventArgs>(args =>
             {
                 interfaceStateChangedCount++;
                 if(args.DeviceName == "R1") if1Args = args;
@@ -67,7 +68,7 @@ namespace NetForge.Simulation.Tests
             var r2 = new CiscoDevice("R2");
             await _network.AddDeviceAsync(r1);
             await _network.AddDeviceAsync(r2);
-            
+
             var iface1Config = r1.GetInterface("GigabitEthernet0/0");
             var iface2Config = r2.GetInterface("GigabitEthernet0/0");
             if (iface1Config != null) iface1Config.IsShutdown = false;
@@ -81,7 +82,7 @@ namespace NetForge.Simulation.Tests
             Assert.Equal("R1", receivedLinkArgs?.Device1Name);
             Assert.Equal("R2", receivedLinkArgs?.Device2Name);
             Assert.Equal(LinkChangeType.Added, receivedLinkArgs?.ChangeType);
-            
+
             Assert.True(interfaceStateChangedCount >= 0 && interfaceStateChangedCount <= 2);
             if (if1Args != null) Assert.True(if1Args.IsUp);
             if (if2Args != null) Assert.True(if2Args.IsUp);
@@ -95,7 +96,7 @@ namespace NetForge.Simulation.Tests
             var r2 = new CiscoDevice("R2");
             await _network.AddDeviceAsync(r1);
             await _network.AddDeviceAsync(r2);
-            
+
             var iface1Config = r1.GetInterface("GigabitEthernet0/0");
             var iface2Config = r2.GetInterface("GigabitEthernet0/0");
             if (iface1Config != null) { iface1Config.IsShutdown = false; iface1Config.IsUp = true; }
@@ -107,12 +108,12 @@ namespace NetForge.Simulation.Tests
             InterfaceStateChangedEventArgs? if2Args = null;
             int interfaceStateChangedCount = 0;
 
-            _eventBus.Subscribe<LinkChangedEventArgs>(args => 
+            _eventBus.Subscribe<LinkChangedEventArgs>(args =>
             {
                 receivedLinkArgs = args;
                 return Task.CompletedTask;
             });
-             _eventBus.Subscribe<InterfaceStateChangedEventArgs>(args => 
+             _eventBus.Subscribe<InterfaceStateChangedEventArgs>(args =>
             {
                 interfaceStateChangedCount++;
                 if(args.DeviceName == "R1") if1Args = args;
@@ -127,10 +128,10 @@ namespace NetForge.Simulation.Tests
             // Assert
             Assert.NotNull(receivedLinkArgs);
             Assert.Equal(LinkChangeType.Removed, receivedLinkArgs?.ChangeType);
-            
+
             Assert.True(interfaceStateChangedCount >= 0 && interfaceStateChangedCount <= 2);
             if (if1Args != null) Assert.False(if1Args.IsUp);
             if (if2Args != null) Assert.False(if2Args.IsUp);
         }
     }
-} 
+}

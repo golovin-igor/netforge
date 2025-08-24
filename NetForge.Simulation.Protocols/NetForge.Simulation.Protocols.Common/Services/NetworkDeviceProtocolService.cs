@@ -1,6 +1,7 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
-using OldNetworkProtocol = NetForge.Simulation.Interfaces.INetworkProtocol;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
+using OldNetworkProtocol = NetForge.Simulation.Common.Interfaces.INetworkProtocol;
 
 namespace NetForge.Simulation.Protocols.Common.Services
 {
@@ -11,12 +12,12 @@ namespace NetForge.Simulation.Protocols.Common.Services
     public class NetworkDeviceProtocolService : IProtocolService
     {
         private readonly NetworkDevice _device;
-        
+
         public NetworkDeviceProtocolService(NetworkDevice device)
         {
             _device = device ?? throw new ArgumentNullException(nameof(device));
         }
-        
+
         /// <summary>
         /// Get a protocol instance by its type
         /// </summary>
@@ -26,7 +27,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         {
             return GetAllProtocols().OfType<T>().FirstOrDefault();
         }
-        
+
         /// <summary>
         /// Get a protocol instance by protocol type enum
         /// </summary>
@@ -36,7 +37,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         {
             return GetAllProtocols().FirstOrDefault(p => p.Type == type);
         }
-        
+
         /// <summary>
         /// Get the typed state of a specific protocol
         /// </summary>
@@ -48,7 +49,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
             var protocol = GetProtocol(type);
             return protocol?.GetState()?.GetTypedState<TState>();
         }
-        
+
         /// <summary>
         /// Get all registered protocol instances
         /// </summary>
@@ -60,7 +61,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 .OfType<IDeviceProtocol>()
                 .ToList();
         }
-        
+
         /// <summary>
         /// Check if a specific protocol type is active on the device
         /// </summary>
@@ -71,7 +72,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
             var protocol = GetProtocol(type);
             return protocol?.GetState()?.IsActive ?? false;
         }
-        
+
         /// <summary>
         /// Get protocol configuration for a specific protocol type
         /// </summary>
@@ -82,7 +83,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
             var protocol = GetProtocol(type);
             return protocol?.GetConfiguration();
         }
-        
+
         /// <summary>
         /// Get all active protocol types on this device
         /// </summary>
@@ -93,7 +94,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 .Where(p => p.GetState()?.IsActive ?? false)
                 .Select(p => p.Type);
         }
-        
+
         /// <summary>
         /// Get protocol statistics for monitoring and debugging
         /// </summary>
@@ -101,7 +102,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         public Dictionary<string, object> GetProtocolStatistics()
         {
             var protocols = GetAllProtocols().ToList();
-            
+
             return new Dictionary<string, object>
             {
                 ["TotalProtocols"] = protocols.Count,
@@ -109,12 +110,12 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 ["ConfiguredProtocols"] = protocols.Count(p => p.GetState()?.IsConfigured ?? false),
                 ["ProtocolTypes"] = protocols.Select(p => p.Type.ToString()).ToList(),
                 ["ProtocolStates"] = protocols.ToDictionary(
-                    p => p.Type.ToString(), 
+                    p => p.Type.ToString(),
                     p => p.GetState()?.GetStateData() ?? new Dictionary<string, object>()
                 )
             };
         }
-        
+
         /// <summary>
         /// Check if a protocol type is registered (regardless of active state)
         /// </summary>
@@ -124,7 +125,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         {
             return GetProtocol(type) != null;
         }
-        
+
         /// <summary>
         /// Get the device this service is associated with
         /// </summary>

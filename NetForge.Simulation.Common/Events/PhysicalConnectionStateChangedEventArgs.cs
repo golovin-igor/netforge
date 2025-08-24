@@ -1,6 +1,6 @@
-using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 
-namespace NetForge.Simulation.Events
+namespace NetForge.Simulation.Common.Events
 {
     /// <summary>
     /// Event arguments for physical connection state changes
@@ -32,4 +32,4 @@ namespace NetForge.Simulation.Events
                    (!string.IsNullOrEmpty(Reason) ? $" ({Reason})" : "");
         }
     }
-} 
+}

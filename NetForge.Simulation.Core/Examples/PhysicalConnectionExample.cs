@@ -1,6 +1,7 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Examples
 {
@@ -41,10 +42,10 @@ namespace NetForge.Simulation.Examples
             Console.WriteLine("1. Creating Physical Connections\n");
 
             // Create physical connections between devices
-            await network.AddPhysicalConnectionAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0", 
+            await network.AddPhysicalConnectionAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0",
                 PhysicalConnectionType.Ethernet);
-            
-            await network.AddPhysicalConnectionAsync("R2", "GigabitEthernet0/1", "R3", "GigabitEthernet0/0", 
+
+            await network.AddPhysicalConnectionAsync("R2", "GigabitEthernet0/1", "R3", "GigabitEthernet0/0",
                 PhysicalConnectionType.Fiber);
 
             // Display network statistics
@@ -91,12 +92,12 @@ namespace NetForge.Simulation.Examples
             Console.WriteLine("\n4. Simulating Cable Failure\n");
 
             // Simulate cable failure
-            await network.SimulateCableFailureAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0", 
+            await network.SimulateCableFailureAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0",
                 "Fiber optic cable damaged");
 
             // Check connection state after failure
             Console.WriteLine($"Connection state after failure: {connection1.State}");
-            
+
             // Protocols should automatically update their state
             Console.WriteLine("Protocol updates after cable failure:");
             await router1.UpdateAllProtocolStates();
@@ -109,7 +110,7 @@ namespace NetForge.Simulation.Examples
             Console.WriteLine($"Connection restored: {connection1.State}");
 
             // Then simulate degradation
-            await network.SimulateConnectionDegradationAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0", 
+            await network.SimulateConnectionDegradationAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0",
                 5.0, 20, "Poor weather conditions affecting wireless link");
 
             Console.WriteLine($"Connection after degradation: {connection1.State}");
@@ -192,4 +193,4 @@ namespace NetForge.Simulation.Examples
             }
         }
     }
-} 
+}

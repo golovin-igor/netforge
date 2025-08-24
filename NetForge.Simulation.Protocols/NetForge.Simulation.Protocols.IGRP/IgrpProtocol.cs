@@ -1,8 +1,11 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Events;
-using NetForge.Simulation.Protocols.Routing; // TODO: Replace with local Route class in next migration phase
+
+// TODO: Replace with local Route class in next migration phase
 
 namespace NetForge.Simulation.Protocols.IGRP;
 
@@ -10,10 +13,10 @@ public class IgrpProtocol : BaseProtocol
 {
     public override ProtocolType Type => ProtocolType.IGRP;
     public override string Name => "Interior Gateway Routing Protocol";
-    
+
     private DateTime _lastUpdate = DateTime.MinValue;
     private DateTime _lastPeriodicUpdate = DateTime.MinValue;
-    
+
     protected override BaseProtocolState CreateInitialState()
     {
         return new IgrpState();
@@ -50,7 +53,7 @@ public class IgrpProtocol : BaseProtocol
         // Check for periodic update time
         var now = DateTime.Now;
         var updateInterval = TimeSpan.FromSeconds(igrpConfig.UpdateTimer);
-        
+
         if (now - _lastPeriodicUpdate >= updateInterval)
         {
             await SendPeriodicUpdates(device, igrpConfig, igrpState);
@@ -59,7 +62,7 @@ public class IgrpProtocol : BaseProtocol
 
         // Discover IGRP neighbors on configured networks
         await DiscoverIgrpNeighbors(device, igrpConfig, igrpState);
-        
+
         // Process route timers
         await ProcessRouteTimers(device, igrpConfig, igrpState);
     }
@@ -67,19 +70,19 @@ public class IgrpProtocol : BaseProtocol
     protected override async Task RunProtocolCalculation(NetworkDevice device)
     {
         var igrpState = (IgrpState)_state;
-        
+
         LogProtocolEvent("IGRP: Running route calculation due to topology change...");
-        
+
         // Clear existing IGRP routes
         device.ClearRoutesByProtocol("IGRP");
         igrpState.CalculatedRoutes.Clear();
-        
+
         // Calculate best routes using IGRP distance vector algorithm
         await CalculateIgrpRoutes(device, igrpState);
-        
+
         // Install calculated routes
         await InstallRoutes(device, igrpState);
-        
+
         igrpState.TopologyChanged = false;
         LogProtocolEvent("IGRP: Route calculation completed");
     }
@@ -89,7 +92,7 @@ public class IgrpProtocol : BaseProtocol
         foreach (var networkConfig in config.Networks)
         {
             var interfaces = GetInterfacesForNetwork(device, networkConfig);
-            
+
             foreach (var interfaceName in interfaces)
             {
                 var interfaceConfig = device.GetInterface(interfaceName);
@@ -101,10 +104,10 @@ public class IgrpProtocol : BaseProtocol
                 {
                     var neighborDevice = connectedDevice.Value.device;
                     var neighborInterface = connectedDevice.Value.interfaceName;
-                    
+
                     if (!IsNeighborReachable(device, interfaceName, neighborDevice))
                         continue;
-                    
+
                     // Check if neighbor has IGRP protocol active
                     var neighborIgrpProtocol = GetNeighborIgrpProtocol(neighborDevice);
                     if (neighborIgrpProtocol != null)
@@ -119,10 +122,10 @@ public class IgrpProtocol : BaseProtocol
                             AutonomousSystem = GetAutonomousSystem(neighborIgrpProtocol.GetConfiguration()),
                             HoldTime = GetHoldTimer(neighborIgrpProtocol.GetConfiguration())
                         });
-                        
+
                         neighbor.LastSeen = DateTime.Now;
                         state.UpdateNeighborActivity(neighborKey);
-                        
+
                         LogProtocolEvent($"IGRP: Neighbor {neighbor.RouterId} is reachable on AS {config.AutonomousSystem}");
                     }
                 }
@@ -133,7 +136,7 @@ public class IgrpProtocol : BaseProtocol
     private async Task SendPeriodicUpdates(NetworkDevice device, IgrpConfig config, IgrpState state)
     {
         LogProtocolEvent($"IGRP: Sending periodic updates for AS {config.AutonomousSystem}");
-        
+
         // In a real implementation, this would send IGRP update packets
         // For simulation, we mark topology as changed to trigger recalculation
         foreach (var neighbor in state.Neighbors.Values.Where(n => n.IsActive))
@@ -147,7 +150,7 @@ public class IgrpProtocol : BaseProtocol
     {
         var now = DateTime.Now;
         var routesChanged = false;
-        
+
         // Check for invalid routes
         var invalidRoutes = state.GetInvalidRoutes(config.InvalidTimer);
         foreach (var routeKey in invalidRoutes)
@@ -159,7 +162,7 @@ public class IgrpProtocol : BaseProtocol
                 routesChanged = true;
             }
         }
-        
+
         // Check for routes to flush
         var flushRoutes = state.GetFlushRoutes(config.FlushTimer - config.InvalidTimer);
         foreach (var routeKey in flushRoutes)
@@ -168,7 +171,7 @@ public class IgrpProtocol : BaseProtocol
             state.RemoveRoute(routeKey);
             routesChanged = true;
         }
-        
+
         if (routesChanged)
         {
             state.MarkStateChanged();
@@ -178,17 +181,17 @@ public class IgrpProtocol : BaseProtocol
     private async Task CalculateIgrpRoutes(NetworkDevice device, IgrpState state)
     {
         var routes = new Dictionary<string, IgrpRoute>();
-        
+
         // Add directly connected networks
         foreach (var interfaceName in device.GetAllInterfaces().Keys)
         {
             var interfaceConfig = device.GetInterface(interfaceName);
             if (interfaceConfig?.IsShutdown != false || !interfaceConfig.IsUp || string.IsNullOrEmpty(interfaceConfig.IpAddress))
                 continue;
-            
+
             var network = GetNetworkAddress(interfaceConfig.IpAddress, interfaceConfig.SubnetMask);
             var routeKey = $"{network}/{interfaceConfig.SubnetMask}";
-            
+
             if (!routes.ContainsKey(routeKey))
             {
                 routes[routeKey] = new IgrpRoute
@@ -205,12 +208,12 @@ public class IgrpProtocol : BaseProtocol
                 routes[routeKey].Metric = routes[routeKey].CalculateMetric();
             }
         }
-        
+
         // Add routes learned from neighbors
         foreach (var existingRoute in state.Routes.Values.Where(r => r.State == IgrpRouteState.Valid))
         {
             var routeKey = $"{existingRoute.Network}/{existingRoute.Mask}";
-            
+
             if (!routes.ContainsKey(routeKey) || routes[routeKey].Metric > existingRoute.Metric)
             {
                 routes[routeKey] = new IgrpRoute
@@ -227,7 +230,7 @@ public class IgrpProtocol : BaseProtocol
                 };
             }
         }
-        
+
         state.CalculatedRoutes = routes.Values.ToList();
         LogProtocolEvent($"IGRP: Calculated {state.CalculatedRoutes.Count} routes");
     }
@@ -241,7 +244,7 @@ public class IgrpProtocol : BaseProtocol
                 Metric = route.Metric,
                 AdminDistance = 100 // IGRP administrative distance
             };
-            
+
             device.AddRoute(deviceRoute);
             LogProtocolEvent($"IGRP: Installed route to {route.Network}/{route.Mask} via {route.NextHop} metric {route.Metric}");
         }
@@ -280,7 +283,7 @@ public class IgrpProtocol : BaseProtocol
             // Store configuration in protocol state - no legacy integration needed
             _state.IsActive = igrpConfig.IsEnabled;
             _state.MarkStateChanged();
-            
+
             if (_state is IgrpState igrpState)
             {
                 igrpState.AutonomousSystem = igrpConfig.AutonomousSystem;
@@ -300,16 +303,16 @@ public class IgrpProtocol : BaseProtocol
         {
             var ip = System.Net.IPAddress.Parse(ipAddress);
             var mask = System.Net.IPAddress.Parse(subnetMask);
-            
+
             var ipBytes = ip.GetAddressBytes();
             var maskBytes = mask.GetAddressBytes();
             var networkBytes = new byte[ipBytes.Length];
-            
+
             for (int i = 0; i < ipBytes.Length; i++)
             {
                 networkBytes[i] = (byte)(ipBytes[i] & maskBytes[i]);
             }
-            
+
             return new System.Net.IPAddress(networkBytes).ToString();
         }
         catch
@@ -321,13 +324,13 @@ public class IgrpProtocol : BaseProtocol
     private IEnumerable<string> GetInterfacesForNetwork(NetworkDevice device, string networkConfig)
     {
         var interfaces = new List<string>();
-        
+
         foreach (var interfaceName in device.GetAllInterfaces().Keys)
         {
             var interfaceConfig = device.GetInterface(interfaceName);
             if (interfaceConfig?.IsShutdown != false || !interfaceConfig.IsUp || string.IsNullOrEmpty(interfaceConfig.IpAddress))
                 continue;
-            
+
             // Simple check if interface IP is in the configured network
             // In real implementation, this would do proper subnet matching
             var network = GetNetworkAddress(interfaceConfig.IpAddress, interfaceConfig.SubnetMask);
@@ -336,7 +339,7 @@ public class IgrpProtocol : BaseProtocol
                 interfaces.Add(interfaceName);
             }
         }
-        
+
         return interfaces;
     }
 

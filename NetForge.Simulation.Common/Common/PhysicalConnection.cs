@@ -1,6 +1,6 @@
-using NetForge.Simulation.Events;
+using NetForge.Simulation.Common.Events;
 
-namespace NetForge.Simulation.Common
+namespace NetForge.Simulation.Common.Common
 {
     /// <summary>
     /// Represents the physical connection state between interfaces
@@ -36,34 +36,34 @@ namespace NetForge.Simulation.Common
         public string Interface1Name { get; private set; }
         public string Device2Name { get; private set; }
         public string Interface2Name { get; private set; }
-        
+
         public PhysicalConnectionState State { get; private set; }
         public PhysicalConnectionType ConnectionType { get; private set; }
-        
+
         public DateTime CreatedAt { get; private set; }
         public DateTime LastStateChange { get; private set; }
-        
+
         // Physical layer properties
         public int Bandwidth { get; private set; } // Mbps
         public int Latency { get; private set; } // milliseconds
         public double PacketLoss { get; private set; } // percentage
         public int MaxTransmissionUnit { get; private set; } // bytes
-        
+
         // Cable/connection properties
         public double CableLength { get; private set; } // meters
         public string CableType { get; private set; }
         public bool AutoNegotiation { get; private set; }
-        
+
         // Connection health metrics
         public int ErrorCount { get; private set; }
         public int RetransmissionCount { get; private set; }
         public DateTime LastErrorTime { get; private set; }
-        
+
         // Events
         public event Func<PhysicalConnectionStateChangedEventArgs, Task> StateChanged;
 
-        public PhysicalConnection(string device1Name, string interface1Name, 
-            string device2Name, string interface2Name, 
+        public PhysicalConnection(string device1Name, string interface1Name,
+            string device2Name, string interface2Name,
             PhysicalConnectionType connectionType = PhysicalConnectionType.Ethernet)
         {
             Id = GenerateConnectionId(device1Name, interface1Name, device2Name, interface2Name);
@@ -71,15 +71,15 @@ namespace NetForge.Simulation.Common
             Interface1Name = interface1Name;
             Device2Name = device2Name;
             Interface2Name = interface2Name;
-            
+
             ConnectionType = connectionType;
             State = PhysicalConnectionState.Disconnected;
             CreatedAt = DateTime.UtcNow;
             LastStateChange = DateTime.UtcNow;
-            
+
             // Set default physical properties based on connection type
             SetDefaultPropertiesForType(connectionType);
-            
+
             AutoNegotiation = true;
             CableType = GetDefaultCableType(connectionType);
             CableLength = 5.0; // Default 5 meters
@@ -95,7 +95,7 @@ namespace NetForge.Simulation.Common
                 var previousState = State;
                 State = PhysicalConnectionState.Connected;
                 LastStateChange = DateTime.UtcNow;
-                
+
                 await OnStateChangedAsync(previousState, State);
             }
         }
@@ -110,7 +110,7 @@ namespace NetForge.Simulation.Common
                 var previousState = State;
                 State = PhysicalConnectionState.Disconnected;
                 LastStateChange = DateTime.UtcNow;
-                
+
                 await OnStateChangedAsync(previousState, State);
             }
         }
@@ -127,7 +127,7 @@ namespace NetForge.Simulation.Common
                 LastStateChange = DateTime.UtcNow;
                 LastErrorTime = DateTime.UtcNow;
                 ErrorCount++;
-                
+
                 await OnStateChangedAsync(previousState, State, reason);
             }
         }
@@ -143,7 +143,7 @@ namespace NetForge.Simulation.Common
             Latency += additionalLatency;
             LastStateChange = DateTime.UtcNow;
             ErrorCount++;
-            
+
             await OnStateChangedAsync(previousState, State, reason);
         }
 
@@ -156,12 +156,12 @@ namespace NetForge.Simulation.Common
             {
                 var previousState = State;
                 State = PhysicalConnectionState.Connected;
-                
+
                 // Reset degraded properties
                 SetDefaultPropertiesForType(ConnectionType);
-                
+
                 LastStateChange = DateTime.UtcNow;
-                
+
                 await OnStateChangedAsync(previousState, State, "Connection restored");
             }
         }
@@ -187,10 +187,10 @@ namespace NetForge.Simulation.Common
         {
             if (Device1Name == localDeviceName && Interface1Name == localInterfaceName)
                 return (Device2Name, Interface2Name);
-            
+
             if (Device2Name == localDeviceName && Interface2Name == localInterfaceName)
                 return (Device1Name, Interface1Name);
-                
+
             return null;
         }
 
@@ -218,9 +218,9 @@ namespace NetForge.Simulation.Common
             // Calculate transmission time
             var transmissionTime = CalculateTransmissionTime(packetSize);
 
-            return new PhysicalTransmissionResult 
-            { 
-                Success = true, 
+            return new PhysicalTransmissionResult
+            {
+                Success = true,
                 TransmissionTime = transmissionTime,
                 ActualLatency = Latency + (int)(transmissionTime * 1000) // Convert to milliseconds
             };
@@ -230,7 +230,7 @@ namespace NetForge.Simulation.Common
         {
             var eventArgs = new PhysicalConnectionStateChangedEventArgs(
                 this, previousState, newState, reason);
-                
+
             StateChanged?.Invoke(eventArgs);
         }
 
@@ -244,28 +244,28 @@ namespace NetForge.Simulation.Common
                     PacketLoss = 0.0;
                     MaxTransmissionUnit = 1500;
                     break;
-                    
+
                 case PhysicalConnectionType.Serial:
                     Bandwidth = 2; // 2 Mbps
                     Latency = 5; // 5ms
                     PacketLoss = 0.1;
                     MaxTransmissionUnit = 1500;
                     break;
-                    
+
                 case PhysicalConnectionType.Fiber:
                     Bandwidth = 10000; // 10 Gbps
                     Latency = 0; // Near 0ms
                     PacketLoss = 0.0;
                     MaxTransmissionUnit = 9000; // Jumbo frames
                     break;
-                    
+
                 case PhysicalConnectionType.Wireless:
                     Bandwidth = 54; // 54 Mbps
                     Latency = 10; // 10ms
                     PacketLoss = 1.0; // 1%
                     MaxTransmissionUnit = 1500;
                     break;
-                    
+
                 default:
                     Bandwidth = 100; // 100 Mbps
                     Latency = 2; // 2ms
@@ -331,4 +331,4 @@ namespace NetForge.Simulation.Common
         public double TransmissionTime { get; set; } // seconds
         public int ActualLatency { get; set; } // milliseconds
     }
-} 
+}

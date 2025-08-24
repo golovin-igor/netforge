@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.VRRP
 {
@@ -37,7 +38,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             {
                 var groupConfig = kvp.Value;
                 var groupState = vrrpState.GetOrCreateGroup(groupConfig.GroupId);
-                
+
                 groupState.GroupId = groupConfig.GroupId;
                 groupState.VirtualIpAddress = groupConfig.VirtualIp;
                 groupState.Interface = groupConfig.Interface;
@@ -108,7 +109,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             {
                 var groupState = kvp.Value;
                 var interfaceConfig = device.GetInterface(groupState.Interface);
-                
+
                 if (interfaceConfig?.IsShutdown != false || !interfaceConfig.IsUp)
                     continue;
 
@@ -141,7 +142,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             };
 
             device.AddLogEntry($"VRRP: Sending Advertisement for group {groupState.GroupId} on interface {groupState.Interface} (priority: {groupState.Priority})");
-            
+
             // Simulate advertisement packet transmission
             await SimulatePacketTransmission(device, groupState.Interface, advertisement);
         }
@@ -153,7 +154,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             {
                 var groupState = state.Groups[groupId];
                 var interfaceConfig = device.GetInterface(groupState.Interface);
-                
+
                 if (interfaceConfig?.IsShutdown != false || !interfaceConfig.IsUp)
                     continue;
 
@@ -173,12 +174,12 @@ namespace NetForge.Simulation.Protocols.VRRP
             }
         }
 
-        private async Task ProcessNeighborAdvertisement(NetworkDevice device, VrrpGroupState groupState, 
+        private async Task ProcessNeighborAdvertisement(NetworkDevice device, VrrpGroupState groupState,
             NetworkDevice neighborDevice, string neighborInterface, VrrpState state)
         {
             var neighborVrrpConfig = neighborDevice.GetVrrpConfiguration();
             var neighborGroup = neighborVrrpConfig.Groups[groupState.GroupId];
-            
+
             // Create simulated advertisement packet from neighbor
             var receivedAdvertisement = new VrrpAdvertisement
             {
@@ -224,13 +225,13 @@ namespace NetForge.Simulation.Protocols.VRRP
 
             // Process state machine based on received advertisement
             var stateMachine = new VrrpStateMachine(groupState);
-            
+
             VrrpEvent eventType = DetermineEventType(packet, groupState);
             stateMachine.ProcessEvent(eventType, packet);
 
             // Update master router information
-            if (packet.Priority > groupState.Priority || 
-                (packet.Priority == groupState.Priority && 
+            if (packet.Priority > groupState.Priority ||
+                (packet.Priority == groupState.Priority &&
                  string.Compare(packet.SourceRouter, state.RouterId, StringComparison.Ordinal) > 0))
             {
                 groupState.MasterIpAddress = packet.SourceRouter;
@@ -265,7 +266,7 @@ namespace NetForge.Simulation.Protocols.VRRP
         private async Task ProcessGroupStateMachine(NetworkDevice device, VrrpGroupState groupState)
         {
             var stateMachine = new VrrpStateMachine(groupState);
-            
+
             // Check interface status
             var interfaceConfig = device.GetInterface(groupState.Interface);
             if (interfaceConfig?.IsShutdown == true || !interfaceConfig?.IsUp == true)

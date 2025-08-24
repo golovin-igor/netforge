@@ -1,7 +1,9 @@
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Factories;
+using NetForge.Simulation.Common.CLI.Implementations;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Interfaces;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Integration
@@ -61,11 +63,11 @@ namespace NetForge.Simulation.Tests.Integration
 
             // Start in user mode
             var startMode = vendorContext.IsInMode("user");
-            
+
             // Transition to privileged mode
             capabilities.SetDeviceMode("privileged");
             var privilegedMode = vendorContext.IsInMode("privileged");
-            
+
             // Transition to config mode
             capabilities.SetDeviceMode("config");
             var configMode = vendorContext.IsInMode("config");
@@ -250,7 +252,7 @@ namespace NetForge.Simulation.Tests.Integration
         {
             var vendorContext = GetVendorContext(context);
             var vendorName = vendorContext?.VendorName ?? "Unknown";
-            
+
             return Success($"Command executed on {vendorName} device");
         }
     }
@@ -289,4 +291,4 @@ namespace NetForge.Simulation.Tests.Integration
             return Error(CliErrorType.InvalidCommand, errorMessage);
         }
     }
-} 
+}

@@ -1,4 +1,6 @@
-namespace NetForge.Simulation.CliHandlers.Common
+using NetForge.Simulation.Common.CLI.Base;
+
+namespace NetForge.Simulation.Common.CLI.CommonHandlers
 {
     /// <summary>
     /// Generic reload command handler for vendors without a specific implementation

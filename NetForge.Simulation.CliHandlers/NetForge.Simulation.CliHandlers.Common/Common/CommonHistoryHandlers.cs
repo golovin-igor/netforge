@@ -1,3 +1,5 @@
+using NetForge.Simulation.Common.CLI.Base;
+
 namespace NetForge.Simulation.CliHandlers.Common.Common
 {
     /// <summary>

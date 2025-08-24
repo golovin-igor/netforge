@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Configuration
+namespace NetForge.Simulation.Common.Configuration
 {
     /// <summary>
     /// Port channel configuration
@@ -24,4 +24,4 @@ namespace NetForge.Simulation.Configuration
             Protocol = "lacp";
         }
     }
-} 
+}

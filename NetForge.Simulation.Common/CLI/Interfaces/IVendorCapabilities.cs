@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Interfaces
+namespace NetForge.Simulation.Common.CLI.Interfaces
 {
     /// <summary>
     /// Interface for vendor-agnostic device capabilities used by CLI handlers
@@ -9,52 +9,52 @@ namespace NetForge.Simulation.Interfaces
         /// Get the current device configuration as a string
         /// </summary>
         string GetRunningConfiguration();
-        
+
         /// <summary>
         /// Get the startup configuration as a string
         /// </summary>
         string GetStartupConfiguration();
-        
+
         /// <summary>
         /// Set device mode using vendor-specific mode names
         /// </summary>
         void SetDeviceMode(string mode);
-        
+
         /// <summary>
         /// Get current device mode as vendor-specific string
         /// </summary>
         string GetDeviceMode();
-        
+
         /// <summary>
         /// Check if device supports a specific mode
         /// </summary>
         bool SupportsMode(string mode);
-        
+
         /// <summary>
         /// Get available modes for this device
         /// </summary>
         IEnumerable<string> GetAvailableModes();
-        
+
         /// <summary>
         /// Execute vendor-specific command formatting
         /// </summary>
         string FormatCommandOutput(string command, object? data = null);
-        
+
         /// <summary>
         /// Get vendor-specific error message
         /// </summary>
         string GetVendorErrorMessage(string errorType, string? context = null);
-        
+
         /// <summary>
         /// Check if device supports a specific feature
         /// </summary>
         bool SupportsFeature(string feature);
-        
+
         /// <summary>
         /// Get vendor-specific interface name format
         /// </summary>
         string FormatInterfaceName(string interfaceName);
-        
+
         /// <summary>
         /// Validate vendor-specific syntax
         /// </summary>
@@ -286,4 +286,4 @@ namespace NetForge.Simulation.Interfaces
         /// </summary>
         bool ReloadDevice();
     }
-} 
+}

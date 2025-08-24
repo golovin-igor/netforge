@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Alcatel.Show;

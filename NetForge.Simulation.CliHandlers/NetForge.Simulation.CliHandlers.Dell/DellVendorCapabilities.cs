@@ -1,8 +1,9 @@
-using NetForge.Simulation.Interfaces;
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Configuration;
-using NetForge.Simulation.Protocols.Routing;
 using System.Text;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Configuration;
+using NetForge.Simulation.Common.Protocols;
 
 namespace NetForge.Simulation.CliHandlers.Dell
 {
@@ -27,7 +28,7 @@ namespace NetForge.Simulation.CliHandlers.Dell
             var config = new StringBuilder();
             config.AppendLine("! Dell OS10 Configuration");
             config.AppendLine($"hostname {_device.GetHostname()}");
-            
+
             foreach (var iface in _device.GetAllInterfaces().Values)
             {
                 config.AppendLine($"interface {iface.Name}");
@@ -41,7 +42,7 @@ namespace NetForge.Simulation.CliHandlers.Dell
                     config.AppendLine(" no shutdown");
                 config.AppendLine(" exit");
             }
-            
+
             return config.ToString();
         }
 
@@ -480,4 +481,4 @@ namespace NetForge.Simulation.CliHandlers.Dell
             return count;
         }
     }
-} 
+}

@@ -1,7 +1,7 @@
-using NetForge.Simulation.Interfaces;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.SNMP;
 
@@ -36,13 +36,13 @@ public class SnmpAgent : IDisposable
         {
             _udpListener = new UdpClient(_config.Port);
             _trapSender = new UdpClient();
-            
+
             _listenerTask = Task.Run(ListenForRequests, _cancellationTokenSource.Token);
-            
+
             _state.AgentRunning = true;
             _state.StartTime = DateTime.Now;
             _state.MarkStateChanged();
-            
+
             _device.AddLogEntry($"SNMP agent started on port {_config.Port}");
         }
         catch (Exception ex)
@@ -59,10 +59,10 @@ public class SnmpAgent : IDisposable
             return;
 
         _cancellationTokenSource.Cancel();
-        
+
         _udpListener?.Close();
         _trapSender?.Close();
-        
+
         if (_listenerTask != null)
         {
             try
@@ -77,7 +77,7 @@ public class SnmpAgent : IDisposable
 
         _state.AgentRunning = false;
         _state.MarkStateChanged();
-        
+
         _device.AddLogEntry("SNMP agent stopped");
     }
 
@@ -124,13 +124,13 @@ public class SnmpAgent : IDisposable
             }
 
             var response = await ProcessSnmpRequest(request);
-            
+
             if (response != null)
             {
                 var responseData = EncodeSnmpResponse(response, request.Community);
                 await _udpListener!.SendAsync(responseData, remoteEndPoint);
                 _state.IncrementResponses();
-                
+
                 ResponseSent?.Invoke(this, new SnmpResponseEventArgs(response, remoteEndPoint.ToString()));
             }
 
@@ -147,9 +147,9 @@ public class SnmpAgent : IDisposable
     {
         return requestType switch
         {
-            SnmpRequestType.Get or SnmpRequestType.GetNext or SnmpRequestType.GetBulk => 
+            SnmpRequestType.Get or SnmpRequestType.GetNext or SnmpRequestType.GetBulk =>
                 _config.ReadCommunities.Contains(community),
-            SnmpRequestType.Set => 
+            SnmpRequestType.Set =>
                 _config.WriteCommunities.Contains(community),
             _ => false
         };
@@ -169,15 +169,15 @@ public class SnmpAgent : IDisposable
                 case SnmpRequestType.Get:
                     await ProcessGetRequest(request, response);
                     break;
-                
+
                 case SnmpRequestType.GetNext:
                     await ProcessGetNextRequest(request, response);
                     break;
-                
+
                 case SnmpRequestType.Set:
                     await ProcessSetRequest(request, response);
                     break;
-                
+
                 default:
                     response.ErrorStatus = SnmpErrorStatus.GenErr;
                     break;
@@ -248,7 +248,7 @@ public class SnmpAgent : IDisposable
             {
                 variable.Value = request.Value;
                 variable.LastUpdated = DateTime.Now;
-                
+
                 response.VarBinds.Add(new SnmpVarBind
                 {
                     Oid = variable.Oid,
@@ -277,7 +277,7 @@ public class SnmpAgent : IDisposable
         try
         {
             var trapData = EncodeTrap(trapOid, varbinds);
-            
+
             foreach (var destination in _config.TrapDestinations)
             {
                 if (IPAddress.TryParse(destination, out var addr))
@@ -287,7 +287,7 @@ public class SnmpAgent : IDisposable
                     _device.AddLogEntry($"SNMP trap sent to {destination}: {trapOid}");
                 }
             }
-            
+
             _state.IncrementTraps();
         }
         catch (Exception ex)
@@ -302,7 +302,7 @@ public class SnmpAgent : IDisposable
         try
         {
             var dataStr = Encoding.UTF8.GetString(data);
-            
+
             // This is a simplified mock parser - real implementation would use proper SNMP libraries
             return new SnmpRequest
             {
@@ -323,12 +323,12 @@ public class SnmpAgent : IDisposable
     {
         // Simplified SNMP encoding - real implementation would use proper ASN.1/BER encoding
         var responseStr = $"SNMP Response: RequestId={response.RequestId}, Status={response.ErrorStatus}";
-        
+
         foreach (var varbind in response.VarBinds)
         {
             responseStr += $", {varbind.Oid}={varbind.Value}";
         }
-        
+
         return Encoding.UTF8.GetBytes(responseStr);
     }
 
@@ -349,12 +349,12 @@ public class SnmpAgent : IDisposable
             return;
 
         _cancellationTokenSource.Cancel();
-        
+
         _udpListener?.Close();
         _trapSender?.Close();
         _udpListener?.Dispose();
         _trapSender?.Dispose();
-        
+
         _cancellationTokenSource.Dispose();
         _disposed = true;
     }

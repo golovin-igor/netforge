@@ -1,8 +1,11 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Events;
-using NetForge.Simulation.Protocols.Routing; // TODO: Replace with local Route class in next migration phase
+
+// TODO: Replace with local Route class in next migration phase
 
 namespace NetForge.Simulation.Protocols.ISIS;
 
@@ -10,11 +13,11 @@ public class IsisProtocol : BaseProtocol
 {
     public override ProtocolType Type => ProtocolType.ISIS;
     public override string Name => "Intermediate System to Intermediate System";
-    
+
     private DateTime _lastHelloSent = DateTime.MinValue;
     private DateTime _lastLspRefresh = DateTime.MinValue;
     private DateTime _lastSpfCalculation = DateTime.MinValue;
-    
+
     protected override BaseProtocolState CreateInitialState()
     {
         return new IsisState();
@@ -29,7 +32,7 @@ public class IsisProtocol : BaseProtocol
             isisState.SystemId = isisConfig.SystemId;
             isisState.AreaId = isisConfig.AreaId;
             isisState.Level = isisConfig.Level;
-            
+
             LogProtocolEvent("IS-IS protocol initialized and enabled");
             _state.IsActive = true;
             _state.MarkStateChanged();
@@ -56,7 +59,7 @@ public class IsisProtocol : BaseProtocol
         // Send Hello PDUs
         var now = DateTime.Now;
         var helloInterval = TimeSpan.FromSeconds(isisConfig.HelloInterval);
-        
+
         if (now - _lastHelloSent >= helloInterval)
         {
             await SendHelloPdus(device, isisConfig, isisState);
@@ -65,7 +68,7 @@ public class IsisProtocol : BaseProtocol
 
         // Discover IS-IS neighbors
         await DiscoverIsisNeighbors(device, isisConfig, isisState);
-        
+
         // Refresh LSPs periodically
         var refreshInterval = TimeSpan.FromSeconds(isisConfig.LspRefreshInterval);
         if (now - _lastLspRefresh >= refreshInterval)
@@ -73,7 +76,7 @@ public class IsisProtocol : BaseProtocol
             await RefreshLsps(device, isisConfig, isisState);
             _lastLspRefresh = now;
         }
-        
+
         // Clean up expired LSPs
         await CleanupExpiredLsps(device, isisState);
     }
@@ -81,19 +84,19 @@ public class IsisProtocol : BaseProtocol
     protected override async Task RunProtocolCalculation(NetworkDevice device)
     {
         var isisState = (IsisState)_state;
-        
+
         LogProtocolEvent("IS-IS: Running SPF calculation due to topology change...");
-        
+
         // Clear existing IS-IS routes
         device.ClearRoutesByProtocol("ISIS");
         isisState.CalculatedRoutes.Clear();
-        
+
         // Run Dijkstra's SPF algorithm on LSP database
         await RunSpfCalculation(device, isisState);
-        
+
         // Install calculated routes
         await InstallRoutes(device, isisState);
-        
+
         isisState.TopologyChanged = false;
         isisState.LspChanged = false;
         _lastSpfCalculation = DateTime.Now;
@@ -126,17 +129,17 @@ public class IsisProtocol : BaseProtocol
             {
                 var neighborDevice = connectedDevice.Value.device;
                 var neighborInterface = connectedDevice.Value.interfaceName;
-                
+
                 if (!IsNeighborReachable(device, interfaceName, neighborDevice))
                     continue;
-                
+
                 // Check if neighbor has ISIS protocol active
                 var neighborIsisProtocol = GetNeighborIsisProtocol(neighborDevice);
                 if (neighborIsisProtocol != null)
                 {
                     // Check if area IDs match for Level-1 adjacency
                     bool canFormAdjacency = false;
-                    
+
                     var neighborConfig = neighborIsisProtocol.GetConfiguration() as IsisConfig;
                     if (neighborConfig != null)
                     {
@@ -148,7 +151,7 @@ public class IsisProtocol : BaseProtocol
                         {
                             canFormAdjacency = true; // Level-2 can form adjacency across areas
                         }
-                        
+
                         if (canFormAdjacency)
                         {
                             var neighborKey = $"{neighborDevice.Name}:{neighborInterface}";
@@ -163,10 +166,10 @@ public class IsisProtocol : BaseProtocol
                                 Priority = 64, // Default priority
                                 AreaAddresses = new List<string> { neighborConfig.AreaId }
                             });
-                        
+
                             neighbor.LastSeen = DateTime.Now;
                             state.UpdateNeighborActivity(neighborKey);
-                            
+
                             LogProtocolEvent($"IS-IS: Neighbor {neighbor.SystemId} is reachable (Level-{(int)neighbor.Level})");
                         }
                     }
@@ -180,7 +183,7 @@ public class IsisProtocol : BaseProtocol
         // Generate LSP for this system
         var myLsp = GenerateSystemLsp(device, config, state);
         state.AddOrUpdateLsp(myLsp);
-        
+
         LogProtocolEvent($"IS-IS: Refreshed LSP {myLsp.LspId} (seq: {myLsp.SequenceNumber})");
     }
 
@@ -199,7 +202,7 @@ public class IsisProtocol : BaseProtocol
 
         // Add TLVs (Type-Length-Value fields)
         var tlvs = new List<IsisTlv>();
-        
+
         // Area addresses TLV
         tlvs.Add(new IsisTlv
         {
@@ -207,14 +210,14 @@ public class IsisProtocol : BaseProtocol
             Description = "Area Addresses",
             Value = System.Text.Encoding.ASCII.GetBytes(config.AreaId)
         });
-        
+
         // IS neighbors TLV (simplified)
         var neighborData = new List<byte>();
         foreach (var neighbor in state.Neighbors.Values.Where(n => n.IsActive))
         {
             neighborData.AddRange(System.Text.Encoding.ASCII.GetBytes(neighbor.SystemId));
         }
-        
+
         if (neighborData.Any())
         {
             tlvs.Add(new IsisTlv
@@ -224,7 +227,7 @@ public class IsisProtocol : BaseProtocol
                 Value = neighborData.ToArray()
             });
         }
-        
+
         // IP Internal reachability TLV
         var ipReachData = new List<byte>();
         foreach (var interfaceName in device.GetAllInterfaces().Keys)
@@ -232,11 +235,11 @@ public class IsisProtocol : BaseProtocol
             var interfaceConfig = device.GetInterface(interfaceName);
             if (interfaceConfig?.IsShutdown != false || !interfaceConfig.IsUp || string.IsNullOrEmpty(interfaceConfig.IpAddress))
                 continue;
-            
+
             var network = GetNetworkAddress(interfaceConfig.IpAddress, interfaceConfig.SubnetMask);
             ipReachData.AddRange(System.Text.Encoding.ASCII.GetBytes($"{network}/{interfaceConfig.SubnetMask}"));
         }
-        
+
         if (ipReachData.Any())
         {
             tlvs.Add(new IsisTlv
@@ -246,7 +249,7 @@ public class IsisProtocol : BaseProtocol
                 Value = ipReachData.ToArray()
             });
         }
-        
+
         lsp.Tlvs = tlvs;
         return lsp;
     }
@@ -259,7 +262,7 @@ public class IsisProtocol : BaseProtocol
             LogProtocolEvent($"IS-IS: LSP {lspId} expired, removing from database");
             state.RemoveLsp(lspId);
         }
-        
+
         if (expiredLsps.Any())
         {
             state.MarkStateChanged();
@@ -269,17 +272,17 @@ public class IsisProtocol : BaseProtocol
     private async Task RunSpfCalculation(NetworkDevice device, IsisState state)
     {
         var routes = new Dictionary<string, IsisRoute>();
-        
+
         // Add directly connected networks
         foreach (var interfaceName in device.GetAllInterfaces().Keys)
         {
             var interfaceConfig = device.GetInterface(interfaceName);
             if (interfaceConfig?.IsShutdown != false || !interfaceConfig.IsUp || string.IsNullOrEmpty(interfaceConfig.IpAddress))
                 continue;
-            
+
             var network = GetNetworkAddress(interfaceConfig.IpAddress, interfaceConfig.SubnetMask);
             var routeKey = $"{network}/{interfaceConfig.SubnetMask}";
-            
+
             routes[routeKey] = new IsisRoute
             {
                 Destination = network,
@@ -292,10 +295,10 @@ public class IsisProtocol : BaseProtocol
                 LastUpdate = DateTime.Now
             };
         }
-        
+
         // Run simplified Dijkstra's algorithm on LSP database
         await RunDijkstraSpf(device, state, routes);
-        
+
         state.CalculatedRoutes = routes.Values.ToList();
         LogProtocolEvent($"IS-IS: SPF calculated {state.CalculatedRoutes.Count} routes");
     }
@@ -305,16 +308,16 @@ public class IsisProtocol : BaseProtocol
         var visited = new HashSet<string>();
         var distances = new Dictionary<string, int>();
         var previous = new Dictionary<string, string>();
-        
+
         // Initialize distances
         distances[state.SystemId] = 0;
-        
+
         // Simple SPF implementation based on LSP database
         foreach (var lsp in state.LspDatabase.Values.Where(l => !l.IsExpired))
         {
             if (lsp.OriginatingSystem == state.SystemId)
                 continue;
-                
+
             // Extract reachability information from LSP
             foreach (var tlv in lsp.Tlvs.Where(t => t.Type == 128)) // IP Internal Reachability
             {
@@ -325,14 +328,14 @@ public class IsisProtocol : BaseProtocol
                     var network = parts[0];
                     var mask = parts[1];
                     var routeKey = $"{network}/{mask}";
-                    
+
                     if (!routes.ContainsKey(routeKey))
                     {
                         // Find best path to this network
                         var metric = CalculateMetricToSystem(state, lsp.OriginatingSystem);
                         var nextHop = FindNextHopToSystem(state, lsp.OriginatingSystem);
                         var outInterface = FindOutgoingInterface(device, nextHop);
-                        
+
                         if (!string.IsNullOrEmpty(nextHop) && !string.IsNullOrEmpty(outInterface))
                         {
                             routes[routeKey] = new IsisRoute
@@ -360,7 +363,7 @@ public class IsisProtocol : BaseProtocol
         // For now, return a base metric plus hop count
         var baseMetric = 10;
         var hops = 1; // Assume direct neighbor for simplicity
-        
+
         return baseMetric + (hops * 10);
     }
 
@@ -383,7 +386,7 @@ public class IsisProtocol : BaseProtocol
                 }
             }
         }
-        
+
         return ""; // No path found
     }
 
@@ -392,7 +395,7 @@ public class IsisProtocol : BaseProtocol
         // Find the interface to reach the next hop
         if (string.IsNullOrEmpty(nextHop))
             return "";
-            
+
         foreach (var interfaceName in device.GetAllInterfaces().Keys)
         {
             var connectedDevice = device.GetConnectedDevice(interfaceName);
@@ -406,7 +409,7 @@ public class IsisProtocol : BaseProtocol
                 }
             }
         }
-        
+
         return "";
     }
 
@@ -419,7 +422,7 @@ public class IsisProtocol : BaseProtocol
                 Metric = route.Metric,
                 AdminDistance = 115 // IS-IS administrative distance
             };
-            
+
             device.AddRoute(deviceRoute);
             LogProtocolEvent($"IS-IS: Installed route to {route.Destination}/{route.Mask} via {route.NextHop} metric {route.Metric}");
         }
@@ -446,13 +449,13 @@ public class IsisProtocol : BaseProtocol
             LspMaxLifetime = 1200,
             IsOverloaded = false
         };
-        
+
         // Auto-generate system ID if not set
         if (string.IsNullOrEmpty(config.SystemId) && _device != null)
         {
             config.SystemId = config.GenerateSystemId(_device.Name);
         }
-        
+
         return config;
     }
 
@@ -469,7 +472,7 @@ public class IsisProtocol : BaseProtocol
             // Store configuration in protocol state - no legacy integration needed
             _state.IsActive = isisConfig.IsEnabled;
             _state.MarkStateChanged();
-            
+
             if (_state is IsisState isisState)
             {
                 isisState.SystemId = isisConfig.SystemId;
@@ -498,16 +501,16 @@ public class IsisProtocol : BaseProtocol
         {
             var ip = System.Net.IPAddress.Parse(ipAddress);
             var mask = System.Net.IPAddress.Parse(subnetMask);
-            
+
             var ipBytes = ip.GetAddressBytes();
             var maskBytes = mask.GetAddressBytes();
             var networkBytes = new byte[ipBytes.Length];
-            
+
             for (int i = 0; i < ipBytes.Length; i++)
             {
                 networkBytes[i] = (byte)(ipBytes[i] & maskBytes[i]);
             }
-            
+
             return new System.Net.IPAddress(networkBytes).ToString();
         }
         catch

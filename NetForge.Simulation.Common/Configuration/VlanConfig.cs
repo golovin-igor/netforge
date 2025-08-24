@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Configuration
+namespace NetForge.Simulation.Common.Configuration
 {
     /// <summary>
     /// VLAN configuration
@@ -28,4 +28,4 @@ namespace NetForge.Simulation.Configuration
         {
         }
     }
-} 
+}

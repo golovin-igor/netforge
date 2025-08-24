@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Configuration
+namespace NetForge.Simulation.Common.Configuration
 {
     /// <summary>
     /// Spanning Tree Protocol configuration
@@ -40,4 +40,4 @@ namespace NetForge.Simulation.Configuration
             VlanPriorities[vlan] = priority;
         }
     }
-} 
+}

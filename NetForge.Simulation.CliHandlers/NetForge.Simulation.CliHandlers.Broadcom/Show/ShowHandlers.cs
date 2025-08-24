@@ -1,6 +1,7 @@
 using System.Text;
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.CliHandlers.Broadcom.Show
 {
@@ -14,21 +15,21 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             AddAlias("sh");
             AddAlias("sho");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Broadcom"))
             {
                 return RequireVendor(context, "Broadcom");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
                 return Error(CliErrorType.IncompleteCommand, "% Incomplete command - need show option");
             }
-            
+
             var option = context.CommandParts[1];
-            
+
             return option switch
             {
                 "version" => HandleShowVersion(context),
@@ -45,33 +46,33 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
                 _ => Error(CliErrorType.InvalidCommand, $"% Invalid show option: {option}")
             };
         }
-        
+
         private CliResult HandleShowVersion(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             output.AppendLine($"Broadcom Network Device");
             output.AppendLine($"Device name: {device?.Name}");
             output.AppendLine($"Software version: 1.0");
             output.AppendLine($"Hardware: Generic");
             output.AppendLine($"Uptime: 1 day, 0 hours, 0 minutes");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInterfaces(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var interfaces = device.GetAllInterfaces();
-            
+
             output.AppendLine("Interface              IP-Address      Status    Protocol");
             foreach (var kvp in interfaces)
             {
@@ -80,7 +81,7 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
                 var protocol = iface.IsUp ? "up" : "down";
                 output.AppendLine($"{iface.Name,-22} {iface.IpAddress,-15} {status,-9} {protocol}");
             }
-            
+
             return Success(output.ToString());
         }
 
@@ -92,7 +93,7 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
                 return Success("ARP table is empty.\n");
             return Success(table);
         }
-        
+
         private CliResult HandleShowRunningConfig(CliContext context)
         {
             var device = context.Device as NetworkDevice;
@@ -100,14 +101,14 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var output = new StringBuilder();
             output.AppendLine("!");
             output.AppendLine("version 15.1");
             output.AppendLine("!");
             output.AppendLine($"hostname {device.Name}");
             output.AppendLine("!");
-            
+
             // Add interface configurations
             var interfaces = device.GetAllInterfaces();
             foreach (var kvp in interfaces)
@@ -127,13 +128,13 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
                     output.AppendLine(" shutdown");
                 }
             }
-            
+
             output.AppendLine("!");
             output.AppendLine("end");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowSpanningTree(CliContext context)
         {
             var output = new StringBuilder();
@@ -148,10 +149,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             output.AppendLine("             Address     aabb.cc00.0100");
             output.AppendLine("             Hello Time   2 sec  Max Age 20 sec  Forward Delay 15 sec");
             output.AppendLine("             Aging Time  300 sec");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowEvpn(CliContext context)
         {
             var output = new StringBuilder();
@@ -170,10 +171,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             output.AppendLine("  RT Import: 65001:200");
             output.AppendLine("  RT Export: 65001:200");
             output.AppendLine("  Status: Active");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowMac(CliContext context)
         {
             // Check for sub-commands
@@ -181,10 +182,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             {
                 return HandleShowMacAddressTable(context);
             }
-            
+
             return HandleShowMacAddressTable(context);
         }
-        
+
         private CliResult HandleShowMacAddressTable(CliContext context)
         {
             var output = new StringBuilder();
@@ -201,10 +202,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             output.AppendLine("100   aabb.cc00.0200    Dynamic Gi0/2");
             output.AppendLine("200   aabb.cc00.0300    Dynamic Gi0/3");
             output.AppendLine("200   aabb.cc00.0400    Dynamic Gi0/4");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowVlan(CliContext context)
         {
             // Check for sub-commands
@@ -212,10 +213,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             {
                 return HandleShowVlanBrief(context);
             }
-            
+
             return HandleShowVlanBrief(context);
         }
-        
+
         private CliResult HandleShowVlanBrief(CliContext context)
         {
             var output = new StringBuilder();
@@ -228,20 +229,20 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             output.AppendLine("1003 token-ring-default               act/unsup");
             output.AppendLine("1004 fddinet-default                  act/unsup");
             output.AppendLine("1005 trnet-default                    act/unsup");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIp(CliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need IP option");
             }
-            
+
             var ipOption = context.CommandParts[2];
-            
+
             return ipOption switch
             {
                 "route" => HandleShowIpRoute(context),
@@ -249,11 +250,11 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
                 "arp" => HandleShowArp(context), // Reuse existing ARP handler
                 "bgp" => HandleShowIpBgp(context),
                 "ospf" => HandleShowIpOspf(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     $"% Invalid IP show option: {ipOption}")
             };
         }
-        
+
         private CliResult HandleShowIpRoute(CliContext context)
         {
             var output = new StringBuilder();
@@ -270,10 +271,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             output.AppendLine("C    192.168.1.0/24 is directly connected, GigabitEthernet0/1");
             output.AppendLine("S    10.0.0.0/8 [1/0] via 192.168.1.1");
             output.AppendLine("O    172.16.0.0/16 [110/2] via 192.168.1.2, 00:05:23, GigabitEthernet0/1");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpInterface(CliContext context)
         {
             // Check for "brief" sub-command
@@ -281,22 +282,22 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             {
                 return HandleShowIpInterfaceBrief(context);
             }
-            
+
             return HandleShowIpInterfaceBrief(context);
         }
-        
+
         private CliResult HandleShowIpInterfaceBrief(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var interfaces = device.GetAllInterfaces();
-            
+
             output.AppendLine("Interface                  IP-Address      OK? Method Status                Protocol");
             foreach (var kvp in interfaces)
             {
@@ -305,10 +306,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
                 var protocol = iface.IsUp ? "up" : "down";
                 output.AppendLine($"{iface.Name,-26} {iface.IpAddress,-15} YES NVRAM  {status,-21} {protocol}");
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpBgp(CliContext context)
         {
             // Check for sub-commands
@@ -318,11 +319,11 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
                 return subCommand switch
                 {
                     "summary" => HandleShowIpBgpSummary(context),
-                    _ => Error(CliErrorType.InvalidCommand, 
+                    _ => Error(CliErrorType.InvalidCommand,
                         $"% Invalid BGP show option: {subCommand}")
                 };
             }
-            
+
             var output = new StringBuilder();
             output.AppendLine("BGP table version is 1, local router ID is 192.168.1.1");
             output.AppendLine("Status codes: s suppressed, d damped, h history, * valid, > best, i - internal,");
@@ -333,10 +334,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             output.AppendLine("   Network          Next Hop            Metric LocPrf Weight Path");
             output.AppendLine("*> 192.168.1.0/24   0.0.0.0                  0         32768 i");
             output.AppendLine("*> 10.0.0.0/8       192.168.1.2              0             0 65002 i");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpBgpSummary(CliContext context)
         {
             var output = new StringBuilder();
@@ -347,10 +348,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             output.AppendLine("");
             output.AppendLine("Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd");
             output.AppendLine("192.168.1.2     4        65002      25      27        1    0    0 00:15:23        1");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpOspf(CliContext context)
         {
             // Check for sub-commands
@@ -361,11 +362,11 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
                 {
                     "neighbor" => HandleShowIpOspfNeighbor(context),
                     "database" => HandleShowIpOspfDatabase(context),
-                    _ => Error(CliErrorType.InvalidCommand, 
+                    _ => Error(CliErrorType.InvalidCommand,
                         $"% Invalid OSPF show option: {subCommand}")
                 };
             }
-            
+
             var output = new StringBuilder();
             output.AppendLine("Routing Process \"ospf 1\" with ID 192.168.1.1");
             output.AppendLine("Process has been running for 1 day, 5 hours, 23 minutes");
@@ -375,19 +376,19 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             output.AppendLine("Area BACKBONE(0):");
             output.AppendLine("    Number of interfaces in this area is 1");
             output.AppendLine("    Number of fully adjacent neighbors is 1");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpOspfNeighbor(CliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Neighbor ID     Pri   State           Dead Time   Address         Interface");
             output.AppendLine("192.168.1.2       1   Full/DR         00:00:39    192.168.1.2     GigabitEthernet0/1");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpOspfDatabase(CliContext context)
         {
             var output = new StringBuilder();
@@ -398,10 +399,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             output.AppendLine("Link ID         ADV Router      Age         Seq#       Checksum Link count");
             output.AppendLine("192.168.1.1     192.168.1.1     1234        0x80000002 0x005A3B  1");
             output.AppendLine("192.168.1.2     192.168.1.2     987         0x80000001 0x004C2A  1");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowMlag(CliContext context)
         {
             var output = new StringBuilder();
@@ -424,7 +425,7 @@ namespace NetForge.Simulation.CliHandlers.Broadcom.Show
             output.AppendLine("-------  ------------  ------------  ------");
             output.AppendLine("1        Po1           Po1           Active");
             output.AppendLine("2        Po2           Po2           Active");
-            
+
             return Success(output.ToString());
         }
     }

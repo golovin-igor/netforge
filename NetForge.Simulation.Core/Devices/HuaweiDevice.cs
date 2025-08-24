@@ -1,8 +1,8 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Core;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Devices
 {
@@ -69,7 +69,7 @@ namespace NetForge.Simulation.Devices
             // This will use the vendor discovery system to find appropriate handlers
             return await base.ProcessCommandAsync(command);
         }
-        
+
         // Additional methods needed by tests
         public Dictionary<string, RoutingPolicy> GetRoutePolicies()
         {
@@ -84,10 +84,10 @@ namespace NetForge.Simulation.Devices
         // Helper methods for command handlers (similar to AristaDevice)
         public int GetCurrentVlanId() => currentVlanId;
         public void SetCurrentVlanId(int vlanId) => currentVlanId = vlanId;
-        
+
         public int GetCurrentAclNumber() => currentAclNumber;
         public void SetCurrentAclNumber(int aclNumber) => currentAclNumber = aclNumber;
-        
+
         public void AppendToRunningConfig(string line)
         {
             RunningConfig.AppendLine(line);
@@ -132,7 +132,7 @@ namespace NetForge.Simulation.Devices
         public RipConfig GetRipConfig() => RipConfig;
         public new List<Route> GetRoutingTable() => RoutingTable;
         public List<InterfaceConfig> GetInterfaces() => Interfaces.Values.ToList();
-        
+
         public new string GetCurrentInterface() => base.CurrentInterface;
         public new void SetCurrentInterface(string iface) => base.CurrentInterface = iface;
         public string GetMode() => base.CurrentMode.ToModeString();
@@ -176,11 +176,11 @@ namespace NetForge.Simulation.Devices
 
             // Use canonical interface name for storage - simplified for now
             var canonicalName = interfaceName.ToLower();
-            
+
             if (!Interfaces.ContainsKey(canonicalName))
             {
                 Interfaces[canonicalName] = interfaceConfig ?? new InterfaceConfig(canonicalName, this);
             }
         }
     }
-} 
+}

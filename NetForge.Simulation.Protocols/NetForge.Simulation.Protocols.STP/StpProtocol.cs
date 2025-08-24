@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
 
 namespace NetForge.Simulation.Protocols.STP
@@ -104,12 +104,12 @@ namespace NetForge.Simulation.Protocols.STP
             {
                 var portInfo = state.PortInfo[portName];
                 var interfaceConfig = device.GetInterface(portName);
-                
+
                 if (interfaceConfig?.IsShutdown != false || !interfaceConfig.IsUp)
                     continue;
 
                 // Check if it's time to send hello
-                if (portInfo.Timers.IsHelloTimerExpired() || 
+                if (portInfo.Timers.IsHelloTimerExpired() ||
                     (now - state.LastBpduSent).TotalSeconds >= config.HelloTime)
                 {
                     await SendConfigurationBpdu(device, portName, state, config);
@@ -138,10 +138,10 @@ namespace NetForge.Simulation.Protocols.STP
             };
 
             device.AddLogEntry($"STP: Sending Configuration BPDU on port {portName}");
-            
+
             // Simulate BPDU transmission
             await SimulateBpduTransmission(device, portName, bpdu);
-            
+
             portInfo.LastBpduSent = DateTime.Now;
             if (portInfo.Statistics != null)
             {
@@ -176,12 +176,12 @@ namespace NetForge.Simulation.Protocols.STP
             }
         }
 
-        private async Task ProcessNeighborBpdu(NetworkDevice device, string portName, 
+        private async Task ProcessNeighborBpdu(NetworkDevice device, string portName,
             NetworkDevice neighborDevice, string neighborInterface, StpState state)
         {
             var neighborStpConfig = neighborDevice.GetStpConfiguration();
             var neighborBridgeId = GenerateBridgeId(neighborStpConfig);
-            
+
             // Create simulated BPDU from neighbor
             var receivedBpdu = new StpBpdu
             {
@@ -210,7 +210,7 @@ namespace NetForge.Simulation.Protocols.STP
             // Update statistics
             if (portInfo.Statistics == null)
                 portInfo.Statistics = new StpStatistics { InterfaceName = receivedBpdu.SourceInterface };
-            
+
             portInfo.Statistics.BpdusReceived++;
             portInfo.Statistics.ConfigBpdusReceived++;
             portInfo.Statistics.LastBpduReceived = DateTime.Now;
@@ -271,7 +271,7 @@ namespace NetForge.Simulation.Protocols.STP
         private async Task UpdatePortTimers(NetworkDevice device, StpState state)
         {
             var config = GetStpConfig();
-            
+
             foreach (var kvp in state.PortInfo)
             {
                 var portName = kvp.Key;
@@ -295,7 +295,7 @@ namespace NetForge.Simulation.Protocols.STP
         private async Task HandleMessageAgeExpiry(NetworkDevice device, string portName, StpState state)
         {
             var portInfo = state.PortInfo[portName];
-            
+
             // If this was our root port, we need to recalculate
             if (portName == state.RootPort)
             {
@@ -333,9 +333,9 @@ namespace NetForge.Simulation.Protocols.STP
         {
             // In a full implementation, this would consider all received BPDUs
             // For simulation, we'll use a simplified approach
-            
+
             string currentRoot = state.RootBridgeId;
-            
+
             // Check all neighbors to see if any has a better bridge ID
             foreach (var portName in state.PortInfo.Keys)
             {
@@ -344,7 +344,7 @@ namespace NetForge.Simulation.Protocols.STP
                 {
                     var neighborDevice = connectedDevice.Value.device;
                     var neighborStpConfig = neighborDevice.GetStpConfiguration();
-                    
+
                     if (neighborStpConfig?.IsEnabled == true)
                     {
                         var neighborBridgeId = GenerateBridgeId(neighborStpConfig);
@@ -381,17 +381,17 @@ namespace NetForge.Simulation.Protocols.STP
             {
                 var portInfo = state.PortInfo[portName];
                 var connectedDevice = device.GetConnectedDevice(portName);
-                
+
                 if (connectedDevice.HasValue)
                 {
                     var neighborDevice = connectedDevice.Value.device;
                     var neighborStpConfig = neighborDevice.GetStpConfiguration();
-                    
+
                     if (neighborStpConfig?.IsEnabled == true)
                     {
                         var neighborBridgeId = GenerateBridgeId(neighborStpConfig);
                         int pathCostViaThisPort = portInfo.PathCost;
-                        
+
                         // If this neighbor can reach the root bridge
                         if (neighborBridgeId == state.RootBridgeId || pathCostViaThisPort < bestRootPathCost)
                         {
@@ -415,7 +415,7 @@ namespace NetForge.Simulation.Protocols.STP
             foreach (var portName in state.PortInfo.Keys)
             {
                 var portInfo = state.PortInfo[portName];
-                
+
                 // Root port is already assigned
                 if (portName == state.RootPort)
                     continue;
@@ -426,15 +426,15 @@ namespace NetForge.Simulation.Protocols.STP
                 {
                     var neighborDevice = connectedDevice.Value.device;
                     var neighborStpConfig = neighborDevice.GetStpConfiguration();
-                    
+
                     if (neighborStpConfig?.IsEnabled == true)
                     {
                         var neighborBridgeId = GenerateBridgeId(neighborStpConfig);
-                        
+
                         // We become designated if we have better bridge ID or better cost to root
                         bool shouldBeDesignated = StpBridgePriority.CompareBridgeIds(state.BridgeId, neighborBridgeId) < 0 ||
                                                  state.RootPathCost < 0; // Simplified logic
-                        
+
                         if (shouldBeDesignated)
                         {
                             portInfo.Role = StpPortRole.Designated;

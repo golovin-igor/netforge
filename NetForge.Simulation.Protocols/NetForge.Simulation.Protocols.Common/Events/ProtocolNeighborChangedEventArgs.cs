@@ -1,5 +1,5 @@
-using NetForge.Simulation.Events;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.Common.Events
 {
@@ -12,57 +12,57 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// Name of the local device reporting the neighbor change
         /// </summary>
         public string DeviceName { get; }
-        
+
         /// <summary>
         /// The type of protocol reporting the neighbor change
         /// </summary>
         public ProtocolType ProtocolType { get; }
-        
+
         /// <summary>
         /// The name of the protocol reporting the neighbor change
         /// </summary>
         public string ProtocolName { get; }
-        
+
         /// <summary>
         /// Identifier of the neighbor that changed
         /// </summary>
         public string NeighborId { get; }
-        
+
         /// <summary>
         /// Name of the neighbor device
         /// </summary>
         public string NeighborDeviceName { get; set; } = "";
-        
+
         /// <summary>
         /// Interface through which the neighbor is reachable
         /// </summary>
         public string InterfaceName { get; }
-        
+
         /// <summary>
         /// Type of neighbor change
         /// </summary>
         public NeighborChangeType ChangeType { get; }
-        
+
         /// <summary>
         /// Previous neighbor state (if applicable)
         /// </summary>
         public string? PreviousState { get; set; }
-        
+
         /// <summary>
         /// New neighbor state (if applicable)
         /// </summary>
         public string? NewState { get; set; }
-        
+
         /// <summary>
         /// Additional details about the change
         /// </summary>
         public string ChangeDetails { get; set; } = "";
-        
+
         /// <summary>
         /// Neighbor-specific data (protocol dependent)
         /// </summary>
         public Dictionary<string, object>? NeighborData { get; set; }
-        
+
         /// <summary>
         /// Create protocol neighbor changed event
         /// </summary>
@@ -87,7 +87,7 @@ namespace NetForge.Simulation.Protocols.Common.Events
             ChangeType = changeType;
             InterfaceName = interfaceName;
         }
-        
+
         /// <summary>
         /// String representation of the event
         /// </summary>
@@ -103,11 +103,11 @@ namespace NetForge.Simulation.Protocols.Common.Events
             {
                 stateInfo = $" ({NewState})";
             }
-            
+
             return $"{DeviceName}: {ProtocolName} neighbor {NeighborId} {ChangeType} on {InterfaceName}{stateInfo}";
         }
     }
-    
+
     /// <summary>
     /// Types of neighbor changes
     /// </summary>
@@ -117,27 +117,27 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// New neighbor discovered
         /// </summary>
         Discovered,
-        
+
         /// <summary>
         /// Neighbor lost (timeout, interface down, etc.)
         /// </summary>
         Lost,
-        
+
         /// <summary>
         /// Neighbor state changed (e.g., OSPF Down -> Init -> 2-Way, etc.)
         /// </summary>
         StateChanged,
-        
+
         /// <summary>
         /// Neighbor configuration or properties changed
         /// </summary>
         Updated,
-        
+
         /// <summary>
         /// Neighbor adjacency established
         /// </summary>
         AdjacencyUp,
-        
+
         /// <summary>
         /// Neighbor adjacency lost
         /// </summary>

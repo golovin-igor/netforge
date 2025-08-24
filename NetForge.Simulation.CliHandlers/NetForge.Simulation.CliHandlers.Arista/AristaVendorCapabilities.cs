@@ -1,8 +1,9 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Configuration;
-using NetForge.Simulation.Protocols.Routing;
 using System.Text;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Configuration;
+using NetForge.Simulation.Common.Protocols;
 
 namespace NetForge.Simulation.CliHandlers.Arista
 {
@@ -30,7 +31,7 @@ namespace NetForge.Simulation.CliHandlers.Arista
             var config = new StringBuilder();
             config.AppendLine("! Arista EOS Configuration");
             config.AppendLine($"hostname {_device.GetHostname()}");
-            
+
             foreach (var iface in _device.GetAllInterfaces().Values)
             {
                 config.AppendLine($"interface {iface.Name}");
@@ -44,7 +45,7 @@ namespace NetForge.Simulation.CliHandlers.Arista
                     config.AppendLine("   no shutdown");
                 config.AppendLine("   exit");
             }
-            
+
             return config.ToString();
         }
 

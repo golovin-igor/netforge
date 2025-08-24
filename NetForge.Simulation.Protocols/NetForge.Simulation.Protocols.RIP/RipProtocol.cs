@@ -1,8 +1,9 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Events;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.RIP;
 
@@ -10,7 +11,7 @@ public class RipProtocol : BaseProtocol
 {
     public override ProtocolType Type => ProtocolType.RIP;
     public override string Name => "Routing Information Protocol";
-    
+
     private DateTime _lastUpdate = DateTime.MinValue;
     private DateTime _lastPeriodicUpdate = DateTime.MinValue;
     private const int UPDATE_INTERVAL = 30; // RIP updates every 30 seconds
@@ -129,7 +130,7 @@ public class RipProtocol : BaseProtocol
     {
         // In a real implementation, this would process received RIP packets
         // For simulation purposes, we discover routes from connected neighbors
-        
+
         var interfaces = device.GetAllInterfaces();
         foreach (var (interfaceName, interfaceConfig) in interfaces)
         {
@@ -160,7 +161,7 @@ public class RipProtocol : BaseProtocol
         // Get neighbor's routing table and process as RIP advertisements
         var neighborRoutes = neighbor.GetRoutingTable();
         var localInterfaceConfig = device.GetInterface(localInterface);
-        
+
         if (localInterfaceConfig?.IpAddress == null)
             return;
 
@@ -177,7 +178,7 @@ public class RipProtocol : BaseProtocol
             if (nextHop == null) continue;
 
             var routeKey = $"{network}/{neighborRoute.Mask}";
-            
+
             if (ripState.Routes.TryGetValue(routeKey, out var existingRoute))
             {
                 // Update existing route if this is a better path or from same next hop
@@ -225,23 +226,23 @@ public class RipProtocol : BaseProtocol
     {
         var localInterfaceConfig = device.GetInterface(localInterface);
         var connection = device.GetConnectedDevice(localInterface);
-        
+
         if (connection.HasValue)
         {
             var neighborInterfaceConfig = neighbor.GetInterface(connection.Value.interfaceName);
             return neighborInterfaceConfig?.IpAddress;
         }
-        
+
         return null;
     }
 
     private async Task SendPeriodicUpdates(NetworkDevice device, RipConfig ripConfig, RipState ripState)
     {
         LogProtocolEvent($"Sending periodic RIP updates on {ripConfig.Networks.Count} networks");
-        
+
         // In a real implementation, this would send UDP packets on port 520
         // For simulation purposes, we just log the update
-        
+
         foreach (var network in ripConfig.Networks)
         {
             // In the existing config, Networks contains network addresses, not interface names
@@ -316,9 +317,9 @@ public class RipProtocol : BaseProtocol
 
     protected override int GetNeighborTimeoutSeconds() => INVALID_TIMER;
 
-    private NetForge.Simulation.Protocols.Routing.RipConfig GetRipConfig()
+    private RipConfig GetRipConfig()
     {
-        return _device?.GetRipConfiguration() as NetForge.Simulation.Protocols.Routing.RipConfig ?? new NetForge.Simulation.Protocols.Routing.RipConfig { IsEnabled = false };
+        return _device?.GetRipConfiguration() as RipConfig ?? new RipConfig { IsEnabled = false };
     }
 
     protected override object GetProtocolConfiguration()
@@ -328,11 +329,11 @@ public class RipProtocol : BaseProtocol
 
     protected override void OnApplyConfiguration(object configuration)
     {
-        if (configuration is NetForge.Simulation.Protocols.Routing.RipConfig ripConfig)
+        if (configuration is RipConfig ripConfig)
         {
             _device?.SetRipConfiguration(ripConfig);
             _state.IsActive = ripConfig.IsEnabled;
-            
+
             if (ripConfig.IsEnabled)
             {
                 LogProtocolEvent("RIP configuration updated and enabled");

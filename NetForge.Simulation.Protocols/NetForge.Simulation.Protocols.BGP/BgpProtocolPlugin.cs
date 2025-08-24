@@ -1,4 +1,4 @@
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
 
 namespace NetForge.Simulation.Protocols.BGP
@@ -12,26 +12,26 @@ namespace NetForge.Simulation.Protocols.BGP
         public override string Version => "4.0.0";
         public override ProtocolType ProtocolType => ProtocolType.BGP;
         public override int Priority => 200; // IBGP administrative distance
-        
+
         public override IDeviceProtocol CreateProtocol()
         {
             return new BgpProtocol();
         }
-        
+
         public override IEnumerable<string> GetSupportedVendors()
         {
             // BGP-4 is a standard protocol supported by all major vendors
             return new[] { "Cisco", "Juniper", "Arista", "Dell", "Huawei", "Nokia", "Quagga", "FRRouting", "Generic" };
         }
-        
+
         public override bool IsValid()
         {
             try
             {
                 // Test that we can create a protocol instance
                 var protocol = CreateProtocol();
-                return protocol != null && 
-                       protocol.Type == ProtocolType.BGP && 
+                return protocol != null &&
+                       protocol.Type == ProtocolType.BGP &&
                        !string.IsNullOrEmpty(protocol.Name) &&
                        protocol.Version.StartsWith("4."); // BGP-4
             }
@@ -40,7 +40,7 @@ namespace NetForge.Simulation.Protocols.BGP
                 return false;
             }
         }
-        
+
         public override bool SupportsVendor(string vendorName)
         {
             // BGP is universally supported

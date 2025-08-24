@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.HSRP
 {
@@ -37,7 +38,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             {
                 var groupConfig = kvp.Value;
                 var groupState = hsrpState.GetOrCreateGroupState(groupConfig.GroupId);
-                
+
                 groupState.GroupId = groupConfig.GroupId;
                 groupState.VirtualIpAddress = groupConfig.VirtualIp;
                 groupState.VirtualMacAddress = HsrpMacAddressGenerator.GenerateVirtualMac(groupConfig.GroupId, groupConfig.Version);
@@ -108,12 +109,12 @@ namespace NetForge.Simulation.Protocols.HSRP
             {
                 var groupState = kvp.Value;
                 var interfaceConfig = device.GetInterface(groupState.InterfaceName);
-                
+
                 if (interfaceConfig?.IsShutdown != false || !interfaceConfig.IsUp)
                     continue;
 
                 // Check if it's time to send hello
-                if (groupState.Timers.IsHelloTimerExpired() || 
+                if (groupState.Timers.IsHelloTimerExpired() ||
                     (now - groupState.LastHelloSent).TotalSeconds >= groupState.HelloInterval)
                 {
                     await SendHelloPacket(device, groupState, state);
@@ -148,10 +149,10 @@ namespace NetForge.Simulation.Protocols.HSRP
             }
 
             device.AddLogEntry($"HSRP: Sending Hello for group {groupState.GroupId} on interface {groupState.InterfaceName} (state: {groupState.State})");
-            
+
             // Simulate hello packet transmission
             await SimulatePacketTransmission(device, groupState.InterfaceName, helloPacket);
-            
+
             groupState.Statistics.HellosSent++;
         }
 
@@ -162,7 +163,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             {
                 var groupState = state.Groups[groupId];
                 var interfaceConfig = device.GetInterface(groupState.InterfaceName);
-                
+
                 if (interfaceConfig?.IsShutdown != false || !interfaceConfig.IsUp)
                     continue;
 
@@ -182,12 +183,12 @@ namespace NetForge.Simulation.Protocols.HSRP
             }
         }
 
-        private async Task ProcessNeighborHello(NetworkDevice device, HsrpGroupState groupState, 
+        private async Task ProcessNeighborHello(NetworkDevice device, HsrpGroupState groupState,
             NetworkDevice neighborDevice, string neighborInterface, HsrpState state)
         {
             var neighborHsrpConfig = neighborDevice.GetHsrpConfiguration();
             var neighborGroup = neighborHsrpConfig.Groups[groupState.GroupId];
-            
+
             // Create simulated hello packet from neighbor
             var receivedHello = new HsrpHelloPacket
             {
@@ -239,7 +240,7 @@ namespace NetForge.Simulation.Protocols.HSRP
 
             // Process state machine based on received hello
             var stateMachine = new HsrpStateMachine(groupState);
-            
+
             HsrpEvent eventType = DetermineEventType(packet, groupState);
             stateMachine.ProcessEvent(eventType, packet);
 
@@ -288,7 +289,7 @@ namespace NetForge.Simulation.Protocols.HSRP
         private async Task ProcessGroupStateMachine(NetworkDevice device, HsrpGroupState groupState)
         {
             var stateMachine = new HsrpStateMachine(groupState);
-            
+
             // Check interface status
             var interfaceConfig = device.GetInterface(groupState.InterfaceName);
             if (interfaceConfig?.IsShutdown == true || !interfaceConfig?.IsUp == true)

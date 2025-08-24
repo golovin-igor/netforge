@@ -1,6 +1,7 @@
 using System.Text;
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.CliHandlers.Extreme.Show
 {
@@ -14,21 +15,21 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             AddAlias("sh");
             AddAlias("sho");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Extreme"))
             {
                 return RequireVendor(context, "Extreme");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
                 return Error(CliErrorType.IncompleteCommand, "% Incomplete command - need show option");
             }
-            
+
             var option = context.CommandParts[1];
-            
+
             return option switch
             {
                 "version" => HandleShowVersion(context),
@@ -55,33 +56,33 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
                 _ => Error(CliErrorType.InvalidCommand, $"% Invalid show option: {option}")
             };
         }
-        
+
         private CliResult HandleShowVersion(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             output.AppendLine($"Extreme Network Device");
             output.AppendLine($"Device name: {device?.Name}");
             output.AppendLine($"Software version: 1.0");
             output.AppendLine($"Hardware: Generic");
             output.AppendLine($"Uptime: 1 day, 0 hours, 0 minutes");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInterfaces(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var interfaces = device.GetAllInterfaces();
-            
+
             output.AppendLine("Interface              IP-Address      Status    Protocol");
             foreach (var kvp in interfaces)
             {
@@ -90,7 +91,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
                 var protocol = iface.IsUp ? "up" : "down";
                 output.AppendLine($"{iface.Name,-22} {iface.IpAddress,-15} {status,-9} {protocol}");
             }
-            
+
             return Success(output.ToString());
         }
 
@@ -102,7 +103,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
                 return Success("ARP table is empty.\n");
             return Success(table);
         }
-        
+
         private CliResult HandleShowMlag(CliContext context)
         {
             var output = new StringBuilder();
@@ -111,20 +112,20 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("Peer State: Up");
             output.AppendLine("Local Role: Primary");
             output.AppendLine("Peer Role: Secondary");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIgmp(CliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("IGMP Groups:");
             output.AppendLine("Interface   Group           Source          Age    Uptime   Last Reporter");
             output.AppendLine("Vlan100     224.0.0.1       *               10     00:01:30 192.168.1.10");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowRip(CliContext context)
         {
             var output = new StringBuilder();
@@ -132,20 +133,20 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("Interface   State    Metric   Split-Horizon   Auth");
             output.AppendLine("Vlan100     Up       1        Enabled         None");
             output.AppendLine("Vlan200     Up       1        Enabled         None");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowPim(CliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("PIM Neighbors:");
             output.AppendLine("Interface   Neighbor        Uptime    Expires   Mode");
             output.AppendLine("Vlan100     192.168.1.1     01:23:45  00:01:30  Sparse");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowLog(CliContext context)
         {
             var output = new StringBuilder();
@@ -154,10 +155,10 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("Console logging: Enabled");
             output.AppendLine("Facility: Local7");
             output.AppendLine("Severity: Info");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowAccessList(CliContext context)
         {
             var output = new StringBuilder();
@@ -165,20 +166,20 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("ACL Name: Standard-ACL-1");
             output.AppendLine("  10 permit 192.168.1.0/24");
             output.AppendLine("  20 deny any");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowOspf(CliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("OSPF Neighbors:");
             output.AppendLine("Neighbor ID     Pri   State      Dead Time   Address         Interface");
             output.AppendLine("192.168.1.1     1     Full/DR    00:00:35    192.168.1.1     Vlan100");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowPorts(CliContext context)
         {
             var output = new StringBuilder();
@@ -186,15 +187,15 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("Port   State    Speed    Duplex   Type");
             output.AppendLine("1:1    Up       1000M    Full     Copper");
             output.AppendLine("1:2    Down     Auto     Auto     Copper");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowConfiguration(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             output.AppendLine("# Configuration dump for Extreme device");
             output.AppendLine($"# Device: {device?.Name}");
             output.AppendLine("");
@@ -204,10 +205,10 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("");
             output.AppendLine("create vlan \"default\"");
             output.AppendLine("configure default ipaddress 192.168.1.100/24");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowSsh2(CliContext context)
         {
             var output = new StringBuilder();
@@ -216,10 +217,10 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("Port: 22");
             output.AppendLine("Host Key: RSA 2048-bit");
             output.AppendLine("Active Sessions: 1");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowSnmp(CliContext context)
         {
             var output = new StringBuilder();
@@ -227,26 +228,26 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("Community   Access   Views");
             output.AppendLine("public      Read     Default");
             output.AppendLine("private     Write    Default");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowVlan(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var vlans = device.GetAllVlans();
-            
+
             output.AppendLine("VLAN Configuration:");
             output.AppendLine("VLAN Name        Tag    Ports           Type");
             output.AppendLine("---- ----------- ------ --------------- --------");
-            
+
             if (vlans.Count == 0)
             {
                 output.AppendLine("1    default     1      1-24           Static");
@@ -258,10 +259,10 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
                     output.AppendLine($"{vlan.Id,-4} {vlan.Name,-11} {vlan.Id,-6} 1-24           Static");
                 }
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIproute(CliContext context)
         {
             var output = new StringBuilder();
@@ -269,20 +270,20 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("Destination     Gateway         Interface   Metric   Type");
             output.AppendLine("0.0.0.0/0       192.168.1.1     Vlan100     1        Static");
             output.AppendLine("192.168.1.0/24  0.0.0.0         Vlan100     0        Direct");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIsis(CliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("IS-IS Adjacencies:");
             output.AppendLine("System ID       Interface   SNPA            State  Type  Priority  Circuit ID");
             output.AppendLine("0000.0000.0001  Vlan100     0012.3456.789a  Up     L2    64        01");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowAccounts(CliContext context)
         {
             var output = new StringBuilder();
@@ -290,10 +291,10 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("Username   Access Level   Last Login");
             output.AppendLine("admin      Full           2023-01-01 10:00:00");
             output.AppendLine("user       Read-Only      2023-01-01 09:30:00");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpforwarding(CliContext context)
         {
             var output = new StringBuilder();
@@ -301,10 +302,10 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("IPv4 Forwarding: Enabled");
             output.AppendLine("IPv6 Forwarding: Disabled");
             output.AppendLine("ICMP Redirects: Enabled");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowNtp(CliContext context)
         {
             var output = new StringBuilder();
@@ -313,10 +314,10 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("Server: pool.ntp.org");
             output.AppendLine("Stratum: 3");
             output.AppendLine("Last Sync: 2023-01-01 10:00:00");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowBgp(CliContext context)
         {
             var output = new StringBuilder();
@@ -324,7 +325,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             output.AppendLine("Neighbor       AS      State      PfxRcd   Uptime");
             output.AppendLine("192.168.1.1    65001   Established  100    01:23:45");
             output.AppendLine("192.168.1.2    65002   Active       0      00:00:00");
-            
+
             return Success(output.ToString());
         }
     }

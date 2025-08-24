@@ -1,4 +1,4 @@
-using NetForge.Simulation.Events;
+using NetForge.Simulation.Common.Events;
 using Xunit;
 // From the main project
 
@@ -73,7 +73,7 @@ namespace NetForge.Simulation.Tests.Events // Adjusted namespace for the test pr
             var eventBus = new NetworkEventBus();
 
             // Act & Assert
-            // Record.ExceptionAsync can be used if we expect PublishAsync to potentially throw, 
+            // Record.ExceptionAsync can be used if we expect PublishAsync to potentially throw,
             // but here we expect it to complete without throwing.
             await eventBus.PublishAsync(new TestSpecificEventArgs("test", "No subscribers"));
             // If it completes without an exception, the test passes implicitly for this condition.

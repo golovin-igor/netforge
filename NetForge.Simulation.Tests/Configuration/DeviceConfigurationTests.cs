@@ -1,5 +1,5 @@
-using NetForge.Simulation.Configuration;
 using System;
+using NetForge.Simulation.Common.Configuration;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Configuration

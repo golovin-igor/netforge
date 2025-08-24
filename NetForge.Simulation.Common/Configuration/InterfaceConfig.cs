@@ -1,5 +1,6 @@
 using System.Globalization;
-using NetForge.Simulation.Events;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Events;
 
 namespace NetForge.Simulation.Common.Configuration
 {

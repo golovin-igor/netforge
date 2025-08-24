@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NetForge.Simulation.Protocols.Common;
 // Use the existing StpConfig from Common project
-using NetForge.Simulation.Configuration;
 
 namespace NetForge.Simulation.Protocols.STP
 {
@@ -208,7 +207,7 @@ namespace NetForge.Simulation.Protocols.STP
     {
         public int Priority { get; set; } = 32768; // Default bridge priority
         public string MacAddress { get; set; } = "";
-        
+
         public string GetBridgeId()
         {
             return $"{Priority:X4}:{MacAddress}";
@@ -219,7 +218,7 @@ namespace NetForge.Simulation.Protocols.STP
             // Parse and compare bridge IDs (priority + MAC address)
             var parts1 = bridgeId1.Split(':');
             var parts2 = bridgeId2.Split(':');
-            
+
             if (parts1.Length < 2 || parts2.Length < 2)
                 return string.Compare(bridgeId1, bridgeId2, StringComparison.Ordinal);
 
@@ -253,7 +252,7 @@ namespace NetForge.Simulation.Protocols.STP
 
             // Default costs based on interface type
             var lowerName = interfaceName.ToLowerInvariant();
-            
+
             if (lowerName.Contains("gigabit") || lowerName.Contains("ge"))
                 return 4; // 1 Gbps
             else if (lowerName.Contains("fastethernet") || lowerName.Contains("fe"))
@@ -289,7 +288,7 @@ namespace NetForge.Simulation.Protocols.STP
     {
         public StpPortInfo PortInfo { get; set; }
         public StpStatistics Statistics { get; set; } = new();
-        
+
         public StpStateMachine(StpPortInfo portInfo)
         {
             PortInfo = portInfo;

@@ -1,6 +1,8 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Interfaces;
 using NetForge.Simulation.Protocols.CDP;
 using NetForge.Simulation.Protocols.Routing;
 
@@ -23,7 +25,7 @@ namespace NetForge.Simulation.Protocols.Tests
             _network = new Network();
             _testDevice = new CiscoDevice("TestCdpSwitch");
             _neighborDevice = new CiscoDevice("NeighborSwitch");
-            
+
             _network.AddDeviceAsync(_testDevice).Wait();
             _network.AddDeviceAsync(_neighborDevice).Wait();
 
@@ -41,7 +43,7 @@ namespace NetForge.Simulation.Protocols.Tests
                 HoldTime = 180,
                 Timer = 60
             };
-            
+
             _testDevice.SetCdpConfiguration(cdpConfig);
             _deviceLogs.Clear();
         }
@@ -84,7 +86,7 @@ namespace NetForge.Simulation.Protocols.Tests
             neighborInterface.IsShutdown = false;
 
             // Create physical connection
-            await _network.AddLinkAsync("TestCdpSwitch", "GigabitEthernet0/1", 
+            await _network.AddLinkAsync("TestCdpSwitch", "GigabitEthernet0/1",
                                       "NeighborSwitch", "GigabitEthernet0/1");
 
             // Configure CDP on neighbor
@@ -113,9 +115,9 @@ namespace NetForge.Simulation.Protocols.Tests
             // Arrange
             await _cdpProtocol.UpdateState(_testDevice);
             var cdpState = _cdpProtocol.GetTypedState<NetForge.Simulation.Protocols.CDP.CdpState>();
-            
+
             // Add a test neighbor with old timestamp using the protocol's state management
-            var staleNeighbor = cdpState.GetOrCreateCdpNeighbor("StaleDevice:GigabitEthernet0/1", 
+            var staleNeighbor = cdpState.GetOrCreateCdpNeighbor("StaleDevice:GigabitEthernet0/1",
                 () => new NetForge.Simulation.Protocols.CDP.CdpNeighbor("StaleDevice", "GigabitEthernet0/1", "GigabitEthernet0/1")
                 {
                     Platform = "cisco WS-C2960",
@@ -123,7 +125,7 @@ namespace NetForge.Simulation.Protocols.Tests
                     LastSeen = DateTime.Now.AddSeconds(-200), // Expired
                     HoldTime = 180
                 });
-            
+
             // Ensure the neighbor is in the neighbors collection
             cdpState.Neighbors["StaleDevice:GigabitEthernet0/1"] = staleNeighbor;
             _deviceLogs.Clear();

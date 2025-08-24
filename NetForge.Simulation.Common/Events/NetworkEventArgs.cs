@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Events
+namespace NetForge.Simulation.Common.Events
 {
     public abstract class NetworkEventArgs : EventArgs
     {
@@ -9,4 +9,4 @@ namespace NetForge.Simulation.Events
             Timestamp = DateTime.UtcNow;
         }
     }
-} 
+}

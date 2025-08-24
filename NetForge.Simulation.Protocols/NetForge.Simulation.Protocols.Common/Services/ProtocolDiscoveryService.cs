@@ -1,5 +1,5 @@
 using System.Reflection;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.Common.Services
 {
@@ -12,7 +12,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         private readonly List<IProtocolPlugin> _plugins = new();
         private bool _isDiscovered = false;
         private readonly object _discoveryLock = new();
-        
+
         /// <summary>
         /// Discover all available protocol plugins from loaded assemblies
         /// </summary>
@@ -32,7 +32,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
             }
             return _plugins.OrderByDescending(p => p.Priority).ToList();
         }
-        
+
         /// <summary>
         /// Get protocols for a specific vendor, with Telnet always included
         /// </summary>
@@ -41,7 +41,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         public IEnumerable<IDeviceProtocol> GetProtocolsForVendor(string vendorName)
         {
             var protocols = new List<IDeviceProtocol>();
-            
+
             // Always include Telnet for management (when available)
             var telnetPlugin = DiscoverProtocolPlugins()
                 .FirstOrDefault(p => p.ProtocolType == ProtocolType.TELNET);
@@ -56,7 +56,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                     Console.WriteLine($"Failed to create Telnet protocol: {ex.Message}");
                 }
             }
-            
+
             // Add vendor-specific protocols (excluding Telnet which is already added)
             foreach (var plugin in DiscoverProtocolPlugins())
             {
@@ -73,10 +73,10 @@ namespace NetForge.Simulation.Protocols.Common.Services
                     }
                 }
             }
-            
+
             return protocols;
         }
-        
+
         /// <summary>
         /// Get a specific protocol instance by type and vendor
         /// </summary>
@@ -89,10 +89,10 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 .Where(p => p.ProtocolType == protocolType && p.SupportsVendor(vendorName))
                 .OrderByDescending(p => p.Priority)
                 .FirstOrDefault();
-                
+
             return plugin?.CreateProtocol();
         }
-        
+
         /// <summary>
         /// Get all plugins for a specific protocol type
         /// </summary>
@@ -104,7 +104,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 .Where(p => p.ProtocolType == protocolType)
                 .OrderByDescending(p => p.Priority);
         }
-        
+
         /// <summary>
         /// Get all supported vendors across all plugins
         /// </summary>
@@ -116,7 +116,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 .Distinct()
                 .OrderBy(v => v);
         }
-        
+
         /// <summary>
         /// Check if a specific protocol type is available
         /// </summary>
@@ -126,7 +126,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         {
             return DiscoverProtocolPlugins().Any(p => p.ProtocolType == protocolType);
         }
-        
+
         /// <summary>
         /// Manually register a protocol plugin
         /// </summary>
@@ -138,7 +138,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 _plugins.Add(plugin);
             }
         }
-        
+
         /// <summary>
         /// Get discovery statistics
         /// </summary>
@@ -146,7 +146,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         public Dictionary<string, object> GetDiscoveryStatistics()
         {
             var plugins = DiscoverProtocolPlugins().ToList();
-            
+
             return new Dictionary<string, object>
             {
                 ["TotalPlugins"] = plugins.Count,
@@ -159,7 +159,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                     .ToDictionary(g => g.Key, g => g.Count())
             };
         }
-        
+
         /// <summary>
         /// Discover and register protocol plugins from loaded assemblies
         /// </summary>
@@ -169,11 +169,11 @@ namespace NetForge.Simulation.Protocols.Common.Services
             {
                 // Find assemblies that contain protocol plugins
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                    .Where(a => !a.IsDynamic && 
+                    .Where(a => !a.IsDynamic &&
                                (a.FullName?.Contains("NetForge.Simulation.Protocols.") ?? false) &&
                                !a.FullName.Contains("Common"))
                     .ToList();
-                
+
                 foreach (var assembly in assemblies)
                 {
                     try
@@ -181,14 +181,14 @@ namespace NetForge.Simulation.Protocols.Common.Services
                         // Skip system assemblies for performance
                         if (IsSystemAssembly(assembly))
                             continue;
-                        
+
                         var pluginTypes = assembly.GetTypes()
-                            .Where(t => typeof(IProtocolPlugin).IsAssignableFrom(t) && 
-                                       !t.IsInterface && 
+                            .Where(t => typeof(IProtocolPlugin).IsAssignableFrom(t) &&
+                                       !t.IsInterface &&
                                        !t.IsAbstract &&
                                        t.GetConstructor(Type.EmptyTypes) != null)
                             .ToList();
-                        
+
                         foreach (var pluginType in pluginTypes)
                         {
                             try
@@ -224,7 +224,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 Console.WriteLine($"Critical error during protocol plugin discovery: {ex.Message}");
             }
         }
-        
+
         /// <summary>
         /// Check if an assembly is a system assembly (for performance optimization)
         /// </summary>
@@ -233,7 +233,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         private static bool IsSystemAssembly(Assembly assembly)
         {
             var assemblyName = assembly.FullName ?? "";
-            
+
             return assemblyName.StartsWith("System.") ||
                    assemblyName.StartsWith("Microsoft.") ||
                    assemblyName.StartsWith("netstandard") ||

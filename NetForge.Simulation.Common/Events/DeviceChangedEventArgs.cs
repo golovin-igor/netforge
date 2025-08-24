@@ -1,6 +1,6 @@
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
 
-namespace NetForge.Simulation.Events
+namespace NetForge.Simulation.Common.Events
 {
     public enum DeviceChangeType
     {
@@ -14,4 +14,4 @@ namespace NetForge.Simulation.Events
         public INetworkDevice Device { get; } = device; // Reference to the device instance
         public DeviceChangeType ChangeType { get; } = changeType;
     }
-} 
+}

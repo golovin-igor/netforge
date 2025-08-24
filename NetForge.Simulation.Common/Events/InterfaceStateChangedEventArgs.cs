@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Events
+namespace NetForge.Simulation.Common.Events
 {
     public class InterfaceStateChangedEventArgs : NetworkEventArgs
     {
@@ -15,4 +15,4 @@ namespace NetForge.Simulation.Events
             IsShutdown = isShutdown; // Reflects admin state
         }
     }
-} 
+}

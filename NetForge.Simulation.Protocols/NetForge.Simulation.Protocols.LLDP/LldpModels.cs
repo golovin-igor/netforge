@@ -1,5 +1,4 @@
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.LLDP
 {
@@ -18,7 +17,7 @@ namespace NetForge.Simulation.Protocols.LLDP
         public DateTime LastAdvertisement { get; set; } = DateTime.MinValue;
         public int AdvertisementCount { get; set; } = 0;
         public Dictionary<string, LldpInterfaceConfig> InterfaceSettings { get; set; } = new();
-        
+
         /// <summary>
         /// Get or create LLDP neighbor with type safety
         /// </summary>
@@ -26,7 +25,7 @@ namespace NetForge.Simulation.Protocols.LLDP
         {
             return GetOrCreateNeighbor<LldpNeighbor>(neighborKey, factory);
         }
-        
+
         /// <summary>
         /// Record successful advertisement
         /// </summary>
@@ -35,7 +34,7 @@ namespace NetForge.Simulation.Protocols.LLDP
             LastAdvertisement = DateTime.Now;
             AdvertisementCount++;
         }
-        
+
         /// <summary>
         /// Check if it's time to send advertisements
         /// </summary>
@@ -43,7 +42,7 @@ namespace NetForge.Simulation.Protocols.LLDP
         {
             return (DateTime.Now - LastAdvertisement).TotalSeconds >= intervalSeconds;
         }
-        
+
         public override Dictionary<string, object> GetStateData()
         {
             var baseData = base.GetStateData();
@@ -60,7 +59,7 @@ namespace NetForge.Simulation.Protocols.LLDP
             return baseData;
         }
     }
-    
+
     /// <summary>
     /// Represents an LLDP neighbor (IEEE 802.1AB)
     /// </summary>
@@ -77,12 +76,12 @@ namespace NetForge.Simulation.Protocols.LLDP
         public string ManagementAddress { get; set; } = "";
         public int TimeToLive { get; set; } = 120;
         public DateTime LastSeen { get; set; } = DateTime.Now;
-        
+
         // LLDP-specific TLVs (Type-Length-Value)
         public string PortDescription { get; set; } = "";
         public List<string> ManagementVids { get; set; } = new();
         public Dictionary<string, string> OrganizationalTlvs { get; set; } = new();
-        
+
         public LldpNeighbor(string chassisId, string chassisIdType, string portId, string portIdType, string localPortId)
         {
             ChassisId = chassisId;
@@ -91,14 +90,14 @@ namespace NetForge.Simulation.Protocols.LLDP
             PortIdType = portIdType;
             LocalPortId = localPortId;
         }
-        
+
         public bool IsExpired => (DateTime.Now - LastSeen).TotalSeconds > TimeToLive;
-        
+
         public void UpdateLastSeen()
         {
             LastSeen = DateTime.Now;
         }
-        
+
         /// <summary>
         /// Get neighbor identification string
         /// </summary>
@@ -106,7 +105,7 @@ namespace NetForge.Simulation.Protocols.LLDP
         {
             return $"{ChassisId}:{PortId}";
         }
-        
+
         /// <summary>
         /// Check if neighbor has specific capability
         /// </summary>
@@ -114,7 +113,7 @@ namespace NetForge.Simulation.Protocols.LLDP
         {
             return SystemCapabilities.Contains(capability, StringComparer.OrdinalIgnoreCase);
         }
-        
+
         /// <summary>
         /// Get time since last update in seconds
         /// </summary>
@@ -123,7 +122,7 @@ namespace NetForge.Simulation.Protocols.LLDP
             return (int)(DateTime.Now - LastSeen).TotalSeconds;
         }
     }
-    
+
     /// <summary>
     /// LLDP system capabilities
     /// </summary>
@@ -138,7 +137,7 @@ namespace NetForge.Simulation.Protocols.LLDP
         public const string DocsisCableDevice = "DOCSIS Cable Device";
         public const string StationOnly = "Station Only";
     }
-    
+
     /// <summary>
     /// LLDP chassis ID subtypes
     /// </summary>
@@ -152,7 +151,7 @@ namespace NetForge.Simulation.Protocols.LLDP
         InterfaceName = 6,
         Local = 7
     }
-    
+
     /// <summary>
     /// LLDP port ID subtypes
     /// </summary>
@@ -166,7 +165,7 @@ namespace NetForge.Simulation.Protocols.LLDP
         AgentCircuitId = 6,
         Local = 7
     }
-    
+
     /// <summary>
     /// LLDP interface-specific configuration
     /// </summary>
@@ -176,32 +175,32 @@ namespace NetForge.Simulation.Protocols.LLDP
         /// Interface name
         /// </summary>
         public string InterfaceName { get; set; } = "";
-        
+
         /// <summary>
         /// Whether LLDP is enabled on this interface
         /// </summary>
         public bool IsEnabled { get; set; } = true;
-        
+
         /// <summary>
         /// Transmit LLDP frames on this interface
         /// </summary>
         public bool TransmitEnabled { get; set; } = true;
-        
+
         /// <summary>
         /// Receive LLDP frames on this interface
         /// </summary>
         public bool ReceiveEnabled { get; set; } = true;
-        
+
         /// <summary>
         /// Port description for this interface
         /// </summary>
         public string PortDescription { get; set; } = "";
-        
+
         /// <summary>
         /// Management VID for this interface
         /// </summary>
         public int ManagementVid { get; set; } = 1;
-        
+
         public LldpInterfaceConfig(string interfaceName)
         {
             InterfaceName = interfaceName;

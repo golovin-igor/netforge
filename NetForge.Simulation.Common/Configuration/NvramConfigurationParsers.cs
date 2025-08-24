@@ -1,6 +1,6 @@
-using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 
-namespace NetForge.Simulation.Core
+namespace NetForge.Simulation.Common.Configuration
 {
     /// <summary>
     /// Contract for parsing a vendor-specific startup configuration (NVRAM) and applying it to a device instance.
@@ -123,4 +123,4 @@ namespace NetForge.Simulation.Core
             };
         }
     }
-} 
+}

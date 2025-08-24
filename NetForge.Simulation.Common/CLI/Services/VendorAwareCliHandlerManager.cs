@@ -1,7 +1,8 @@
-using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Factories;
+using NetForge.Simulation.Common.Common;
 
-namespace NetForge.Simulation.CliHandlers.Services
+namespace NetForge.Simulation.Common.CLI.Services
 {
     /// <summary>
     /// Enhanced CLI handler manager that automatically registers vendor-specific handlers
@@ -12,7 +13,7 @@ namespace NetForge.Simulation.CliHandlers.Services
         private readonly NetworkDevice _device;
         private bool _vendorHandlersRegistered = false;
 
-        public VendorAwareCliHandlerManager(NetworkDevice device, IVendorHandlerDiscoveryService? discoveryService = null) 
+        public VendorAwareCliHandlerManager(NetworkDevice device, IVendorHandlerDiscoveryService? discoveryService = null)
             : base(device)
         {
             _device = device;
@@ -26,7 +27,7 @@ namespace NetForge.Simulation.CliHandlers.Services
         {
             // Ensure vendor handlers are registered before processing
             EnsureVendorHandlersRegistered();
-            
+
             return await base.ProcessCommandAsync(command);
         }
 
@@ -37,7 +38,7 @@ namespace NetForge.Simulation.CliHandlers.Services
         {
             // Ensure vendor handlers are registered before getting completions
             EnsureVendorHandlersRegistered();
-            
+
             return base.GetCompletions(command);
         }
 
@@ -53,18 +54,18 @@ namespace NetForge.Simulation.CliHandlers.Services
             {
                 // Discover and get the appropriate vendor registry for this device
                 var vendorRegistry = _discoveryService.GetVendorRegistry(_device);
-                
+
                 if (vendorRegistry != null)
                 {
                     // Initialize the vendor registry
                     vendorRegistry.Initialize();
-                    
+
                     // Register all vendor context factories
                     RegisterVendorContextFactories();
-                    
+
                     // Register vendor-specific handlers
                     vendorRegistry.RegisterHandlers(this);
-                    
+
                     _vendorHandlersRegistered = true;
                 }
                 else
@@ -88,9 +89,9 @@ namespace NetForge.Simulation.CliHandlers.Services
         {
             var supportedVendors = _discoveryService.GetRegisteredVendors().ToList();
             var deviceVendor = _device.Vendor;
-            var isVendorSupported = !string.IsNullOrEmpty(deviceVendor) && 
+            var isVendorSupported = !string.IsNullOrEmpty(deviceVendor) &&
                                    _discoveryService.IsVendorSupported(deviceVendor);
-            
+
             return new VendorHandlerInfo
             {
                 DeviceVendor = deviceVendor ?? "Unknown",
@@ -129,12 +130,12 @@ namespace NetForge.Simulation.CliHandlers.Services
             {
                 // Discover all vendor registries and register their context factories
                 var vendorRegistries = _discoveryService.DiscoverVendorRegistries();
-                
+
                 foreach (var registry in vendorRegistries)
                 {
                     // Register the vendor context factory
                     VendorContextFactory.RegisterVendorContext(
-                        registry.VendorName, 
+                        registry.VendorName,
                         device => registry.CreateVendorContext(device)
                     );
                 }
@@ -158,4 +159,4 @@ namespace NetForge.Simulation.CliHandlers.Services
         public List<string> SupportedVendors { get; set; } = new();
         public bool VendorHandlersRegistered { get; set; }
     }
-} 
+}

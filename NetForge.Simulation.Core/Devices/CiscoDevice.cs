@@ -1,17 +1,14 @@
 using System.Text;
 using NetForge.Simulation.CliHandlers.Cisco;
-using NetForge.Simulation.CliHandlers.Services;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
+using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.Common.Security;
 using NetForge.Simulation.Core;
-using DiscoveryCdpNeighbor = NetForge.Simulation.Protocols.Discovery.CdpNeighbor;
-using NetForge.Simulation.Protocols.Discovery;
-using NetForge.Simulation.Protocols.Routing;
-using NetForge.Simulation.Protocols.Security;
 using NetForge.Simulation.Protocols.Common.Services;
-using NetForge.Simulation.Interfaces;
-using PortChannelConfig = NetForge.Simulation.Configuration.PortChannel;
+using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
 namespace NetForge.Simulation.Devices
 {
@@ -25,18 +22,17 @@ namespace NetForge.Simulation.Devices
         private int currentVlanId = 0;
         private int currentAclNumber = 0;
         private bool cdpEnabled = true;
-        private Dictionary<string, DiscoveryCdpNeighbor> cdpNeighbors = new();
         private int cdpTimer = 60;
         private int cdpHoldtime = 180;
-        
+
         public CiscoDevice(string name) : base(name)
         {
             Vendor = "Cisco";
-            
+
             // Add default VLAN 1
             Vlans[1] = new VlanConfig(1, "default");
             InitializeDefaultInterfaces();
-            
+
             // Register device-specific handlers (now handled by vendor registry)
             RegisterDeviceSpecificHandlers();
 
@@ -44,7 +40,7 @@ namespace NetForge.Simulation.Devices
             // This will discover and register protocols that support the "Cisco" vendor
             AutoRegisterProtocols();
         }
-        
+
         protected override void InitializeDefaultInterfaces()
         {
             // Add default interfaces for a Cisco router
@@ -53,7 +49,7 @@ namespace NetForge.Simulation.Devices
             Interfaces["GigabitEthernet0/2"] = new InterfaceConfig("GigabitEthernet0/2", this);
             Interfaces["GigabitEthernet0/3"] = new InterfaceConfig("GigabitEthernet0/3", this);
         }
-        
+
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Cisco handlers to ensure they are available for tests
@@ -66,7 +62,7 @@ namespace NetForge.Simulation.Devices
         {
             var protocolDiscovery = new ProtocolDiscoveryService();
             var discoveredProtocols = protocolDiscovery.GetProtocolsForVendor("Cisco");
-            
+
             foreach (var protocol in discoveredProtocols)
             {
                 try
@@ -90,7 +86,7 @@ namespace NetForge.Simulation.Devices
             var stats = protocolDiscovery.GetDiscoveryStatistics();
             AddLogEntry($"Auto-registered protocols for Cisco: {GetRegisteredProtocols().Count()} protocols loaded from {stats["TotalPlugins"]} discovered plugins");
         }
-        
+
         public override string GetPrompt()
         {
             return base.CurrentMode switch
@@ -105,7 +101,7 @@ namespace NetForge.Simulation.Devices
                 _ => $"{Hostname}>"
             };
         }
-        
+
         /// <summary>
         /// Override GetInterface to support interface aliases
         /// </summary>
@@ -125,14 +121,14 @@ namespace NetForge.Simulation.Devices
 
             return null;
         }
-        
+
         public override async Task<string> ProcessCommandAsync(string command)
         {
             if (string.IsNullOrWhiteSpace(command))
                 return GetPrompt();
 
             var originalCommand = command;
-            
+
             // Check for history recall commands first
             if (command.StartsWith("!"))
             {
@@ -147,24 +143,24 @@ namespace NetForge.Simulation.Devices
                     return $"% No command found for '{command}'\n" + GetPrompt();
                 }
             }
-            
+
             // Process shortcuts and abbreviations
             var processedCommand = HistoryCommandProcessor.ProcessShortcuts(command, this);
             if (!string.IsNullOrEmpty(processedCommand))
             {
                 command = processedCommand;
             }
-            
+
             // Use the base class implementation for actual command processing
             return await base.ProcessCommandAsync(command);
         }
-        
+
         protected string CidrToMask(int cidr)
         {
             uint mask = 0xFFFFFFFF << (32 - cidr);
             return $"{(mask >> 24) & 0xFF}.{(mask >> 16) & 0xFF}.{(mask >> 8) & 0xFF}.{mask & 0xFF}";
         }
-        
+
         protected string WildcardToMask(string wildcard)
         {
             if (string.IsNullOrEmpty(wildcard)) return "255.255.255.255";
@@ -176,7 +172,7 @@ namespace NetForge.Simulation.Devices
             }
             return string.Join(".", maskParts);
         }
-        
+
         protected int MaskToCidr(string mask)
         {
             if (string.IsNullOrEmpty(mask)) return 0;
@@ -191,41 +187,6 @@ namespace NetForge.Simulation.Devices
             }
             return cidr;
         }
-        
-        // override UpdateCdp changed to new, then new removed as it's not hiding
-        public void UpdateCdp()
-        {
-            if (!cdpEnabled || ParentNetwork == null) return;
-            // Clear neighbors each cycle, rebuild
-            cdpNeighbors.Clear();
-            foreach (var iface in Interfaces.Values)
-            {
-                if (iface.IsShutdown) continue;
-                var connected = ParentNetwork.GetConnectedDevices(Name, iface.Name);
-                foreach (var (device, intf) in connected)
-                {
-                    if (device is CiscoDevice remote && remote.cdpEnabled)
-                    {
-                        var remoteIface = remote.Interfaces[intf];
-                        var neighbor = new DiscoveryCdpNeighbor(device.Name, iface.Name, intf, device.Vendor, remoteIface.IpAddress);
-                        cdpNeighbors[iface.Name] = neighbor;
-                    }
-                }
-            }
-        }
-
-        private string BuildCdpNeighborsOutput()
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("Capability Codes: R - Router, S - Switch, H - Host");
-            sb.AppendLine();
-            sb.AppendLine("Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID");
-            foreach (var n in cdpNeighbors.Values)
-            {
-                sb.AppendLine($"{n.DeviceId,-17} {n.LocalInterface,-15} {n.HoldTime,4}       S            {n.Platform,-8} {n.PortId}");
-            }
-            return sb.ToString();
-        }
 
         // Add helper methods for command handlers to access device state
         public string GetMode() => base.CurrentMode.ToModeString();
@@ -234,12 +195,12 @@ namespace NetForge.Simulation.Devices
             base.SetMode(mode);
             // Additional Cisco-specific mode logic here
         }
-        
+
         /// <summary>
         /// Get current mode as strongly typed enum
         /// </summary>
         public DeviceMode GetModeEnum() => base.CurrentMode;
-        
+
         /// <summary>
         /// Set mode using strongly typed enum
         /// </summary>
@@ -253,7 +214,7 @@ namespace NetForge.Simulation.Devices
         public OspfConfig GetOspfConfig() => OspfConfig;
         public BgpConfig GetBgpConfig() => BgpConfig;
         public RipConfig GetRipConfig() => RipConfig;
-        
+
         public string ShowRunningConfig()
         {
             var output = new StringBuilder();
@@ -271,7 +232,7 @@ namespace NetForge.Simulation.Devices
         public List<VlanConfig> GetVlans() => Vlans.Values.ToList();
         public new List<Route> GetRoutingTable() => RoutingTable;
         public int GetCurrentVlanId() => currentVlanId;
-        
+
         // Add interface management method
         public void AddInterface(string name)
         {
@@ -280,13 +241,13 @@ namespace NetForge.Simulation.Devices
                 Interfaces[name] = new InterfaceConfig(name, this);
             }
         }
-        
+
         public void SetHostname(string name)
         {
             base.SetHostname(name);
             // Additional Cisco-specific hostname logic here
         }
-        
+
         public void CreateOrSelectVlan(int vlanId)
         {
             if (!Vlans.ContainsKey(vlanId))
@@ -296,7 +257,7 @@ namespace NetForge.Simulation.Devices
             currentVlanId = vlanId; // Set the current VLAN ID for name commands
             RunningConfig.AppendLine($"vlan {vlanId}");
         }
-        
+
         public void SetCurrentVlanName(string name)
         {
             if (currentVlanId > 0 && Vlans.ContainsKey(currentVlanId))
@@ -305,7 +266,7 @@ namespace NetForge.Simulation.Devices
                 RunningConfig.AppendLine($" name {name}");
             }
         }
-        
+
         public void InitializeOspf(int processId)
         {
             if (OspfConfig == null)
@@ -314,7 +275,7 @@ namespace NetForge.Simulation.Devices
             }
             RunningConfig.AppendLine($"router ospf {processId}");
         }
-        
+
         public void InitializeBgp(int asNumber)
         {
             if (BgpConfig == null)
@@ -323,7 +284,7 @@ namespace NetForge.Simulation.Devices
             }
             RunningConfig.AppendLine($"router bgp {asNumber}");
         }
-        
+
         public void InitializeRip()
         {
             if (RipConfig == null)
@@ -332,7 +293,7 @@ namespace NetForge.Simulation.Devices
             }
             RunningConfig.AppendLine("router rip");
         }
-        
+
         public void InitializeEigrp(int asNumber)
         {
             if (EigrpConfig == null)
@@ -341,22 +302,22 @@ namespace NetForge.Simulation.Devices
             }
             RunningConfig.AppendLine($"router eigrp {asNumber}");
         }
-        
+
         public void SetCurrentRouterProtocol(string protocol)
         {
             currentRouterProtocol = protocol;
         }
-        
+
         public void AppendToRunningConfig(string line)
         {
             RunningConfig.AppendLine(line);
         }
-        
+
         public bool VlanExists(int vlanId)
         {
             return Vlans.ContainsKey(vlanId);
         }
-        
+
         public void AddInterfaceToVlan(string interfaceName, int vlanId)
         {
             if (Vlans.ContainsKey(vlanId))
@@ -364,7 +325,7 @@ namespace NetForge.Simulation.Devices
                 Vlans[vlanId].Interfaces.Add(interfaceName);
             }
         }
-        
+
         public void CreateOrUpdatePortChannel(int channelId, string interfaceName, string mode)
         {
             if (!PortChannels.ContainsKey(channelId))
@@ -374,30 +335,30 @@ namespace NetForge.Simulation.Devices
             PortChannels[channelId].MemberInterfaces.Add(interfaceName);
             PortChannels[channelId].Mode = mode;
         }
-        
+
         public override void AddStaticRoute(string network, string mask, string nextHop, int metric)
         {
             base.AddStaticRoute(network, mask, nextHop, metric);
             // Additional Cisco-specific route logic here
         }
-        
+
         // Router protocol helper methods
         public string GetCurrentRouterProtocol() => currentRouterProtocol;
-        
+
         public void AddOspfNetwork(string network, string wildcard, int area)
         {
             if (OspfConfig == null) return;
-            
+
             var mask = WildcardToMask(wildcard);
             OspfConfig.NetworkAreas[network] = area;
-            
+
             // Store the full command format like the test expects
             var networkStr = $"{network} {wildcard} area {area}";
             if (!OspfConfig.Networks.Contains(networkStr))
             {
                 OspfConfig.Networks.Add(networkStr);
             }
-            
+
             // Find interfaces in this network
             foreach (var iface in Interfaces.Values)
             {
@@ -410,11 +371,11 @@ namespace NetForge.Simulation.Devices
                     }
                 }
             }
-            
+
             RunningConfig.AppendLine($" network {network} {wildcard} area {area}");
             ParentNetwork?.UpdateProtocols();
         }
-        
+
         public void SetOspfRouterId(string routerId)
         {
             if (OspfConfig != null)
@@ -423,7 +384,7 @@ namespace NetForge.Simulation.Devices
                 RunningConfig.AppendLine($" router-id {routerId}");
             }
         }
-        
+
         public void AddRipNetwork(string network)
         {
             if (RipConfig != null)
@@ -433,7 +394,7 @@ namespace NetForge.Simulation.Devices
                 ParentNetwork?.UpdateProtocols();
             }
         }
-        
+
         public void AddEigrpNetwork(string network, string wildcard)
         {
             if (EigrpConfig != null)
@@ -445,7 +406,7 @@ namespace NetForge.Simulation.Devices
                 ParentNetwork?.UpdateProtocols();
             }
         }
-        
+
         public void SetRipVersion(int version)
         {
             if (RipConfig != null)
@@ -454,7 +415,7 @@ namespace NetForge.Simulation.Devices
                 RunningConfig.AppendLine($" version {version}");
             }
         }
-        
+
         public void SetRipAutoSummary(bool enabled)
         {
             if (RipConfig != null)
@@ -466,7 +427,7 @@ namespace NetForge.Simulation.Devices
                 }
             }
         }
-        
+
         public void SetEigrpAutoSummary(bool enabled)
         {
             if (EigrpConfig != null)
@@ -478,7 +439,7 @@ namespace NetForge.Simulation.Devices
                 }
             }
         }
-        
+
         public void AddBgpNetwork(string network, string mask)
         {
             if (BgpConfig != null)
@@ -486,7 +447,7 @@ namespace NetForge.Simulation.Devices
                 var cidr = mask != null ? MaskToCidr(mask) : 0;
                 var networkStr = mask != null ? $"{network}/{cidr}" : network;
                 BgpConfig.Networks.Add(networkStr);
-                
+
                 if (mask != null)
                 {
                     RunningConfig.AppendLine($" network {network} mask {mask}");
@@ -498,11 +459,11 @@ namespace NetForge.Simulation.Devices
                 ParentNetwork?.UpdateProtocols();
             }
         }
-        
+
         public void AddBgpNeighbor(string neighborIp, int remoteAs)
         {
             if (BgpConfig == null) return;
-            
+
             if (!BgpConfig.Neighbors.ContainsKey(neighborIp))
             {
                 var neighbor = new BgpNeighbor(neighborIp, remoteAs);
@@ -515,7 +476,7 @@ namespace NetForge.Simulation.Devices
             RunningConfig.AppendLine($" neighbor {neighborIp} remote-as {remoteAs}");
             ParentNetwork?.UpdateProtocols();
         }
-        
+
         public void SetBgpRouterId(string routerId)
         {
             if (BgpConfig != null)
@@ -524,40 +485,40 @@ namespace NetForge.Simulation.Devices
                 RunningConfig.AppendLine($" bgp router-id {routerId}");
             }
         }
-        
+
         public void SetBgpNeighborDescription(string neighborIp, string description)
         {
             if (BgpConfig == null) return;
-            
+
             if (BgpConfig.Neighbors.ContainsKey(neighborIp))
             {
                 BgpConfig.Neighbors[neighborIp].Description = description;
                 RunningConfig.AppendLine($" neighbor {neighborIp} description {description}");
             }
         }
-        
+
         public void ShutdownBgpNeighbor(string neighborIp)
         {
             if (BgpConfig == null) return;
-            
+
             if (BgpConfig.Neighbors.ContainsKey(neighborIp))
             {
                 BgpConfig.Neighbors[neighborIp].State = "Idle (Admin)";
                 RunningConfig.AppendLine($" neighbor {neighborIp} shutdown");
             }
         }
-        
+
         public void ActivateBgpNeighbor(string neighborIp)
         {
             if (BgpConfig == null) return;
-            
+
             if (BgpConfig.Neighbors.ContainsKey(neighborIp))
             {
                 BgpConfig.Neighbors[neighborIp].State = "Established";
                 RunningConfig.AppendLine($" neighbor {neighborIp} activate");
             }
         }
-        
+
         // ACL helper methods
         public void SetCurrentAclNumber(int aclNumber)
         {
@@ -567,24 +528,24 @@ namespace NetForge.Simulation.Devices
                 AccessLists[aclNumber] = new AccessList(aclNumber);
             }
         }
-        
+
         public int GetCurrentAclNumber() => currentAclNumber;
-        
+
         public void AddAclEntry(int aclNumber, AclEntry entry)
         {
             if (!AccessLists.ContainsKey(aclNumber))
             {
                 AccessLists[aclNumber] = new AccessList(aclNumber);
             }
-            
+
             AccessLists[aclNumber].Entries.Add(entry);
-            
+
             var cmd = new StringBuilder($"access-list {aclNumber} {entry.Action}");
             if (entry.Protocol != "ip" && aclNumber >= 100)
             {
                 cmd.Append($" {entry.Protocol}");
             }
-            
+
             if (entry.SourceAddress == "any")
             {
                 cmd.Append(" any");
@@ -597,7 +558,7 @@ namespace NetForge.Simulation.Devices
             {
                 cmd.Append($" {entry.SourceAddress} {entry.SourceWildcard}");
             }
-            
+
             if (aclNumber >= 100 && aclNumber <= 199)
             {
                 if (entry.DestAddress == "any")
@@ -613,31 +574,31 @@ namespace NetForge.Simulation.Devices
                     cmd.Append($" {entry.DestAddress} {entry.DestWildcard}");
                 }
             }
-            
+
             RunningConfig.AppendLine(cmd.ToString());
         }
-        
+
         // STP helper methods
         public void SetStpMode(string mode)
         {
             StpConfig.Mode = mode;
             RunningConfig.AppendLine($"spanning-tree mode {mode}");
         }
-        
+
         public void SetStpVlanPriority(int vlanId, int priority)
         {
             StpConfig.VlanPriorities[vlanId] = priority;
             RunningConfig.AppendLine($"spanning-tree vlan {vlanId} priority {priority}");
             ParentNetwork?.UpdateProtocols();
         }
-        
+
         public void SetStpPriority(int priority)
         {
             StpConfig.DefaultPriority = priority;
             RunningConfig.AppendLine($"spanning-tree priority {priority}");
             ParentNetwork?.UpdateProtocols();
         }
-        
+
         public void EnablePortfast(string interfaceName)
         {
             if (Interfaces.ContainsKey(interfaceName))
@@ -646,13 +607,13 @@ namespace NetForge.Simulation.Devices
                 RunningConfig.AppendLine(" spanning-tree portfast");
             }
         }
-        
+
         public void EnablePortfastDefault()
         {
             // Store portfast default setting in running config
             RunningConfig.AppendLine("spanning-tree portfast default");
         }
-        
+
         public void EnableBpduGuard(string interfaceName)
         {
             if (Interfaces.ContainsKey(interfaceName))
@@ -661,26 +622,26 @@ namespace NetForge.Simulation.Devices
                 RunningConfig.AppendLine(" spanning-tree bpduguard enable");
             }
         }
-        
+
         public void EnableBpduGuardDefault()
         {
             // Store bpduguard default setting in running config
             RunningConfig.AppendLine("spanning-tree portfast bpduguard default");
         }
-        
+
         // CDP helper methods
         public void EnableCdpGlobal()
         {
             cdpEnabled = true;
             RunningConfig.AppendLine("cdp run");
         }
-        
+
         public void DisableCdpGlobal()
         {
             cdpEnabled = false;
             RunningConfig.AppendLine("no cdp run");
         }
-        
+
         public void EnableCdpInterface(string interfaceName)
         {
             if (Interfaces.ContainsKey(interfaceName))
@@ -688,7 +649,7 @@ namespace NetForge.Simulation.Devices
                 RunningConfig.AppendLine(" cdp enable");
             }
         }
-        
+
         public void DisableCdpInterface(string interfaceName)
         {
             if (Interfaces.ContainsKey(interfaceName))
@@ -696,19 +657,19 @@ namespace NetForge.Simulation.Devices
                 RunningConfig.AppendLine(" no cdp enable");
             }
         }
-        
+
         public void SetCdpTimer(int seconds)
         {
             cdpTimer = seconds;
             RunningConfig.AppendLine($"cdp timer {seconds}");
         }
-        
+
         public void SetCdpHoldtime(int seconds)
         {
             cdpHoldtime = seconds;
             RunningConfig.AppendLine($"cdp holdtime {seconds}");
         }
-        
+
         public string ShowCdpStatus()
         {
             var output = new StringBuilder();
@@ -718,7 +679,7 @@ namespace NetForge.Simulation.Devices
             output.AppendLine($"        Sending CDPv2 advertisements is enabled");
             return output.ToString();
         }
-        
+
         public string ShowCdpNeighbors()
         {
             var output = new StringBuilder();
@@ -727,21 +688,21 @@ namespace NetForge.Simulation.Devices
             output.AppendLine("                  D - Remote, C - CVTA, M - Two-port Mac Relay");
             output.AppendLine();
             output.AppendLine("Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID");
-            
+
             // In a real implementation, this would show actual neighbors
             // For now, return empty neighbor list
-            
+
             output.AppendLine();
             output.AppendLine($"Total cdp entries displayed : 0");
             return output.ToString();
         }
-        
+
         public string ShowCdpNeighborsDetail()
         {
             // In a real implementation, this would show detailed neighbor info
             return "Total cdp entries displayed : 0\n";
         }
-        
+
         public string ShowCdpInterface()
         {
             var output = new StringBuilder();
@@ -755,7 +716,7 @@ namespace NetForge.Simulation.Devices
             }
             return output.ToString();
         }
-        
+
         public string ShowCdpTraffic()
         {
             var output = new StringBuilder();
@@ -767,7 +728,7 @@ namespace NetForge.Simulation.Devices
             output.AppendLine("        CDP version 2 advertisements output: 0, Input: 0");
             return output.ToString();
         }
-        
+
         // Clear command helper methods
         public void ClearRoutingTable()
         {
@@ -778,14 +739,14 @@ namespace NetForge.Simulation.Devices
         {
             RoutingTable.RemoveAll(r => r.Network == route && r.Protocol == "Static");
         }
-        
+
         public void ClearAllRoutes()
         {
             // Clear only non-connected routes
             RoutingTable.RemoveAll(r => r.Protocol != "Connected");
             UpdateConnectedRoutes();
         }
-        
+
         public void ClearOspfProcess()
         {
             if (OspfConfig != null)
@@ -794,7 +755,7 @@ namespace NetForge.Simulation.Devices
                 // OSPF will reconverge
             }
         }
-        
+
         public void ClearBgpPeer(string peerIp)
         {
             if (BgpConfig != null)
@@ -806,7 +767,7 @@ namespace NetForge.Simulation.Devices
                 }
             }
         }
-        
+
         public void ClearAllBgpPeers()
         {
             if (BgpConfig != null)
@@ -817,7 +778,7 @@ namespace NetForge.Simulation.Devices
                 }
             }
         }
-        
+
         public void ClearInterfaceCounters(string interfaceName)
         {
             if (Interfaces.ContainsKey(interfaceName))
@@ -829,7 +790,7 @@ namespace NetForge.Simulation.Devices
                 iface.TxBytes = 0;
             }
         }
-        
+
         public void ClearAllCounters()
         {
             foreach (var iface in Interfaces.Values)
@@ -840,15 +801,10 @@ namespace NetForge.Simulation.Devices
                 iface.TxBytes = 0;
             }
         }
-        
+
         public void ClearLogging()
         {
             // Clear log buffer
-        }
-        
-        public void ClearCdpTable()
-        {
-            cdpNeighbors.Clear();
         }
 
         // Additional methods needed by tests
@@ -929,7 +885,7 @@ namespace NetForge.Simulation.Devices
             // Simulate pings with realistic results
             int successCount = 0;
             var resultPattern = new StringBuilder();
-            
+
             for (int i = 0; i < 5; i++)
             {
                 var result = TestPhysicalConnectivity(outgoingInterface, 64); // Standard ping packet size
@@ -937,14 +893,14 @@ namespace NetForge.Simulation.Devices
                 {
                     successCount++;
                     resultPattern.Append("!");
-                    
+
                     // Increment interface counters for successful pings
                     if (outgoingInterfaceConfig != null)
                     {
                         outgoingInterfaceConfig.TxPackets++;
                         outgoingInterfaceConfig.TxBytes += 64; // Standard ping packet size
                     }
-                    
+
                     // Increment RX counters on destination device
                     if (destInterface != null)
                     {
@@ -959,7 +915,7 @@ namespace NetForge.Simulation.Devices
             }
 
             sb.AppendLine(resultPattern.ToString());
-            
+
             if (successCount == 5)
             {
                 sb.AppendLine($"Success rate is 100 percent (5/5), round-trip min/avg/max = 1/1/4 ms");
@@ -997,4 +953,4 @@ namespace NetForge.Simulation.Devices
             return sb.ToString();
         }
     }
-} 
+}

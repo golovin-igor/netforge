@@ -1,5 +1,4 @@
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.BGP
 {
@@ -11,7 +10,7 @@ namespace NetForge.Simulation.Protocols.BGP
         public int LocalAs { get; set; } = 0;
         public string RouterId { get; set; } = "";
         public Dictionary<string, BgpPeer> Peers { get; set; } = new();
-        
+
         /// <summary>
         /// Access to neighbors collection for base protocol compatibility
         /// </summary>
@@ -21,7 +20,7 @@ namespace NetForge.Simulation.Protocols.BGP
         public bool PolicyChanged { get; set; } = true;
         public DateTime LastRouteSelection { get; set; } = DateTime.MinValue;
         public int RouteSelectionCount { get; set; } = 0;
-        
+
         /// <summary>
         /// Get or create BGP peer with type safety
         /// </summary>
@@ -29,7 +28,7 @@ namespace NetForge.Simulation.Protocols.BGP
         {
             return GetOrCreateNeighbor<BgpPeer>(peerKey, factory);
         }
-        
+
         /// <summary>
         /// Mark routing policy as changed to trigger route selection
         /// </summary>
@@ -38,7 +37,7 @@ namespace NetForge.Simulation.Protocols.BGP
             PolicyChanged = true;
             MarkStateChanged();
         }
-        
+
         /// <summary>
         /// Record successful route selection
         /// </summary>
@@ -48,7 +47,7 @@ namespace NetForge.Simulation.Protocols.BGP
             RouteSelectionCount++;
             PolicyChanged = false;
         }
-        
+
         /// <summary>
         /// Check if route selection is needed
         /// </summary>
@@ -56,7 +55,7 @@ namespace NetForge.Simulation.Protocols.BGP
         {
             return PolicyChanged || (DateTime.Now - LastRouteSelection).TotalMinutes > 5;
         }
-        
+
         public override Dictionary<string, object> GetStateData()
         {
             var baseData = base.GetStateData();
@@ -71,7 +70,7 @@ namespace NetForge.Simulation.Protocols.BGP
             return baseData;
         }
     }
-    
+
     /// <summary>
     /// Represents a BGP peer session with enhanced state tracking
     /// </summary>
@@ -92,14 +91,14 @@ namespace NetForge.Simulation.Protocols.BGP
         public int UpdatesReceived { get; set; } = 0;
         public DateTime LastUpdate { get; set; } = DateTime.MinValue;
         public List<string> AddressFamilies { get; set; } = new() { "IPv4-Unicast" };
-        
+
         public BgpPeer(string peerIp, int peerAs, bool isIbgp)
         {
             PeerIp = peerIp;
             PeerAs = peerAs;
             IsIbgp = isIbgp;
         }
-        
+
         /// <summary>
         /// Get time spent in current state
         /// </summary>
@@ -107,18 +106,18 @@ namespace NetForge.Simulation.Protocols.BGP
         {
             return DateTime.Now - StateTime;
         }
-        
+
         /// <summary>
         /// Check if peer session is established
         /// </summary>
         public bool IsEstablished => State == "Established";
-        
+
         /// <summary>
         /// Get peer type description
         /// </summary>
         public string PeerType => IsIbgp ? "IBGP" : "EBGP";
     }
-    
+
     /// <summary>
     /// Represents a BGP route entry in the RIB
     /// </summary>
@@ -137,33 +136,33 @@ namespace NetForge.Simulation.Protocols.BGP
         public string PeerIp { get; set; } = "";
         public DateTime ReceivedTime { get; set; } = DateTime.Now;
         public DateTime LastUpdate { get; set; } = DateTime.Now;
-        
+
         /// <summary>
         /// Get route key for identification
         /// </summary>
         public string RouteKey => $"{Network}/{PrefixLength}";
-        
+
         /// <summary>
         /// Get AS path length for best path selection
         /// </summary>
         public int AsPathLength => AsPath.Count;
-        
+
         /// <summary>
         /// Check if route is from EBGP peer
         /// </summary>
         public bool IsEbgpRoute => AsPath.Count > 0;
-        
+
         /// <summary>
         /// Get route age in seconds
         /// </summary>
         public int AgeInSeconds => (int)(DateTime.Now - ReceivedTime).TotalSeconds;
-        
+
         /// <summary>
         /// Create AS path string representation
         /// </summary>
         public string AsPathString => string.Join(" ", AsPath);
     }
-    
+
     /// <summary>
     /// BGP session states according to RFC 4271
     /// </summary>
@@ -176,7 +175,7 @@ namespace NetForge.Simulation.Protocols.BGP
         OpenConfirm,
         Established
     }
-    
+
     /// <summary>
     /// BGP message types
     /// </summary>
@@ -188,7 +187,7 @@ namespace NetForge.Simulation.Protocols.BGP
         Keepalive = 4,
         RouteRefresh = 5
     }
-    
+
     /// <summary>
     /// BGP route origin types
     /// </summary>
@@ -198,7 +197,7 @@ namespace NetForge.Simulation.Protocols.BGP
         EGP = 1,
         Incomplete = 2
     }
-    
+
     /// <summary>
     /// BGP well-known communities
     /// </summary>
@@ -209,7 +208,7 @@ namespace NetForge.Simulation.Protocols.BGP
         public const string NoExportSubconfed = "65535:65283";
         public const string PlannedShutdown = "65535:0";
     }
-    
+
     /// <summary>
     /// BGP address family identifiers
     /// </summary>

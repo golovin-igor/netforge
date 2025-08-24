@@ -1,6 +1,5 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
 using NetForge.Simulation.Devices;
 using Xunit;
 

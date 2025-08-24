@@ -1,7 +1,7 @@
-using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
 
-namespace NetForge.Simulation.CliHandlers
+namespace NetForge.Simulation.Common.CLI.Base
 {
     /// <summary>
     /// Manages CLI handlers for a device
@@ -46,7 +46,7 @@ namespace NetForge.Simulation.CliHandlers
 
                 // Split the command into parts
                 var parts = SplitCommand(command);
-                
+
                 // Create the context
                 var context = new CliContext(device, parts, command)
                 {
@@ -58,7 +58,7 @@ namespace NetForge.Simulation.CliHandlers
                 {
                     return CliResult.Ok(GetHelpText(context));
                 }
-                
+
                 if (parts.Length == 0)
                     return CliResult.Ok();
 
@@ -96,7 +96,7 @@ namespace NetForge.Simulation.CliHandlers
         public List<string> GetCompletions(string command)
         {
             var completions = new List<string>();
-            
+
             // Handle empty command
             if (string.IsNullOrWhiteSpace(command))
             {
@@ -111,30 +111,30 @@ namespace NetForge.Simulation.CliHandlers
                 }
                 return completions.Distinct().OrderBy(x => x).ToList();
             }
-            
+
             // Split the command into parts
             var parts = SplitCommand(command);
-            
+
             // Create the context
             var context = new CliContext(device, parts, command);
-            
+
             // If we have only one part, do fuzzy matching on all handlers
             if (parts.Length == 1)
             {
                 var partialCommand = parts[0];
                 var allHandlers = handlers.ToList();
-                
+
                 // First, add exact prefix matches
                 var exactMatches = allHandlers.Where(h => {
                     var info = h.GetCommandInfo();
                     return info.HasValue && info.Value.Item1.StartsWith(partialCommand, StringComparison.OrdinalIgnoreCase);
                 }).ToList();
-                
+
                 foreach (var handler in exactMatches)
                 {
                     completions.AddRange(handler.GetCompletions(context));
                 }
-                
+
                 // If no exact matches, try fuzzy matching
                 if (exactMatches.Count == 0)
                 {
@@ -143,13 +143,13 @@ namespace NetForge.Simulation.CliHandlers
                         if (!info.HasValue) return false;
                         return CalculateFuzzyScore(partialCommand, info.Value.Item1) > 0.5;
                     }).ToList();
-                    
+
                     foreach (var handler in fuzzyMatches)
                     {
                         completions.AddRange(handler.GetCompletions(context));
                     }
                 }
-                
+
                 // Also add direct command name matches
                 foreach (var handler in handlers)
                 {
@@ -175,7 +175,7 @@ namespace NetForge.Simulation.CliHandlers
                     }
                 }
             }
-            
+
             return completions.Distinct().OrderBy(x => x).ToList();
         }
 
@@ -186,27 +186,27 @@ namespace NetForge.Simulation.CliHandlers
         {
             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(target))
                 return 0;
-            
+
             input = input.ToLowerInvariant();
             target = target.ToLowerInvariant();
-            
+
             // Exact match
             if (input == target)
                 return 1.0;
-            
+
             // Starts with match
             if (target.StartsWith(input))
                 return 0.9;
-            
+
             // Contains match
             if (target.Contains(input))
                 return 0.7;
-            
+
             // Levenshtein distance based scoring
             var distance = LevenshteinDistance(input, target);
             var maxLength = Math.Max(input.Length, target.Length);
             var similarity = 1.0 - ((double)distance / maxLength);
-            
+
             return similarity;
         }
 
@@ -219,7 +219,7 @@ namespace NetForge.Simulation.CliHandlers
             {
                 return GetGeneralHelp();
             }
-            
+
             // Check if this is a help request (ends with ?)
             bool isHelpRequest = command.TrimEnd().EndsWith("?");
             if (isHelpRequest)
@@ -227,16 +227,16 @@ namespace NetForge.Simulation.CliHandlers
                 // Remove the ? and any trailing space
                 command = command.TrimEnd().TrimEnd('?').TrimEnd();
             }
-            
+
             // Split the command into parts
             var parts = SplitCommand(command);
-            
+
             // Create the context for help
             var context = new CliContext(device, parts, command)
             {
                 IsHelpRequest = true
             };
-            
+
             return GetHelpText(context);
         }
 
@@ -247,7 +247,7 @@ namespace NetForge.Simulation.CliHandlers
         {
             var help = new List<string>();
             var allCommands = new Dictionary<string, string>(); // cmd -> description
-            
+
             foreach (var handler in handlers)
             {
                 var info = handler.GetCommandInfo();
@@ -260,7 +260,7 @@ namespace NetForge.Simulation.CliHandlers
                     }
                 }
             }
-            
+
             if (allCommands.Any())
             {
                 help.Add("Available commands:");
@@ -273,7 +273,7 @@ namespace NetForge.Simulation.CliHandlers
             {
                 help.Add("No commands available.");
             }
-            
+
             return string.Join("\n", help);
         }
 
@@ -285,27 +285,27 @@ namespace NetForge.Simulation.CliHandlers
             var help = new List<string>();
             var foundHandler = false;
             var allSubCommands = new Dictionary<string, string>(); // cmd -> description
-            
+
             // If no command parts, show general help
             if (context.CommandParts.Length == 0)
             {
                 return GetGeneralHelp();
             }
-            
+
             foreach (var handler in handlers)
             {
                 if (handler.CanHandlePrefix(context))
                 {
                     foundHandler = true;
-                    
+
                     // If this is a help request for a specific handler, use its contextual help
                     if (context.IsHelpRequest && handler.CanHandle(context))
                     {
                         // Use the handler's own contextual help method
                         var handlerType = handler.GetType();
-                        var getContextualHelpMethod = handlerType.GetMethod("GetContextualHelp", 
+                        var getContextualHelpMethod = handlerType.GetMethod("GetContextualHelp",
                             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                        
+
                         if (getContextualHelpMethod != null)
                         {
                             var contextualHelp = getContextualHelpMethod.Invoke(handler, new object[] { context }) as string;
@@ -315,9 +315,9 @@ namespace NetForge.Simulation.CliHandlers
                             }
                         }
                     }
-                    
+
                     var subCommands = handler.GetSubCommands(context);
-                    
+
                     // Collect all sub-commands from all handlers
                     foreach (var (cmd, desc) in subCommands)
                     {
@@ -329,7 +329,7 @@ namespace NetForge.Simulation.CliHandlers
                     }
                 }
             }
-            
+
             if (foundHandler && allSubCommands.Any())
             {
                 help.Add("Available options:");
@@ -337,7 +337,7 @@ namespace NetForge.Simulation.CliHandlers
                 {
                     help.Add($"  {cmd,-15} {desc}");
                 }
-                
+
                 // Add additional help information
                 help.Add("");
                 help.Add("Use '?' after any command for context-sensitive help");
@@ -348,7 +348,7 @@ namespace NetForge.Simulation.CliHandlers
                 help.Add("% Invalid input detected at '^' marker.");
                 help.Add("");
                 help.Add("Available commands:");
-                
+
                 // Show available root commands
                 foreach (var handler in handlers)
                 {
@@ -360,7 +360,7 @@ namespace NetForge.Simulation.CliHandlers
                     }
                 }
             }
-            
+
             return string.Join("\n", help) + "\n";
         }
 
@@ -422,7 +422,7 @@ namespace NetForge.Simulation.CliHandlers
         {
             var suggestions = new List<string>();
             var parts = SplitCommand(command);
-            
+
             if (parts.Length > 0)
             {
                 // Find similar commands
@@ -439,7 +439,7 @@ namespace NetForge.Simulation.CliHandlers
                     }
                 }
             }
-            
+
             return suggestions.ToArray();
         }
 
@@ -480,5 +480,5 @@ namespace NetForge.Simulation.CliHandlers
             return matrix[s1.Length, s2.Length];
         }
     }
-} 
+}
 

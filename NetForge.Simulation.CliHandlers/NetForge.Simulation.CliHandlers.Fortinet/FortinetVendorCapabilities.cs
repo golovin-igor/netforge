@@ -1,7 +1,8 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Configuration;
-using NetForge.Simulation.Protocols.Routing;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Configuration;
+using NetForge.Simulation.Common.Protocols;
 
 namespace NetForge.Simulation.CliHandlers.Fortinet
 {
@@ -18,7 +19,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet
         {
             var interfaces = _device.GetAllInterfaces();
             var vlans = _device.GetAllVlans();
-            
+
             var config = "#config-version=FGT60E-6.4.6-FW-build1754-200724\n";
             config += "#conf_file_ver=27179869270\n";
             config += "#buildno=1754\n";
@@ -26,7 +27,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet
             config += "config system global\n";
             config += $"    set hostname \"{_device.GetHostname()}\"\n";
             config += "end\n";
-            
+
             foreach (var iface in interfaces.Values.OrderBy(i => i.Name))
             {
                 config += $"config system interface\n";
@@ -38,7 +39,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet
                 config += "    next\n";
                 config += "end\n";
             }
-            
+
             return config;
         }
 
@@ -91,7 +92,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet
         {
             var iface = _device.GetInterface(interfaceName);
             if (iface == null) return "Interface not found";
-            
+
             return $"Interface {iface.Name} is {(iface.IsUp ? "up" : "down")}, " +
                    $"line protocol is {(iface.IsUp && !iface.IsShutdown ? "up" : "down")}";
         }
@@ -100,7 +101,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet
         {
             var iface = _device.GetInterface(interfaceName);
             if (iface == null) return false;
-            
+
             iface.IpAddress = ipAddress;
             iface.SubnetMask = subnetMask;
             _device.ForceUpdateConnectedRoutes();
@@ -138,7 +139,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet
         {
             var iface = _device.GetInterface(interfaceName);
             if (iface == null) return false;
-            
+
             iface.IsShutdown = true;
             iface.IsUp = false;
             return true;
@@ -148,7 +149,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet
         {
             var iface = _device.GetInterface(interfaceName);
             if (iface == null) return false;
-            
+
             iface.IsShutdown = false;
             iface.IsUp = true;
             return true;
@@ -460,4 +461,4 @@ namespace NetForge.Simulation.CliHandlers.Fortinet
             return true;
         }
     }
-} 
+}

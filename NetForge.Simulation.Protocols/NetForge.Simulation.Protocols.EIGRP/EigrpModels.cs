@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
 // Use the existing EigrpConfig from Common project
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.EIGRP
 {
@@ -14,7 +14,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
         public int Variance { get; set; } = 1;
         public int MaxPaths { get; set; } = 4;
         public Dictionary<string, EigrpInterfaceConfig> Interfaces { get; set; } = new();
-        
+
         public EigrpAdvancedConfig(int asNumber) : base(asNumber)
         {
         }
@@ -92,12 +92,12 @@ namespace NetForge.Simulation.Protocols.EIGRP
                         toRemove.Add(kvp.Key);
                     }
                 }
-                
+
                 foreach (var key in toRemove)
                 {
                     TopologyTable.Remove(key);
                 }
-                
+
                 MarkStateChanged();
                 TopologyChanged = true;
             }
@@ -180,7 +180,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
         public int Load { get; set; } = 1; // 0-255
         public int Mtu { get; set; } = 1500;
         public int HopCount { get; set; } = 0;
-        
+
         // K-values for metric calculation
         public int K1 { get; set; } = 1; // Bandwidth
         public int K2 { get; set; } = 0; // Load
@@ -191,14 +191,14 @@ namespace NetForge.Simulation.Protocols.EIGRP
         public long CalculateCompositeMetric()
         {
             // EIGRP Composite Metric = 256 * ((K1 * Bandwidth) + ((K2 * Bandwidth)/(256 - Load)) + (K3 * Delay)) * (K5/(Reliability + K4))
-            
+
             long metric = 0;
-            
+
             if (K5 == 0)
             {
                 // Simple formula when K5 = 0
                 metric = K1 * (10000000 / Bandwidth) + K3 * (Delay / 10);
-                
+
                 if (K2 > 0)
                 {
                     metric += K2 * (10000000 / Bandwidth) / (256 - Load);
@@ -208,15 +208,15 @@ namespace NetForge.Simulation.Protocols.EIGRP
             {
                 // Complex formula when K5 > 0
                 long basePart = K1 * (10000000 / Bandwidth) + K3 * (Delay / 10);
-                
+
                 if (K2 > 0)
                 {
                     basePart += K2 * (10000000 / Bandwidth) / (256 - Load);
                 }
-                
+
                 metric = basePart * K5 / (Reliability + K4);
             }
-            
+
             return metric * 256;
         }
     }

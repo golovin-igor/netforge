@@ -1,7 +1,6 @@
 using NetForge.Simulation.CliHandlers.Cisco;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Interfaces;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CiscoVendor
@@ -460,4 +459,4 @@ namespace NetForge.Simulation.Tests.CiscoVendor
             Assert.All(errorMessages.Values, msg => Assert.StartsWith("%", msg)); // Cisco errors start with %
         }
     }
-} 
+}

@@ -1,6 +1,6 @@
 using System.Text;
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
 
 namespace NetForge.Simulation.CliHandlers.Dell.Basic
 {
@@ -14,19 +14,19 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
             AddAlias("en");
             AddAlias("ena");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (IsInMode(context, "privileged"))
             {
                 return Success("");
             }
-            
+
             SetMode(context, "privileged");
             return Success("");
         }
@@ -40,26 +40,26 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
         public PingCommandHandler() : base("ping", "Send ping packets")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
                 return Error(CliErrorType.IncompleteCommand, "% Incomplete command - need IP address");
             }
-            
+
             var targetIp = context.CommandParts[1];
-            
+
             if (!System.Net.IPAddress.TryParse(targetIp, out _))
             {
                 return Error(CliErrorType.InvalidParameter, $"% Invalid IP address: {targetIp}");
             }
-            
+
             var output = new StringBuilder();
             output.AppendLine($"PING {targetIp}");
             output.AppendLine($"64 bytes from {targetIp}: time=1.2 ms");
@@ -67,7 +67,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
             output.AppendLine($"64 bytes from {targetIp}: time=1.0 ms");
             output.AppendLine($"--- {targetIp} ping statistics ---");
             output.AppendLine("3 packets transmitted, 3 received, 0% packet loss");
-            
+
             return Success(output.ToString());
         }
     }
@@ -81,19 +81,19 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
         {
             AddAlias("dis");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (IsInMode(context, "user"))
             {
                 return Success("");
             }
-            
+
             SetMode(context, "user");
             return Success("");
         }
@@ -109,31 +109,31 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
             AddAlias("tracert");
             AddAlias("trace");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
                 return Error(CliErrorType.IncompleteCommand, "% Incomplete command - need destination IP");
             }
-            
+
             var targetIp = context.CommandParts[1];
-            
+
             if (!System.Net.IPAddress.TryParse(targetIp, out _))
             {
                 return Error(CliErrorType.InvalidParameter, $"% Invalid IP address: {targetIp}");
             }
-            
+
             var output = new StringBuilder();
             output.AppendLine($"traceroute to {targetIp}, 30 hops max, 40 byte packets");
             output.AppendLine($" 1  192.168.1.1  1.2 ms  1.1 ms  1.0 ms");
             output.AppendLine($" 2  {targetIp}  2.3 ms  2.1 ms  2.0 ms");
-            
+
             return Success(output.ToString());
         }
     }
@@ -147,14 +147,14 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
         {
             AddAlias("wr");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             return Success("Building configuration...\n[OK]");
         }
     }
@@ -167,14 +167,14 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
         public ReloadCommandHandler() : base("reload", "Restart the system")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             return Success("System restart requested...\n");
         }
     }
@@ -188,14 +188,14 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
         {
             AddAlias("hist");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             return Success("Command history:\n  1  show version\n  2  show ip interface brief\n  3  show running-config\n");
         }
     }
@@ -209,14 +209,14 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
         {
             AddAlias("?");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             return Success("Help may be requested at any point in a command by entering a question mark '?'.\n");
         }
     }
@@ -229,14 +229,14 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
         public CopyCommandHandler() : base("copy", "Copy files")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             return Success("Source filename []?\n");
         }
     }
@@ -249,14 +249,14 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
         public ClearCommandHandler() : base("clear", "Clear screen or counters")
         {
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             return Success("Cleared.\n");
         }
     }

@@ -2,8 +2,9 @@ using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Cisco.Show
 {

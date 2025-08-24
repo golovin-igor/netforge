@@ -1,4 +1,4 @@
-using NetForge.Simulation.Configuration;
+using NetForge.Simulation.Common.Configuration;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Configuration
@@ -248,7 +248,7 @@ namespace NetForge.Simulation.Tests.Configuration
             Assert.NotNull(portChannel.MemberPorts);
             Assert.IsType<List<string>>(portChannel.MemberPorts);
             Assert.Empty(portChannel.MemberPorts);
-            
+
             Assert.NotNull(portChannel.MemberInterfaces);
             Assert.IsType<List<string>>(portChannel.MemberInterfaces);
             Assert.Empty(portChannel.MemberInterfaces);
@@ -374,7 +374,7 @@ namespace NetForge.Simulation.Tests.Configuration
             portChannel.MemberPorts.Add("Gi0/1");
             portChannel.MemberPorts.Add("Fa0/1");
             portChannel.MemberPorts.Add("Te0/1");
-            
+
             portChannel.MemberInterfaces.Add("GigabitEthernet0/1");
             portChannel.MemberInterfaces.Add("FastEthernet0/1");
             portChannel.MemberInterfaces.Add("TenGigabitEthernet0/1");
@@ -390,4 +390,4 @@ namespace NetForge.Simulation.Tests.Configuration
             Assert.Contains("TenGigabitEthernet0/1", portChannel.MemberInterfaces);
         }
     }
-} 
+}

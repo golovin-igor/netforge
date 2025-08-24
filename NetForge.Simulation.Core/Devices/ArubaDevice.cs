@@ -1,9 +1,9 @@
 using System.Text;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
 using NetForge.Simulation.Core;
-using PortChannelConfig = NetForge.Simulation.Configuration.PortChannel;
+using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
 namespace NetForge.Simulation.Devices
 {
@@ -16,7 +16,7 @@ namespace NetForge.Simulation.Devices
         private string currentRouterProtocol = "";
         private int currentVlanId = 0;
         private int currentAclNumber = 0;
-        
+
         public ArubaDevice(string name) : base(name)
         {
             Vendor = "Aruba";
@@ -32,7 +32,7 @@ namespace NetForge.Simulation.Devices
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
         }
-        
+
         protected override void InitializeDefaultInterfaces()
         {
             // Add default interfaces for an Aruba switch
@@ -47,14 +47,14 @@ namespace NetForge.Simulation.Devices
             }
              Interfaces["mgmt"] = new InterfaceConfig("mgmt", this);
         }
-        
+
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Aruba handlers to ensure they are available for tests
             var registry = new NetForge.Simulation.CliHandlers.Aruba.ArubaHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
-        
+
         public override string GetPrompt()
         {
             return base.CurrentMode switch
@@ -68,7 +68,7 @@ namespace NetForge.Simulation.Devices
                 _ => $"{Hostname}>"
             };
         }
-        
+
         private string GetSimplifiedInterfaceName(string interfaceName)
         {
             // Convert "1/1/1" back to "1" for prompt display
@@ -79,15 +79,15 @@ namespace NetForge.Simulation.Devices
             }
             return interfaceName ?? "";
         }
-        
+
         public override async Task<string> ProcessCommandAsync(string command)
         {
             // Use the command handler manager for all command processing
             if (CommandManager != null)
             {
                 var result = await CommandManager.ProcessCommandAsync(command);
-                
-                // If command was handled, return the result 
+
+                // If command was handled, return the result
                 if (result != null)
                 {
                     // Check if result already ends with prompt
@@ -102,42 +102,42 @@ namespace NetForge.Simulation.Devices
                     }
                 }
             }
-            
+
             // If no handler found, return Aruba error format
             return "Invalid input\n" + GetPrompt();
         }
-        
+
         // All ProcessXXXModeCommand methods removed - now handled by command handlers
-        
+
         // All ProcessXXXCommand methods removed - now handled by command handlers
-        
+
         // Helper methods for command handlers
         public string GetMode() => base.CurrentMode.ToModeString();
         public new void SetCurrentMode(string mode) => base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
         public new string GetCurrentInterface() => CurrentInterface;
         public new void SetCurrentInterface(string iface) => CurrentInterface = iface;
-        
+
         // Aruba-specific helper methods
         public string GetCurrentRouterProtocol() => currentRouterProtocol;
         public void SetCurrentRouterProtocol(string protocol) => currentRouterProtocol = protocol;
-        
+
         public void AppendToRunningConfig(string line)
         {
             RunningConfig.AppendLine(line);
         }
-        
+
         public void UpdateProtocols()
         {
             ParentNetwork?.UpdateProtocols();
         }
-        
+
         public void UpdateConnectedRoutesPublic()
         {
             UpdateConnectedRoutes();
         }
-        
+
         // ProcessShowCommand removed - now handled by ShowCommandHandler
-        
+
         private string GetMacAddress()
         {
             return "aa-bb-cc-00-01-00";
@@ -278,4 +278,4 @@ namespace NetForge.Simulation.Devices
             PortChannels[channelId].MemberInterfaces.Add(interfaceName);
         }
     }
-} 
+}

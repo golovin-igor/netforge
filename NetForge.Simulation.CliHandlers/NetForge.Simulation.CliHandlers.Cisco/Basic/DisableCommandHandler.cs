@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Base;
 
 namespace NetForge.Simulation.CliHandlers.Cisco.Basic
 {

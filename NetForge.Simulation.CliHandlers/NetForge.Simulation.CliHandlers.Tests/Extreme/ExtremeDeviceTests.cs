@@ -1,5 +1,6 @@
 using NetForge.Simulation.Devices;
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Extreme

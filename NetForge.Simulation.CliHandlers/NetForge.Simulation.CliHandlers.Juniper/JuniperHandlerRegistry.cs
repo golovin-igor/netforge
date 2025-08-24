@@ -1,5 +1,9 @@
 using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Factories;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Juniper
 {
@@ -27,7 +31,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper
 
         public override IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            if (device is NetForge.Simulation.Common.NetworkDevice networkDevice)
+            if (device is NetworkDevice networkDevice)
             {
                 return new JuniperVendorContext(networkDevice);
             }

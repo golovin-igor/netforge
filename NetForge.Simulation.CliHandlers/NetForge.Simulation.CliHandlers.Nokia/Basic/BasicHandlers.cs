@@ -1,6 +1,6 @@
 using System.Text;
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
 
 namespace NetForge.Simulation.CliHandlers.Nokia.Basic
 {

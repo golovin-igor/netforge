@@ -1,5 +1,8 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Broadcom
 {
@@ -52,10 +55,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom
                 new Basic.HistoryCommandHandler(),
                 new Basic.CopyCommandHandler(),
                 new Basic.TracerouteCommandHandler(),
-                
+
                 // Show handlers
                 new Show.ShowCommandHandler()
             };
         }
     }
-} 
+}

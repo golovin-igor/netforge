@@ -1,8 +1,8 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
 using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.CliHandlers.Services;
-using NetForge.Simulation.CliHandlers.Extensions;
+using NetForge.Simulation.Common.CLI.Extensions;
+using NetForge.Simulation.Common.CLI.Services;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Core;
 
@@ -55,10 +55,10 @@ namespace NetForge.Simulation.Devices
                 return GetPrompt();
 
             // Process command using vendor-aware handler manager
-            var result = _vendorHandlerManager != null ? 
-                        await _vendorHandlerManager.ProcessCommandAsync(command) : 
+            var result = _vendorHandlerManager != null ?
+                        await _vendorHandlerManager.ProcessCommandAsync(command) :
                         await CommandManager.ProcessCommandAsync(command);
-            
+
             if (result != null)
             {
                 var output = result.Output;

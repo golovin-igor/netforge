@@ -1,24 +1,27 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Arista;
 
 public class AristaHandlerRegistry : IVendorHandlerRegistry
 {
     public string VendorName => "Arista";
-    
+
     public int Priority => 120; // High priority for Arista
-    
+
     public bool CanHandle(string vendorName)
     {
         return vendorName.Equals("Arista", StringComparison.OrdinalIgnoreCase);
     }
-    
+
     public void RegisterHandlers(CliHandlerManager manager)
     {
         // Register Arista show handlers
         manager.RegisterHandler(new Show.ShowCommandHandler());
-        
+
         // Register Arista configuration handlers
         manager.RegisterHandler(new Configuration.ConfigureCommandHandler());
         manager.RegisterHandler(new Configuration.InterfaceCommandHandler());
@@ -27,7 +30,7 @@ public class AristaHandlerRegistry : IVendorHandlerRegistry
         manager.RegisterHandler(new Configuration.NoCommandHandler());
         manager.RegisterHandler(new Configuration.ExitCommandHandler());
         manager.RegisterHandler(new Configuration.IpCommandHandler());
-        
+
         // Register Arista basic handlers
         manager.RegisterHandler(new Basic.EnableCommandHandler());
         manager.RegisterHandler(new Basic.PingCommandHandler());
@@ -57,4 +60,4 @@ public class AristaHandlerRegistry : IVendorHandlerRegistry
     {
         // Arista registry cleanup
     }
-} 
+}

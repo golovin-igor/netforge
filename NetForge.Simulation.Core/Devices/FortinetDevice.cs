@@ -1,8 +1,8 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Core;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Devices
 {

@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 
-namespace NetForge.Simulation.CliHandlers.AI
+namespace NetForge.Simulation.Common.CLI.AI
 {
     /// <summary>
     /// Manages session context for AI CLI interactions
@@ -45,7 +45,7 @@ namespace NetForge.Simulation.CliHandlers.AI
                 return Task.CompletedTask;
 
             var context = _sessions.GetOrAdd(sessionId, _ => new SessionContext());
-            
+
             context.PreviousCommands.Add(command);
             context.LastCommandTimestamp = DateTime.UtcNow;
             context.CommandCount++;
@@ -76,7 +76,7 @@ namespace NetForge.Simulation.CliHandlers.AI
         /// </summary>
         public Task CleanupExpiredSessionsAsync()
         {
-            var expiredSessions = _sessions.Where(kvp => 
+            var expiredSessions = _sessions.Where(kvp =>
                 DateTime.UtcNow - kvp.Value.LastCommandTimestamp > _sessionTimeout)
                 .Select(kvp => kvp.Key)
                 .ToList();
@@ -100,4 +100,4 @@ namespace NetForge.Simulation.CliHandlers.AI
         public DateTime LastCommandTimestamp { get; set; }
         public int CommandCount { get; set; }
     }
-} 
+}

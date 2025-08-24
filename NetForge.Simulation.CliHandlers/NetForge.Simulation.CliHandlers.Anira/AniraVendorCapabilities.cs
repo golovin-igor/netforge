@@ -1,4 +1,4 @@
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Anira
 {
@@ -314,4 +314,4 @@ namespace NetForge.Simulation.CliHandlers.Anira
             return true;
         }
     }
-} 
+}

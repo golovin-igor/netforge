@@ -1,8 +1,8 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
+using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Events;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers
@@ -60,7 +60,7 @@ namespace NetForge.Simulation.Tests.CliHandlers
                     r2IfaceEventFired = true;
                 return Task.CompletedTask;
             });
-            
+
             // Ensure interfaces are initially shutdown for a clear test of them coming up
             var r1Iface = r1.GetInterface("GigabitEthernet0/0"); // Default interface name might vary by device type
             if(r1Iface != null) {
@@ -72,7 +72,7 @@ namespace NetForge.Simulation.Tests.CliHandlers
                 r2Iface.IsShutdown = true;
                 r2Iface.IsShutdown = false;
             }
-            
+
             await _network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
             await Task.Delay(50); // Allow events to propagate
 
@@ -82,7 +82,7 @@ namespace NetForge.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task RemoveLinkAsyncLinkRemovedEventPublishedAndInterfacesDown() 
+        public async Task RemoveLinkAsyncLinkRemovedEventPublishedAndInterfacesDown()
         {
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
@@ -114,7 +114,7 @@ namespace NetForge.Simulation.Tests.CliHandlers
                 return Task.CompletedTask;
             });
 
-            await _network.RemoveLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0"); 
+            await _network.RemoveLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
             await Task.Delay(50); // Allow events to propagate
 
             Assert.True(linkEventFired, "LinkRemovedEvent was not fired.");
@@ -123,16 +123,16 @@ namespace NetForge.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public void GetDeviceNonExistentDeviceReturnsNull() 
+        public void GetDeviceNonExistentDeviceReturnsNull()
         {
             Assert.Null(_network.GetDevice("NonExistent"));
         }
 
         [Fact]
-        public async Task FindDeviceByIpDeviceExistsReturnsDevice() 
+        public async Task FindDeviceByIpDeviceExistsReturnsDevice()
         {
             var device = new CiscoDevice("R1");
-            await _network.AddDeviceAsync(device); 
+            await _network.AddDeviceAsync(device);
             var ifaceConfig = device.GetInterface("GigabitEthernet0/0");
             if (ifaceConfig != null) ifaceConfig.IpAddress = "192.168.1.1";
 
@@ -140,15 +140,15 @@ namespace NetForge.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task GetConnectedDevicesNoLinkReturnsEmpty() 
+        public async Task GetConnectedDevicesNoLinkReturnsEmpty()
         {
             var device = new CiscoDevice("R1");
-            await _network.AddDeviceAsync(device); 
+            await _network.AddDeviceAsync(device);
             Assert.Empty(_network.GetConnectedDevices("R1", "GigabitEthernet0/0"));
         }
 
         [Fact]
-        public async Task GetConnectedDevicesWithLinkReturnsConnectedDevice() 
+        public async Task GetConnectedDevicesWithLinkReturnsConnectedDevice()
         {
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
@@ -163,33 +163,33 @@ namespace NetForge.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task UpdateProtocolsCallsUpdateOnAllDevices() 
+        public async Task UpdateProtocolsCallsUpdateOnAllDevices()
         {
             var device1 = new TestDevice("D1");
             var device2 = new TestDevice("D2");
             await _network.AddDeviceAsync(device1);
             await _network.AddDeviceAsync(device2);
 
-            _network.UpdateProtocols(); 
+            _network.UpdateProtocols();
             await Task.Delay(50); // Allow time for async operations within UpdateAllProtocolStates to complete if any.
 
             Assert.True(device1.UpdateAllProtocolStatesCalled, "Device1.UpdateAllProtocolStates was not called.");
             Assert.True(device2.UpdateAllProtocolStatesCalled, "Device2.UpdateAllProtocolStates was not called.");
         }
-        
+
         [Fact]
         public async Task AddDeviceNullDeviceDoesNotThrowAndDoesNotAdd()
         {
             int initialCount = _network.GetAllDevices().Count();
-            await _network.AddDeviceAsync(null); 
+            await _network.AddDeviceAsync(null);
             Assert.Equal(initialCount, _network.GetAllDevices().Count());
         }
 
         [Fact]
-        public async Task AddLinkDeviceNotExistsDoesNotAddLink() 
+        public async Task AddLinkDeviceNotExistsDoesNotAddLink()
         {
             var r1 = new CiscoDevice("R1");
-            await _network.AddDeviceAsync(r1); 
+            await _network.AddDeviceAsync(r1);
 
             await _network.AddLinkAsync("R1", "GigabitEthernet0/0", "NonExistentR2", "GigabitEthernet0/0");
             Assert.False(_network.AreConnected("R1", "GigabitEthernet0/0", "NonExistentR2", "GigabitEthernet0/0"));
@@ -199,18 +199,18 @@ namespace NetForge.Simulation.Tests.CliHandlers
         }
 
         [Fact]
-        public async Task RemoveLinkNonExistentLinkDoesNotThrow() 
+        public async Task RemoveLinkNonExistentLinkDoesNotThrow()
         {
              var r1 = new CiscoDevice("R1");
              var r2 = new CiscoDevice("R2");
              await _network.AddDeviceAsync(r1);
              await _network.AddDeviceAsync(r2);
-            await _network.RemoveLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0"); 
-            Assert.True(true); 
+            await _network.RemoveLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
+            Assert.True(true);
         }
 
         [Fact]
-        public async Task MultipleLinksBetweenSameDevicesAreAllowed() 
+        public async Task MultipleLinksBetweenSameDevicesAreAllowed()
         {
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
@@ -227,14 +227,14 @@ namespace NetForge.Simulation.Tests.CliHandlers
         {
             public bool UpdateAllProtocolStatesCalled { get; private set; }
             public TestDevice(string name) : base(name) { Vendor = "Test"; }
-            protected override void InitializeDefaultInterfaces() { Interfaces.Add("Default0", new InterfaceConfig("Default0", this)); } 
+            protected override void InitializeDefaultInterfaces() { Interfaces.Add("Default0", new InterfaceConfig("Default0", this)); }
             public override string GetPrompt() => $"{Name}>";
             protected override void RegisterDeviceSpecificHandlers() { }
-            public override async Task UpdateAllProtocolStates() 
-            { 
-                UpdateAllProtocolStatesCalled = true; 
+            public override async Task UpdateAllProtocolStates()
+            {
+                UpdateAllProtocolStatesCalled = true;
                 await base.UpdateAllProtocolStates();
             }
         }
     }
-} 
+}

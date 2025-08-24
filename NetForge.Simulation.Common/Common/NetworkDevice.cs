@@ -1,18 +1,14 @@
 using System.Globalization;
 using System.Text;
-using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.CliHandlers.Common;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.CommonHandlers;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
-using NetForge.Simulation.Core;
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Protocols.Routing;
-using NetForge.Simulation.Protocols.Security;
-using INetworkProtocol = NetForge.Simulation.Interfaces.INetworkProtocol;
-using NetForge.Simulation.Events;
-using NetForge.Simulation.Protocols.Discovery;
+using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.Common.Security;
+using INetworkProtocol = NetForge.Simulation.Common.Interfaces.INetworkProtocol;
 
-namespace NetForge.Simulation.Common
+namespace NetForge.Simulation.Common.Common
 {
     /// <summary>
     /// Base class for all network device implementations
@@ -638,7 +634,7 @@ namespace NetForge.Simulation.Common
 
             // Simulate pings with realistic latency and potential packet loss
             int successCount = 0;
-            
+
             for (int i = 0; i < 5; i++)
             {
                 var result = TestPhysicalConnectivity(outgoingInterface, 64); // Standard ping packet size
@@ -646,14 +642,14 @@ namespace NetForge.Simulation.Common
                 {
                     successCount++;
                     sb.Append($"64 bytes from {destination}: icmp_seq={i + 1} ttl=64 time={result.ActualLatency}.{i} ms").AppendLine();
-                    
+
                     // Increment interface counters for successful pings
                     if (outgoingInterfaceConfig != null)
                     {
                         outgoingInterfaceConfig.TxPackets++;
                         outgoingInterfaceConfig.TxBytes += 64; // Standard ping packet size
                     }
-                    
+
                     // Increment RX counters on destination device
                     if (destInterface != null)
                     {
@@ -713,7 +709,7 @@ namespace NetForge.Simulation.Common
                         if (entry.Protocol.ToLowerInvariant() == "icmp" && entry.Action == "deny")
                         {
                             // Check if this ACL entry applies to the destination
-                            if (entry.DestAddress == "any" || 
+                            if (entry.DestAddress == "any" ||
                                 entry.DestAddress == destination ||
                                 (entry.DestAddress.StartsWith("host ") && entry.DestAddress.Substring(5) == destination))
                             {
@@ -975,7 +971,7 @@ namespace NetForge.Simulation.Common
 
         /// <summary>
         /// Check if protocols should consider this interface for routing/switching decisions
-        /// This method respects physical connectivity - protocols should only use interfaces 
+        /// This method respects physical connectivity - protocols should only use interfaces
         /// that have operational physical connections
         /// </summary>
         public bool ShouldInterfaceParticipateInProtocols(string interfaceName)
@@ -1013,7 +1009,7 @@ namespace NetForge.Simulation.Common
                         if (entry.Protocol.ToLowerInvariant() == "icmp" && entry.Action == "deny")
                         {
                             // Check if this ACL entry applies to the destination
-                            if (entry.DestAddress == "any" || 
+                            if (entry.DestAddress == "any" ||
                                 entry.DestAddress == destination ||
                                 (entry.DestAddress.StartsWith("host ") && entry.DestAddress.Substring(5) == destination))
                             {

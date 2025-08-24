@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.CliHandlers
+namespace NetForge.Simulation.Common.CLI.Base
 {
     /// <summary>
     /// Represents the result of a CLI command execution
@@ -9,16 +9,16 @@ namespace NetForge.Simulation.CliHandlers
         public string Output { get; init; } = string.Empty;
         public CliErrorType? Error { get; init; }
         public string[]? Suggestions { get; init; }
-        
+
         private CliResult() { }
-        
-        public static CliResult Ok(string output = "") => new() 
-        { 
-            Success = true, 
+
+        public static CliResult Ok(string output = "") => new()
+        {
+            Success = true,
             Output = output ?? string.Empty
         };
-        
-        public static CliResult Failed(CliErrorType errorType, string output = "", string[]? suggestions = null) => new() 
+
+        public static CliResult Failed(CliErrorType errorType, string output = "", string[]? suggestions = null) => new()
         {
             Success = false,
             Error = errorType,
@@ -26,7 +26,7 @@ namespace NetForge.Simulation.CliHandlers
             Suggestions = suggestions
         };
     }
-    
+
     /// <summary>
     /// Defines standard error types for CLI command execution
     /// </summary>
@@ -40,4 +40,4 @@ namespace NetForge.Simulation.CliHandlers
         ExecutionError,
         NotImplemented
     }
-} 
+}

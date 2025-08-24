@@ -1,7 +1,8 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Configuration;
-using NetForge.Simulation.Protocols.Routing;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Configuration;
+using NetForge.Simulation.Common.Protocols;
 
 namespace NetForge.Simulation.CliHandlers.Extreme
 {
@@ -18,11 +19,11 @@ namespace NetForge.Simulation.CliHandlers.Extreme
         {
             var interfaces = _device.GetAllInterfaces();
             var vlans = _device.GetAllVlans();
-            
+
             var config = "!\n";
             config += $"hostname {_device.GetHostname()}\n";
             config += "!\n";
-            
+
             foreach (var vlan in vlans.Values.OrderBy(v => v.Id))
             {
                 config += $"vlan {vlan.Id}\n";
@@ -30,7 +31,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme
                     config += $" name {vlan.Name}\n";
                 config += "!\n";
             }
-            
+
             foreach (var iface in interfaces.Values.OrderBy(i => i.Name))
             {
                 config += $"interface {iface.Name}\n";
@@ -40,7 +41,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme
                     config += " shutdown\n";
                 config += "!\n";
             }
-            
+
             config += "end\n";
             return config;
         }
@@ -94,7 +95,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme
         {
             var iface = _device.GetInterface(interfaceName);
             if (iface == null) return "Interface not found";
-            
+
             return $"Interface {iface.Name} is {(iface.IsUp ? "up" : "down")}, " +
                    $"line protocol is {(iface.IsUp && !iface.IsShutdown ? "up" : "down")}";
         }
@@ -103,7 +104,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme
         {
             var iface = _device.GetInterface(interfaceName);
             if (iface == null) return false;
-            
+
             iface.IpAddress = ipAddress;
             iface.SubnetMask = subnetMask;
             _device.ForceUpdateConnectedRoutes();
@@ -141,7 +142,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme
         {
             var iface = _device.GetInterface(interfaceName);
             if (iface == null) return false;
-            
+
             iface.IsShutdown = true;
             iface.IsUp = false;
             return true;
@@ -151,7 +152,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme
         {
             var iface = _device.GetInterface(interfaceName);
             if (iface == null) return false;
-            
+
             iface.IsShutdown = false;
             iface.IsUp = true;
             return true;
@@ -463,4 +464,4 @@ namespace NetForge.Simulation.CliHandlers.Extreme
             return true;
         }
     }
-} 
+}

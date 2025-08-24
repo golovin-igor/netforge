@@ -1,4 +1,6 @@
-namespace NetForge.Simulation.CliHandlers.Common
+using NetForge.Simulation.Common.CLI.Base;
+
+namespace NetForge.Simulation.Common.CLI.CommonHandlers
 {
     /// <summary>
     /// Common exit command handler
@@ -36,5 +38,5 @@ namespace NetForge.Simulation.CliHandlers.Common
             }
         }
     }
-} 
+}
 

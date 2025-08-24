@@ -1,6 +1,7 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Interfaces;
 using NetForge.Simulation.Protocols.SSH;
 using NetForge.Simulation.Protocols.ARP;
 

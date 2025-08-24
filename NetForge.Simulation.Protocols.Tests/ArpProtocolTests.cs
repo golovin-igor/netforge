@@ -1,6 +1,7 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Interfaces;
 using NetForge.Simulation.Protocols.ARP;
 
 namespace NetForge.Simulation.Protocols.Tests
@@ -22,7 +23,7 @@ namespace NetForge.Simulation.Protocols.Tests
             _network = new Network();
             _testDevice = new CiscoDevice("TestArpDevice");
             _targetDevice = new CiscoDevice("TargetDevice");
-            
+
             _network.AddDeviceAsync(_testDevice).Wait();
             _network.AddDeviceAsync(_targetDevice).Wait();
 
@@ -85,7 +86,7 @@ namespace NetForge.Simulation.Protocols.Tests
             {
                 Type = ArpEntryType.Dynamic
             };
-            
+
             arpState.ArpTable.Add("192.168.1.2", arpEntry);
             await _arpProtocol.UpdateState(_testDevice);
 
@@ -106,7 +107,7 @@ namespace NetForge.Simulation.Protocols.Tests
                 Type = ArpEntryType.Dynamic,
                 Timestamp = DateTime.Now.AddMinutes(-30) // Expired entry
             };
-            
+
             arpState.ArpTable.Add("192.168.1.100", expiredEntry);
             _deviceLogs.Clear();
 
@@ -200,7 +201,7 @@ namespace NetForge.Simulation.Protocols.Tests
                 Type = ArpEntryType.Static,
                 Timestamp = DateTime.Now.AddHours(-1) // Old but static
             };
-            
+
             arpState.ArpTable.Add("192.168.1.254", staticEntry);
 
             // Act

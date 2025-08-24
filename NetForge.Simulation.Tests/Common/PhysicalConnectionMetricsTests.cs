@@ -1,4 +1,5 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Common

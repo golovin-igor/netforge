@@ -1,3 +1,5 @@
+using NetForge.Simulation.Common.Interfaces;
+
 namespace NetForge.Simulation.Protocols.Common
 {
     /// <summary>

@@ -1,4 +1,4 @@
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.Common
 {
@@ -12,30 +12,30 @@ namespace NetForge.Simulation.Protocols.Common
         /// Human-readable name of the plugin
         /// </summary>
         public abstract string PluginName { get; }
-        
+
         /// <summary>
         /// Version of the plugin
         /// </summary>
         public virtual string Version => "1.0.0";
-        
+
         /// <summary>
         /// The type of protocol this plugin provides
         /// </summary>
         public abstract ProtocolType ProtocolType { get; }
-        
+
         /// <summary>
         /// Priority for this plugin (higher values loaded first)
         /// Use higher priorities for vendor-specific implementations
         /// Default: 100 (generic), Vendor-specific: 200+
         /// </summary>
         public virtual int Priority => 100;
-        
+
         /// <summary>
         /// Create a new instance of the protocol
         /// </summary>
         /// <returns>New protocol instance</returns>
         public abstract IDeviceProtocol CreateProtocol();
-        
+
         /// <summary>
         /// Check if this plugin supports a specific vendor
         /// </summary>
@@ -45,7 +45,7 @@ namespace NetForge.Simulation.Protocols.Common
         {
             return GetSupportedVendors().Contains(vendorName, StringComparer.OrdinalIgnoreCase);
         }
-        
+
         /// <summary>
         /// Get the list of vendor names this plugin supports
         /// Override for vendor-specific plugins
@@ -55,7 +55,7 @@ namespace NetForge.Simulation.Protocols.Common
         {
             return new[] { "Generic" };
         }
-        
+
         /// <summary>
         /// Validate that the plugin can create protocols
         /// </summary>
@@ -72,7 +72,7 @@ namespace NetForge.Simulation.Protocols.Common
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Get plugin information for debugging and monitoring
         /// </summary>
@@ -89,7 +89,7 @@ namespace NetForge.Simulation.Protocols.Common
                 ["IsValid"] = IsValid()
             };
         }
-        
+
         /// <summary>
         /// String representation of the plugin
         /// </summary>

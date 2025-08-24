@@ -1,9 +1,10 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Configuration;
-using NetForge.Simulation.Protocols.Routing;
 using System.Text;
-using PortChannelConfig = NetForge.Simulation.Configuration.PortChannel;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Configuration;
+using NetForge.Simulation.Common.Protocols;
+using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
 namespace NetForge.Simulation.CliHandlers.Alcatel
 {
@@ -28,7 +29,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel
             var config = new StringBuilder();
             config.AppendLine("# Alcatel OmniSwitch Configuration");
             config.AppendLine($"hostname {_device.GetHostname()}");
-            
+
             foreach (var iface in _device.GetAllInterfaces().Values)
             {
                 config.AppendLine($"interface {iface.Name}");
@@ -39,7 +40,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel
                 if (iface.IsShutdown)
                     config.AppendLine("  shutdown");
             }
-            
+
             return config.ToString();
         }
 

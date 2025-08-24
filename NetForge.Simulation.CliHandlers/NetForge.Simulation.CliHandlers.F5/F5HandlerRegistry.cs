@@ -1,5 +1,9 @@
 using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Factories;
+using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.F5
 {
@@ -19,10 +23,10 @@ namespace NetForge.Simulation.CliHandlers.F5
             manager.RegisterHandler(new Basic.PingCommandHandler());
             manager.RegisterHandler(new Basic.ExitCommandHandler());
             manager.RegisterHandler(new Basic.HelpCommandHandler());
-            
+
             // Register F5 show handlers
             manager.RegisterHandler(new Show.ShowCommandHandler());
-            
+
             // Register F5 configuration handlers
             manager.RegisterHandler(new Configuration.ConfigureCommandHandler());
             manager.RegisterHandler(new Configuration.ExitCommandHandler());
@@ -31,11 +35,11 @@ namespace NetForge.Simulation.CliHandlers.F5
 
         public override IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            if (device is NetForge.Simulation.Common.NetworkDevice networkDevice)
+            if (device is NetworkDevice networkDevice)
             {
                 return new F5VendorContext(networkDevice);
             }
-            
+
             throw new ArgumentException($"Device type {device.GetType().Name} is not compatible with F5 handler registry");
         }
 
@@ -63,4 +67,4 @@ namespace NetForge.Simulation.CliHandlers.F5
             base.Cleanup();
         }
     }
-} 
+}

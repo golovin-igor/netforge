@@ -1,7 +1,7 @@
-using NetForge.Simulation.Interfaces;
-using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.Interfaces;
 
-namespace NetForge.Simulation.CliHandlers.Extensions
+namespace NetForge.Simulation.Common.CLI.Extensions
 {
     /// <summary>
     /// Extension methods for enhanced CLI completion functionality
@@ -14,22 +14,22 @@ namespace NetForge.Simulation.CliHandlers.Extensions
         public static List<string> GetContextualCompletions(this ICliHandler handler, CliContext context, string partialCommand)
         {
             var completions = new List<string>();
-            
+
             // Get basic completions from handler
             var basicCompletions = handler.GetCompletions(context);
-            
+
             // Filter by partial command if provided
             if (!string.IsNullOrEmpty(partialCommand))
             {
                 // Add exact prefix matches first
-                var exactMatches = basicCompletions.Where(c => 
+                var exactMatches = basicCompletions.Where(c =>
                     c.StartsWith(partialCommand, StringComparison.OrdinalIgnoreCase)).ToList();
                 completions.AddRange(exactMatches);
-                
+
                 // Add fuzzy matches if no exact matches
                 if (exactMatches.Count == 0)
                 {
-                    var fuzzyMatches = basicCompletions.Where(c => 
+                    var fuzzyMatches = basicCompletions.Where(c =>
                         GetFuzzyMatchScore(partialCommand, c) > 0.5).ToList();
                     completions.AddRange(fuzzyMatches);
                 }
@@ -38,17 +38,17 @@ namespace NetForge.Simulation.CliHandlers.Extensions
             {
                 completions.AddRange(basicCompletions);
             }
-            
+
             return completions.Distinct().OrderBy(c => c).ToList();
         }
-        
+
         /// <summary>
         /// Gets interface names for completion
         /// </summary>
         public static List<string> GetInterfaceCompletions(this CliContext context, string partialName = "")
         {
             var interfaces = new List<string>();
-            
+
             // Get interfaces from device
             var device = context.Device;
             if (device != null)
@@ -68,24 +68,24 @@ namespace NetForge.Simulation.CliHandlers.Extensions
             {
                 interfaces.AddRange(GetCommonInterfaceNames());
             }
-            
+
             // Filter by partial name if provided
             if (!string.IsNullOrEmpty(partialName))
             {
-                interfaces = interfaces.Where(i => 
+                interfaces = interfaces.Where(i =>
                     i.StartsWith(partialName, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            
+
             return interfaces.Distinct().OrderBy(i => i).ToList();
         }
-        
+
         /// <summary>
         /// Gets VLAN IDs for completion
         /// </summary>
         public static List<string> GetVlanCompletions(this CliContext context, string partialId = "")
         {
             var vlans = new List<string>();
-            
+
             // Get VLANs from device
             var device = context.Device;
             if (device != null)
@@ -105,41 +105,41 @@ namespace NetForge.Simulation.CliHandlers.Extensions
             {
                 vlans.AddRange(new[] { "1", "10", "20", "30", "100", "200", "300" });
             }
-            
+
             // Filter by partial ID if provided
             if (!string.IsNullOrEmpty(partialId))
             {
-                vlans = vlans.Where(v => 
+                vlans = vlans.Where(v =>
                     v.StartsWith(partialId, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            
+
             return vlans.Distinct().OrderBy(v => v).ToList();
         }
-        
+
         /// <summary>
         /// Gets protocol completions based on context
         /// </summary>
         public static List<string> GetProtocolCompletions(this CliContext context, string partialProtocol = "")
         {
             var protocols = new List<string> { "ospf", "bgp", "eigrp", "rip", "isis", "static" };
-            
+
             // Get vendor-specific protocols if available
             if (context.VendorContext != null)
             {
                 var vendorProtocols = context.VendorContext.GetCommandCompletions(new[] { "router" });
                 protocols.AddRange(vendorProtocols);
             }
-            
+
             // Filter by partial protocol if provided
             if (!string.IsNullOrEmpty(partialProtocol))
             {
-                protocols = protocols.Where(p => 
+                protocols = protocols.Where(p =>
                     p.StartsWith(partialProtocol, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            
+
             return protocols.Distinct().OrderBy(p => p).ToList();
         }
-        
+
         /// <summary>
         /// Gets IP address completions for common configurations
         /// </summary>
@@ -156,24 +156,24 @@ namespace NetForge.Simulation.CliHandlers.Extensions
                 "127.0.0.1",
                 "0.0.0.0"
             };
-            
+
             // Filter by partial IP if provided
             if (!string.IsNullOrEmpty(partialIp))
             {
-                addresses = addresses.Where(a => 
+                addresses = addresses.Where(a =>
                     a.StartsWith(partialIp, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            
+
             return addresses.Distinct().OrderBy(a => a).ToList();
         }
-        
+
         /// <summary>
         /// Gets mode-specific completions based on current device mode
         /// </summary>
         public static List<string> GetModeSpecificCompletions(this CliContext context)
         {
             var currentMode = context.CurrentMode.ToLowerInvariant();
-            
+
             return currentMode switch
             {
                 "user" => new List<string> { "enable", "ping", "show", "exit" },
@@ -186,7 +186,7 @@ namespace NetForge.Simulation.CliHandlers.Extensions
                 _ => new List<string>()
             };
         }
-        
+
         /// <summary>
         /// Calculate fuzzy match score between two strings
         /// </summary>
@@ -194,30 +194,30 @@ namespace NetForge.Simulation.CliHandlers.Extensions
         {
             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(target))
                 return 0;
-            
+
             input = input.ToLowerInvariant();
             target = target.ToLowerInvariant();
-            
+
             // Exact match
             if (input == target)
                 return 1.0;
-            
+
             // Starts with match
             if (target.StartsWith(input))
                 return 0.9;
-            
+
             // Contains match
             if (target.Contains(input))
                 return 0.7;
-            
+
             // Levenshtein distance based scoring
             var distance = CalculateLevenshteinDistance(input, target);
             var maxLength = Math.Max(input.Length, target.Length);
             var similarity = 1.0 - ((double)distance / maxLength);
-            
+
             return similarity;
         }
-        
+
         /// <summary>
         /// Calculate Levenshtein distance between two strings
         /// </summary>
@@ -243,7 +243,7 @@ namespace NetForge.Simulation.CliHandlers.Extensions
 
             return matrix[s1.Length, s2.Length];
         }
-        
+
         /// <summary>
         /// Get common interface names for fallback
         /// </summary>
@@ -265,4 +265,4 @@ namespace NetForge.Simulation.CliHandlers.Extensions
             };
         }
     }
-} 
+}

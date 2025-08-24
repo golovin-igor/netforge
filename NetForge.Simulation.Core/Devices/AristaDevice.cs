@@ -1,10 +1,10 @@
 using NetForge.Simulation.Common;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Configuration;
+using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.Common.Security;
 using NetForge.Simulation.Core;
-using NetForge.Simulation.Protocols.Routing;
-using NetForge.Simulation.Protocols.Security;
-using PortChannelConfig = NetForge.Simulation.Configuration.PortChannel;
+using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
 namespace NetForge.Simulation.Devices
 {

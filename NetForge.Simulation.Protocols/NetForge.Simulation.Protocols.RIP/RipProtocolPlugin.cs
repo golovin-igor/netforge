@@ -1,4 +1,4 @@
-using NetForge.Simulation.Interfaces;
+using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
 
 namespace NetForge.Simulation.Protocols.RIP;
