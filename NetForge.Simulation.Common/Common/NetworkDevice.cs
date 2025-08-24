@@ -42,7 +42,6 @@ namespace NetForge.Simulation.Common.Common
         protected RipConfig RipConfig;
         protected EigrpConfig EigrpConfig;
         protected StpConfig StpConfig = new();
-        protected IsIsConfig IsisConfig;
         protected IgrpConfig IgrpConfig;
         protected VrrpConfig VrrpConfig;
         protected HsrpConfig HsrpConfig;
@@ -234,7 +233,7 @@ namespace NetForge.Simulation.Common.Common
         public RipConfig? GetRipConfiguration() => RipConfig;
         public EigrpConfig? GetEigrpConfiguration() => EigrpConfig;
         public StpConfig GetStpConfiguration() => StpConfig;
-        public IsIsConfig? GetIsisConfiguration() => IsisConfig;
+
         public IgrpConfig? GetIgrpConfiguration() => IgrpConfig;
         public VrrpConfig? GetVrrpConfiguration() => VrrpConfig;
         public HsrpConfig? GetHsrpConfiguration() => HsrpConfig;
@@ -280,13 +279,7 @@ namespace NetForge.Simulation.Common.Common
             ParentNetwork?.EventBus?.PublishAsync(new Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.STP, "STP configuration updated"));
         }
 
-        public void SetIsisConfiguration(IsIsConfig config)
-        {
-            bool wasNull = IsisConfig == null;
-            IsisConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.ISIS,
-                wasNull ? "ISIS configuration initialized" : "ISIS configuration updated"));
-        }
+
 
         public void SetIgrpConfiguration(IgrpConfig config)
         {

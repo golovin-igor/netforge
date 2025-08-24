@@ -423,30 +423,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Juniper
             Assert.Equal(65002, bgpConfig.Groups["external-peers"].PeerAs);
         }
 
-        [Fact]
-        public async Task JuniperRouterShouldConfigureIsIs()
-        {
-            // Arrange
-            var device = new JuniperDevice("TestRouter");
-            await device.ProcessCommandAsync("configure");
-            
-            // Act
-            var output1 = await device.ProcessCommandAsync("set protocols isis interface ge-0/0/0.0");
-            var output2 = await device.ProcessCommandAsync("set protocols isis interface lo0.0 passive");
-            var output3 = await device.ProcessCommandAsync("set protocols isis level 1 disable");
-            
-            // Assert
-            Assert.Equal("TestRouter# ", device.GetPrompt());
-            Assert.Equal("TestRouter# ", output1);
-            Assert.Equal("TestRouter# ", output2);
-            Assert.Equal("TestRouter# ", output3);
-            
-            var isisConfig = device.GetIsisConfiguration();
-            Assert.NotNull(isisConfig);
-            Assert.Contains("ge-0/0/0.0", isisConfig.Interfaces);
-            Assert.Contains("lo0.0", isisConfig.PassiveInterfaces);
-            Assert.False(isisConfig.Level1Enabled);
-        }
+
 
         [Fact]
         public async Task JuniperRouterShouldConfigureRip()

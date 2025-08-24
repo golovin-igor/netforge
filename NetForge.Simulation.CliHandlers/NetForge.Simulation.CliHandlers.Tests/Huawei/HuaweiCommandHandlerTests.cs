@@ -240,34 +240,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Huawei
             Assert.Equal(65002, bgpConfig.Peers["192.168.1.2"].RemoteAs);
         }
 
-        [Fact]
-        public async Task HuaweiRouterShouldConfigureIsIs()
-        {
-            // Arrange
-            var device = new HuaweiDevice("TestRouter");
-            await device.ProcessCommandAsync("system-view");
-            
-            // Act
-            var output1 = await device.ProcessCommandAsync("isis 1");
-            var output2 = await device.ProcessCommandAsync("network-entity 49.0001.0000.0000.0001.00");
-            var output3 = await device.ProcessCommandAsync("is-level level-2");
-            var output4 = await device.ProcessCommandAsync("interface GigabitEthernet0/0/0");
-            var output5 = await device.ProcessCommandAsync("isis enable 1");
-            
-            // Assert
-            Assert.Equal("[TestRouter-GigabitEthernet0/0/0]", device.GetPrompt());
-            Assert.Equal("[TestRouter-isis-1]", output1);
-            Assert.Equal("[TestRouter-isis-1]", output2);
-            Assert.Equal("[TestRouter-isis-1]", output3);
-            Assert.Equal("[TestRouter-GigabitEthernet0/0/0]", output4);
-            Assert.Equal("[TestRouter-GigabitEthernet0/0/0]", output5);
-            
-            var isisConfig = device.GetIsisConfiguration();
-            Assert.NotNull(isisConfig);
-            Assert.Equal("49.0001.0000.0000.0001.00", isisConfig.NetworkEntity);
-            Assert.Equal("level-2", isisConfig.IsLevel);
-            Assert.Contains("GigabitEthernet0/0/0", isisConfig.Interfaces);
-        }
+
 
         [Fact]
         public async Task HuaweiRouterShouldConfigureRip()

@@ -7,7 +7,7 @@ namespace NetForge.Simulation.Common.Protocols
     {
         public int Version { get; set; } = 2;
         public List<string> Networks { get; set; } = new List<string>();
-        public List<RipNeighbor> Neighbors { get; set; } = new List<RipNeighbor>();
+        public List<string> Neighbors { get; set; } = new List<string>();
         public bool AutoSummary { get; set; } = false;
         public bool Summary { get; set; } = false;
         public Dictionary<string, RipGroup> Groups { get; set; } = new Dictionary<string, RipGroup>();

@@ -252,35 +252,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             Assert.Contains("192.168.1.2", bgpConfig.Groups["external-peers"].Neighbors);
         }
 
-        [Fact]
-        public async Task NokiaRouterShouldConfigureIsIs()
-        {
-            // Arrange
-            var device = new NokiaDevice("TestRouter");
-            await device.ProcessCommandAsync("configure router");
-            
-            // Act
-            var output1 = await device.ProcessCommandAsync("isis");
-            var output2 = await device.ProcessCommandAsync("net 49.0001.0000.0000.0001.00");
-            var output3 = await device.ProcessCommandAsync("level-capability level-2");
-            var output4 = await device.ProcessCommandAsync("interface \"system\"");
-            var output5 = await device.ProcessCommandAsync("interface-type point-to-point");
-            
-            // Assert
-            Assert.Equal("A:TestRouter>config>router>isis>interface#", device.GetPrompt());
-            Assert.Equal("A:TestRouter>config>router>isis#", output1);
-            Assert.Equal("A:TestRouter>config>router>isis#", output2);
-            Assert.Equal("A:TestRouter>config>router>isis#", output3);
-            Assert.Equal("A:TestRouter>config>router>isis>interface#", output4);
-            Assert.Equal("A:TestRouter>config>router>isis>interface#", output5);
-            
-            var isisConfig = device.GetIsisConfiguration();
-            Assert.NotNull(isisConfig);
-            Assert.Equal("49.0001.0000.0000.0001.00", isisConfig.NetworkEntity);
-            Assert.Equal("level-2", isisConfig.LevelCapability);
-            Assert.Contains("system", isisConfig.Interfaces);
-            Assert.Equal("point-to-point", isisConfig.Interfaces["system"].Type);
-        }
+
 
         [Fact]
         public async Task NokiaRouterShouldConfigureRip()

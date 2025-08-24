@@ -1,6 +1,44 @@
 namespace NetForge.Simulation.Common.Protocols
 {
     /// <summary>
+    /// Represents an OSPF neighbor
+    /// </summary>
+    public class OspfNeighbor
+    {
+        public string NeighborId { get; set; }
+        public string IpAddress { get; set; }
+        public string State { get; set; } = "INIT";
+        public string Interface { get; set; }
+        public int Priority { get; set; } = 1;
+        public DateTime StateTime { get; set; } = DateTime.Now;
+
+        public OspfNeighbor(string neighborId, string ipAddress, string interfaceName)
+        {
+            NeighborId = neighborId;
+            IpAddress = ipAddress;
+            Interface = interfaceName;
+        }
+    }
+
+    /// <summary>
+    /// Represents an OSPF interface configuration
+    /// </summary>
+    public class OspfInterface
+    {
+        public string Name { get; set; }
+        public int Area { get; set; }
+        public int Cost { get; set; } = 10;
+        public int Priority { get; set; } = 1;
+        public string NetworkType { get; set; } = "broadcast";
+        public string InterfaceType { get; set; } = "broadcast";
+
+        public OspfInterface(string name, int area)
+        {
+            Name = name;
+            Area = area;
+        }
+    }
+    /// <summary>
     /// Represents an OSPF configuration
     /// </summary>
     public class OspfArea
@@ -62,7 +100,11 @@ namespace NetForge.Simulation.Common.Protocols
                 AddArea(areaId);
             }
             Areas[areaId].Interfaces.Add(interfaceName);
-            if (Interfaces.ContainsKey(interfaceName))
+            if (!Interfaces.ContainsKey(interfaceName))
+            {
+                Interfaces[interfaceName] = new OspfInterface(interfaceName, areaId);
+            }
+            else
             {
                 Interfaces[interfaceName].Area = areaId;
             }
