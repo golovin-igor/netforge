@@ -2,17 +2,24 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Protocols.Common.Interfaces;
+using NetForge.Simulation.Protocols.Common.State;
+using NetForge.Simulation.Protocols.Common.Metrics;
+using NetForge.Simulation.Protocols.Common.Base;
+using System.Diagnostics;
 
 namespace NetForge.Simulation.Protocols.Common
 {
     /// <summary>
     /// Base implementation of network protocols following the state management pattern
-    /// from PROTOCOL_STATE_MANAGEMENT.md
+    /// from PROTOCOL_STATE_MANAGEMENT.md and implementing the standardized IDeviceProtocol interface
+    /// Also implements INetworkProtocol for backward compatibility
     /// </summary>
-    public abstract class BaseProtocol : IDeviceProtocol, IDisposable
+    public abstract class BaseProtocol : IDeviceProtocol, INetworkProtocol, IDisposable
     {
         protected NetworkDevice _device;
         protected readonly BaseProtocolState _state;
+        protected readonly ProtocolMetrics _metrics;
 
         // Abstract properties that derived classes must implement
         public abstract ProtocolType Type { get; }
@@ -22,6 +29,7 @@ namespace NetForge.Simulation.Protocols.Common
         protected BaseProtocol()
         {
             _state = CreateInitialState();
+            _metrics = new ProtocolMetrics();
         }
 
         /// <summary>
@@ -54,6 +62,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// <summary>
         /// Core state management pattern from PROTOCOL_STATE_MANAGEMENT.md
         /// Update the protocol state (called periodically by the simulation engine)
+        /// Enhanced with performance tracking and metrics collection
         /// </summary>
         /// <param name="device">The network device this protocol runs on</param>
         public virtual async Task UpdateState(NetworkDevice device)
@@ -61,6 +70,7 @@ namespace NetForge.Simulation.Protocols.Common
             if (!_state.IsActive || !_state.IsConfigured)
                 return;
 
+            var stopwatch = Stopwatch.StartNew();
             try
             {
                 // Always update neighbors and timers - these are lightweight operations
@@ -80,11 +90,18 @@ namespace NetForge.Simulation.Protocols.Common
                 {
                     device.AddLogEntry($"{Name}: No state changes detected, skipping expensive calculations.");
                 }
+
+                _metrics.RecordProcessingTime(stopwatch.Elapsed);
             }
             catch (Exception ex)
             {
+                _metrics.RecordError($"Error during state update: {ex.Message}");
                 device.AddLogEntry($"{Name}: Error during state update: {ex.Message}");
                 // Continue execution to prevent one protocol from breaking others
+            }
+            finally
+            {
+                stopwatch.Stop();
             }
         }
 
@@ -236,6 +253,48 @@ namespace NetForge.Simulation.Protocols.Common
         /// <param name="eventBus">Event bus</param>
         /// <param name="self">Device reference</param>
         protected virtual void OnSubscribeToEvents(NetworkEventBus eventBus, NetworkDevice self) { }
+
+        // Protocol dependencies and compatibility - New IDeviceProtocol methods
+        /// <summary>
+        /// Get protocols that this protocol depends on
+        /// Override to specify protocol dependencies
+        /// </summary>
+        /// <returns>Enumerable of required protocol types</returns>
+        public virtual IEnumerable<ProtocolType> GetDependencies()
+        {
+            return Enumerable.Empty<ProtocolType>();
+        }
+
+        /// <summary>
+        /// Get protocols that conflict with this protocol
+        /// Override to specify protocol conflicts
+        /// </summary>
+        /// <returns>Enumerable of conflicting protocol types</returns>
+        public virtual IEnumerable<ProtocolType> GetConflicts()
+        {
+            return Enumerable.Empty<ProtocolType>();
+        }
+
+        /// <summary>
+        /// Check if this protocol can coexist with another protocol
+        /// Default implementation checks conflict list
+        /// </summary>
+        /// <param name="otherProtocol">Other protocol type to check</param>
+        /// <returns>True if protocols can coexist, false otherwise</returns>
+        public virtual bool CanCoexistWith(ProtocolType otherProtocol)
+        {
+            return !GetConflicts().Contains(otherProtocol);
+        }
+
+        // Performance monitoring
+        /// <summary>
+        /// Get performance metrics for this protocol
+        /// </summary>
+        /// <returns>Protocol metrics interface</returns>
+        public virtual IProtocolMetrics GetMetrics()
+        {
+            return _metrics;
+        }
 
         // Utility methods for derived classes
 

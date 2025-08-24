@@ -1,10 +1,10 @@
-using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Protocols.Common.State;
 
-namespace NetForge.Simulation.Protocols.Common
+namespace NetForge.Simulation.Protocols.Common.Base
 {
     /// <summary>
-    /// Base implementation of protocol state management following the pattern 
-    /// from PROTOCOL_STATE_MANAGEMENT.md
+    /// Base implementation of protocol state following the standardized interface
+    /// Provides common state management functionality for all protocols
     /// </summary>
     public abstract class BaseProtocolState : IProtocolState
     {
@@ -13,24 +13,27 @@ namespace NetForge.Simulation.Protocols.Common
         public DateTime LastUpdate { get; set; } = DateTime.MinValue;
         public bool IsActive { get; set; } = true;
         public bool IsConfigured { get; set; } = false;
-        
-        // Neighbor management - generic storage for different neighbor types
+        public ProtocolStatus Status { get; set; } = ProtocolStatus.Stopped;
+
+        // Neighbor management
         protected readonly Dictionary<string, object> _neighbors = new();
         protected readonly Dictionary<string, DateTime> _neighborLastSeen = new();
-        
+
         /// <summary>
-        /// Mark that the state has changed and needs recalculation
+        /// Mark that the state has changed and requires processing
         /// </summary>
-        public virtual void MarkStateChanged() => StateChanged = true;
-        
+        public virtual void MarkStateChanged() 
+        {
+            StateChanged = true;
+        }
+
         /// <summary>
         /// Get or create a neighbor of the specified type
-        /// This provides type-safe neighbor management while maintaining flexibility
         /// </summary>
-        /// <typeparam name="TNeighbor">Type of neighbor to get or create</typeparam>
-        /// <param name="id">Unique identifier for the neighbor</param>
-        /// <param name="factory">Factory function to create new neighbor if needed</param>
-        /// <returns>The neighbor instance</returns>
+        /// <typeparam name="TNeighbor">Type of neighbor to create</typeparam>
+        /// <param name="id">Neighbor identifier</param>
+        /// <param name="factory">Factory function to create new neighbor</param>
+        /// <returns>Existing or new neighbor instance</returns>
         public virtual TNeighbor GetOrCreateNeighbor<TNeighbor>(string id, Func<TNeighbor> factory) 
             where TNeighbor : class
         {
@@ -42,30 +45,18 @@ namespace NetForge.Simulation.Protocols.Common
             }
             return (TNeighbor)_neighbors[id];
         }
-        
+
         /// <summary>
-        /// Get a neighbor by ID and type
+        /// Get an existing neighbor by ID
         /// </summary>
         /// <typeparam name="TNeighbor">Type of neighbor to retrieve</typeparam>
         /// <param name="id">Neighbor identifier</param>
-        /// <returns>The neighbor instance or null if not found</returns>
+        /// <returns>Neighbor instance or null if not found</returns>
         public virtual TNeighbor GetNeighbor<TNeighbor>(string id) where TNeighbor : class
         {
             return _neighbors.TryGetValue(id, out var neighbor) ? neighbor as TNeighbor : null;
         }
-        
-        /// <summary>
-        /// Get all neighbors of a specific type
-        /// </summary>
-        /// <typeparam name="TNeighbor">Type of neighbors to retrieve</typeparam>
-        /// <returns>Dictionary of neighbors by ID</returns>
-        public virtual Dictionary<string, TNeighbor> GetNeighbors<TNeighbor>() where TNeighbor : class
-        {
-            return _neighbors
-                .Where(kvp => kvp.Value is TNeighbor)
-                .ToDictionary(kvp => kvp.Key, kvp => (TNeighbor)kvp.Value);
-        }
-        
+
         /// <summary>
         /// Remove a neighbor from the protocol state
         /// </summary>
@@ -78,12 +69,12 @@ namespace NetForge.Simulation.Protocols.Common
                 MarkStateChanged();
             }
         }
-        
+
         /// <summary>
-        /// Get neighbors that have exceeded their timeout and should be removed
+        /// Get neighbors that have not been seen within the timeout period
         /// </summary>
         /// <param name="timeoutSeconds">Timeout in seconds (default 180)</param>
-        /// <returns>List of stale neighbor identifiers</returns>
+        /// <returns>List of stale neighbor IDs</returns>
         public virtual List<string> GetStaleNeighbors(int timeoutSeconds = 180)
         {
             var staleNeighbors = new List<string>();
@@ -99,23 +90,29 @@ namespace NetForge.Simulation.Protocols.Common
             
             return staleNeighbors;
         }
-        
+
         /// <summary>
-        /// Update the last activity time for a neighbor
+        /// Update the last seen time for a neighbor
         /// </summary>
-        /// <param name="id">Neighbor identifier</param>
-        public virtual void UpdateNeighborActivity(string id)
+        /// <param name="neighborId">ID of neighbor to update</param>
+        public virtual void UpdateNeighborActivity(string neighborId)
         {
-            if (_neighbors.ContainsKey(id))
-            {
-                _neighborLastSeen[id] = DateTime.Now;
-            }
+            _neighborLastSeen[neighborId] = DateTime.Now;
         }
-        
+
         /// <summary>
-        /// Get all state data as key-value pairs for monitoring and debugging
+        /// Get neighbor IDs for protocols that support neighbor relationships
         /// </summary>
-        /// <returns>Dictionary of state data</returns>
+        /// <returns>Enumerable of neighbor identifiers</returns>
+        public virtual IEnumerable<string> GetNeighborIds()
+        {
+            return _neighbors.Keys;
+        }
+
+        /// <summary>
+        /// Get a dictionary representation of the current state for monitoring
+        /// </summary>
+        /// <returns>Dictionary containing state data</returns>
         public virtual Dictionary<string, object> GetStateData()
         {
             return new Dictionary<string, object>
@@ -124,41 +121,59 @@ namespace NetForge.Simulation.Protocols.Common
                 ["IsActive"] = IsActive,
                 ["IsConfigured"] = IsConfigured,
                 ["StateChanged"] = StateChanged,
+                ["Status"] = Status.ToString(),
                 ["NeighborCount"] = _neighbors.Count,
-                ["ActiveNeighbors"] = _neighbors.Keys.ToList()
+                ["Neighbors"] = _neighbors.Keys.ToList()
             };
         }
-        
+
         /// <summary>
-        /// Get the typed state for specific protocol implementations
+        /// Get the typed state for protocol-specific access
         /// </summary>
-        /// <typeparam name="T">The specific state type</typeparam>
+        /// <typeparam name="T">Specific state type</typeparam>
         /// <returns>Typed state or null if not available</returns>
         public virtual T GetTypedState<T>() where T : class => this as T;
-        
+
         /// <summary>
-        /// Get the count of neighbors
+        /// Update the protocol status
         /// </summary>
-        public int NeighborCount => _neighbors.Count;
-        
-        /// <summary>
-        /// Check if a neighbor exists
-        /// </summary>
-        /// <param name="id">Neighbor identifier</param>
-        /// <returns>True if neighbor exists, false otherwise</returns>
-        public bool HasNeighbor(string id) => _neighbors.ContainsKey(id);
-        
-        /// <summary>
-        /// Clear all neighbors (useful for protocol resets)
-        /// </summary>
-        protected virtual void ClearNeighbors()
+        /// <param name="newStatus">New status to set</param>
+        protected virtual void UpdateStatus(ProtocolStatus newStatus)
         {
-            if (_neighbors.Count > 0)
+            if (Status != newStatus)
             {
-                _neighbors.Clear();
-                _neighborLastSeen.Clear();
+                Status = newStatus;
                 MarkStateChanged();
             }
+        }
+
+        /// <summary>
+        /// Set the protocol as active and configured
+        /// </summary>
+        public virtual void Activate()
+        {
+            IsActive = true;
+            IsConfigured = true;
+            UpdateStatus(ProtocolStatus.Active);
+        }
+
+        /// <summary>
+        /// Set the protocol as inactive
+        /// </summary>
+        public virtual void Deactivate()
+        {
+            IsActive = false;
+            UpdateStatus(ProtocolStatus.Stopped);
+        }
+
+        /// <summary>
+        /// Set the protocol in error state
+        /// </summary>
+        /// <param name="errorMessage">Error description</param>
+        public virtual void SetError(string errorMessage)
+        {
+            UpdateStatus(ProtocolStatus.Error);
+            // Derived classes can override to handle error details
         }
     }
 }
