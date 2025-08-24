@@ -2,14 +2,16 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common.State;
+using NetForge.Simulation.Protocols.Common.Metrics;
+using EnhancedProtocolState = NetForge.Simulation.Protocols.Common.State.IProtocolState;
 
 namespace NetForge.Simulation.Protocols.Common.Interfaces
 {
     /// <summary>
-    /// Primary interface for all device protocols in NetForge
+    /// Enhanced interface for all device protocols in NetForge
     /// Defines the complete contract for protocol lifecycle, state management, and vendor support
     /// </summary>
-    public interface IDeviceProtocol : IProtocol
+    public interface IEnhancedDeviceProtocol : IProtocol
     {
         // Core lifecycle management
         /// <summary>
@@ -36,7 +38,7 @@ namespace NetForge.Simulation.Protocols.Common.Interfaces
         /// Get the current state of the protocol
         /// </summary>
         /// <returns>Protocol state interface</returns>
-        IProtocolState GetState();
+        EnhancedProtocolState GetState();
 
         /// <summary>
         /// Get the typed state of the protocol for specific protocol access

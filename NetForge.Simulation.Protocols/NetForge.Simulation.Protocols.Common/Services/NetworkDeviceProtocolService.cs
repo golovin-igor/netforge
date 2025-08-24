@@ -6,6 +6,8 @@ using NetForge.Simulation.Protocols.Common.State;
 using NetForge.Simulation.Protocols.Common.Metrics;
 using NetForge.Simulation.Protocols.Common.Dependencies;
 using NetForge.Simulation.Protocols.Common.Configuration;
+using BasicDeviceProtocol = NetForge.Simulation.Common.Interfaces.IDeviceProtocol;
+using EnhancedProtocolState = NetForge.Simulation.Protocols.Common.State.IProtocolState;
 using OldNetworkProtocol = NetForge.Simulation.Common.Interfaces.INetworkProtocol;
 
 namespace NetForge.Simulation.Protocols.Common.Services
@@ -14,7 +16,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
     /// Implementation of IProtocolService for NetworkDevice
     /// This provides the bridge between CLI handlers and protocols via IoC/DI
     /// </summary>
-    public class NetworkDeviceProtocolService : IProtocolService
+    public class NetworkDeviceProtocolService : IEnhancedProtocolService
     {
         private readonly NetworkDevice _device;
         private readonly ProtocolDependencyManager _dependencyManager;
@@ -34,7 +36,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <typeparam name="T">The specific protocol type</typeparam>
         /// <returns>Protocol instance or null if not available</returns>
-        public T GetProtocol<T>() where T : class, IDeviceProtocol
+        public T GetProtocol<T>() where T : class, IEnhancedDeviceProtocol
         {
             return GetAllProtocols().OfType<T>().FirstOrDefault();
         }
@@ -44,7 +46,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to retrieve</param>
         /// <returns>Protocol instance or null if not available</returns>
-        public IDeviceProtocol GetProtocol(ProtocolType type)
+        public IEnhancedDeviceProtocol GetProtocol(ProtocolType type)
         {
             return GetAllProtocols().FirstOrDefault(p => p.Type == type);
         }
@@ -55,7 +57,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <typeparam name="TState">The specific state type</typeparam>
         /// <param name="type">Protocol type</param>
         /// <returns>Typed protocol state or null if not available</returns>
-        public TState GetProtocolState<TState>(ProtocolType type) where TState : class
+        public TState GetProtocolState<TState>(ProtocolType type) where TState : class, EnhancedProtocolState
         {
             var protocol = GetProtocol(type);
             return protocol?.GetState()?.GetTypedState<TState>();
@@ -65,11 +67,11 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// Get all registered protocol instances
         /// </summary>
         /// <returns>Enumerable of all protocols</returns>
-        public IEnumerable<IDeviceProtocol> GetAllProtocols()
+        public IEnumerable<IEnhancedDeviceProtocol> GetAllProtocols()
         {
             // Convert from old interface to new interface
             return _device.GetRegisteredProtocols()
-                .OfType<IDeviceProtocol>()
+                .OfType<IEnhancedDeviceProtocol>()
                 .ToList();
         }
 
@@ -142,7 +144,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="vendorName">Vendor name to filter by</param>
         /// <returns>Enumerable of protocols supporting the vendor</returns>
-        public IEnumerable<IDeviceProtocol> GetProtocolsForVendor(string vendorName)
+        public IEnumerable<IEnhancedDeviceProtocol> GetProtocolsForVendor(string vendorName)
         {
             return GetAllProtocols().Where(p => p.SupportedVendors.Contains(vendorName, StringComparer.OrdinalIgnoreCase));
         }
@@ -152,7 +154,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>Protocol state or null if not available</returns>
-        public IProtocolState GetProtocolState(ProtocolType type)
+        public EnhancedProtocolState GetProtocolState(ProtocolType type)
         {
             var protocol = GetProtocol(type);
             return protocol?.GetState();
@@ -162,7 +164,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// Get states of all active protocols
         /// </summary>
         /// <returns>Dictionary mapping protocol type to state</returns>
-        public Dictionary<ProtocolType, IProtocolState> GetAllProtocolStates()
+        public Dictionary<ProtocolType, EnhancedProtocolState> GetAllProtocolStates()
         {
             return GetAllProtocols()
                 .Where(p => p.GetState() != null)

@@ -2,14 +2,15 @@ using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common.State;
 using NetForge.Simulation.Protocols.Common.Metrics;
+using EnhancedProtocolState = NetForge.Simulation.Protocols.Common.State.IProtocolState;
 
 namespace NetForge.Simulation.Protocols.Common.Services
 {
     /// <summary>
-    /// Comprehensive protocol service for centralized protocol management
+    /// Enhanced protocol service for centralized protocol management
     /// Provides unified access to protocol instances, state, and configuration
     /// </summary>
-    public interface IProtocolService
+    public interface IEnhancedProtocolService
     {
         // Protocol access
         /// <summary>
@@ -17,27 +18,27 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <typeparam name="T">Protocol type to retrieve</typeparam>
         /// <returns>Protocol instance or null if not available</returns>
-        T GetProtocol<T>() where T : class, IDeviceProtocol;
+        T GetProtocol<T>() where T : class, IEnhancedDeviceProtocol;
 
         /// <summary>
         /// Get a protocol instance by protocol type enumeration
         /// </summary>
         /// <param name="type">Protocol type to retrieve</param>
         /// <returns>Protocol instance or null if not available</returns>
-        IDeviceProtocol GetProtocol(ProtocolType type);
+        IEnhancedDeviceProtocol GetProtocol(ProtocolType type);
 
         /// <summary>
         /// Get all registered protocols
         /// </summary>
         /// <returns>Enumerable of all protocol instances</returns>
-        IEnumerable<IDeviceProtocol> GetAllProtocols();
+        IEnumerable<IEnhancedDeviceProtocol> GetAllProtocols();
 
         /// <summary>
         /// Get protocols that support a specific vendor
         /// </summary>
         /// <param name="vendorName">Vendor name to filter by</param>
         /// <returns>Enumerable of protocols supporting the vendor</returns>
-        IEnumerable<IDeviceProtocol> GetProtocolsForVendor(string vendorName);
+        IEnumerable<IEnhancedDeviceProtocol> GetProtocolsForVendor(string vendorName);
 
         // State access
         /// <summary>
@@ -46,20 +47,20 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <typeparam name="TState">State type to retrieve</typeparam>
         /// <param name="type">Protocol type</param>
         /// <returns>Typed protocol state or null if not available</returns>
-        TState GetProtocolState<TState>(ProtocolType type) where TState : class, IProtocolState;
+        TState GetProtocolState<TState>(ProtocolType type) where TState : class, EnhancedProtocolState;
 
         /// <summary>
         /// Get the state of a specific protocol
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>Protocol state or null if not available</returns>
-        IProtocolState GetProtocolState(ProtocolType type);
+        EnhancedProtocolState GetProtocolState(ProtocolType type);
 
         /// <summary>
         /// Get states of all active protocols
         /// </summary>
         /// <returns>Dictionary mapping protocol type to state</returns>
-        Dictionary<ProtocolType, IProtocolState> GetAllProtocolStates();
+        Dictionary<ProtocolType, EnhancedProtocolState> GetAllProtocolStates();
 
         // Protocol lifecycle management
         /// <summary>
