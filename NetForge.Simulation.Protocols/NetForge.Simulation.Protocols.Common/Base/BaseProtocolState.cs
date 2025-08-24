@@ -1,4 +1,4 @@
-using NetForge.Simulation.Protocols.Common.State;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.Common.Base
 {
@@ -13,7 +13,6 @@ namespace NetForge.Simulation.Protocols.Common.Base
         public DateTime LastUpdate { get; set; } = DateTime.MinValue;
         public bool IsActive { get; set; } = true;
         public bool IsConfigured { get; set; } = false;
-        public ProtocolStatus Status { get; set; } = ProtocolStatus.Stopped;
 
         // Neighbor management
         protected readonly Dictionary<string, object> _neighbors = new();
@@ -94,10 +93,10 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// <summary>
         /// Update the last seen time for a neighbor
         /// </summary>
-        /// <param name="neighborId">ID of neighbor to update</param>
-        public virtual void UpdateNeighborActivity(string neighborId)
+        /// <param name="id">ID of neighbor to update</param>
+        public virtual void UpdateNeighborActivity(string id)
         {
-            _neighborLastSeen[neighborId] = DateTime.Now;
+            _neighborLastSeen[id] = DateTime.Now;
         }
 
         /// <summary>
@@ -121,7 +120,6 @@ namespace NetForge.Simulation.Protocols.Common.Base
                 ["IsActive"] = IsActive,
                 ["IsConfigured"] = IsConfigured,
                 ["StateChanged"] = StateChanged,
-                ["Status"] = Status.ToString(),
                 ["NeighborCount"] = _neighbors.Count,
                 ["Neighbors"] = _neighbors.Keys.ToList()
             };
@@ -135,26 +133,13 @@ namespace NetForge.Simulation.Protocols.Common.Base
         public virtual T GetTypedState<T>() where T : class => this as T;
 
         /// <summary>
-        /// Update the protocol status
-        /// </summary>
-        /// <param name="newStatus">New status to set</param>
-        protected virtual void UpdateStatus(ProtocolStatus newStatus)
-        {
-            if (Status != newStatus)
-            {
-                Status = newStatus;
-                MarkStateChanged();
-            }
-        }
-
-        /// <summary>
         /// Set the protocol as active and configured
         /// </summary>
         public virtual void Activate()
         {
             IsActive = true;
             IsConfigured = true;
-            UpdateStatus(ProtocolStatus.Active);
+            MarkStateChanged();
         }
 
         /// <summary>
@@ -163,17 +148,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         public virtual void Deactivate()
         {
             IsActive = false;
-            UpdateStatus(ProtocolStatus.Stopped);
-        }
-
-        /// <summary>
-        /// Set the protocol in error state
-        /// </summary>
-        /// <param name="errorMessage">Error description</param>
-        public virtual void SetError(string errorMessage)
-        {
-            UpdateStatus(ProtocolStatus.Error);
-            // Derived classes can override to handle error details
+            MarkStateChanged();
         }
     }
 }

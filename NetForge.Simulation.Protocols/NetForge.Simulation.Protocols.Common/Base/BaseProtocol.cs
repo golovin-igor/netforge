@@ -2,7 +2,6 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Protocols.Common.State;
 using NetForge.Simulation.Protocols.Common.Metrics;
 using NetForge.Simulation.Protocols.Common.Base;
 using System.Diagnostics;
@@ -173,7 +172,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// Get the current state of the protocol for CLI handlers and monitoring
         /// </summary>
         /// <returns>Protocol state interface</returns>
-        public IProtocolState GetState() => _state;
+        public IProtocolState GetState() => _state as IProtocolState;
 
         /// <summary>
         /// Get the typed state of the protocol

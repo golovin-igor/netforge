@@ -96,7 +96,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         /// Record that a packet was dropped
         /// </summary>
         /// <param name="reason">Reason for dropping the packet</param>
-        void RecordPacketDropped(string reason = null);
+        void RecordPacketDropped(string? reason = null);
 
         /// <summary>
         /// Record processing time for a protocol update

@@ -90,7 +90,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         /// Record that a packet was dropped
         /// </summary>
         /// <param name="reason">Reason for dropping the packet</param>
-        public void RecordPacketDropped(string reason = null)
+        public void RecordPacketDropped(string? reason = null)
         {
             Interlocked.Increment(ref _packetsDropped);
             UpdateLastActivity();

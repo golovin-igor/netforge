@@ -2,13 +2,11 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common.Interfaces;
-using NetForge.Simulation.Protocols.Common.State;
 using NetForge.Simulation.Protocols.Common.Metrics;
 using NetForge.Simulation.Protocols.Common.Dependencies;
 using NetForge.Simulation.Protocols.Common.Configuration;
 using BasicDeviceProtocol = NetForge.Simulation.Common.Interfaces.IDeviceProtocol;
 using BasicProtocolService = NetForge.Simulation.Common.Interfaces.IProtocolService;
-using EnhancedProtocolState = NetForge.Simulation.Protocols.Common.State.IProtocolState;
 using OldNetworkProtocol = NetForge.Simulation.Common.Interfaces.INetworkProtocol;
 
 namespace NetForge.Simulation.Protocols.Common.Services
@@ -37,7 +35,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <typeparam name="T">The specific protocol type</typeparam>
         /// <returns>Protocol instance or null if not available</returns>
-        public T GetProtocol<T>() where T : class, IDeviceProtocol
+        public T GetProtocol<T>() where T : class
         {
             return GetAllProtocols().OfType<T>().FirstOrDefault();
         }
@@ -58,10 +56,10 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <typeparam name="TState">The specific state type</typeparam>
         /// <param name="type">Protocol type</param>
         /// <returns>Typed protocol state or null if not available</returns>
-        public TState GetProtocolState<TState>(ProtocolType type) where TState : class, EnhancedProtocolState
+        public TState GetProtocolState<TState>(ProtocolType type) where TState : class
         {
             var protocol = GetProtocol(type);
-            return protocol?.GetState()?.GetTypedState<TState>();
+            return protocol?.GetState() as TState;
         }
 
         /// <summary>
@@ -155,7 +153,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>Protocol state or null if not available</returns>
-        public EnhancedProtocolState GetProtocolState(ProtocolType type)
+        public IProtocolState GetProtocolState(ProtocolType type)
         {
             var protocol = GetProtocol(type);
             return protocol?.GetState();
@@ -165,7 +163,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// Get states of all active protocols
         /// </summary>
         /// <returns>Dictionary mapping protocol type to state</returns>
-        public Dictionary<ProtocolType, EnhancedProtocolState> GetAllProtocolStates()
+        public Dictionary<ProtocolType, IProtocolState> GetAllProtocolStates()
         {
             return GetAllProtocols()
                 .Where(p => p.GetState() != null)
@@ -364,7 +362,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>Protocol metrics or null if not available</returns>
-        public IProtocolMetrics GetProtocolMetrics(ProtocolType type)
+        public object GetProtocolMetrics(ProtocolType type)
         {
             var protocol = GetProtocol(type);
             return protocol?.GetMetrics();
@@ -374,7 +372,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// Get performance metrics for all protocols
         /// </summary>
         /// <returns>Dictionary mapping protocol type to metrics</returns>
-        public Dictionary<ProtocolType, IProtocolMetrics> GetAllProtocolMetrics()
+        public Dictionary<ProtocolType, object> GetAllProtocolMetrics()
         {
             return GetAllProtocols()
                 .Where(p => p.GetMetrics() != null)
@@ -388,7 +386,10 @@ namespace NetForge.Simulation.Protocols.Common.Services
         public void ResetProtocolMetrics(ProtocolType type)
         {
             var protocol = GetProtocol(type);
-            protocol?.GetMetrics()?.ResetMetrics();
+            if (protocol?.GetMetrics() is IProtocolMetrics metrics)
+            {
+                metrics.ResetMetrics();
+            }
         }
 
         /// <summary>
@@ -398,7 +399,10 @@ namespace NetForge.Simulation.Protocols.Common.Services
         {
             foreach (var protocol in GetAllProtocols())
             {
-                protocol.GetMetrics()?.ResetMetrics();
+                if (protocol.GetMetrics() is IProtocolMetrics metrics)
+                {
+                    metrics.ResetMetrics();
+                }
             }
         }
 
@@ -410,7 +414,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         {
             var protocols = GetAllProtocols().ToList();
             var activeCount = protocols.Count(p => p.GetState()?.IsActive ?? false);
-            var errorCount = protocols.Count(p => p.GetState()?.Status == ProtocolStatus.Error);
+            var configuredCount = protocols.Count(p => p.GetState()?.IsConfigured ?? false);
             
             var health = new Dictionary<string, object>
             {
@@ -419,8 +423,8 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 ["DeviceName"] = _device.DeviceName,
                 ["TotalProtocols"] = protocols.Count,
                 ["ActiveProtocols"] = activeCount,
-                ["ErrorProtocols"] = errorCount,
-                ["HealthStatus"] = errorCount == 0 ? "Healthy" : "Degraded",
+                ["ConfiguredProtocols"] = configuredCount,
+                ["HealthStatus"] = activeCount > 0 ? "Healthy" : "Inactive",
                 ["LastUpdate"] = DateTime.Now,
                 ["Dependencies"] = _dependencyManager.GetDependencyStatistics(),
                 ["Configurations"] = _configurationManager.GetType().Name // Placeholder for config stats
@@ -443,7 +447,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 Version = p.Version,
                 IsActive = p.GetState()?.IsActive ?? false,
                 IsConfigured = p.GetState()?.IsConfigured ?? false,
-                Status = p.GetState()?.Status.ToString() ?? "Unknown",
+                Status = "Active", // Simplified status since unified interface doesn't have Status property
                 SupportedVendors = p.SupportedVendors.ToList(),
                 Dependencies = GetProtocolDependencies(p.Type).Select(d => d.ToString()).ToList(),
                 Conflicts = GetProtocolConflicts(p.Type).Select(c => c.ToString()).ToList()
@@ -561,20 +565,20 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to retrieve</param>
         /// <returns>Protocol instance or null if not available</returns>
-        INetworkProtocol IProtocolService.GetProtocol(ProtocolType type)
+        IDeviceProtocol IProtocolService.GetProtocol(ProtocolType type)
         {
-            return GetProtocol(type) as INetworkProtocol ?? 
-                   _device.GetRegisteredProtocols().OfType<INetworkProtocol>().FirstOrDefault(p => p.Type == type);
+            return GetProtocol(type) ?? 
+                   _device.GetRegisteredProtocols().OfType<IDeviceProtocol>().FirstOrDefault(p => p.Type == type);
         }
 
         /// <summary>
         /// Get all registered protocol instances (IProtocolService compatibility)
         /// </summary>
         /// <returns>Enumerable of all protocols</returns>
-        IEnumerable<INetworkProtocol> IProtocolService.GetAllProtocols()
+        IEnumerable<IDeviceProtocol> IProtocolService.GetAllProtocols()
         {
-            return GetAllProtocols().OfType<INetworkProtocol>().Concat(
-                _device.GetRegisteredProtocols().OfType<INetworkProtocol>());
+            return GetAllProtocols().Concat(
+                _device.GetRegisteredProtocols().OfType<IDeviceProtocol>());
         }
 
         /// <summary>
@@ -599,9 +603,9 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="vendorName">Vendor name to filter by</param>
         /// <returns>Enumerable of protocols supporting the vendor</returns>
-        IEnumerable<INetworkProtocol> IProtocolService.GetProtocolsForVendor(string vendorName)
+        IEnumerable<IDeviceProtocol> IProtocolService.GetProtocolsForVendor(string vendorName)
         {
-            return GetProtocolsForVendor(vendorName).OfType<INetworkProtocol>();
+            return GetProtocolsForVendor(vendorName);
         }
 
         /// <summary>
