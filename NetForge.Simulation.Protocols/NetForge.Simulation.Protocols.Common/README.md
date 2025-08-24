@@ -4,7 +4,7 @@ This library provides the core infrastructure for the modular protocol architect
 
 ## Overview
 
-The common library follows the sophisticated state management patterns documented in `PROTOCOL_STATE_MANAGEMENT.md` while providing a plugin-based architecture similar to the CLI handler system.
+The common library follows the sophisticated state management patterns documented in `COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md` while providing a plugin-based architecture similar to the CLI handler system.
 
 ## Key Components
 
@@ -17,7 +17,7 @@ The common library follows the sophisticated state management patterns documente
 
 ### Base Classes
 
-- **`BaseProtocol`** - Base implementation with state management pattern from `PROTOCOL_STATE_MANAGEMENT.md`
+- **`BaseProtocol`** - Base implementation with state management pattern from `COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md`
 - **`BaseProtocolState`** - Base state class with neighbor management and change tracking
 - **`ProtocolPluginBase`** - Base plugin class for easy protocol plugin creation
 
@@ -35,7 +35,7 @@ The common library follows the sophisticated state management patterns documente
 
 ### 1. State Management Pattern
 
-Implements the proven pattern from `PROTOCOL_STATE_MANAGEMENT.md`:
+Implements the proven pattern from `COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md`:
 
 ```csharp
 public virtual async Task UpdateState(NetworkDevice device)
@@ -200,5 +200,5 @@ private void AutoRegisterProtocols()
 ## Related Documentation
 
 - `Protocol_Implementation_Plan.md` - Complete implementation plan
-- `PROTOCOL_STATE_MANAGEMENT.md` - State management patterns
+- `COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md` - Complete protocol documentation and state management patterns
 - CLI Handler documentation for similar patterns

@@ -323,7 +323,7 @@ if (ospfProtocol is BaseProtocol baseProtocol)
 
 ## 📚 **Additional Documentation**
 
-- **[Protocol State Management Guide](Protocols/PROTOCOL_STATE_MANAGEMENT.md)**: Detailed implementation patterns
+- **[Protocol State Management Guide](../NetForge.Simulation.Protocols/COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md)**: Detailed implementation patterns
 - **[Physical Connection Integration](../Common/PhysicalConnection.cs)**: Connection quality assessment
 - **[Event System](../Events/)**: Network event handling and propagation
 - **[CLI Integration](../CLI/)**: Command-line interface for protocol configuration
