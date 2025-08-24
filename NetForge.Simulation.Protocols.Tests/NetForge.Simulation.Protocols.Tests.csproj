@@ -31,6 +31,15 @@
         <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.CDP\NetForge.Simulation.Protocols.CDP.csproj"/>
         <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.LLDP\NetForge.Simulation.Protocols.LLDP.csproj"/>
         <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.ARP\NetForge.Simulation.Protocols.ARP.csproj"/>
+        <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.RIP\NetForge.Simulation.Protocols.RIP.csproj"/>
+        <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.EIGRP\NetForge.Simulation.Protocols.EIGRP.csproj"/>
+        <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.STP\NetForge.Simulation.Protocols.STP.csproj"/>
+        <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.ISIS\NetForge.Simulation.Protocols.ISIS.csproj"/>
+        <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.IGRP\NetForge.Simulation.Protocols.IGRP.csproj"/>
+        <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.VRRP\NetForge.Simulation.Protocols.VRRP.csproj"/>
+        <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.HSRP\NetForge.Simulation.Protocols.HSRP.csproj"/>
+        <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.SNMP\NetForge.Simulation.Protocols.SNMP.csproj"/>
+        <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.HTTP\NetForge.Simulation.Protocols.HTTP.csproj"/>
     </ItemGroup>
 
 </Project>

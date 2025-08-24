@@ -204,7 +204,7 @@ namespace NetForge.Simulation.Protocols.Tests
 
             // Act & Assert - Operations with invalid data should not throw
             var invalidProtocol = basicProtocolService.GetProtocol((ProtocolType)9999);
-            var invalidState = basicProtocolService.GetProtocolState((ProtocolType)9999);
+            var invalidState = basicProtocolService.GetProtocolState<IProtocolState>((ProtocolType)9999);
             
             Assert.Null(invalidProtocol);
             Assert.Null(invalidState);
