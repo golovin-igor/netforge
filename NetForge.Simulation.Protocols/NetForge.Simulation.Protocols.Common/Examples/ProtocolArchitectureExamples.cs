@@ -1,5 +1,6 @@
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common.Base;
 using NetForge.Simulation.Protocols.Common.Configuration;
 using NetForge.Simulation.Protocols.Common.Dependencies;
@@ -364,7 +365,9 @@ namespace NetForge.Simulation.Protocols.Examples
 
         /// <summary>
         /// Demonstrate layered protocol architecture
+        /// Note: This example is commented out to avoid circular dependency with Core project
         /// </summary>
+        /*
         public async Task DemonstrateLayeredArchitecture()
         {
             var device = new CiscoDevice("Router1");
@@ -402,6 +405,7 @@ namespace NetForge.Simulation.Protocols.Examples
             
             Console.WriteLine($"Performance Score: {((ProtocolMetrics)metrics).GetPerformanceScore():F1}");
         }
+        */
 
         /// <summary>
         /// Demonstrate protocol health monitoring
@@ -419,7 +423,9 @@ namespace NetForge.Simulation.Protocols.Examples
 
     /// <summary>
     /// Example Cisco device extension using enhanced protocols
+    /// Note: This example is commented out to avoid circular dependency with Core project
     /// </summary>
+    /*
     public class EnhancedCiscoDevice : CiscoDevice
     {
         private readonly IProtocolDependencyManager _dependencyManager;
@@ -477,4 +483,5 @@ namespace NetForge.Simulation.Protocols.Examples
             return success;
         }
     }
+    */
 }

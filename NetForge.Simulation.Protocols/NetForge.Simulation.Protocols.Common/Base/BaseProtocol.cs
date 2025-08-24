@@ -216,7 +216,107 @@ namespace NetForge.Simulation.Protocols.Common
         /// <param name="configuration">Configuration to apply</param>
         protected abstract void OnApplyConfiguration(object configuration);
 
+        // Protocol lifecycle management
+        /// <summary>
+        /// Start the protocol
+        /// </summary>
+        /// <returns>Task representing the async operation</returns>
+        public virtual async Task<bool> Start()
+        {
+            try
+            {
+                _state.IsActive = true;
+                _state.MarkStateChanged();
+                LogProtocolEvent("Protocol started");
+                await OnStart();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _metrics.RecordError($"Failed to start protocol: {ex.Message}");
+                LogProtocolEvent($"Failed to start protocol: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Stop the protocol
+        /// </summary>
+        /// <returns>Task representing the async operation</returns>
+        public virtual async Task<bool> Stop()
+        {
+            try
+            {
+                _state.IsActive = false;
+                _state.MarkStateChanged();
+                LogProtocolEvent("Protocol stopped");
+                await OnStop();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _metrics.RecordError($"Failed to stop protocol: {ex.Message}");
+                LogProtocolEvent($"Failed to stop protocol: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Configure the protocol with new settings
+        /// </summary>
+        /// <param name="configuration">Configuration to apply</param>
+        /// <returns>Task representing the async operation</returns>
+        public virtual async Task<bool> Configure(object configuration)
+        {
+            try
+            {
+                ApplyConfiguration(configuration);
+                LogProtocolEvent("Protocol configured");
+                await OnConfigure(configuration);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _metrics.RecordError($"Failed to configure protocol: {ex.Message}");
+                LogProtocolEvent($"Failed to configure protocol: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Called when the protocol is started
+        /// Override for protocol-specific startup logic
+        /// </summary>
+        protected virtual async Task OnStart()
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Called when the protocol is stopped
+        /// Override for protocol-specific shutdown logic
+        /// </summary>
+        protected virtual async Task OnStop()
+        {
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Called when the protocol is configured
+        /// Override for protocol-specific configuration logic
+        /// </summary>
+        /// <param name="configuration">Configuration applied</param>
+        protected virtual async Task OnConfigure(object configuration)
+        {
+            await Task.CompletedTask;
+        }
+
         // Vendor support
+
+        /// <summary>
+        /// Get the list of vendor names this protocol supports as a property
+        /// </summary>
+        public virtual IEnumerable<string> SupportedVendors => GetSupportedVendors();
 
         /// <summary>
         /// Get the list of vendor names this protocol supports

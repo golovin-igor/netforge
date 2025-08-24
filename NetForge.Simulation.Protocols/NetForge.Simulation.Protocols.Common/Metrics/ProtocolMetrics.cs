@@ -14,27 +14,33 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         private const int MaxErrorHistory = 10;
         private const int MaxProcessingTimeHistory = 100;
 
-        // Packet statistics
-        public long PacketsSent { get; private set; }
-        public long PacketsReceived { get; private set; }
-        public long PacketsDropped { get; private set; }
-        public long MalformedPackets { get; private set; }
+        // Private backing fields for thread-safe operations
+        private long _packetsSent;
+        private long _packetsReceived;
+        private long _packetsDropped;
+        private long _malformedPackets;
+        private long _updatesProcessed;
+        private long _memoryUsage;
+        private long _errorCount;
+        private TimeSpan _averageProcessingTime = TimeSpan.Zero;
+        private TimeSpan _maxProcessingTime = TimeSpan.Zero;
+        private TimeSpan _cpuTime = TimeSpan.Zero;
+        private DateTime _lastActivity = DateTime.Now;
+        private DateTime _metricsStartTime = DateTime.Now;
 
-        // Processing statistics
-        public TimeSpan AverageProcessingTime { get; private set; } = TimeSpan.Zero;
-        public TimeSpan MaxProcessingTime { get; private set; } = TimeSpan.Zero;
-        public long UpdatesProcessed { get; private set; }
-
-        // Resource usage
-        public long MemoryUsage { get; private set; }
-        public TimeSpan CpuTime { get; private set; } = TimeSpan.Zero;
-
-        // Activity tracking
-        public DateTime LastActivity { get; private set; } = DateTime.Now;
-        public DateTime MetricsStartTime { get; private set; } = DateTime.Now;
-
-        // Error tracking
-        public long ErrorCount { get; private set; }
+        // Public properties implementing interface
+        public long PacketsSent => _packetsSent;
+        public long PacketsReceived => _packetsReceived;
+        public long PacketsDropped => _packetsDropped;
+        public long MalformedPackets => _malformedPackets;
+        public TimeSpan AverageProcessingTime => _averageProcessingTime;
+        public TimeSpan MaxProcessingTime => _maxProcessingTime;
+        public long UpdatesProcessed => _updatesProcessed;
+        public long MemoryUsage => _memoryUsage;
+        public TimeSpan CpuTime => _cpuTime;
+        public DateTime LastActivity => _lastActivity;
+        public DateTime MetricsStartTime => _metricsStartTime;
+        public long ErrorCount => _errorCount;
         public IEnumerable<string> RecentErrors => _recentErrors.ToArray();
 
         /// <summary>
@@ -44,18 +50,18 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         {
             lock (_lock)
             {
-                PacketsSent = 0;
-                PacketsReceived = 0;
-                PacketsDropped = 0;
-                MalformedPackets = 0;
-                AverageProcessingTime = TimeSpan.Zero;
-                MaxProcessingTime = TimeSpan.Zero;
-                UpdatesProcessed = 0;
-                MemoryUsage = 0;
-                CpuTime = TimeSpan.Zero;
-                ErrorCount = 0;
-                MetricsStartTime = DateTime.Now;
-                LastActivity = DateTime.Now;
+                _packetsSent = 0;
+                _packetsReceived = 0;
+                _packetsDropped = 0;
+                _malformedPackets = 0;
+                _averageProcessingTime = TimeSpan.Zero;
+                _maxProcessingTime = TimeSpan.Zero;
+                _updatesProcessed = 0;
+                _memoryUsage = 0;
+                _cpuTime = TimeSpan.Zero;
+                _errorCount = 0;
+                _metricsStartTime = DateTime.Now;
+                _lastActivity = DateTime.Now;
 
                 _processingTimes.Clear();
                 while (_recentErrors.TryDequeue(out _)) { }
@@ -67,7 +73,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         /// </summary>
         public void RecordPacketSent()
         {
-            Interlocked.Increment(ref PacketsSent);
+            Interlocked.Increment(ref _packetsSent);
             UpdateLastActivity();
         }
 
@@ -76,7 +82,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         /// </summary>
         public void RecordPacketReceived()
         {
-            Interlocked.Increment(ref PacketsReceived);
+            Interlocked.Increment(ref _packetsReceived);
             UpdateLastActivity();
         }
 
@@ -86,7 +92,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         /// <param name="reason">Reason for dropping the packet</param>
         public void RecordPacketDropped(string reason = null)
         {
-            Interlocked.Increment(ref PacketsDropped);
+            Interlocked.Increment(ref _packetsDropped);
             UpdateLastActivity();
 
             if (!string.IsNullOrEmpty(reason))
@@ -100,7 +106,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         /// </summary>
         public void RecordMalformedPacket()
         {
-            Interlocked.Increment(ref MalformedPackets);
+            Interlocked.Increment(ref _malformedPackets);
             UpdateLastActivity();
         }
 
@@ -112,7 +118,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         {
             lock (_lock)
             {
-                Interlocked.Increment(ref UpdatesProcessed);
+                Interlocked.Increment(ref _updatesProcessed);
                 
                 _processingTimes.Add(processingTime);
                 if (_processingTimes.Count > MaxProcessingTimeHistory)
@@ -121,16 +127,16 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
                 }
 
                 // Update max processing time
-                if (processingTime > MaxProcessingTime)
+                if (processingTime > _maxProcessingTime)
                 {
-                    MaxProcessingTime = processingTime;
+                    _maxProcessingTime = processingTime;
                 }
 
                 // Recalculate average
                 if (_processingTimes.Count > 0)
                 {
                     var totalTicks = _processingTimes.Sum(t => t.Ticks);
-                    AverageProcessingTime = new TimeSpan(totalTicks / _processingTimes.Count);
+                    _averageProcessingTime = new TimeSpan(totalTicks / _processingTimes.Count);
                 }
 
                 UpdateLastActivity();
@@ -143,7 +149,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         /// <param name="error">Error description</param>
         public void RecordError(string error)
         {
-            Interlocked.Increment(ref ErrorCount);
+            Interlocked.Increment(ref _errorCount);
             
             var timestampedError = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}: {error}";
             _recentErrors.Enqueue(timestampedError);
@@ -163,7 +169,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         /// <param name="memoryBytes">Memory usage in bytes</param>
         public void UpdateMemoryUsage(long memoryBytes)
         {
-            Interlocked.Exchange(ref MemoryUsage, memoryBytes);
+            Interlocked.Exchange(ref _memoryUsage, memoryBytes);
         }
 
         /// <summary>
@@ -174,7 +180,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         {
             lock (_lock)
             {
-                CpuTime = CpuTime.Add(cpuTime);
+                _cpuTime = _cpuTime.Add(cpuTime);
             }
         }
 
@@ -215,7 +221,7 @@ namespace NetForge.Simulation.Protocols.Common.Metrics
         /// </summary>
         private void UpdateLastActivity()
         {
-            LastActivity = DateTime.Now;
+            _lastActivity = DateTime.Now;
         }
 
         /// <summary>

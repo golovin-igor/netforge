@@ -387,7 +387,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         public void ResetProtocolMetrics(ProtocolType type)
         {
             var protocol = GetProtocol(type);
-            protocol?.GetMetrics()?.Reset();
+            protocol?.GetMetrics()?.ResetMetrics();
         }
 
         /// <summary>
@@ -397,7 +397,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         {
             foreach (var protocol in GetAllProtocols())
             {
-                protocol.GetMetrics()?.Reset();
+                protocol.GetMetrics()?.ResetMetrics();
             }
         }
 

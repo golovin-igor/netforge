@@ -60,7 +60,31 @@ namespace NetForge.Simulation.Protocols.Common.Interfaces
         /// <param name="configuration">New configuration to apply</param>
         void ApplyConfiguration(object configuration);
 
+        // Protocol lifecycle management
+        /// <summary>
+        /// Start the protocol
+        /// </summary>
+        /// <returns>Task representing the async operation</returns>
+        Task<bool> Start();
+
+        /// <summary>
+        /// Stop the protocol
+        /// </summary>
+        /// <returns>Task representing the async operation</returns>
+        Task<bool> Stop();
+
+        /// <summary>
+        /// Configure the protocol with new settings
+        /// </summary>
+        /// <param name="configuration">Configuration to apply</param>
+        /// <returns>Task representing the async operation</returns>
+        Task<bool> Configure(object configuration);
+
         // Vendor support information
+        /// <summary>
+        /// Get all vendors supported by this protocol implementation
+        /// </summary>
+        IEnumerable<string> SupportedVendors { get; }
         /// <summary>
         /// Get all vendors supported by this protocol implementation
         /// </summary>
