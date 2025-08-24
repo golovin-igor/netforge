@@ -1,5 +1,6 @@
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.CDP
 {
@@ -13,7 +14,7 @@ namespace NetForge.Simulation.Protocols.CDP
         public override ProtocolType ProtocolType => ProtocolType.CDP;
         public override int Priority => 200; // Higher priority than generic protocols
 
-        public override IDeviceProtocol CreateProtocol()
+        public override IEnhancedDeviceProtocol CreateProtocol()
         {
             return new CdpProtocol();
         }

@@ -4,6 +4,7 @@ using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Routing;
+using NetForge.Simulation.Protocols.Common.Base;
 
 namespace NetForge.Simulation.Protocols.CDP
 {

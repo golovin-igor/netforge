@@ -1,4 +1,5 @@
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Base;
 
 namespace NetForge.Simulation.Protocols.SSH
 {
