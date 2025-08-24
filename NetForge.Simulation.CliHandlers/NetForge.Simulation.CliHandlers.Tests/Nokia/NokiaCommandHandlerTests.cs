@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Nokia
@@ -10,10 +10,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show system");
-            
+
             // Assert
             Assert.Contains("System information", output);
             Assert.Equal("TestRouter>", device.GetPrompt());
@@ -24,10 +24,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure");
-            
+
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
             Assert.Equal("TestRouter#", device.GetPrompt());
@@ -39,14 +39,14 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter"); // Starts in "admin" mode.
-            string expectedPrompt = "TestRouter>admin# "; 
+            string expectedPrompt = "TestRouter>admin# ";
             // Actual behavior seems to prefix an "incomplete command" message.
             // Ensure the newline is correctly represented as \n for a literal newline character.
-            string expectedOutput = "MINOR: CLI Incomplete command.\n" + expectedPrompt; 
+            string expectedOutput = "MINOR: CLI Incomplete command.\n" + expectedPrompt;
 
             // Act
             var output = await device.ProcessCommandAsync("admin");
-            
+
             // Assert
             Assert.Equal("admin", device.GetCurrentMode());
             Assert.Equal(expectedPrompt, device.GetPrompt());
@@ -58,10 +58,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping 8.8.8.8");
-            
+
             // Assert
             Assert.Contains("ping 8.8.8.8", output);
             Assert.Equal("TestRouter>admin# ", device.GetPrompt());
@@ -72,10 +72,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("traceroute 192.168.1.1");
-            
+
             // Assert
             Assert.Contains("traceroute to 192.168.1.1", output);
             Assert.Contains("hops", output);
@@ -89,10 +89,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("exit");
-            
+
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
             Assert.Equal("TestRouter#", device.GetPrompt());
@@ -106,10 +106,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("back");
-            
+
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
             Assert.Equal("TestRouter#", device.GetPrompt());
@@ -121,10 +121,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("info");
-            
+
             // Assert
             Assert.Contains("System information", output);
             Assert.Equal("TestRouter>", device.GetPrompt());
@@ -137,10 +137,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("system name TestRouter2");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("commit");
-            
+
             // Assert
             Assert.Contains("Configuration committed", output);
             Assert.Equal("TestRouter2#", device.GetPrompt());
@@ -153,10 +153,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("system name TestRouter2");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("pwc");
-            
+
             // Assert
             Assert.Contains("Pending changes", output);
             Assert.Contains("system name TestRouter2", output);
@@ -173,7 +173,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
 
             // Act
             var output = await device.ProcessCommandAsync("invalid command");
-            
+
             // Assert
             Assert.Equal(expectedOutput, output); // Check the full output
             Assert.Equal(expectedPrompt, device.GetPrompt()); // Ensure prompt is unchanged and correct
@@ -184,10 +184,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure system");
-            
+
             // Assert
             Assert.Contains("Incomplete command", output);
             Assert.Equal("admin", device.GetCurrentMode()); // Nokia device starts in admin mode
@@ -199,14 +199,14 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             // Arrange
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure router");
-            
+
             // Act
             var output1 = await device.ProcessCommandAsync("ospf");
             var output2 = await device.ProcessCommandAsync("router-id 1.1.1.1");
             var output3 = await device.ProcessCommandAsync("area 0.0.0.0");
             var output4 = await device.ProcessCommandAsync("interface \"system\"");
             var output5 = await device.ProcessCommandAsync("interface-type point-to-point");
-            
+
             // Assert
             Assert.Equal("A:TestRouter>config>router>ospf>area>interface#", device.GetPrompt());
             Assert.Equal("A:TestRouter>config>router>ospf#", output1);
@@ -214,7 +214,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             Assert.Equal("A:TestRouter>config>router>ospf>area#", output3);
             Assert.Equal("A:TestRouter>config>router>ospf>area>interface#", output4);
             Assert.Equal("A:TestRouter>config>router>ospf>area>interface#", output5);
-            
+
             var ospfConfig = device.GetOspfConfiguration();
             Assert.NotNull(ospfConfig);
             Assert.Equal("1.1.1.1", ospfConfig.RouterId);
@@ -228,14 +228,14 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             // Arrange
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure router");
-            
+
             // Act
             var output1 = await device.ProcessCommandAsync("autonomous-system 65001");
             var output2 = await device.ProcessCommandAsync("bgp");
             var output3 = await device.ProcessCommandAsync("group \"external-peers\"");
             var output4 = await device.ProcessCommandAsync("peer-as 65002");
             var output5 = await device.ProcessCommandAsync("neighbor 192.168.1.2");
-            
+
             // Assert
             Assert.Equal("A:TestRouter>config>router>bgp>group>neighbor#", device.GetPrompt());
             Assert.Equal("A:TestRouter>config>router#", output1);
@@ -243,7 +243,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             Assert.Equal("A:TestRouter>config>router>bgp>group#", output3);
             Assert.Equal("A:TestRouter>config>router>bgp>group#", output4);
             Assert.Equal("A:TestRouter>config>router>bgp>group>neighbor#", output5);
-            
+
             var bgpConfig = device.GetBgpConfiguration();
             Assert.NotNull(bgpConfig);
             Assert.Equal(65001, bgpConfig.LocalAs);
@@ -260,20 +260,20 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             // Arrange
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure router");
-            
+
             // Act
             var output1 = await device.ProcessCommandAsync("rip");
             var output2 = await device.ProcessCommandAsync("group \"rip-group\"");
             var output3 = await device.ProcessCommandAsync("neighbor 192.168.1.0/24");
             var output4 = await device.ProcessCommandAsync("export-policy \"rip-export\"");
-            
+
             // Assert
             Assert.Equal("A:TestRouter>config>router>rip>group#", device.GetPrompt());
             Assert.Equal("A:TestRouter>config>router>rip#", output1);
             Assert.Equal("A:TestRouter>config>router>rip>group#", output2);
             Assert.Equal("A:TestRouter>config>router>rip>group#", output3);
             Assert.Equal("A:TestRouter>config>router>rip>group#", output4);
-            
+
             var ripConfig = device.GetRipConfiguration();
             Assert.NotNull(ripConfig);
             Assert.Contains("rip-group", ripConfig.Groups.Keys);
@@ -288,7 +288,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure router");
             await device.ProcessCommandAsync("ospf");
-            
+
             // Act
             var output1 = await device.ProcessCommandAsync("export \"bgp-to-ospf\"");
             var output2 = await device.ProcessCommandAsync("exit");
@@ -297,7 +297,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var output5 = await device.ProcessCommandAsync("entry 10");
             var output6 = await device.ProcessCommandAsync("from protocol bgp");
             var output7 = await device.ProcessCommandAsync("action accept");
-            
+
             // Assert
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement>entry>action#", device.GetPrompt());
             Assert.Equal("A:TestRouter>config>router>ospf#", output1);
@@ -307,11 +307,11 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement>entry#", output5);
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement>entry#", output6);
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement>entry>action#", output7);
-            
+
             var ospfConfig = device.GetOspfConfiguration();
             Assert.NotNull(ospfConfig);
             Assert.Contains("bgp-to-ospf", ospfConfig.ExportPolicies);
-            
+
             var policies = device.GetRoutingPolicies();
             Assert.NotNull(policies);
             Assert.Contains("bgp-to-ospf", policies.Keys);
@@ -326,14 +326,14 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure router");
             await device.ProcessCommandAsync("policy-options");
-            
+
             // Act
             var output1 = await device.ProcessCommandAsync("policy-statement \"filter-bgp\"");
             var output2 = await device.ProcessCommandAsync("entry 10");
             var output3 = await device.ProcessCommandAsync("from prefix-list \"PL-BGP\"");
             var output4 = await device.ProcessCommandAsync("action accept");
             var output5 = await device.ProcessCommandAsync("community add \"bgp-community\"");
-            
+
             // Assert
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement>entry>action#", device.GetPrompt());
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement#", output1);
@@ -341,7 +341,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement>entry#", output3);
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement>entry>action#", output4);
             Assert.Equal("A:TestRouter>config>router>policy-options>policy-statement>entry>action#", output5);
-            
+
             var policies = device.GetRoutingPolicies();
             Assert.NotNull(policies);
             Assert.Contains("filter-bgp", policies.Keys);
@@ -357,18 +357,18 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure router");
             await device.ProcessCommandAsync("policy-options");
-            
+
             // Act
             var output1 = await device.ProcessCommandAsync("prefix-list \"PL-BGP\"");
             var output2 = await device.ProcessCommandAsync("prefix 192.168.0.0/16 longer");
             var output3 = await device.ProcessCommandAsync("prefix 10.0.0.0/8 exact");
-            
+
             // Assert
             Assert.Equal("A:TestRouter>config>router>policy-options>prefix-list#", device.GetPrompt());
             Assert.Equal("A:TestRouter>config>router>policy-options>prefix-list#", output1);
             Assert.Equal("A:TestRouter>config>router>policy-options>prefix-list#", output2);
             Assert.Equal("A:TestRouter>config>router>policy-options>prefix-list#", output3);
-            
+
             var prefixLists = device.GetPrefixLists();
             Assert.NotNull(prefixLists);
             Assert.Contains("PL-BGP", prefixLists.Keys);
@@ -383,18 +383,18 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure router");
             await device.ProcessCommandAsync("policy-options");
-            
+
             // Act
             var output1 = await device.ProcessCommandAsync("community \"bgp-community\"");
             var output2 = await device.ProcessCommandAsync("members \"65001:100\"");
             var output3 = await device.ProcessCommandAsync("members \"65001:200\"");
-            
+
             // Assert
             Assert.Equal("A:TestRouter>config>router>policy-options>community#", device.GetPrompt());
             Assert.Equal("A:TestRouter>config>router>policy-options>community#", output1);
             Assert.Equal("A:TestRouter>config>router>policy-options>community#", output2);
             Assert.Equal("A:TestRouter>config>router>policy-options>community#", output3);
-            
+
             var communities = device.GetCommunities();
             Assert.NotNull(communities);
             Assert.Contains("bgp-community", communities.Keys);
@@ -407,13 +407,13 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output1 = await device.ProcessCommandAsync("show router ospf neighbor");
             var output2 = await device.ProcessCommandAsync("show router bgp summary");
             var output3 = await device.ProcessCommandAsync("show router isis adjacency");
             var output4 = await device.ProcessCommandAsync("show router rip neighbor");
-            
+
             // Assert
             Assert.Contains("OSPF Neighbors", output1);
             Assert.Contains("BGP Summary", output2);
@@ -422,4 +422,4 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             Assert.Equal("A:TestRouter#", device.GetPrompt());
         }
     }
-} 
+}

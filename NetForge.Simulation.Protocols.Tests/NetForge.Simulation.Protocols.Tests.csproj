@@ -22,7 +22,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\NetForge.Simulation.Common\NetForge.Simulation.Common.csproj"/>
-        <ProjectReference Include="..\NetForge.Simulation.Core\NetForge.Simulation.csproj"/>
+        <ProjectReference Include="..\NetForge.Simulation.Core\NetForge.Simulation.Core.csproj" />
         <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.Common\NetForge.Simulation.Protocols.Common.csproj"/>
         <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.SSH\NetForge.Simulation.Protocols.SSH.csproj"/>
         <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.Telnet\NetForge.Simulation.Protocols.Telnet.csproj"/>

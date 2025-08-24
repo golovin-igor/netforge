@@ -1,7 +1,7 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 // Added for xUnit

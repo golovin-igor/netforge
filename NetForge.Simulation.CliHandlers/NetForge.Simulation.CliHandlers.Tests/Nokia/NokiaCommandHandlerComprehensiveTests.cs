@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Nokia
@@ -10,10 +10,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure system name NewRouter");
-            
+
             // Assert
             Assert.Equal("NewRouter# ", device.GetPrompt());
         }
@@ -23,10 +23,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure port 1/1/1 description \"Test Port\"");
-            
+
             // Assert
             Assert.Contains("description", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -37,10 +37,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure port 1/1/1 admin-state enable");
-            
+
             // Assert
             Assert.Contains("admin-state", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -51,10 +51,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure router interface \"system\" address 192.168.1.1/24");
-            
+
             // Assert
             Assert.Contains("address", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -65,10 +65,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure router ospf area 0.0.0.0 interface \"system\"");
-            
+
             // Assert
             Assert.Contains("OSPF", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -79,10 +79,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure router bgp autonomous-system 65001");
-            
+
             // Assert
             Assert.Contains("BGP", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -93,10 +93,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure service vpls 100 customer 1 mesh-sdp 1:100");
-            
+
             // Assert
             Assert.Contains("VPLS", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -107,10 +107,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure service vprn 100 customer 1 route-distinguisher 65001:100");
-            
+
             // Assert
             Assert.Contains("VPRN", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -121,10 +121,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure service sdp 1 mpls lsp \"test-lsp\"");
-            
+
             // Assert
             Assert.Contains("SDP", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -135,10 +135,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure router mpls lsp \"test-lsp\" to 192.168.1.2");
-            
+
             // Assert
             Assert.Contains("LSP", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -149,10 +149,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure router rsvp interface \"system\"");
-            
+
             // Assert
             Assert.Contains("RSVP", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -163,10 +163,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure router ldp interface-parameters interface \"system\"");
-            
+
             // Assert
             Assert.Contains("LDP", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -177,10 +177,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure qos network-policy \"test-policy\" queue 1");
-            
+
             // Assert
             Assert.Contains("QoS", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -191,10 +191,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure filter ip-filter 10 entry 1 match src-ip 192.168.1.0/24");
-            
+
             // Assert
             Assert.Contains("filter", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -205,10 +205,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure log syslog 1 address 192.168.1.100");
-            
+
             // Assert
             Assert.Contains("syslog", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -219,10 +219,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show router interface");
-            
+
             // Assert
             Assert.Contains("Router", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -233,10 +233,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show service service-using");
-            
+
             // Assert
             Assert.Contains("Service", output);
             Assert.Equal("TestRouter# ", device.GetPrompt());
@@ -270,10 +270,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             // Arrange
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("enable"); // Enter privileged mode
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -300,10 +300,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -331,10 +331,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -355,10 +355,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             // Arrange
             var device = new NokiaDevice("TestRouter");
             await device.ProcessCommandAsync("configure service vprn 100 customer 1 route-distinguisher 65001:100");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -378,10 +378,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -393,7 +393,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act & Assert for complex service configuration
             var commands = new[]
             {
@@ -421,7 +421,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act & Assert for MPLS configuration
             var commands = new[]
             {
@@ -449,7 +449,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act & Assert for QoS configuration
             var commands = new[]
             {
@@ -477,7 +477,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act & Assert for filter configuration
             var commands = new[]
             {
@@ -505,7 +505,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act & Assert for log configuration
             var commands = new[]
             {
@@ -532,7 +532,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act & Assert for system configuration
             var commands = new[]
             {
@@ -561,7 +561,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("TestRouter");
-            
+
             // Act & Assert for card/MDA configuration
             var commands = new[]
             {

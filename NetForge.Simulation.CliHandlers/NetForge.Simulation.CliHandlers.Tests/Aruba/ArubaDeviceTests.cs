@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Aruba
@@ -23,7 +23,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("area 0.0.0.0 range 10.0.0.0 255.255.255.0");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show running-config");
             Assert.Contains("hostname \"Aruba-Core\"", output);
             Assert.Contains("vlan 10", output);
@@ -47,7 +47,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("area 0.0.0.0 range 10.0.0.0 255.255.255.0");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show ip route");
             Assert.Contains("10.0.0.0/24", output);
             Assert.Contains("192.168.1.0/24", output);
@@ -66,10 +66,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
             await device.ProcessCommandAsync("exit");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("ping 10.0.0.2");
             Assert.Contains("5 packets transmitted, 5 packets received, 0.0% packet loss", output);
-            
+
             output = await device.ProcessCommandAsync("ping 192.168.99.99");
             Assert.Contains("5 packets transmitted, 0 packets received, 100.0% packet loss", output);
         }
@@ -88,12 +88,12 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("interface vlan 10");
             await device.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show interfaces 1");
             Assert.Contains("Status and Counters", output);
             Assert.Contains("WAN Link", output);
             Assert.Contains("Link Status", output);
-            
+
             output = await device.ProcessCommandAsync("show interfaces vlan 10");
             Assert.Contains("VLAN", output);
             Assert.Contains("10.0.0.1", output);
@@ -106,13 +106,13 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("SW1");
             var output = await device.ProcessCommandAsync("enable");
             Assert.Contains("SW1#", output);
-            
+
             output = await device.ProcessCommandAsync("configure");
             Assert.Contains("SW1(config)#", output);
-            
+
             output = await device.ProcessCommandAsync("interface 1");
             Assert.Contains("SW1(eth-1)#", output);
-            
+
             output = await device.ProcessCommandAsync("exit");
             Assert.Contains("SW1(config)#", output);
         }
@@ -133,7 +133,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("interface 1");
             await device.ProcessCommandAsync("untagged vlan 10");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show vlan");
             Assert.Contains("10", output);
             Assert.Contains("SALES", output);
@@ -154,7 +154,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("area 0.0.0.0 range 10.0.0.0 255.255.255.0");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("exit");
-            
+
             // Simulate neighbor
             // TODO: Update this when command handler architecture is complete
             // var ospfConfig = device.GetOspfConfig();
@@ -162,7 +162,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             // {
             //     ospfConfig.AddNeighbor("2.2.2.2", "10.0.0.2", "vlan 1", "DR");
             // }
-            
+
             var output = await device.ProcessCommandAsync("show ip ospf neighbor");
             Assert.Contains("2.2.2.2", output);
             Assert.Contains("10.0.0.2", output);
@@ -186,7 +186,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("interface vlan 10");
             await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show running-config");
             Assert.Contains("interface 1", output);
             Assert.Contains("name \"Server Connection\"", output);
@@ -208,7 +208,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("network 10.0.0.0/24");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show ip bgp summary");
             Assert.Contains("BGP Peer Information", output);
             Assert.Contains("172.16.0.2", output);
@@ -226,15 +226,15 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("interface 1");
             await device.ProcessCommandAsync("no disable");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show interfaces brief");
             Assert.Contains("1", output);
             Assert.Contains("Up", output);
-            
+
             await device.ProcessCommandAsync("interface 1");
             await device.ProcessCommandAsync("disable");
             await device.ProcessCommandAsync("exit");
-            
+
             output = await device.ProcessCommandAsync("show interfaces brief");
             Assert.Contains("Down", output);
         }
@@ -246,7 +246,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
             var output = await device.ProcessCommandAsync("show version");
-            
+
             Assert.Contains("Image stamp:", output);
             Assert.Contains("Boot Image:", output);
             Assert.Contains("Version information", output);
@@ -263,7 +263,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
             await device.ProcessCommandAsync("exit");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show ip arp");
             Assert.Contains("IP ARP table", output);
             Assert.Contains("IP Address", output);
@@ -278,7 +278,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
             var output = await device.ProcessCommandAsync("show mac-address");
-            
+
             Assert.Contains("Status and Counters - Port Address Table", output);
             Assert.Contains("MAC Address", output);
             Assert.Contains("Port", output);
@@ -298,7 +298,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("interface vlan 10");
             await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show ip interface brief");
             Assert.Contains("Internet (IP) Service", output);
             Assert.Contains("Interface", output);
@@ -318,10 +318,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("hostname Aruba-Test");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("write memory");
             Assert.DoesNotContain("Invalid", output);
-            
+
             output = await device.ProcessCommandAsync("copy running-config startup-config");
             Assert.DoesNotContain("Invalid", output);
         }
@@ -336,7 +336,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("spanning-tree mode rapid-pvst");
             await device.ProcessCommandAsync("spanning-tree priority 4096");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show spanning-tree");
             Assert.Contains("Multiple Spanning Trees", output);
             Assert.Contains("CST", output);
@@ -356,7 +356,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("deny 192.168.1.0 0.0.0.255");
             await device.ProcessCommandAsync("permit any");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show running-config");
             Assert.Contains("ip access-list standard BLOCK_NETWORK", output);
             Assert.Contains("deny", output);
@@ -376,7 +376,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("interface 2");
             await device.ProcessCommandAsync("trunk 1 lacp");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show trunk");
             Assert.Contains("Load Balancing Method", output);
             Assert.Contains("Port", output);
@@ -392,7 +392,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("SW1");
             await device.ProcessCommandAsync("enable");
             var output = await device.ProcessCommandAsync("reload");
-            
+
             Assert.Contains("This command will reboot the device", output);
             Assert.Contains("Continue", output);
         }
@@ -408,11 +408,11 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("disable");
             await device.ProcessCommandAsync("no disable");
             await device.ProcessCommandAsync("exit");
-            
+
             var output = await device.ProcessCommandAsync("show logging");
             Assert.Contains("Event Log", output);
             Assert.Contains("port 1", output);
             Assert.Contains("System coldstart", output);
         }
     }
-} 
+}

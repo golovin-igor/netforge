@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CommandHandlers.Common
@@ -128,7 +128,7 @@ namespace NetForge.Simulation.Tests.CommandHandlers.Common
             // Assert
             Assert.NotNull(ciscoResult);
             Assert.NotNull(juniperResult);
-            
+
             // Both should work regardless of vendor
             Assert.Contains("No commands in history", ciscoResult);
             Assert.Contains("No commands in history", juniperResult);
@@ -163,10 +163,10 @@ namespace NetForge.Simulation.Tests.CommandHandlers.Common
             // Assert
             Assert.NotNull(result);
             Assert.Contains("show test-command-", result);
-            
+
             // Should display history without errors
             var lines = result.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             Assert.True(lines.Length > 0);
         }
     }
-} 
+}

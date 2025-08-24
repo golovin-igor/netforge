@@ -1,6 +1,6 @@
 using NetForge.Simulation.CliHandlers.Cisco;
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CiscoVendor

@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\NetForge.Simulation.Core\NetForge.Simulation.csproj" />
+      <ProjectReference Include="..\..\NetForge.Simulation.Core\NetForge.Simulation.Core.csproj" />
     </ItemGroup>
 
 </Project>

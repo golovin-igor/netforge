@@ -3,7 +3,7 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// Alcatel-Lucent network device with OmniSwitch operating system
@@ -34,7 +34,7 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Alcatel handlers to ensure they are available for tests
-            var registry = new NetForge.Simulation.CliHandlers.Alcatel.AlcatelHandlerRegistry();
+            var registry = new Simulation.CliHandlers.Alcatel.AlcatelHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
             registry.RegisterHandlers(CommandManager);
         }
@@ -42,7 +42,7 @@ namespace NetForge.Simulation.Devices
         public override string GetPrompt()
         {
             var mode = GetCurrentModeEnum();
-            
+
             return mode switch
             {
                 DeviceMode.User => $"{Hostname}->",

@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 
 namespace NetForge.Simulation.CliHandlers.Tests.Anira
 {
@@ -9,7 +9,7 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange & Act
             var device = new AniraDevice("TestDevice");
-            
+
             // Assert
             Assert.NotNull(device);
             Assert.Equal("TestDevice", device.GetHostname());
@@ -21,10 +21,10 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var mode = device.GetCurrentMode();
-            
+
             // Assert
             Assert.Equal("user", mode);
         }
@@ -34,10 +34,10 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("invalid_command_that_does_not_exist");
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.Contains("Invalid", output);
@@ -49,10 +49,10 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("");
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.Equal("TestDevice>", device.GetPrompt());
@@ -63,10 +63,10 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("   ");
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.Equal("TestDevice>", device.GetPrompt());
@@ -77,10 +77,10 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("help");
-            
+
             // Assert
             Assert.NotNull(output);
             // Should provide help information or indicate no commands are available
@@ -93,10 +93,10 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("?");
-            
+
             // Assert
             Assert.NotNull(output);
             // Should provide help information or indicate no commands are available
@@ -109,10 +109,10 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("exit");
-            
+
             // Assert
             Assert.NotNull(output);
             // The device should remain in the same state or handle exit appropriately
@@ -124,10 +124,10 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("quit");
-            
+
             // Assert
             Assert.NotNull(output);
             // The device should remain in the same state or handle quit appropriately
@@ -149,10 +149,10 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             // Commands should either work or return a proper error message
@@ -165,12 +165,12 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             await device.ProcessCommandAsync("help");
             await device.ProcessCommandAsync("?");
             var history = device.GetCommandHistory();
-            
+
             // Assert
             Assert.NotNull(history);
             Assert.True(history.Count >= 2);
@@ -183,12 +183,12 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
         {
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var output1 = await device.ProcessCommandAsync("help");
             var output2 = await device.ProcessCommandAsync("?");
             var output3 = await device.ProcessCommandAsync("show");
-            
+
             // Assert
             Assert.NotNull(output1);
             Assert.NotNull(output2);
@@ -199,35 +199,35 @@ namespace NetForge.Simulation.CliHandlers.Tests.Anira
 
         // TODO: Add more specific tests when Anira CLI commands are defined in a CSV file
         // These tests should be updated based on the actual commands that Anira supports
-        
+
         [Fact]
         public async Task AniraHandlerNoCliCommandsFileShouldStillFunctionBasically()
         {
             // This test verifies that even without a CSV file defining commands,
             // the Anira device can still be instantiated and handle basic operations
-            
+
             // Arrange & Act
             var device = new AniraDevice("TestDevice");
             var output = await device.ProcessCommandAsync("test command");
-            
+
             // Assert
             Assert.NotNull(device);
             Assert.NotNull(output);
             Assert.Equal("TestDevice>", device.GetPrompt());
         }
-        
+
         [Fact]
         public async Task AniraHandlerShouldIndicateNoCommandsAvailable()
         {
             // Since Anira doesn't have a CSV file with commands,
             // it should indicate that no commands are available or implemented
-            
+
             // Arrange
             var device = new AniraDevice("TestDevice");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("help");
-            
+
             // Assert
             Assert.NotNull(output);
             // Should indicate that no commands are implemented or available

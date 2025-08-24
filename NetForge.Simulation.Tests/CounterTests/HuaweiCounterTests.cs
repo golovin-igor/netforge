@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CounterTests
@@ -13,7 +13,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new HuaweiDevice("R1");
             var r2 = new HuaweiDevice("R2");
-            
+
             network.AddDeviceAsync(r1).Wait();
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "GigabitEthernet0/0/0", "R2", "GigabitEthernet0/0/0").Wait();
@@ -43,7 +43,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new HuaweiDevice("R1");
             var r2 = new HuaweiDevice("R2");
-            
+
             network.AddDeviceAsync(r1).Wait();
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "GigabitEthernet0/0/0", "R2", "GigabitEthernet0/0/0").Wait();
@@ -61,7 +61,7 @@ namespace NetForge.Simulation.Tests.CounterTests
 
             var pingResult = await r1.ProcessCommandAsync("ping 192.168.1.2");
             var finalCounters = r2.GetInterface("GigabitEthernet0/0/0").RxPackets;
-            
+
             Assert.Equal(initialCounters, finalCounters);
             Assert.Contains("No response", pingResult);
         }
@@ -72,7 +72,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new HuaweiDevice("R1");
             var r2 = new HuaweiDevice("R2");
-            
+
             network.AddDeviceAsync(r1).Wait();
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "GigabitEthernet0/0/0", "R2", "GigabitEthernet0/0/0").Wait();
@@ -91,13 +91,13 @@ namespace NetForge.Simulation.Tests.CounterTests
             Assert.Contains("192.168.1.2", ospfNeighbors);
         }
 
-        private void SimulatePingWithCounters(HuaweiDevice source, HuaweiDevice dest, 
+        private void SimulatePingWithCounters(HuaweiDevice source, HuaweiDevice dest,
             string sourceIntf, string destIntf)
         {
             var sourceInterface = source.GetInterface(sourceIntf);
             var destInterface = dest.GetInterface(destIntf);
 
-            if (sourceInterface != null && destInterface != null && 
+            if (sourceInterface != null && destInterface != null &&
                 sourceInterface.IsUp && destInterface.IsUp)
             {
                 sourceInterface.TxPackets += 5;
@@ -149,13 +149,13 @@ namespace NetForge.Simulation.Tests.CounterTests
             await r2.ProcessCommandAsync("quit");
         }
 
-        private void SimulateOspfHelloExchange(HuaweiDevice r1, HuaweiDevice r2, 
+        private void SimulateOspfHelloExchange(HuaweiDevice r1, HuaweiDevice r2,
             string r1Intf, string r2Intf, int helloCount)
         {
             var r1Interface = r1.GetInterface(r1Intf);
             var r2Interface = r2.GetInterface(r2Intf);
 
-            if (r1Interface != null && r2Interface != null && 
+            if (r1Interface != null && r2Interface != null &&
                 r1Interface.IsUp && r2Interface.IsUp)
             {
                 r1Interface.TxPackets += helloCount;
@@ -165,4 +165,4 @@ namespace NetForge.Simulation.Tests.CounterTests
             }
         }
     }
-} 
+}

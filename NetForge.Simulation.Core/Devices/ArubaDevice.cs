@@ -5,7 +5,7 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Core;
 using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// HPE/Aruba switch running ArubaOS-Switch (formerly ProCurve)
@@ -51,7 +51,7 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Aruba handlers to ensure they are available for tests
-            var registry = new NetForge.Simulation.CliHandlers.Aruba.ArubaHandlerRegistry();
+            var registry = new Simulation.CliHandlers.Aruba.ArubaHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 

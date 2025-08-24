@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CounterTests
@@ -13,7 +13,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new FortinetDevice("R1");
             var r2 = new FortinetDevice("R2");
-            
+
             await network.AddDeviceAsync(r1);
             await network.AddDeviceAsync(r2);
             await network.AddLinkAsync("R1", "port1", "R2", "port1");
@@ -43,7 +43,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new FortinetDevice("R1");
             var r2 = new FortinetDevice("R2");
-            
+
             await network.AddDeviceAsync(r1);
             await network.AddDeviceAsync(r2);
             await network.AddLinkAsync("R1", "port1", "R2", "port1");
@@ -62,13 +62,13 @@ namespace NetForge.Simulation.Tests.CounterTests
             Assert.Contains("192.168.1.2", ospfNeighbors);
         }
 
-        private void SimulatePingWithCounters(FortinetDevice source, FortinetDevice dest, 
+        private void SimulatePingWithCounters(FortinetDevice source, FortinetDevice dest,
             string sourceIntf, string destIntf)
         {
             var sourceInterface = source.GetInterface(sourceIntf);
             var destInterface = dest.GetInterface(destIntf);
 
-            if (sourceInterface != null && destInterface != null && 
+            if (sourceInterface != null && destInterface != null &&
                 sourceInterface.IsUp && destInterface.IsUp)
             {
                 sourceInterface.TxPackets += 5;
@@ -128,13 +128,13 @@ namespace NetForge.Simulation.Tests.CounterTests
             await r2.ProcessCommandAsync("end");
         }
 
-        private void SimulateOspfHelloExchange(FortinetDevice r1, FortinetDevice r2, 
+        private void SimulateOspfHelloExchange(FortinetDevice r1, FortinetDevice r2,
             string r1Intf, string r2Intf, int helloCount)
         {
             var r1Interface = r1.GetInterface(r1Intf);
             var r2Interface = r2.GetInterface(r2Intf);
 
-            if (r1Interface != null && r2Interface != null && 
+            if (r1Interface != null && r2Interface != null &&
                 r1Interface.IsUp && r2Interface.IsUp)
             {
                 r1Interface.TxPackets += helloCount;
@@ -144,4 +144,4 @@ namespace NetForge.Simulation.Tests.CounterTests
             }
         }
     }
-} 
+}

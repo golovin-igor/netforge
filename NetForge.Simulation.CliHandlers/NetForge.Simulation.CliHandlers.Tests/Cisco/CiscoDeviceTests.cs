@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Cisco
@@ -22,7 +22,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         public async Task CiscoConfigureVlanAndPingShouldSucceed()
         {
             var (network, sw1, sw2) = await SetupNetworkWithTwoDevicesAsync("SW1", "SW2");
-            
+
             await sw1.ProcessCommandAsync("enable");
             await sw1.ProcessCommandAsync("configure terminal");
             await sw1.ProcessCommandAsync("vlan 10");
@@ -84,9 +84,9 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await r2.ProcessCommandAsync("network 10.0.0.0 0.0.0.3 area 0");
             await r2.ProcessCommandAsync("exit");
             await r2.ProcessCommandAsync("exit");
-            
+
             network.UpdateProtocols();
-            await Task.Delay(50); 
+            await Task.Delay(50);
 
             var ospfNeighbors = await r1.ProcessCommandAsync("show ip ospf neighbor");
             Assert.Contains("2.2.2.2", ospfNeighbors);
@@ -174,7 +174,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             Assert.Contains("2.0.0.0/8", ripRoutes);
             Assert.Contains("10.0.0.2", ripRoutes);
         }
-        
+
         [Fact]
         public async Task CiscoInterfaceShutdownShouldAffectConnectivity()
         {
@@ -202,7 +202,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await r1.ProcessCommandAsync("shutdown");
             await r1.ProcessCommandAsync("exit");
             await r1.ProcessCommandAsync("exit");
-            
+
             network.UpdateProtocols();
             await Task.Delay(50);
 
@@ -225,7 +225,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await r1.ProcessCommandAsync("access-list 101 deny icmp host 10.0.0.2 host 10.0.0.1");
             await r1.ProcessCommandAsync("access-list 101 permit ip any any");
             await r1.ProcessCommandAsync("exit");
-            await r1.ProcessCommandAsync("exit"); 
+            await r1.ProcessCommandAsync("exit");
 
             await r2.ProcessCommandAsync("enable");
             await r2.ProcessCommandAsync("configure terminal");
@@ -256,7 +256,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
 
             network.UpdateProtocols();
             await Task.Delay(50);
-            
+
             var stpOutput = await sw1.ProcessCommandAsync("show spanning-tree");
             Assert.Contains("This bridge is the root", stpOutput);
         }
@@ -271,7 +271,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await network.AddDeviceAsync(sw2);
             await network.AddLinkAsync("SW1", "GigabitEthernet0/1", "SW2", "GigabitEthernet0/1");
             await network.AddLinkAsync("SW1", "GigabitEthernet0/2", "SW2", "GigabitEthernet0/2");
-            
+
             await sw1.ProcessCommandAsync("enable");
             await sw1.ProcessCommandAsync("configure terminal");
             await sw1.ProcessCommandAsync("interface GigabitEthernet0/1");
@@ -311,7 +311,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await r2.ProcessCommandAsync("exit");
             await r2.ProcessCommandAsync("exit");
 
-            network.UpdateProtocols(); 
+            network.UpdateProtocols();
             await Task.Delay(50);
 
             var cdpNeighbors = await r1.ProcessCommandAsync("show cdp neighbors");
@@ -320,7 +320,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoInvalidCommandShouldReturnError() 
+        public async Task CiscoInvalidCommandShouldReturnError()
         {
             var r1 = new CiscoDevice("R1");
             var output1 = await r1.ProcessCommandAsync("invalid command");
@@ -335,7 +335,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         }
 
         [Fact]
-        public async Task CiscoShowStaticRouteShouldDisplayRoute() 
+        public async Task CiscoShowStaticRouteShouldDisplayRoute()
         {
             var r1 = new CiscoDevice("R1");
             await r1.ProcessCommandAsync("enable");
@@ -349,4 +349,4 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             Assert.Contains("192.168.1.254", routeOutput);
         }
     }
-} 
+}

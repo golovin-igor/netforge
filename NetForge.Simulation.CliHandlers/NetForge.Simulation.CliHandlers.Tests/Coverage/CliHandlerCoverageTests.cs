@@ -10,7 +10,7 @@ using NetForge.Simulation.CliHandlers.Linux;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Coverage

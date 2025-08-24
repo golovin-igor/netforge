@@ -4,7 +4,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetForge.Simulation.Common", "NetForge.Simulation.Common\NetForge.Simulation.Common.csproj", "{A1B2C3D4-E5F6-7890-1234-567890ABCDEF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetForge.Simulation.Core", "NetForge.Simulation.Core\NetForge.Simulation.csproj", "{B2C3D4E5-F6A7-8901-2345-67890ABCDEF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetForge.Simulation.Core", "NetForge.Simulation.Core\NetForge.Simulation.Core.csproj", "{B2C3D4E5-F6A7-8901-2345-67890ABCDEF1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetForge.Simulation.CliHandlers", "NetForge.Simulation.CliHandlers", "{66969522-17B7-42DC-BA5C-993840AF25BC}"
 EndProject
@@ -54,9 +54,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Tests",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetForge.Simulation.Protocols", "NetForge.Simulation.Protocols", "{897E0406-546D-4094-BFAA-3A4CD4F7F311}"
 	ProjectSection(SolutionItems) = preProject
-		NetForge.Simulation.Protocols\PROTOCOL_STATE_MANAGEMENT.md = NetForge.Simulation.Protocols\PROTOCOL_STATE_MANAGEMENT.md
-		NetForge.Simulation.Protocols\PROTOCOL_IMPLEMENTATION_STATUS.md = NetForge.Simulation.Protocols\PROTOCOL_IMPLEMENTATION_STATUS.md
-		NetForge.Simulation.Protocols\PROTOCOL_IMPLEMENTATION_PLAN.md = NetForge.Simulation.Protocols\PROTOCOL_IMPLEMENTATION_PLAN.md
+		NetForge.Simulation.Protocols\COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md = NetForge.Simulation.Protocols\COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Protocols.Common", "NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.Common\NetForge.Simulation.Protocols.Common.csproj", "{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}"
@@ -110,6 +108,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetForge.Simulation.HttpHan
 	ProjectSection(SolutionItems) = preProject
 		NetForge.Simulation.HttpHandlers\HTTP_HANDLERS_IMPLEMENTATION_PLAN.md = NetForge.Simulation.HttpHandlers\HTTP_HANDLERS_IMPLEMENTATION_PLAN.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Examples", "NetForge.Simulation.Examples\NetForge.Simulation.Examples.csproj", "{E8E2125B-3C8F-4116-BA01-24A54743FFEF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -277,6 +277,10 @@ Global
 		{E00370E4-046D-46DB-B006-78EEC58E1E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E00370E4-046D-46DB-B006-78EEC58E1E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E00370E4-046D-46DB-B006-78EEC58E1E8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8E2125B-3C8F-4116-BA01-24A54743FFEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8E2125B-3C8F-4116-BA01-24A54743FFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8E2125B-3C8F-4116-BA01-24A54743FFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8E2125B-3C8F-4116-BA01-24A54743FFEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -323,5 +327,6 @@ Global
 		{66969522-17B7-42DC-BA5C-993840AF25BC} = {9052BD1E-7B4A-45CB-952E-A7E1FED3333A}
 		{E00370E4-046D-46DB-B006-78EEC58E1E8A} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
 		{352DC46B-D102-4687-89F9-BB7E632E27E2} = {9052BD1E-7B4A-45CB-952E-A7E1FED3333A}
+		{E8E2125B-3C8F-4116-BA01-24A54743FFEF} = {868FD21A-97B3-4991-8411-FB9763469FC4}
 	EndGlobalSection
 EndGlobal

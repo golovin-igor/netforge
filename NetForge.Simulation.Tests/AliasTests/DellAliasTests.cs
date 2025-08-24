@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Xunit;
 using NetForge.Simulation.CliHandlers.Dell;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 
 namespace NetForge.Simulation.Tests.AliasTests
 {
@@ -206,7 +206,7 @@ namespace NetForge.Simulation.Tests.AliasTests
         public void GetInterfaceAliases_WithValidInterface_ReturnsAllAliases(string interfaceName, string[] expectedAliases)
         {
             var result = DellInterfaceAliasHandler.GetInterfaceAliases(interfaceName);
-            
+
             // Check that all expected aliases are present
             foreach (var expected in expectedAliases)
             {
@@ -373,15 +373,15 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Dell device
             var device = new DellDevice("SW1");
-            
+
             // Add interface using full name
             device.AddInterface("ethernet 1/1/1");
-            
+
             // Should be able to find it using alias
             var iface1 = device.GetInterface("eth 1/1/1");
             var iface2 = device.GetInterface("e 1/1/1");
             var iface3 = device.GetInterface("ethernet 1/1/1");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -394,17 +394,17 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Dell device
             var device = new DellDevice("SW1");
-            
+
             // Add Port-Channel interface using full name
             device.AddInterface("port-channel 1");
-            
+
             // Should be able to find it using alias
             var iface1 = device.GetInterface("po 1");
             var iface2 = device.GetInterface("pc 1");
             var iface3 = device.GetInterface("port 1");
             var iface4 = device.GetInterface("portchannel 1");
             var iface5 = device.GetInterface("port-channel 1");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -421,15 +421,15 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Dell device
             var device = new DellDevice("SW1");
-            
+
             // Add Management interface using full name
             device.AddInterface("mgmt 1/1/1");
-            
+
             // Should be able to find it using aliases
             var iface1 = device.GetInterface("mgmt 1/1/1");
             var iface2 = device.GetInterface("management 1/1/1");
             var iface3 = device.GetInterface("ma 1/1/1");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -442,14 +442,14 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Dell device
             var device = new DellDevice("SW1");
-            
+
             // Add VLAN interface using full name
             device.AddInterface("vlan 100");
-            
+
             // Should be able to find it using alias
             var iface1 = device.GetInterface("vl 100");
             var iface2 = device.GetInterface("vlan 100");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.Same(iface1, iface2);
@@ -460,15 +460,15 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Dell device
             var device = new DellDevice("SW1");
-            
+
             // Add Loopback interface using full name
             device.AddInterface("loopback 0");
-            
+
             // Should be able to find it using aliases
             var iface1 = device.GetInterface("lo 0");
             var iface2 = device.GetInterface("loop 0");
             var iface3 = device.GetInterface("loopback 0");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -481,19 +481,19 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Dell device
             var device = new DellDevice("SW1");
-            
+
             // Add high-speed ethernet interfaces
             device.AddInterface("tengigabitethernet 1/1/1");
             device.AddInterface("twentyfivegigabitethernet 1/1/2");
             device.AddInterface("fortygigabitethernet 1/1/3");
             device.AddInterface("hundredgigabitethernet 1/1/4");
-            
+
             // Should be able to find them using aliases
             var iface1 = device.GetInterface("te 1/1/1");
             var iface2 = device.GetInterface("25g 1/1/2");
             var iface3 = device.GetInterface("40g 1/1/3");
             var iface4 = device.GetInterface("100g 1/1/4");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -505,17 +505,17 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Dell device
             var device = new DellDevice("SW1");
-            
+
             // Add tunnel and null interfaces
             device.AddInterface("tunnel 1");
             device.AddInterface("null 0");
-            
+
             // Should be able to find them using aliases
             var iface1 = device.GetInterface("tu 1");
             var iface2 = device.GetInterface("tunnel 1");
             var iface3 = device.GetInterface("nu 0");
             var iface4 = device.GetInterface("null 0");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -524,4 +524,4 @@ namespace NetForge.Simulation.Tests.AliasTests
             Assert.Same(iface3, iface4);
         }
     }
-} 
+}

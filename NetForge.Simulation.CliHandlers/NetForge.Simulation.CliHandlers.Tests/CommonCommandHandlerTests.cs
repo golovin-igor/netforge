@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 // For DeviceMode
 // For NetworkDevice, CiscoDevice etc.
@@ -14,10 +14,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("enable");
-            
+
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
             Assert.Equal("TestRouter#", device.GetPrompt());
@@ -29,10 +29,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("en");
-            
+
             // Assert
             Assert.Equal("privileged", device.GetCurrentMode());
             Assert.Equal("TestRouter#", device.GetPrompt());
@@ -45,10 +45,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
             // Arrange
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable"); // Enter privileged mode first
-            
+
             // Act
             var output = await device.ProcessCommandAsync("enable");
-            
+
             // Assert
             // Most handlers return empty string when already in privileged mode
             Assert.Equal("TestRouter#", output);
@@ -61,10 +61,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
             // Arrange
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable"); // Enter privileged mode first
-            
+
             // Act
             var output = await device.ProcessCommandAsync("disable");
-            
+
             // Assert
             Assert.Equal("user", device.GetCurrentMode());
             Assert.Equal("TestRouter>", device.GetPrompt());
@@ -76,10 +76,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("disable");
-            
+
             // Assert
             // Disable from user mode typically just returns the prompt
             Assert.Equal("TestRouter>", output);
@@ -91,10 +91,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping 192.168.1.1");
-            
+
             // Assert
             // In test environment without network initialization, expect network error
             Assert.Contains("Network not initialized", output);
@@ -106,10 +106,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping invalid-ip");
-            
+
             // Assert
             Assert.Contains("Invalid IP address", output);
             Assert.Contains("TestRouter>", output);
@@ -120,10 +120,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping");
-            
+
             // Assert
             Assert.Contains("Incomplete command", output);
             Assert.Contains("Usage: ping <destination>", output);
@@ -138,17 +138,17 @@ namespace NetForge.Simulation.Tests.CliHandlers
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Act & Assert - Exit interface mode
             var output1 = await device.ProcessCommandAsync("exit");
             Assert.Equal("config", device.GetCurrentMode());
             Assert.Equal("TestRouter(config)#", output1);
-            
+
             // Exit config mode
             var output2 = await device.ProcessCommandAsync("exit");
             Assert.Equal("privileged", device.GetCurrentMode());
             Assert.Equal("TestRouter#", output2);
-            
+
             // Exit privileged mode
             var output3 = await device.ProcessCommandAsync("exit");
             Assert.Equal("user", device.GetCurrentMode());
@@ -160,13 +160,13 @@ namespace NetForge.Simulation.Tests.CliHandlers
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("exit");
-            
+
             // Assert
             Assert.Equal("user", device.GetCurrentMode());
             Assert.Equal("TestRouter>", output);
         }
     }
-} 
+}

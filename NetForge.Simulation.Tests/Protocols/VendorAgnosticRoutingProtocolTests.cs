@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using NetForge.Simulation.Common;
 using Xunit;
 
@@ -319,4 +319,4 @@ namespace NetForge.Simulation.Tests.Protocols
             Assert.Contains("Invalid", bgpResult);
         }
     }
-} 
+}

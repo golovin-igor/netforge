@@ -489,4 +489,4 @@ namespace NetForge.Simulation.Tests.CommandHistory
             }
         }
     }
-} 
+}

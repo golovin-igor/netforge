@@ -1,11 +1,6 @@
-using NetForge.Simulation.Common;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common.Services;
-using System.Reflection;
 
 namespace NetForge.Simulation.Protocols.Tests
 {
@@ -35,10 +30,10 @@ namespace NetForge.Simulation.Protocols.Tests
 
             // Should find plugins for some expected protocol types (test what actually exists)
             var foundProtocolTypes = pluginList.Select(p => p.ProtocolType).Distinct().ToList();
-            
+
             // Verify we found at least some protocols
             Assert.True(foundProtocolTypes.Count > 0, "Should find at least one protocol plugin");
-            
+
             // Log what we found for debugging
             Console.WriteLine($"Found {pluginList.Count} plugins for {foundProtocolTypes.Count} protocol types");
             foreach (var protocolType in foundProtocolTypes)
@@ -65,7 +60,7 @@ namespace NetForge.Simulation.Protocols.Tests
             var protocolTypes = (int)stats["ProtocolTypes"];
 
             Console.WriteLine($"Discovery statistics: {totalPlugins} plugins, {protocolTypes} protocol types");
-            
+
             Assert.True(totalPlugins >= 0, "Total plugins should be non-negative");
             Assert.True(protocolTypes >= 0, "Protocol types should be non-negative");
             Assert.True(protocolTypes <= totalPlugins, "Protocol types should not exceed total plugins");
@@ -80,9 +75,9 @@ namespace NetForge.Simulation.Protocols.Tests
             // Assert
             Assert.NotNull(supportedVendors);
             var vendorList = supportedVendors.ToList();
-            
+
             Console.WriteLine($"Supported vendors: {string.Join(", ", vendorList)}");
-            
+
             // Should be a valid enumerable (may be empty if no plugins found)
             Assert.True(vendorList.Count >= 0, "Should return a valid vendor list");
         }
@@ -104,12 +99,12 @@ namespace NetForge.Simulation.Protocols.Tests
 
             // Assert - All results should be consistent
             var firstResult = tasks[0].Result.OrderBy(p => p.PluginName).ToList();
-            
+
             for (int i = 1; i < tasks.Count; i++)
             {
                 var result = tasks[i].Result.OrderBy(p => p.PluginName).ToList();
                 Assert.Equal(firstResult.Count, result.Count);
-                
+
                 // Check that we get consistent results across threads
                 for (int j = 0; j < firstResult.Count; j++)
                 {
@@ -130,7 +125,7 @@ namespace NetForge.Simulation.Protocols.Tests
                 // Act & Assert - Should not throw even if no protocols are found
                 var protocols = _discoveryService.GetProtocolsForVendor(vendor);
                 Assert.NotNull(protocols);
-                
+
                 var protocolList = protocols.ToList();
                 Console.WriteLine($"Vendor {vendor}: {protocolList.Count} protocols");
             }
@@ -146,10 +141,10 @@ namespace NetForge.Simulation.Protocols.Tests
             {
                 // Act - Should not throw
                 var isAvailable = _discoveryService.IsProtocolAvailable(protocolType);
-                
+
                 // Assert - Should return a boolean value
                 Assert.True(isAvailable || !isAvailable); // This always passes but ensures no exception
-                
+
                 Console.WriteLine($"Protocol {protocolType}: {(isAvailable ? "Available" : "Not Available")}");
             }
         }
@@ -167,7 +162,7 @@ namespace NetForge.Simulation.Protocols.Tests
                 Assert.False(string.IsNullOrEmpty(plugin.PluginName));
                 Assert.True(plugin.IsValid());
                 Assert.NotNull(plugin.GetSupportedVendors());
-                
+
                 Console.WriteLine($"Plugin: {plugin.PluginName} (Type: {plugin.ProtocolType}, Version: {plugin.Version ?? "N/A"})");
             }
         }

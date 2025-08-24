@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
@@ -10,7 +10,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("config global");
 
@@ -25,7 +25,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("config system interface");
 
@@ -40,7 +40,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("config router ospf");
 
@@ -56,7 +56,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("FortiGate-VM");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("config router bgp");
 
@@ -541,10 +541,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("config system global");
-            
+
             // Assert
             Assert.Equal("global_config", device.GetCurrentMode());
             Assert.Equal("TestFortiGate (global) #", device.GetPrompt());
@@ -556,10 +556,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("get system status");
-            
+
             // Assert
             Assert.Contains("Version:", output);
             Assert.Contains("Serial-Number:", output);
@@ -571,10 +571,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show system interface");
-            
+
             // Assert
             Assert.Contains("Interface information", output);
             Assert.Equal("TestFortiGate #", device.GetPrompt());
@@ -585,10 +585,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("execute ping 192.168.1.1");
-            
+
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
             Assert.Contains("bytes from", output);
@@ -600,10 +600,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("diagnose sys version");
-            
+
             // Assert
             Assert.Contains("FortiOS version", output);
             Assert.Equal("TestFortiGate #", device.GetPrompt());
@@ -615,10 +615,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
             await device.ProcessCommandAsync("config router ospf");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show");
-            
+
             // Assert
             Assert.Contains("OSPF configuration", output);
             Assert.Equal("router_ospf", device.GetCurrentMode());
@@ -630,10 +630,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
             await device.ProcessCommandAsync("config router ospf");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("config system global");
-            
+
             // Assert
             Assert.Contains("Invalid command", output);
             Assert.Equal("router_ospf", device.GetCurrentMode());
@@ -645,10 +645,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
             await device.ProcessCommandAsync("config system interface");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("get system status");
-            
+
             // Assert
             Assert.Contains("Invalid mode", output);
             Assert.Equal("system_if", device.GetCurrentMode());
@@ -659,10 +659,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("invalid command");
-            
+
             // Assert
             Assert.Contains("Invalid command", output);
             Assert.Equal("global", device.GetCurrentMode());
@@ -673,10 +673,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             // Arrange
             var device = new FortinetDevice("TestFortiGate");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("config");
-            
+
             // Assert
             Assert.Contains("Incomplete command", output);
             Assert.Equal("global", device.GetCurrentMode());
@@ -684,4 +684,4 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
 
 
     }
-} 
+}

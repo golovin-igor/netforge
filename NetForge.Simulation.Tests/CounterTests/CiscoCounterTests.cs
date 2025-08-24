@@ -1,5 +1,5 @@
 using NetForge.Simulation.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 using System;
 using NetForge.Simulation.Common.Common;
@@ -22,7 +22,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
-            
+
             await network.AddDeviceAsync(r1);
             await network.AddDeviceAsync(r2);
             await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
@@ -67,7 +67,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
-            
+
             await network.AddDeviceAsync(r1);
             await network.AddDeviceAsync(r2);
             await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
@@ -89,7 +89,7 @@ namespace NetForge.Simulation.Tests.CounterTests
 
             // Initial successful ping to establish baseline
             SimulatePingWithCounters(r1, r2, "GigabitEthernet0/0", "GigabitEthernet0/0");
-            
+
             // Get counters after initial ping
             var initialCounters = r2.GetInterface("GigabitEthernet0/0").RxPackets;
 
@@ -105,7 +105,7 @@ namespace NetForge.Simulation.Tests.CounterTests
 
             // Assert
             var finalCounters = r2.GetInterface("GigabitEthernet0/0").RxPackets;
-            
+
             // Counters should not increment when interface is down
             Assert.Equal(initialCounters, finalCounters);
             Assert.Contains("No response", pingResult);
@@ -132,7 +132,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
-            
+
             await network.AddDeviceAsync(r1);
             await network.AddDeviceAsync(r2);
             await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
@@ -172,7 +172,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
-            
+
             await network.AddDeviceAsync(r1);
             await network.AddDeviceAsync(r2);
             await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
@@ -189,7 +189,7 @@ namespace NetForge.Simulation.Tests.CounterTests
 
             // Assert
             var intfR1After = r1.GetInterface("GigabitEthernet0/0");
-            
+
             // Verify BGP update counters (2 update messages, 48 bytes each)
             Assert.Equal(initialTxBytes + 96, intfR1After.TxBytes); // 2 * 48 bytes
 
@@ -208,7 +208,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
-            
+
             await network.AddDeviceAsync(r1);
             await network.AddDeviceAsync(r2);
             await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
@@ -225,7 +225,7 @@ namespace NetForge.Simulation.Tests.CounterTests
 
             // Assert
             var intfR1After = r1.GetInterface("GigabitEthernet0/0");
-            
+
             // Verify RIP advertisement counters (2 advertisements, 32 bytes each)
             Assert.Equal(initialTxBytes + 64, intfR1After.TxBytes); // 2 * 32 bytes
 
@@ -244,7 +244,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
-            
+
             await network.AddDeviceAsync(r1);
             await network.AddDeviceAsync(r2);
             await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
@@ -275,10 +275,10 @@ namespace NetForge.Simulation.Tests.CounterTests
 
             // Act - Attempt ping (should be blocked)
             var pingResult = await r1.ProcessCommandAsync("ping 192.168.1.2");
-            
+
             // Assert
             var finalRxPackets = r2.GetInterface("GigabitEthernet0/0").RxPackets;
-            
+
             // Counters should not increment when ACL blocks traffic
             Assert.Equal(initialRxPackets, finalRxPackets);
             Assert.Contains("Request timeout", pingResult);
@@ -305,7 +305,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new CiscoDevice("R1");
             var r2 = new CiscoDevice("R2");
-            
+
             await network.AddDeviceAsync(r1);
             await network.AddDeviceAsync(r2);
             await network.AddLinkAsync("R1", "GigabitEthernet0/0", "R2", "GigabitEthernet0/0");
@@ -324,7 +324,7 @@ namespace NetForge.Simulation.Tests.CounterTests
 
             // Assert
             var intfR1After = r1.GetInterface("GigabitEthernet0/0");
-            
+
             // Verify cumulative counters (2 OSPF hellos @ 40 bytes + 1 BGP update @ 48 bytes)
             Assert.Equal(initialTxBytes + 128, intfR1After.TxBytes); // 80 + 48 bytes
 
@@ -340,13 +340,13 @@ namespace NetForge.Simulation.Tests.CounterTests
         /// <summary>
         /// Simulate ping with counter updates
         /// </summary>
-        private void SimulatePingWithCounters(CiscoDevice source, CiscoDevice dest, 
+        private void SimulatePingWithCounters(CiscoDevice source, CiscoDevice dest,
             string sourceIntf, string destIntf)
         {
             var sourceInterface = source.GetInterface(sourceIntf);
             var destInterface = dest.GetInterface(destIntf);
 
-            if (sourceInterface != null && destInterface != null && 
+            if (sourceInterface != null && destInterface != null &&
                 sourceInterface.IsUp && destInterface.IsUp)
             {
                 sourceInterface.TxPackets += 5;
@@ -443,13 +443,13 @@ namespace NetForge.Simulation.Tests.CounterTests
         /// <summary>
         /// Simulate OSPF hello packet exchange
         /// </summary>
-        private void SimulateOspfHelloExchange(CiscoDevice r1, CiscoDevice r2, 
+        private void SimulateOspfHelloExchange(CiscoDevice r1, CiscoDevice r2,
             string r1Intf, string r2Intf, int helloCount)
         {
             var r1Interface = r1.GetInterface(r1Intf);
             var r2Interface = r2.GetInterface(r2Intf);
 
-            if (r1Interface != null && r2Interface != null && 
+            if (r1Interface != null && r2Interface != null &&
                 r1Interface.IsUp && r2Interface.IsUp)
             {
                 // Each hello is 40 bytes
@@ -463,13 +463,13 @@ namespace NetForge.Simulation.Tests.CounterTests
         /// <summary>
         /// Simulate BGP update message exchange
         /// </summary>
-        private void SimulateBgpUpdateExchange(CiscoDevice r1, CiscoDevice r2, 
+        private void SimulateBgpUpdateExchange(CiscoDevice r1, CiscoDevice r2,
             string r1Intf, string r2Intf, int updateCount)
         {
             var r1Interface = r1.GetInterface(r1Intf);
             var r2Interface = r2.GetInterface(r2Intf);
 
-            if (r1Interface != null && r2Interface != null && 
+            if (r1Interface != null && r2Interface != null &&
                 r1Interface.IsUp && r2Interface.IsUp)
             {
                 // Each BGP update is 48 bytes
@@ -483,13 +483,13 @@ namespace NetForge.Simulation.Tests.CounterTests
         /// <summary>
         /// Simulate RIP advertisement exchange
         /// </summary>
-        private void SimulateRipAdvertisementExchange(CiscoDevice r1, CiscoDevice r2, 
+        private void SimulateRipAdvertisementExchange(CiscoDevice r1, CiscoDevice r2,
             string r1Intf, string r2Intf, int advCount)
         {
             var r1Interface = r1.GetInterface(r1Intf);
             var r2Interface = r2.GetInterface(r2Intf);
 
-            if (r1Interface != null && r2Interface != null && 
+            if (r1Interface != null && r2Interface != null &&
                 r1Interface.IsUp && r2Interface.IsUp)
             {
                 // Each RIP advertisement is 32 bytes
@@ -502,4 +502,4 @@ namespace NetForge.Simulation.Tests.CounterTests
 
         #endregion
     }
-} 
+}

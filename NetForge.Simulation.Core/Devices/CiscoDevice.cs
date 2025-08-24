@@ -10,7 +10,7 @@ using NetForge.Simulation.Core;
 using NetForge.Simulation.Protocols.Common.Services;
 using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// Cisco IOS device implementation
@@ -53,7 +53,7 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Cisco handlers to ensure they are available for tests
-            var registry = new NetForge.Simulation.CliHandlers.Cisco.CiscoHandlerRegistry();
+            var registry = new Simulation.CliHandlers.Cisco.CiscoHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
             registry.RegisterHandlers(CommandManager);
         }

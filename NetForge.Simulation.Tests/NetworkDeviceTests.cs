@@ -3,7 +3,7 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 // For ProtocolType
 // Added for OspfConfig, BgpConfig

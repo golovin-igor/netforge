@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 
 namespace NetForge.Simulation.Tests.CliHandlers.TestHelpers
 {
@@ -60,7 +60,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.TestHelpers
                 if (device.ParentNetwork == null)
                 {
                     var network = new Network();
-                    
+
                     // Set the network reference
                     device.ParentNetwork = network;
                     // Add device to network using async method - simplified approach
@@ -145,7 +145,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.TestHelpers
         {
             var actualMode = device.GetCurrentMode();
             var normalizedOutput = NormalizeOutput(output);
-            
+
             if (actualMode != expectedMode)
             {
                 throw new InvalidOperationException($"Expected mode '{expectedMode}' but got '{actualMode}'. Output: {normalizedOutput}");
@@ -157,4 +157,4 @@ namespace NetForge.Simulation.Tests.CliHandlers.TestHelpers
             }
         }
     }
-} 
+}

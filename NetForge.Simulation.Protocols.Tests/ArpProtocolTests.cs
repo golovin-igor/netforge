@@ -1,7 +1,7 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using NetForge.Simulation.Protocols.ARP;
 
 namespace NetForge.Simulation.Protocols.Tests

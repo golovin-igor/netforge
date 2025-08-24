@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Nokia
@@ -23,52 +23,52 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange & Act
             var device = new NokiaDevice("SR1");
-            
+
             // Assert
             Assert.Equal("Nokia", device.Vendor);
             Assert.Equal("SR1", device.Name);
         }
-        
+
         [Fact]
         public async Task InitialPromptShowsAdminMode()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("");
-            
+
             // Assert
             Assert.Equal("SR1>admin# ", output);
         }
-        
+
         [Fact]
         public async Task ConfigureEntersConfigMode()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure");
-            
+
             // Assert
             Assert.Contains("SR1[configure]>admin# ", output);
         }
-        
+
         [Fact]
         public async Task ConfigurePortEntersPortContext()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
             await device.ProcessCommandAsync("configure");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("port 1/1/1");
-            
+
             // Assert
             Assert.Contains("SR1[configure][Port 1/1/1]>admin# ", output);
         }
-        
+
         [Fact]
         public async Task PortShutdownDisablesInterface()
         {
@@ -76,16 +76,16 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var device = new NokiaDevice("SR1");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("port 1/1/1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("shutdown");
-            
+
             // Assert
             var iface = device.GetAllInterfaces()["1/1/1"];
             Assert.True(iface.IsShutdown);
             Assert.False(iface.IsUp);
         }
-        
+
         [Fact]
         public async Task PortNoShutdownEnablesInterface()
         {
@@ -94,16 +94,16 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("port 1/1/1");
             await device.ProcessCommandAsync("shutdown");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("no shutdown");
-            
+
             // Assert
             var iface = device.GetAllInterfaces()["1/1/1"];
             Assert.False(iface.IsShutdown);
             Assert.True(iface.IsUp);
         }
-        
+
         [Fact]
         public async Task RouterInterfaceConfiguresIpAddress()
         {
@@ -111,32 +111,32 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             var device = new NokiaDevice("SR1");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("router interface test1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("address 192.168.1.1/24");
-            
+
             // Assert
             var iface = device.GetAllInterfaces()["router-test1"];
             Assert.Equal("192.168.1.1", iface.IpAddress);
             Assert.Equal("255.255.255.0", iface.SubnetMask);
         }
-        
+
         [Fact]
         public async Task RouterStaticRouteAddsRoute()
         {
             // Arrange
             var device = new NokiaDevice("SR1");
             await device.ProcessCommandAsync("configure");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("router static-route 192.168.1.0/24 next-hop 10.0.0.254");
-            
+
             // Assert
             var showOutput = await device.ProcessCommandAsync("show router route-table");
             Assert.Contains("192.168.1.0/24", showOutput);
             Assert.Contains("10.0.0.254", showOutput);
         }
-        
+
         [Fact]
         public async Task ShowCommandDisplaysSystemInfo()
         {
@@ -292,10 +292,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
         {
             // Arrange
             var device = new NokiaDevice("SR1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("invalid-command");
-            
+
             // Assert
             Assert.Contains("Error: Invalid command", output);
         }
@@ -341,7 +341,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             await r2.ProcessCommandAsync("configure router interface \"to_R1\" address 10.0.0.2/30 port 1/1/1");
             await r2.ProcessCommandAsync("configure router ospf area 0.0.0.0 interface \"system\"");
             await r2.ProcessCommandAsync("configure router ospf area 0.0.0.0 interface \"to_R1\"");
-            
+
             network.UpdateProtocols();
             await Task.Delay(50);
 
@@ -385,11 +385,11 @@ namespace NetForge.Simulation.Tests.CliHandlers.Nokia
             await r2.ProcessCommandAsync("configure router rip group \"rip-group\" interface \"to_R1\"");
 
             network.UpdateProtocols();
-            await Task.Delay(100); 
+            await Task.Delay(100);
 
             var routeOutput = await r1.ProcessCommandAsync("show router route-table");
             Assert.Contains("2.2.2.2/32", routeOutput);
             Assert.Contains("RIP", routeOutput);
         }
     }
-} 
+}

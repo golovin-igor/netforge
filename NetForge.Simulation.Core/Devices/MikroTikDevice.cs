@@ -4,7 +4,7 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// MikroTik RouterOS device implementation
@@ -41,7 +41,7 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register MikroTik handlers to ensure they are available for tests
-            var registry = new NetForge.Simulation.CliHandlers.MikroTik.MikroTikHandlerRegistry();
+            var registry = new Simulation.CliHandlers.MikroTik.MikroTikHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
             registry.RegisterHandlers(CommandManager);
         }

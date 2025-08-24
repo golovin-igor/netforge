@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Arista
@@ -11,10 +11,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             // Arrange
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure terminal");
-            
+
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config)#", device.GetPrompt());
@@ -27,10 +27,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("hostname NewSwitch");
-            
+
             // Assert
             Assert.Equal("NewSwitch(config)#", device.GetPrompt());
         }
@@ -40,10 +40,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show running-config");
-            
+
             // Assert
             Assert.Contains("Current configuration", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -54,10 +54,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show interfaces");
-            
+
             // Assert
             Assert.Contains("Interface", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -68,10 +68,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show ip route");
-            
+
             // Assert
             Assert.Contains("Route", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -82,10 +82,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show arp");
-            
+
             // Assert
             Assert.Contains("ARP", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -98,10 +98,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("interface Ethernet1");
-            
+
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-if-Et1)#", device.GetPrompt());
@@ -115,10 +115,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface Ethernet1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip address 192.168.1.1/24");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if-Et1)#", device.GetPrompt());
         }
@@ -131,10 +131,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface Ethernet1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("no shutdown");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if-Et1)#", device.GetPrompt());
         }
@@ -146,10 +146,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("router ospf 1");
-            
+
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-router-ospf)#", device.GetPrompt());
@@ -162,10 +162,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("router bgp 65001");
-            
+
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-router-bgp)#", device.GetPrompt());
@@ -178,10 +178,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("vlan 100");
-            
+
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-vlan-100)#", device.GetPrompt());
@@ -192,10 +192,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show vlan");
-            
+
             // Assert
             Assert.Contains("VLAN", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -206,10 +206,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show spanning-tree");
-            
+
             // Assert
             Assert.Contains("Spanning Tree", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -220,10 +220,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show mlag");
-            
+
             // Assert
             Assert.Contains("MLAG", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -234,10 +234,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show vxlan");
-            
+
             // Assert
             Assert.Contains("VXLAN", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -248,10 +248,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show bgp evpn");
-            
+
             // Assert
             Assert.Contains("BGP EVPN", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -284,10 +284,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -317,10 +317,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
                 await device.ProcessCommandAsync("enable");
                 await device.ProcessCommandAsync("configure terminal");
             }
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -347,10 +347,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
         {
             // Arrange
             var device = new AristaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -371,10 +371,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("vrf instance management");
             await device.ProcessCommandAsync("exit");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -397,10 +397,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -426,10 +426,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
                 await device.ProcessCommandAsync("router bgp 65001");
                 await device.ProcessCommandAsync("address-family evpn");
             }
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -442,7 +442,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for complex MLAG configuration
             var commands = new[]
             {
@@ -470,7 +470,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for VXLAN configuration
             var commands = new[]
             {
@@ -497,7 +497,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for BGP EVPN configuration
             var commands = new[]
             {
@@ -525,7 +525,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for spanning tree configuration
             var commands = new[]
             {
@@ -553,7 +553,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for route map configuration
             var commands = new[]
             {
@@ -581,7 +581,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             var device = new AristaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for access list configuration
             var commands = new[]
             {
@@ -609,7 +609,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface Ethernet1");
-            
+
             // Act & Assert for advanced interface configuration
             var commands = new[]
             {

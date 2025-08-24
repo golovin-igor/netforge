@@ -1,9 +1,9 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Protocols;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 
-namespace NetForge.Simulation.Examples
+namespace NetForge.Simulation.Core.Examples
 {
     /// <summary>
     /// Demonstrates the PhysicalConnection entity and how protocols respect physical connectivity

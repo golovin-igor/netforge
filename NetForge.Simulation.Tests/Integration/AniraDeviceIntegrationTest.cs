@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Integration
@@ -10,7 +10,7 @@ namespace NetForge.Simulation.Tests.Integration
         {
             // This test verifies that AniraDevice has been successfully migrated
             // to use vendor-agnostic handlers instead of old common handlers
-            
+
             // Arrange
             var device = new AniraDevice("MigrationTestDevice");
 
@@ -36,4 +36,4 @@ namespace NetForge.Simulation.Tests.Integration
             Assert.True(interfaces.ContainsKey("ge-0/0/0"));
         }
     }
-} 
+}

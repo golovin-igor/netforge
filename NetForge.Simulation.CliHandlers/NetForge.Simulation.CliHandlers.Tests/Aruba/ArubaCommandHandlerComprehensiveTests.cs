@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Aruba
@@ -10,10 +10,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show running-config");
-            
+
             // Assert
             Assert.Contains("Current configuration", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -24,10 +24,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show version");
-            
+
             // Assert
             Assert.Contains("ArubaOS", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -38,10 +38,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show interfaces");
-            
+
             // Assert
             Assert.Contains("Interface", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -52,10 +52,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show ip route");
-            
+
             // Assert
             Assert.Contains("Route", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -66,10 +66,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show arp");
-            
+
             // Assert
             Assert.Contains("ARP", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -82,10 +82,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
             Assert.Equal("TestSwitch(eth-0/0)#", device.GetPrompt());
@@ -99,10 +99,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
-            
+
             // Assert
             Assert.Equal("TestSwitch(eth-0/0)#", device.GetPrompt());
         }
@@ -115,10 +115,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("enable");
-            
+
             // Assert
             Assert.Equal("TestSwitch(eth-0/0)#", device.GetPrompt());
         }
@@ -130,10 +130,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip route 10.0.0.0 255.0.0.0 192.168.1.1");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config)#", device.GetPrompt());
         }
@@ -145,10 +145,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("vlan 100");
-            
+
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
             Assert.Equal("TestSwitch(vlan-100)#", device.GetPrompt());
@@ -162,10 +162,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("vlan 100");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("name TestVLAN");
-            
+
             // Assert
             Assert.Equal("TestSwitch(vlan-100)#", device.GetPrompt());
         }
@@ -175,10 +175,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show vlan");
-            
+
             // Assert
             Assert.Contains("VLAN", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -189,10 +189,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show spanning-tree");
-            
+
             // Assert
             Assert.Contains("Spanning Tree", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -203,10 +203,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show log");
-            
+
             // Assert
             Assert.Contains("Log", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -217,10 +217,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show tech");
-            
+
             // Assert
             Assert.Contains("Technical", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -231,10 +231,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show system");
-            
+
             // Assert
             Assert.Contains("System", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -245,10 +245,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show power");
-            
+
             // Assert
             Assert.Contains("Power", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -281,10 +281,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -315,10 +315,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
                     await device.ProcessCommandAsync("configure");
                 }
             }
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -342,10 +342,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
         {
             // Arrange
             var device = new ArubaDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -367,10 +367,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -390,10 +390,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("vlan 100");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -416,10 +416,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -433,7 +433,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
-            
+
             // Act & Assert for complex VLAN configuration
             var commands = new[]
             {
@@ -465,7 +465,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
-            
+
             // Act & Assert for spanning tree configuration
             var commands = new[]
             {
@@ -493,7 +493,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act & Assert for SNMP configuration
             var commands = new[]
             {
@@ -521,7 +521,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act & Assert for time configuration
             var commands = new[]
             {
@@ -548,7 +548,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             // Arrange
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act & Assert for logging configuration
             var commands = new[]
             {
@@ -577,7 +577,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
             await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Act & Assert for advanced interface configuration
             var commands = new[]
             {
@@ -609,7 +609,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
-            
+
             // Act & Assert for trunk configuration
             var commands = new[]
             {
@@ -638,7 +638,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Aruba
             var device = new ArubaDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure");
-            
+
             // Act & Assert for MAC address table configuration
             var commands = new[]
             {

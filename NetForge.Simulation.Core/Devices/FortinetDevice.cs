@@ -4,7 +4,7 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// Fortinet FortiOS device implementation
@@ -48,7 +48,7 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Fortinet handlers to ensure they are available for tests
-            var registry = new NetForge.Simulation.CliHandlers.Fortinet.FortinetHandlerRegistry();
+            var registry = new Simulation.CliHandlers.Fortinet.FortinetHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 

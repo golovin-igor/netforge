@@ -1,8 +1,7 @@
-using Xunit;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Protocols.Common.Services;
 using NetForge.Simulation.Core;
+using NetForge.Simulation.Protocols.Common.Services;
 
 namespace NetForge.Simulation.Protocols.Tests
 {
@@ -33,11 +32,11 @@ namespace NetForge.Simulation.Protocols.Tests
             Assert.NotNull(protocolService);
             Assert.NotNull(device.DeviceName);
             Assert.NotNull(device.DeviceType);
-            
+
             // Verify protocol service provides basic functionality
             var allProtocols = protocolService.GetAllProtocols();
             Assert.NotNull(allProtocols);
-            
+
             var activeTypes = protocolService.GetActiveProtocolTypes();
             Assert.NotNull(activeTypes);
         }
@@ -51,7 +50,7 @@ namespace NetForge.Simulation.Protocols.Tests
             // Arrange
             var device = CreateTestDevice("TestRouter", "Cisco");
             var basicProtocolService = device.GetProtocolService();
-            var protocolService = basicProtocolService as NetForge.Simulation.Protocols.Common.Services.IProtocolService;
+            var protocolService = basicProtocolService as IEnhancedProtocolService;
 
             // Act & Assert - These should not throw exceptions
             var ospfProtocol = basicProtocolService.GetProtocol<IDeviceProtocol>();
@@ -72,43 +71,42 @@ namespace NetForge.Simulation.Protocols.Tests
             // Arrange
             var device = CreateTestDevice("TestRouter", "Cisco");
             var basicProtocolService = device.GetProtocolService();
-            var protocolService = basicProtocolService as NetForge.Simulation.Protocols.Common.Services.IProtocolService;
 
             // Skip test if enhanced service is not available
-            if (protocolService == null)
+            if (basicProtocolService is not IEnhancedProtocolService protocolService)
             {
                 Assert.True(true, "Enhanced protocol service not available, skipping test");
                 return;
             }
 
             // Act & Assert - Test enhanced features that don't exist in basic interface
-            
+
             // Service health reporting
             var serviceHealth = protocolService.GetServiceHealth();
             Assert.NotNull(serviceHealth);
             Assert.Contains("ServiceName", serviceHealth.Keys);
-            
+
             // Protocol summary reporting
             var protocolSummary = protocolService.GetProtocolSummary();
             Assert.NotNull(protocolSummary);
             Assert.Contains("DeviceId", protocolSummary.Keys);
-            
+
             // Dependency management
             var ospfDependencies = protocolService.GetProtocolDependencies(ProtocolType.OSPF);
             Assert.NotNull(ospfDependencies);
-            
+
             // Conflict checking
             var ospfConflicts = protocolService.GetProtocolConflicts(ProtocolType.OSPF);
             Assert.NotNull(ospfConflicts);
-            
+
             // Coexistence checking
             var canCoexist = protocolService.CanProtocolsCoexist(ProtocolType.OSPF, ProtocolType.BGP);
             Assert.True(canCoexist); // OSPF and BGP should coexist
-            
+
             // Vendor support
             var ciscoProtocols = protocolService.GetProtocolsForVendor("Cisco");
             Assert.NotNull(ciscoProtocols);
-            
+
             // Metrics access
             var allMetrics = protocolService.GetAllProtocolMetrics();
             Assert.NotNull(allMetrics);
@@ -123,10 +121,9 @@ namespace NetForge.Simulation.Protocols.Tests
             // Arrange
             var device = CreateTestDevice("TestRouter", "Cisco");
             var basicProtocolService = device.GetProtocolService();
-            var protocolService = basicProtocolService as NetForge.Simulation.Protocols.Common.Services.IProtocolService;
 
             // Skip test if enhanced service is not available
-            if (protocolService == null)
+            if (basicProtocolService is not IEnhancedProtocolService protocolService)
             {
                 Assert.True(true, "Enhanced protocol service not available, skipping test");
                 return;
@@ -136,7 +133,7 @@ namespace NetForge.Simulation.Protocols.Tests
             var startResult = await protocolService.StartProtocol(ProtocolType.OSPF);
             var stopResult = await protocolService.StopProtocol(ProtocolType.OSPF);
             var restartResult = await protocolService.RestartProtocol(ProtocolType.OSPF);
-            
+
             // Operations should complete (may return false if protocol not available, but should not throw)
             Assert.True(true); // If we reach here, operations completed successfully
         }
@@ -150,7 +147,7 @@ namespace NetForge.Simulation.Protocols.Tests
             // Arrange
             var device = CreateTestDevice("TestRouter", "Cisco");
             var basicProtocolService = device.GetProtocolService();
-            var protocolService = basicProtocolService as NetForge.Simulation.Protocols.Common.Services.IProtocolService;
+            var protocolService = basicProtocolService as IEnhancedProtocolService;
             var testConfig = new { RouterId = "1.1.1.1", Area = "0.0.0.0" };
 
             // Skip test if enhanced service is not available
@@ -163,7 +160,7 @@ namespace NetForge.Simulation.Protocols.Tests
             // Act & Assert - Configuration operations should not throw
             var isValid = protocolService.ValidateProtocolConfiguration(ProtocolType.OSPF, testConfig);
             var applyResult = await protocolService.ApplyProtocolConfiguration(ProtocolType.OSPF, testConfig);
-            
+
             // Operations should complete without exceptions
             Assert.True(true);
         }
@@ -176,17 +173,17 @@ namespace NetForge.Simulation.Protocols.Tests
         {
             // Arrange
             var device = CreateTestDevice("TestRouter", "Cisco");
-            
+
             // Act
             var protocolService = device.GetProtocolService();
-            
+
             // Assert - Even if enhanced service isn't available, basic service should work
             Assert.NotNull(protocolService);
-            
+
             // Basic functionality should always be available
             var protocols = protocolService.GetAllProtocols();
             var activeTypes = protocolService.GetActiveProtocolTypes();
-            
+
             Assert.NotNull(protocols);
             Assert.NotNull(activeTypes);
         }
@@ -200,20 +197,20 @@ namespace NetForge.Simulation.Protocols.Tests
             // Arrange
             var device = CreateTestDevice("TestRouter", "Cisco");
             var basicProtocolService = device.GetProtocolService();
-            var protocolService = basicProtocolService as NetForge.Simulation.Protocols.Common.Services.IProtocolService;
+            var protocolService = basicProtocolService as IEnhancedProtocolService;
 
             // Act & Assert - Operations with invalid data should not throw
             var invalidProtocol = basicProtocolService.GetProtocol((ProtocolType)9999);
             var invalidState = basicProtocolService.GetProtocolState<IProtocolState>((ProtocolType)9999);
-            
+
             Assert.Null(invalidProtocol);
             Assert.Null(invalidState);
-            
+
             if (protocolService != null)
             {
                 var invalidMetrics = protocolService.GetProtocolMetrics((ProtocolType)9999);
                 Assert.Null(invalidMetrics);
-                
+
                 // Reset operations should not throw for invalid protocols
                 protocolService.ResetProtocolMetrics((ProtocolType)9999);
                 protocolService.ResetAllMetrics();

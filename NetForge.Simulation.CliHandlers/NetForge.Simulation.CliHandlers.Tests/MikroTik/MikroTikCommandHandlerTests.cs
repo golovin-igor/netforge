@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
@@ -10,10 +10,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/system identity print");
-            
+
             // Assert
             Assert.Contains("name: TestRouter", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
@@ -24,10 +24,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping 192.168.1.1");
-            
+
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
             Assert.Contains("bytes from", output);
@@ -40,10 +40,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
             // Arrange
             var device = new MikroTikDevice("TestRouter");
             await device.ProcessCommandAsync("/interface ethernet");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("quit");
-            
+
             // Assert
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
             Assert.Equal("", output);
@@ -54,10 +54,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("?");
-            
+
             // Assert
             Assert.Contains("Available commands:", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
@@ -69,10 +69,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
             // Arrange
             var device = new MikroTikDevice("TestRouter");
             await device.ProcessCommandAsync("/system identity set name=TestRouter2");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("export");
-            
+
             // Assert
             Assert.Contains("/system identity", output);
             Assert.Contains("name=TestRouter2", output);
@@ -84,10 +84,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("put [/system identity get name]");
-            
+
             // Assert
             Assert.Contains("TestRouter", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
@@ -98,10 +98,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/invalid/path");
-            
+
             // Assert
             Assert.Contains("bad command name", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
@@ -112,10 +112,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("invalid command");
-            
+
             // Assert
             Assert.Contains("bad command name", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
@@ -126,10 +126,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/system identity");
-            
+
             // Assert
             Assert.Contains("expected end of command", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
@@ -140,13 +140,13 @@ namespace NetForge.Simulation.Tests.CliHandlers.MikroTik
         {
             // Arrange
             var device = new MikroTikDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("/system identity set invalid=value");
-            
+
             // Assert
             Assert.Contains("bad parameter", output);
             Assert.Equal("[TestRouter] > ", device.GetPrompt());
         }
     }
-} 
+}

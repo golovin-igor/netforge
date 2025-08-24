@@ -5,7 +5,7 @@ using NetForge.Simulation.Common.CLI.Implementations;
 using NetForge.Simulation.Common.CLI.Interfaces;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.VendorAgnostic

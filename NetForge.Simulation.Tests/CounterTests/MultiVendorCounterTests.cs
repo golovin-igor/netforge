@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CounterTests
@@ -31,16 +31,16 @@ namespace NetForge.Simulation.Tests.CounterTests
             await ConfigureMultiVendorPathAsync(r1, r2, r3);
             var r1_before = r1.GetInterface("GigabitEthernet0/0");
             var r3_before = r3.GetInterface("GigabitEthernet0/0/0");
-            
+
             var initialR1TxPackets = r1_before!.TxPackets;
             var initialR3RxPackets = r3_before!.RxPackets;
             var initialR1TxBytes = r1_before.TxBytes;
-            
+
             SimulateCrossVendorPing(r1, r2, r3, "192.168.2.2");
-            
+
             var r1_after = r1.GetInterface("GigabitEthernet0/0")!;
             var r3_after = r3.GetInterface("GigabitEthernet0/0/0")!;
-            
+
             Assert.Equal(initialR1TxPackets + 5, r1_after.TxPackets);
             Assert.Equal(initialR3RxPackets + 5, r3_after.RxPackets);
             Assert.Equal(initialR1TxBytes + 320, r1_after.TxBytes);
@@ -102,16 +102,16 @@ namespace NetForge.Simulation.Tests.CounterTests
             await ConfigureJuniperMikroTikBgpAsync(r2, r4);
             var r1_ospf_before = r1.GetInterface("GigabitEthernet0/0");
             var r2_bgp_before = r2.GetInterface("ge-0/0/0");
-            
+
             var initialR1TxBytes = r1_ospf_before!.TxBytes;
             var initialR2TxBytes = r2_bgp_before!.TxBytes;
-            
+
             SimulateOspfHelloExchange(r1, r3, "GigabitEthernet0/0", "GigabitEthernet0/0/0", 3);
             SimulateBgpUpdateExchange(r2, r4, "ge-0/0/0", "ether1", 2);
-            
+
             var r1_ospf_after = r1.GetInterface("GigabitEthernet0/0");
             var r2_bgp_after = r2.GetInterface("ge-0/0/0");
-            
+
             Assert.Equal(initialR1TxBytes + 120, r1_ospf_after!.TxBytes);
             Assert.Equal(initialR2TxBytes + 96, r2_bgp_after!.TxBytes);
             var ospfNeighbors = await r1.ProcessCommandAsync("show ip ospf neighbor");
@@ -135,16 +135,16 @@ namespace NetForge.Simulation.Tests.CounterTests
             await ConfigureVlan20CrossVendorAsync(r1, r2);
             var r1_before = r1.GetInterface("GigabitEthernet0/0");
             var r2_before = r2.GetInterface("ge-0/0/0");
-            
+
             var initialR1TxPackets = r1_before!.TxPackets;
             var initialR2RxPackets = r2_before!.RxPackets;
             var initialR1TxBytes = r1_before.TxBytes;
-            
+
             SimulateVlanPing(r1, r2, "GigabitEthernet0/0", "ge-0/0/0", 20);
-            
+
             var r1_after = r1.GetInterface("GigabitEthernet0/0");
             var r2_after = r2.GetInterface("ge-0/0/0");
-            
+
             Assert.Equal(initialR1TxPackets + 5, r1_after.TxPackets);
             Assert.Equal(initialR2RxPackets + 5, r2_after.RxPackets);
             Assert.Equal(initialR1TxBytes + 324, r1_after.TxBytes); // 64 + 4 bytes VLAN tag * 5
@@ -172,26 +172,26 @@ namespace NetForge.Simulation.Tests.CounterTests
             await ConfigureExampleScenarioAsync(r1, r2, r3);
             var intfR1Before = r1.GetInterface("GigabitEthernet0/0");
             var intfR2Before = r2.GetInterface("ge-0/0/0");
-            
+
             var initialR1TxPackets = intfR1Before!.TxPackets;
             var initialR2RxPackets = intfR2Before!.RxPackets;
             var initialR1TxBytes = intfR1Before.TxBytes;
-            
+
             var pingOutput = SimulatePingAcrossVendors(r1, r3, "192.168.2.2");
-            
+
             var intfR1After = r1.GetInterface("GigabitEthernet0/0");
             var intfR2After = r2.GetInterface("ge-0/0/0");
             var intfR3After = r3.GetInterface("GigabitEthernet0/0/0");
-            
+
             await r3.ProcessCommandAsync("system-view");
             await r3.ProcessCommandAsync("interface GigabitEthernet0/0/0");
             await r3.ProcessCommandAsync("shutdown");
             await r3.ProcessCommandAsync("quit");
             await r3.ProcessCommandAsync("quit");
-            
+
             var pingOutputFail = await r1.ProcessCommandAsync("ping 192.168.2.2");
             var intfR3Shutdown = r3.GetInterface("GigabitEthernet0/0/0");
-            
+
             Assert.Contains("Success rate is 100 percent", pingOutput);
             Assert.Equal(initialR1TxPackets + 5, intfR1After!.TxPackets); // 5 ping packets
             Assert.Equal(initialR2RxPackets + 5, intfR2After!.RxPackets); // 5 ping packets
@@ -395,13 +395,13 @@ namespace NetForge.Simulation.Tests.CounterTests
             {
                 sourceIntf.TxPackets += 5;
                 sourceIntf.TxBytes += 320;
-                
+
                 intermediateSrcIntf.RxPackets += 5;
                 intermediateSrcIntf.RxBytes += 320;
-                
+
                 intermediateDestIntf.TxPackets += 5;
                 intermediateDestIntf.TxBytes += 320;
-                
+
                 destIntf.RxPackets += 5;
                 destIntf.RxBytes += 320;
             }

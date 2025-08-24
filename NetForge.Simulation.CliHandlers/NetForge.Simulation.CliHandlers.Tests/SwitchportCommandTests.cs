@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 // For VlanConfig
 // Assuming Cisco context for switchport
@@ -17,10 +17,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface GigabitEthernet0/1");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("switchport mode access");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
             var iface = device.GetInterface("GigabitEthernet0/1");
@@ -28,7 +28,7 @@ namespace NetForge.Simulation.Tests.CliHandlers
             Assert.Equal("access", iface.SwitchportMode);
             Assert.Contains("switchport mode access", device.ShowRunningConfig());
         }
-        
+
         [Fact]
         public async Task SwitchportAccessVlanShouldAssignVlan()
         {
@@ -40,10 +40,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
             await device.ProcessCommandAsync("name TestVLAN");
             await device.ProcessCommandAsync("exit");
             await device.ProcessCommandAsync("interface GigabitEthernet0/1");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("switchport access vlan 100");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
             var iface = device.GetInterface("GigabitEthernet0/1");
@@ -51,7 +51,7 @@ namespace NetForge.Simulation.Tests.CliHandlers
             Assert.Equal(100, iface.VlanId);
             Assert.Contains("switchport access vlan 100", device.ShowRunningConfig());
         }
-        
+
         [Fact]
         public async Task SwitchportModeTrunkShouldConfigureTrunkMode()
         {
@@ -60,10 +60,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface GigabitEthernet0/1");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("switchport mode trunk");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
             var iface = device.GetInterface("GigabitEthernet0/1");
@@ -71,7 +71,7 @@ namespace NetForge.Simulation.Tests.CliHandlers
             Assert.Equal("trunk", iface.SwitchportMode);
             Assert.Contains("switchport mode trunk", device.ShowRunningConfig());
         }
-        
+
         [Fact]
         public async Task SwitchportTrunkEncapsulationShouldConfigureEncapsulation()
         {
@@ -80,15 +80,15 @@ namespace NetForge.Simulation.Tests.CliHandlers
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface GigabitEthernet0/1");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("switchport trunk encapsulation dot1q");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
             Assert.Contains("switchport trunk encapsulation dot1q", device.ShowRunningConfig());
         }
-        
+
         [Fact]
         public async Task SwitchportVoiceVlanShouldConfigureVoiceVlan()
         {
@@ -97,15 +97,15 @@ namespace NetForge.Simulation.Tests.CliHandlers
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface GigabitEthernet0/1");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("switchport voice vlan 200");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
             Assert.Contains("switchport voice vlan 200", device.ShowRunningConfig());
         }
-        
+
         [Fact]
         public async Task SwitchportBasicShouldEnableSwitchport()
         {
@@ -114,10 +114,10 @@ namespace NetForge.Simulation.Tests.CliHandlers
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface GigabitEthernet0/1");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("switchport");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if)#", result);
             var iface = device.GetInterface("GigabitEthernet0/1");
@@ -125,7 +125,7 @@ namespace NetForge.Simulation.Tests.CliHandlers
             Assert.Equal("access", iface.SwitchportMode); // Default to access mode
             Assert.Contains(" switchport", device.ShowRunningConfig());
         }
-        
+
         [Fact]
         public async Task SwitchportAccessVlanNonExistentVlanShouldReturnError()
         {
@@ -134,12 +134,12 @@ namespace NetForge.Simulation.Tests.CliHandlers
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface GigabitEthernet0/1");
-            
+
             // Act
             var result = await device.ProcessCommandAsync("switchport access vlan 999");
-            
+
             // Assert
             Assert.Equal("% VLAN not foundTestSwitch(config-if)#", result);
         }
     }
-} 
+}

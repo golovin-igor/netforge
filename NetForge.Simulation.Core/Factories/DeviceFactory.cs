@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 
 namespace NetForge.Simulation.Core
 {
@@ -60,7 +60,7 @@ namespace NetForge.Simulation.Core
 
             throw new NotSupportedException($"Vendor '{vendor}' is not supported");
         }
-        
+
         /// <summary>
         /// Get list of supported vendors
         /// </summary>
@@ -69,4 +69,4 @@ namespace NetForge.Simulation.Core
             return _vendors.Keys.ToArray();
         }
     }
-} 
+}

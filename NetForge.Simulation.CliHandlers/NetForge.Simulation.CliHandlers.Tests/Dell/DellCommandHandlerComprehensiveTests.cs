@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Dell
@@ -10,10 +10,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure terminal");
-            
+
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config)#", device.GetPrompt());
@@ -25,10 +25,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("hostname NewSwitch");
-            
+
             // Assert
             Assert.Equal("NewSwitch(config)#", device.GetPrompt());
         }
@@ -38,10 +38,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show running-configuration");
-            
+
             // Assert
             Assert.Contains("Current configuration", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -52,10 +52,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show ip interface brief");
-            
+
             // Assert
             Assert.Contains("Interface", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -66,10 +66,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show ip route");
-            
+
             // Assert
             Assert.Contains("Route", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -80,10 +80,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show arp");
-            
+
             // Assert
             Assert.Contains("ARP", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -95,10 +95,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("interface ethernet 1/1/1");
-            
+
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-if-eth1/1/1)#", device.GetPrompt());
@@ -111,10 +111,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface ethernet 1/1/1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip address 192.168.1.1/24");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if-eth1/1/1)#", device.GetPrompt());
         }
@@ -126,10 +126,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface ethernet 1/1/1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("no shutdown");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if-eth1/1/1)#", device.GetPrompt());
         }
@@ -140,10 +140,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip route 10.0.0.0/8 192.168.1.1");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config)#", device.GetPrompt());
         }
@@ -154,10 +154,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("router ospf 1");
-            
+
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-router)#", device.GetPrompt());
@@ -169,10 +169,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("router bgp 65001");
-            
+
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-router)#", device.GetPrompt());
@@ -184,10 +184,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("vlan 100");
-            
+
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-vlan)#", device.GetPrompt());
@@ -198,10 +198,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show version");
-            
+
             // Assert
             Assert.Contains("Version", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -212,10 +212,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show vlan");
-            
+
             // Assert
             Assert.Contains("VLAN", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -226,10 +226,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show spanning-tree mst");
-            
+
             // Assert
             Assert.Contains("Spanning Tree", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -241,10 +241,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip vrf TestVrf");
-            
+
             // Assert
             Assert.Equal("vrf", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-vrf)#", device.GetPrompt());
@@ -255,10 +255,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show evpn");
-            
+
             // Assert
             Assert.Contains("EVPN", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -270,10 +270,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("vlt domain 1");
-            
+
             // Assert
             Assert.Equal("vlt", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-vlt-domain)#", device.GetPrompt());
@@ -302,10 +302,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("enable"); // Enter privileged mode
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -333,10 +333,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             {
                 await device.ProcessCommandAsync("configure terminal");
             }
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -364,10 +364,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("enable"); // Enter privileged mode
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -390,10 +390,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("ip vrf TestVrf");
             await device.ProcessCommandAsync("exit");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -415,10 +415,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("enable"); // Enter privileged mode
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -440,10 +440,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -455,7 +455,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for EVPN VNI configuration
             var commands = new[]
             {
@@ -480,7 +480,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for VLT configuration
             var commands = new[]
             {
@@ -503,7 +503,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for complex VRF configuration
             var commands = new[]
             {
@@ -530,7 +530,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface ethernet 1/1/1");
-            
+
             // Act & Assert for advanced interface configuration
             var commands = new[]
             {

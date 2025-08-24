@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
@@ -10,10 +10,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure terminal");
-            
+
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config)#", device.GetPrompt());
@@ -25,10 +25,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("hostname NewSwitch");
-            
+
             // Assert
             Assert.Equal("NewSwitch(config)#", device.GetPrompt());
         }
@@ -38,10 +38,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show running-config");
-            
+
             // Assert
             Assert.Contains("Current configuration", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -52,10 +52,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show ip interface brief");
-            
+
             // Assert
             Assert.Contains("Interface", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -66,10 +66,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show ip route");
-            
+
             // Assert
             Assert.Contains("Route", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -80,10 +80,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show arp");
-            
+
             // Assert
             Assert.Contains("ARP", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -95,10 +95,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("interface ethernet 1/0/1");
-            
+
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-if)#", device.GetPrompt());
@@ -111,10 +111,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface ethernet 1/0/1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip address 192.168.1.1/24");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if)#", device.GetPrompt());
         }
@@ -126,10 +126,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface ethernet 1/0/1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("no shutdown");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if)#", device.GetPrompt());
         }
@@ -140,10 +140,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip route 10.0.0.0/8 192.168.1.1");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config)#", device.GetPrompt());
         }
@@ -154,10 +154,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("router ospf 1");
-            
+
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-router)#", device.GetPrompt());
@@ -169,10 +169,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("router bgp 65001");
-            
+
             // Assert
             Assert.Equal("router", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-router)#", device.GetPrompt());
@@ -184,10 +184,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("vlan 100");
-            
+
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-vlan)#", device.GetPrompt());
@@ -198,10 +198,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping 8.8.8.8");
-            
+
             // Assert
             Assert.Contains("ping", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -212,10 +212,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("traceroute 8.8.8.8");
-            
+
             // Assert
             Assert.Contains("traceroute", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -226,10 +226,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show version");
-            
+
             // Assert
             Assert.Contains("Version", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -240,10 +240,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show vlan brief");
-            
+
             // Assert
             Assert.Contains("VLAN", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -256,10 +256,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface ethernet 1/0/1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("switchport mode access");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if)#", device.GetPrompt());
         }
@@ -271,10 +271,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface ethernet 1/0/1");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("switchport access vlan 100");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-if)#", device.GetPrompt());
         }
@@ -284,10 +284,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show mac address-table");
-            
+
             // Assert
             Assert.Contains("MAC", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -298,10 +298,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show spanning-tree");
-            
+
             // Assert
             Assert.Contains("Spanning Tree", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -313,10 +313,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("mlag configuration");
-            
+
             // Assert
             Assert.Equal("mlag", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-mlag)#", device.GetPrompt());
@@ -327,10 +327,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("bash ls");
-            
+
             // Assert
             Assert.Contains("bash", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -341,10 +341,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show evpn");
-            
+
             // Assert
             Assert.Contains("EVPN", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -355,10 +355,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
         {
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("invalid command");
-            
+
             // Assert
             Assert.Contains("Invalid", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -385,10 +385,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("enable"); // Enter privileged mode
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -415,10 +415,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             {
                 await device.ProcessCommandAsync("configure terminal");
             }
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -438,10 +438,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Broadcom
             // Arrange
             var device = new BroadcomDevice("TestSwitch");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);

@@ -61,7 +61,7 @@ namespace NetForge.Simulation.Common.Common
 
         // Registered network protocols
         private readonly List<INetworkProtocol> _protocols = [];
-        
+
         // Enhanced protocol service (lazily initialized)
         private IProtocolService _protocolService;
 
@@ -114,14 +114,14 @@ namespace NetForge.Simulation.Common.Common
                 {
                     // More robust approach to loading the enhanced service
                     var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                    var protocolsCommonAssembly = assemblies.FirstOrDefault(a => 
-                        a.GetName().Name == "NetForge.Simulation.Protocols.Common");
-                    
+                    var protocolsCommonAssembly = assemblies.FirstOrDefault(a =>
+                        a.GetName().Name == "NetForge.Simulation.Core.Protocols.Common");
+
                     if (protocolsCommonAssembly != null)
                     {
                         var enhancedServiceType = protocolsCommonAssembly.GetType(
-                            "NetForge.Simulation.Protocols.Common.Services.NetworkDeviceProtocolService");
-                        
+                            "NetForge.Simulation.Core.Protocols.Common.Services.NetworkDeviceProtocolService");
+
                         if (enhancedServiceType != null)
                         {
                             _protocolService = (IProtocolService)Activator.CreateInstance(enhancedServiceType, this);
@@ -132,11 +132,11 @@ namespace NetForge.Simulation.Common.Common
                 {
                     // Fall back to basic protocol service if enhanced version not available
                 }
-                
+
                 // Create basic protocol service if enhanced version failed
                 _protocolService ??= new BasicProtocolService(this);
             }
-            
+
             return _protocolService;
         }
 
@@ -144,7 +144,7 @@ namespace NetForge.Simulation.Common.Common
         /// Get the device name for protocol service compatibility
         /// </summary>
         public string DeviceName => Name;
-        
+
         /// <summary>
         /// Get the device type for protocol service compatibility
         /// </summary>

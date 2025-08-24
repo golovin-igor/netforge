@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using NetForge.Simulation.CliHandlers.Cisco;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.AliasTests
@@ -274,7 +274,7 @@ namespace NetForge.Simulation.Tests.AliasTests
             // Assert
             Assert.Equal("R1(config-if)#", device.GetPrompt().Trim());
             Assert.Equal("GigabitEthernet0/1", device.GetCurrentInterface());
-            
+
             // Verify the interface was created with canonical name
             var iface = device.GetInterface("GigabitEthernet0/1");
             Assert.NotNull(iface);
@@ -299,7 +299,7 @@ namespace NetForge.Simulation.Tests.AliasTests
             // Assert
             var interfaces = device.GetAllInterfaces();
             var gigInterfaces = interfaces.Where(kvp => kvp.Key.Contains("GigabitEthernet0/1")).ToList();
-            
+
             Assert.Single(gigInterfaces);
             Assert.Equal("GigabitEthernet0/1", gigInterfaces.First().Key);
         }
@@ -342,10 +342,10 @@ namespace NetForge.Simulation.Tests.AliasTests
             {
                 var result = await device.ProcessCommandAsync($"interface {alias}");
                 Assert.Equal("R1(config-if)#", device.GetPrompt().Trim());
-                
+
                 var canonicalName = CiscoInterfaceAliasHandler.ExpandInterfaceAlias(alias);
                 Assert.Equal(canonicalName, device.GetCurrentInterface());
-                
+
                 await device.ProcessCommandAsync("exit");
             }
         }

@@ -1,9 +1,9 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Core;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 
-namespace NetForge.Simulation.Examples
+namespace NetForge.Simulation.Core.Examples
 {
     /// <summary>
     /// Example demonstrating F5 BIG-IP load balancer functionality
@@ -69,4 +69,4 @@ namespace NetForge.Simulation.Examples
             Console.WriteLine("\n=== F5 Example Complete ===");
         }
     }
-} 
+}

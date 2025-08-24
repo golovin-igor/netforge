@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 
 namespace NetForge.Simulation.CliHandlers.Tests.Huawei
 {

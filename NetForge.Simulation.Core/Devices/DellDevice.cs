@@ -4,7 +4,7 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// Dell EMC OS10 device implementation
@@ -42,7 +42,7 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Dell handlers to ensure they are available for tests
-            var registry = new NetForge.Simulation.CliHandlers.Dell.DellHandlerRegistry();
+            var registry = new Simulation.CliHandlers.Dell.DellHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 

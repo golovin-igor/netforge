@@ -252,4 +252,4 @@ namespace NetForge.Simulation.Tests.Core
             Assert.Equal(DeviceMode.User, result);
         }
     }
-} 
+}

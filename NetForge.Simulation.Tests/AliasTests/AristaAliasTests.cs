@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using NetForge.Simulation.CliHandlers.Arista;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.AliasTests
@@ -173,7 +173,7 @@ namespace NetForge.Simulation.Tests.AliasTests
         public void GetInterfaceAliases_WithValidInterface_ReturnsAllAliases(string interfaceName, string[] expectedAliases)
         {
             var aliases = AristaInterfaceAliasHandler.GetInterfaceAliases(interfaceName);
-            
+
             Assert.Equal(expectedAliases.Length, aliases.Count);
             foreach (var expectedAlias in expectedAliases)
             {
@@ -187,7 +187,7 @@ namespace NetForge.Simulation.Tests.AliasTests
         public void GetInterfaceAliases_WithInvalidInterface_ReturnsOriginalOrEmpty(string interfaceName, string[] expectedAliases)
         {
             var aliases = AristaInterfaceAliasHandler.GetInterfaceAliases(interfaceName);
-            
+
             Assert.Equal(expectedAliases.Length, aliases.Count);
             foreach (var expectedAlias in expectedAliases)
             {
@@ -258,21 +258,21 @@ namespace NetForge.Simulation.Tests.AliasTests
         public void Arista_InterfaceAliasIntegration_ShouldWork()
         {
             var device = new AristaDevice("test-arista");
-            
+
             // Add interface using full name
             device.AddInterface("Ethernet1");
-            
+
             // Should be able to retrieve using alias
             var iface1 = device.GetInterface("et1");
             var iface2 = device.GetInterface("eth1");
             var iface3 = device.GetInterface("ethernet1");
             var iface4 = device.GetInterface("Ethernet1");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
             Assert.NotNull(iface4);
-            
+
             // All should refer to the same interface
             Assert.Same(iface1, iface2);
             Assert.Same(iface2, iface3);
@@ -283,17 +283,17 @@ namespace NetForge.Simulation.Tests.AliasTests
         public void Arista_InterfaceAliasConfig_ShouldApplySettings()
         {
             var device = new AristaDevice("test-arista");
-            
+
             // Add interface using full name
             device.AddInterface("Ethernet1");
-            
+
             // Configure using alias
             var iface = device.GetInterface("et1");
             Assert.NotNull(iface);
             iface.IpAddress = "192.168.1.1";
             iface.SubnetMask = "255.255.255.0";
             iface.Description = "Test interface";
-            
+
             // Verify using different alias
             var verifyIface = device.GetInterface("eth1");
             Assert.NotNull(verifyIface);
@@ -306,14 +306,14 @@ namespace NetForge.Simulation.Tests.AliasTests
         public async Task Arista_ShowInterfaceAlias_ShouldWork()
         {
             var device = new AristaDevice("test-arista");
-            
+
             // Add interface using full name
             device.AddInterface("Ethernet1");
             var iface = device.GetInterface("Ethernet1");
             iface.IpAddress = "192.168.1.1";
             iface.SubnetMask = "255.255.255.0";
             iface.IsUp = true;
-            
+
             // Test show command with alias
             var result = await device.ProcessCommandAsync("show int et1");
             Assert.Contains("Ethernet1", result);

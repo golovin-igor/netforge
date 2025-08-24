@@ -1,6 +1,6 @@
 using Xunit;
 using NetForge.Simulation.Common;
-using NetForge.Simulation;
+using NetForge.Simulation.Core;
 using NetForge.Simulation.Common.CLI.Extensions;
 using NetForge.Simulation.Common.CLI.Services;
 using NetForge.Simulation.Common.Common;

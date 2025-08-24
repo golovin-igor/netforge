@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Xunit;
 using NetForge.Simulation.CliHandlers.Juniper;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 
 namespace NetForge.Simulation.Tests.AliasTests
 {
@@ -228,7 +228,7 @@ namespace NetForge.Simulation.Tests.AliasTests
         public void GetInterfaceAliases_WithValidInterface_ReturnsAllAliases(string interfaceName, string[] expectedAliases)
         {
             var result = JuniperInterfaceAliasHandler.GetInterfaceAliases(interfaceName);
-            
+
             // Check that all expected aliases are present
             foreach (var expected in expectedAliases)
             {
@@ -358,15 +358,15 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
-            
+
             // Add interface using full name
             device.AddInterface("GigabitEthernet-0/0/0");
-            
+
             // Should be able to find it using alias
             var iface1 = device.GetInterface("ge-0/0/0");
             var iface2 = device.GetInterface("gig-0/0/0");
             var iface3 = device.GetInterface("GigabitEthernet-0/0/0");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -379,15 +379,15 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
-            
+
             // Add AE interface using full name
             device.AddInterface("AggregatedEthernet0");
-            
+
             // Should be able to find it using alias
             var iface1 = device.GetInterface("ae0");
             var iface2 = device.GetInterface("agg0");
             var iface3 = device.GetInterface("AggregatedEthernet0");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -400,14 +400,14 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
-            
+
             // Add IRB interface using full name
             device.AddInterface("IRB0");
-            
+
             // Should be able to find it using alias
             var iface1 = device.GetInterface("irb0");
             var iface2 = device.GetInterface("IRB0");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.Same(iface1, iface2);
@@ -418,15 +418,15 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
-            
+
             // Add Loopback interface using full name
             device.AddInterface("Loopback0");
-            
+
             // Should be able to find it using alias
             var iface1 = device.GetInterface("lo0");
             var iface2 = device.GetInterface("loop0");
             var iface3 = device.GetInterface("Loopback0");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -439,17 +439,17 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
-            
+
             // Add Management interface using full name
             device.AddInterface("Management0");
-            
+
             // Should be able to find it using aliases
             var iface1 = device.GetInterface("me0");
             var iface2 = device.GetInterface("mgmt0");
             var iface3 = device.GetInterface("fxp0");
             var iface4 = device.GetInterface("em0");
             var iface5 = device.GetInterface("Management0");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -466,17 +466,17 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
-            
+
             // Add high-speed ethernet interfaces
             device.AddInterface("HundredGigabitEthernet-0/0/0");
             device.AddInterface("TwentyFiveGigabitEthernet-0/0/1");
             device.AddInterface("FortyGigabitEthernet-0/0/2");
-            
+
             // Should be able to find them using aliases
             var iface1 = device.GetInterface("100ge-0/0/0");
             var iface2 = device.GetInterface("25ge-0/0/1");
             var iface3 = device.GetInterface("40ge-0/0/2");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
@@ -487,17 +487,17 @@ namespace NetForge.Simulation.Tests.AliasTests
         {
             // Create a Juniper device
             var device = new JuniperDevice("R1");
-            
+
             // Add tunnel interfaces
             device.AddInterface("GRE-0/0/0");
             device.AddInterface("STunnel0");
-            
+
             // Should be able to find them using aliases
             var iface1 = device.GetInterface("gr-0/0/0");
             var iface2 = device.GetInterface("gre-0/0/0");
             var iface3 = device.GetInterface("st0");
             var iface4 = device.GetInterface("tunnel0");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);

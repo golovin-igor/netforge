@@ -28,20 +28,20 @@ public static class SimulationInfo
         // - Performance benchmarks summary
         // - Security features status
         // - Available terminal server ports and protocols
-        
+
         Console.WriteLine("Capabilities:");
         Console.ForegroundColor = ConsoleColor.Green;
-        
+
         var vendors = ProgressIndicator.WithProgress("Scanning vendors", GetVendors);
         var protocols = ProgressIndicator.WithProgress("Scanning protocols", GetSimulatedProtocols);
-        
+
         // TODO: Add additional capability scanning
         // - Scan available terminal servers
         // - Check external connectivity prerequisites
         // - Validate configuration files
         // - Test network bridge capabilities
         // - Check administrative privileges for virtual interfaces
-        
+
         Console.WriteLine($"Vendors:\n{vendors}\nProtocols:\n{protocols}\n");
         Console.ResetColor();
 
@@ -49,10 +49,10 @@ public static class SimulationInfo
 
     private static string GetSimulatedProtocols()
     {
-        //scan the current folder and load all assemblies that match the pattern NetForge.Simulation.Protocols.*
+        //scan the current folder and load all assemblies that match the pattern NetForge.Simulation.Core.Protocols.*
         //then scan each assembly for types that implement IDeviceProtocol
 
-        var protocolAssemblies = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "NetForge.Simulation.Protocols.*.dll");
+        var protocolAssemblies = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "NetForge.Simulation.Core.Protocols.*.dll");
         var protocolList = new List<string>();
 
         foreach (var assemblyPath in protocolAssemblies)

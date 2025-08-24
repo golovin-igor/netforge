@@ -265,4 +265,4 @@ namespace NetForge.Simulation.Tests.Common
             Assert.Equal(expectedScore, score);
         }
     }
-} 
+}

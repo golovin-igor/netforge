@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Cisco
@@ -11,10 +11,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             // Arrange
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure terminal");
-            
+
             // Assert
             Assert.Equal("config", device.GetCurrentMode());
             Assert.Equal("TestRouter(config)#", device.GetPrompt());
@@ -27,10 +27,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("hostname NewRouter");
-            
+
             // Assert
             Assert.Equal("NewRouter(config)#", device.GetPrompt());
         }
@@ -40,10 +40,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show running-config");
-            
+
             // Assert
             Assert.Contains("Current configuration", output);
             Assert.Equal("TestRouter>", device.GetPrompt());
@@ -54,10 +54,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show version");
-            
+
             // Assert
             Assert.Contains("Cisco IOS", output);
             Assert.Equal("TestRouter>", device.GetPrompt());
@@ -68,10 +68,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show interfaces");
-            
+
             // Assert
             Assert.Contains("Interface", output);
             Assert.Equal("TestRouter>", device.GetPrompt());
@@ -82,10 +82,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show ip route");
-            
+
             // Assert
             Assert.Contains("Route", output);
             Assert.Equal("TestRouter>", device.GetPrompt());
@@ -96,10 +96,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show arp");
-            
+
             // Assert
             Assert.Contains("Protocol", output);
             Assert.Equal("TestRouter>", device.GetPrompt());
@@ -112,10 +112,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Assert
             Assert.Equal("interface", device.GetCurrentMode());
             Assert.Equal("TestRouter(config-if)#", device.GetPrompt());
@@ -129,10 +129,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip address 192.168.1.1 255.255.255.0");
-            
+
             // Assert
             Assert.Equal("TestRouter(config-if)#", device.GetPrompt());
         }
@@ -145,10 +145,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("no shutdown");
-            
+
             // Assert
             Assert.Equal("TestRouter(config-if)#", device.GetPrompt());
         }
@@ -160,10 +160,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip route 10.0.0.0 255.0.0.0 192.168.1.1");
-            
+
             // Assert
             Assert.Equal("TestRouter(config)#", device.GetPrompt());
         }
@@ -175,10 +175,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("vlan 100");
-            
+
             // Assert
             Assert.Equal("vlan", device.GetCurrentMode());
             Assert.Equal("TestSwitch(config-vlan)#", device.GetPrompt());
@@ -192,10 +192,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("vlan 100");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("name TestVLAN");
-            
+
             // Assert
             Assert.Equal("TestSwitch(config-vlan)#", device.GetPrompt());
         }
@@ -205,10 +205,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show vlan");
-            
+
             // Assert
             Assert.Contains("VLAN", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -219,10 +219,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         {
             // Arrange
             var device = new CiscoDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show spanning-tree");
-            
+
             // Assert
             Assert.Contains("Spanning tree", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -233,10 +233,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show cdp neighbors");
-            
+
             // Assert
             Assert.Contains("Device ID", output);
             Assert.Equal("TestRouter>", device.GetPrompt());
@@ -270,10 +270,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -304,10 +304,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
                 await device.ProcessCommandAsync("enable");
                 await device.ProcessCommandAsync("configure terminal");
             }
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -334,10 +334,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
         {
             // Arrange
             var device = new CiscoDevice("TestRouter");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -358,10 +358,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("vrf definition management");
             await device.ProcessCommandAsync("exit");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -389,10 +389,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("interface GigabitEthernet0/0");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -411,10 +411,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
             await device.ProcessCommandAsync("vlan 100");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -428,7 +428,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for complex OSPF configuration
             var commands = new[]
             {
@@ -461,7 +461,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for complex BGP configuration
             var commands = new[]
             {
@@ -496,7 +496,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for VLAN and switchport configuration
             var commands = new[]
             {
@@ -504,7 +504,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
                 "name Production",
                 "exit",
                 "vlan 200",
-                "name Development", 
+                "name Development",
                 "exit",
                 "interface GigabitEthernet0/1",
                 "switchport mode trunk",
@@ -530,7 +530,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for access list configuration
             var commands = new[]
             {
@@ -561,7 +561,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for route map configuration
             var commands = new[]
             {
@@ -592,7 +592,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for spanning tree configuration
             var commands = new[]
             {
@@ -623,7 +623,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for VRF configuration
             var commands = new[]
             {
@@ -654,7 +654,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for SNMP configuration
             var commands = new[]
             {
@@ -684,7 +684,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for NTP configuration
             var commands = new[]
             {
@@ -713,7 +713,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Cisco
             var device = new CiscoDevice("TestRouter");
             await device.ProcessCommandAsync("enable");
             await device.ProcessCommandAsync("configure terminal");
-            
+
             // Act & Assert for logging configuration
             var commands = new[]
             {

@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
@@ -109,7 +109,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
 
             var pingOutput = await fw2.ProcessCommandAsync("execute ping 10.0.0.1");
             Assert.DoesNotContain("0% packet loss", pingOutput); // Expecting loss
-            Assert.Contains("100% packet loss", pingOutput); 
+            Assert.Contains("100% packet loss", pingOutput);
         }
 
         [Fact]
@@ -201,7 +201,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         }
 
         [Fact]
-        public async Task ShowFullConfigurationShouldDisplayConfiguredSettings() 
+        public async Task ShowFullConfigurationShouldDisplayConfiguredSettings()
         {
             var (network, fw1, _) = await SetupNetworkWithTwoDevicesAsync();
             await fw1.ProcessCommandAsync("config system interface");
@@ -228,7 +228,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Fortinet
         {
             var fw1 = new FortinetDevice("FW1");
             var output = await fw1.ProcessCommandAsync("config system blah");
-            Assert.Contains("Command parse error", output); 
+            Assert.Contains("Command parse error", output);
         }
     }
-} 
+}

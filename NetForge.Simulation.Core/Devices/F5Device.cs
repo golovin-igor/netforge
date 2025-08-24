@@ -3,7 +3,7 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// F5 BIG-IP device implementation using vendor registry system
@@ -28,7 +28,7 @@ namespace NetForge.Simulation.Devices
             Interfaces["1.2"] = new InterfaceConfig("1.2", this);
             Interfaces["1.3"] = new InterfaceConfig("1.3", this);
             Interfaces["1.4"] = new InterfaceConfig("1.4", this);
-            
+
             // Set default IP addresses for management interface
             var mgmtInterface = Interfaces["1.1"];
             mgmtInterface.IpAddress = "192.168.1.100";
@@ -39,14 +39,14 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register F5 handlers to ensure they are available
-            var registry = new NetForge.Simulation.CliHandlers.F5.F5HandlerRegistry();
+            var registry = new Simulation.CliHandlers.F5.F5HandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()
         {
             var hostname = Hostname ?? "F5";
-            
+
             return CurrentMode switch
             {
                 DeviceMode.User => $"{hostname}>",
@@ -103,4 +103,4 @@ namespace NetForge.Simulation.Devices
             // This would be called by F5-specific command handlers
         }
     }
-} 
+}

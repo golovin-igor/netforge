@@ -3,7 +3,7 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// Basic Broadcom-based switch implementation
@@ -30,7 +30,7 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Broadcom handlers to ensure they are available for tests
-            var registry = new NetForge.Simulation.CliHandlers.Broadcom.BroadcomHandlerRegistry();
+            var registry = new Simulation.CliHandlers.Broadcom.BroadcomHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
             registry.RegisterHandlers(CommandManager);
         }

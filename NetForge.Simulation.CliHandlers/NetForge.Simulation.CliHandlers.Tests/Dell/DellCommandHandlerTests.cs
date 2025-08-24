@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Dell
@@ -11,10 +11,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("request system reload");
-            
+
             // Assert
             Assert.Contains("System will be reloaded", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -26,10 +26,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("request");
-            
+
             // Assert
             Assert.Contains("Incomplete command", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -41,10 +41,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("file show running-config");
-            
+
             // Assert
             Assert.Contains("Current configuration", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -56,10 +56,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("boot system");
-            
+
             // Assert
             Assert.Contains("System boot information", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -71,10 +71,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
             // Arrange
             var device = new DellDevice("TestSwitch");
             await device.ProcessCommandAsync("enable");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("system show");
-            
+
             // Assert
             Assert.Contains("System information", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -85,10 +85,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("request system reload");
-            
+
             // Assert
             Assert.Contains("Invalid mode", output);
             Assert.Equal("user", device.GetCurrentMode());
@@ -99,10 +99,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping 192.168.1.1");
-            
+
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
             Assert.Contains("bytes from", output);
@@ -114,10 +114,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping 192.168.1.1 -c 3");
-            
+
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
             Assert.Contains("3 packets transmitted", output);
@@ -129,10 +129,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping 192.168.1.1 -s 100");
-            
+
             // Assert
             Assert.Contains("PING 192.168.1.1", output);
             Assert.Contains("100 bytes", output);
@@ -144,10 +144,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping invalid-ip");
-            
+
             // Assert
             Assert.Contains("Invalid IP address", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
@@ -158,14 +158,14 @@ namespace NetForge.Simulation.Tests.CliHandlers.Dell
         {
             // Arrange
             var device = new DellDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping");
-            
+
             // Assert
             Assert.Contains("Incomplete command", output);
             Assert.Contains("Usage: ping <destination>", output);
             Assert.Equal("TestSwitch>", device.GetPrompt());
         }
     }
-} 
+}

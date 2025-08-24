@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Juniper
@@ -53,7 +53,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Juniper
             await r2.ProcessCommandAsync("set protocols ospf area 0.0.0.0 interface ge-0/0/0.0");
             await r2.ProcessCommandAsync("commit");
             await r2.ProcessCommandAsync("exit");
-            
+
             network.UpdateProtocols();
             await Task.Delay(50);
 
@@ -140,7 +140,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Juniper
             await r1.ProcessCommandAsync("set interfaces ge-0/0/0 disable");
             await r1.ProcessCommandAsync("commit");
             await r1.ProcessCommandAsync("exit");
-            
+
             network.UpdateProtocols();
             await Task.Delay(50);
 
@@ -184,7 +184,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Juniper
             await r2.ProcessCommandAsync("set protocols lldp interface ge-0/0/0");
             await r2.ProcessCommandAsync("commit");
             await r2.ProcessCommandAsync("exit");
-            
+
             network.UpdateProtocols();
             await Task.Delay(50);
 
@@ -257,4 +257,4 @@ namespace NetForge.Simulation.Tests.CliHandlers.Juniper
             Assert.Contains("Direct", route);
         }
     }
-} 
+}

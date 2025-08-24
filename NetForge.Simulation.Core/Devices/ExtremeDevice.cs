@@ -11,7 +11,7 @@ using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Core;
 using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// Extreme Networks EXOS device implementation
@@ -53,7 +53,7 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Extreme handlers to ensure they are available for tests
-            var registry = new NetForge.Simulation.CliHandlers.Extreme.ExtremeHandlerRegistry();
+            var registry = new Simulation.CliHandlers.Extreme.ExtremeHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 

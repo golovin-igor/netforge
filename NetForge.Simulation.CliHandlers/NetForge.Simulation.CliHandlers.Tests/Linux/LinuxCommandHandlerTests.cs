@@ -1,5 +1,5 @@
 using System.Globalization;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Linux
@@ -11,10 +11,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip addr show");
-            
+
             // Assert
             Assert.Contains("interface", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -25,10 +25,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip link show");
-            
+
             // Assert
             Assert.Contains("link", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -39,10 +39,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip route show");
-            
+
             // Assert
             Assert.Contains("route", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -53,10 +53,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip addr add 192.168.1.10/24 dev eth0");
-            
+
             // Assert
             Assert.Contains("address configured", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -67,10 +67,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip link set eth0 up");
-            
+
             // Assert
             Assert.Contains("interface state", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -81,10 +81,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ip route add 10.0.0.0/8 via 192.168.1.1");
-            
+
             // Assert
             Assert.Contains("route added", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -95,10 +95,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("arp -n");
-            
+
             // Assert
             Assert.Contains("arp", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -109,10 +109,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ping 8.8.8.8");
-            
+
             // Assert
             Assert.Contains("ping", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -123,10 +123,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("traceroute 8.8.8.8");
-            
+
             // Assert
             Assert.Contains("traceroute", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -137,10 +137,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("tcpdump -i eth0");
-            
+
             // Assert
             Assert.Contains("tcpdump", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -151,10 +151,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("netstat -i");
-            
+
             // Assert
             Assert.Contains("interface", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -165,10 +165,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ethtool eth0");
-            
+
             // Assert
             Assert.Contains("ethtool", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -179,10 +179,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ss -t");
-            
+
             // Assert
             Assert.Contains("socket", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -193,10 +193,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("nmap 192.168.1.1");
-            
+
             // Assert
             Assert.Contains("nmap", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -207,10 +207,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("iptables -L");
-            
+
             // Assert
             Assert.Contains("iptables", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -221,10 +221,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("route add -net 10.0.0.0 netmask 255.0.0.0 gw 192.168.1.1");
-            
+
             // Assert
             Assert.Contains("route", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -235,10 +235,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("ifconfig eth0 up");
-            
+
             // Assert
             Assert.Contains("interface", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -249,10 +249,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("invalid_command");
-            
+
             // Assert
             Assert.Contains("command not found", output.ToLower(CultureInfo.InvariantCulture));
             Assert.Equal("TestServer$", device.GetPrompt());
@@ -279,10 +279,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("command not found", output.ToLower(CultureInfo.InvariantCulture));
@@ -302,10 +302,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("command not found", output.ToLower(CultureInfo.InvariantCulture));
@@ -328,10 +328,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Linux
         {
             // Arrange
             var device = new LinuxDevice("TestServer");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("command not found", output.ToLower(CultureInfo.InvariantCulture));

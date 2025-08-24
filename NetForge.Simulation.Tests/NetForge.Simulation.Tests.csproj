@@ -37,7 +37,7 @@
         <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Linux\NetForge.Simulation.CliHandlers.Linux.csproj" />
         <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.MikroTik\NetForge.Simulation.CliHandlers.MikroTik.csproj" />
         <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Nokia\NetForge.Simulation.CliHandlers.Nokia.csproj" />
-        <ProjectReference Include="..\NetForge.Simulation.Core\NetForge.Simulation.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.Core\NetForge.Simulation.Core.csproj" />
     <ProjectReference Include="..\NetForge.Simulation.Common\NetForge.Simulation.Common.csproj" />
   </ItemGroup>
 

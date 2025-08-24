@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using NetForge.Simulation.CliHandlers.Huawei;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.AliasTests
@@ -233,7 +233,7 @@ namespace NetForge.Simulation.Tests.AliasTests
         public void GetInterfaceAliases_WithValidInterface_ReturnsAllAliases(string interfaceName, string[] expectedAliases)
         {
             var aliases = HuaweiInterfaceAliasHandler.GetInterfaceAliases(interfaceName);
-            
+
             Assert.Equal(expectedAliases.Length, aliases.Count);
             foreach (var expectedAlias in expectedAliases)
             {
@@ -247,7 +247,7 @@ namespace NetForge.Simulation.Tests.AliasTests
         public void GetInterfaceAliases_WithInvalidInterface_ReturnsOriginalOrEmpty(string interfaceName, string[] expectedAliases)
         {
             var aliases = HuaweiInterfaceAliasHandler.GetInterfaceAliases(interfaceName);
-            
+
             Assert.Equal(expectedAliases.Length, aliases.Count);
             foreach (var expectedAlias in expectedAliases)
             {
@@ -346,21 +346,21 @@ namespace NetForge.Simulation.Tests.AliasTests
         public async Task Huawei_InterfaceAliasIntegration_ShouldWork()
         {
             var device = new HuaweiDevice("test-huawei");
-            
+
             // Add interface using full name
             device.AddInterface("GigabitEthernet0/0/0");
-            
+
             // Should be able to retrieve using alias
             var iface1 = device.GetInterface("gi0/0/0");
             var iface2 = device.GetInterface("gig0/0/0");
             var iface3 = device.GetInterface("ge0/0/0");
             var iface4 = device.GetInterface("GigabitEthernet0/0/0");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
             Assert.NotNull(iface4);
-            
+
             // All should refer to the same interface
             Assert.Same(iface1, iface2);
             Assert.Same(iface2, iface3);
@@ -371,17 +371,17 @@ namespace NetForge.Simulation.Tests.AliasTests
         public async Task Huawei_InterfaceAliasConfig_ShouldApplySettings()
         {
             var device = new HuaweiDevice("test-huawei");
-            
+
             // Add interface using full name
             device.AddInterface("GigabitEthernet0/0/0");
-            
+
             // Configure using alias
             var iface = device.GetInterface("gi0/0/0");
             Assert.NotNull(iface);
             iface.IpAddress = "192.168.1.1";
             iface.SubnetMask = "255.255.255.0";
             iface.Description = "Test interface";
-            
+
             // Verify using different alias
             var verifyIface = device.GetInterface("ge0/0/0");
             Assert.NotNull(verifyIface);
@@ -394,19 +394,19 @@ namespace NetForge.Simulation.Tests.AliasTests
         public async Task Huawei_VlanifAlias_ShouldWork()
         {
             var device = new HuaweiDevice("test-huawei");
-            
+
             // Add VLAN interface using full name
             device.AddInterface("Vlanif100");
-            
+
             // Should be able to retrieve using alias
             var iface1 = device.GetInterface("vl100");
             var iface2 = device.GetInterface("vlan100");
             var iface3 = device.GetInterface("Vlanif100");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
-            
+
             // All should refer to the same interface
             Assert.Same(iface1, iface2);
             Assert.Same(iface2, iface3);
@@ -416,19 +416,19 @@ namespace NetForge.Simulation.Tests.AliasTests
         public async Task Huawei_SubInterfaceAlias_ShouldWork()
         {
             var device = new HuaweiDevice("test-huawei");
-            
+
             // Add sub-interface using full name
             device.AddInterface("GigabitEthernet0/0/0.100");
-            
+
             // Should be able to retrieve using alias
             var iface1 = device.GetInterface("gi0/0/0.100");
             var iface2 = device.GetInterface("gig0/0/0.100");
             var iface3 = device.GetInterface("GigabitEthernet0/0/0.100");
-            
+
             Assert.NotNull(iface1);
             Assert.NotNull(iface2);
             Assert.NotNull(iface3);
-            
+
             // All should refer to the same interface
             Assert.Same(iface1, iface2);
             Assert.Same(iface2, iface3);

@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Extreme
@@ -10,10 +10,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure system name NewSwitch");
-            
+
             // Assert
             Assert.Equal("NewSwitch#", device.GetPrompt());
         }
@@ -23,10 +23,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure vlan test100");
-            
+
             // Assert
             Assert.Contains("VLAN", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -38,10 +38,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
             await device.ProcessCommandAsync("configure vlan test100");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure vlan test100 ipaddress 192.168.1.1/24");
-            
+
             // Assert
             Assert.Contains("IP address", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -53,10 +53,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
             await device.ProcessCommandAsync("configure vlan test100");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure vlan test100 add ports 1-5");
-            
+
             // Assert
             Assert.Contains("ports", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -67,10 +67,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show configuration");
-            
+
             // Assert
             Assert.Contains("Configuration", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -81,10 +81,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show iproute");
-            
+
             // Assert
             Assert.Contains("Route", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -95,10 +95,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show iparp");
-            
+
             // Assert
             Assert.Contains("ARP", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -109,10 +109,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure iproute add 10.0.0.0/8 192.168.1.1");
-            
+
             // Assert
             Assert.Contains("route", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -123,10 +123,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("enable ospf");
-            
+
             // Assert
             Assert.Contains("OSPF", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -139,10 +139,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
             var device = new ExtremeDevice("TestSwitch");
             await device.ProcessCommandAsync("enable ospf");
             await device.ProcessCommandAsync("configure vlan test100");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure ospf add vlan test100 area 0.0.0.0");
-            
+
             // Assert
             Assert.Contains("OSPF", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -153,10 +153,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure bgp AS-number 65001");
-            
+
             // Assert
             Assert.Contains("BGP", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -168,10 +168,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
             await device.ProcessCommandAsync("configure bgp AS-number 65001");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure bgp add neighbor 192.168.1.2 remote-AS 65002");
-            
+
             // Assert
             Assert.Contains("BGP", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -182,10 +182,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show vlan");
-            
+
             // Assert
             Assert.Contains("VLAN", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -196,10 +196,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure ports 1 display-string \"Port 1\"");
-            
+
             // Assert
             Assert.Contains("display", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -210,10 +210,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("show ports 1 info");
-            
+
             // Assert
             Assert.Contains("Port", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -224,10 +224,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure account admin test password secret");
-            
+
             // Assert
             Assert.Contains("account", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -238,10 +238,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure snmp add community public read-only");
-            
+
             // Assert
             Assert.Contains("SNMP", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -252,10 +252,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure ntp server pool.ntp.org");
-            
+
             // Assert
             Assert.Contains("NTP", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -266,10 +266,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("configure mlag peer peer1");
-            
+
             // Assert
             Assert.Contains("MLAG", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -281,10 +281,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
             await device.ProcessCommandAsync("configure vlan test100");
-            
+
             // Act
             var output = await device.ProcessCommandAsync("enable ipforwarding vlan test100");
-            
+
             // Assert
             Assert.Contains("IP forwarding", output);
             Assert.Equal("TestSwitch#", device.GetPrompt());
@@ -316,10 +316,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -345,10 +345,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -370,10 +370,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -394,10 +394,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
             await device.ProcessCommandAsync("configure vrf TestVrf");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -423,10 +423,10 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
             await device.ProcessCommandAsync("enable ospf");
             await device.ProcessCommandAsync("configure bgp AS-number 65001");
             await device.ProcessCommandAsync("configure bgp add neighbor 192.168.1.2 remote-AS 65002");
-            
+
             // Act
             var output = await device.ProcessCommandAsync(command);
-            
+
             // Assert
             Assert.NotNull(output);
             Assert.DoesNotContain("Invalid", output);
@@ -438,7 +438,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act & Assert for VXLAN configuration
             var commands = new[]
             {
@@ -449,7 +449,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
             };
 
             await device.ProcessCommandAsync("configure vlan test100");
-            
+
             foreach (var command in commands)
             {
                 var output = await device.ProcessCommandAsync(command);
@@ -464,7 +464,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act & Assert for policy configuration
             var commands = new[]
             {
@@ -489,7 +489,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act & Assert for spanning tree configuration
             var commands = new[]
             {
@@ -515,7 +515,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
             await device.ProcessCommandAsync("configure vlan test100");
-            
+
             // Act & Assert for DHCP configuration
             var commands = new[]
             {
@@ -542,7 +542,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
             await device.ProcessCommandAsync("configure vlan test100");
-            
+
             // Act & Assert for complex MLAG configuration
             var commands = new[]
             {
@@ -569,7 +569,7 @@ namespace NetForge.Simulation.Tests.CliHandlers.Extreme
         {
             // Arrange
             var device = new ExtremeDevice("TestSwitch");
-            
+
             // Act & Assert for advanced port configuration
             var commands = new[]
             {

@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CliHandlers.Arista
@@ -547,4 +547,4 @@ namespace NetForge.Simulation.Tests.CliHandlers.Arista
             Assert.Contains("Invalid input", result);
         }
     }
-} 
+}

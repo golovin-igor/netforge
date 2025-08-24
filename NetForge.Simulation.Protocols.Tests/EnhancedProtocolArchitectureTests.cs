@@ -1,8 +1,7 @@
-using Xunit;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Protocols.Common.Services;
 using NetForge.Simulation.Core;
+using NetForge.Simulation.Protocols.Common.Services;
 
 namespace NetForge.Simulation.Protocols.Tests
 {
@@ -17,10 +16,10 @@ namespace NetForge.Simulation.Protocols.Tests
             return DeviceFactory.CreateDevice(vendor, name);
         }
 
-        private NetForge.Simulation.Protocols.Common.Services.IProtocolService GetEnhancedProtocolService(NetworkDevice device)
+        private IEnhancedProtocolService GetEnhancedProtocolService(NetworkDevice device)
         {
             var basicService = device.GetProtocolService();
-            return basicService as NetForge.Simulation.Protocols.Common.Services.IProtocolService;
+            return basicService as IEnhancedProtocolService;
         }
 
         /// <summary>
@@ -165,17 +164,17 @@ namespace NetForge.Simulation.Protocols.Tests
 
             // Act
             var protocolsForCisco = basicProtocolService.GetAllProtocols(); // Use basic service method
-            
+
             if (protocolService != null)
             {
                 var ciscoProtocols = protocolService.GetProtocolsForVendor("Cisco");
                 var allStates = protocolService.GetAllProtocolStates();
-                
+
                 // Assert
                 Assert.NotNull(ciscoProtocols);
                 Assert.NotNull(allStates);
             }
-            
+
             Assert.NotNull(protocolsForCisco);
         }
 

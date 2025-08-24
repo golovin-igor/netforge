@@ -1,4 +1,4 @@
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Devices
@@ -170,7 +170,7 @@ namespace NetForge.Simulation.Tests.Devices
 
             // Act & Assert - The device should use vendor-agnostic handlers from Cisco project
             // This test verifies that the migration is complete and no old common handlers are used
-            
+
             // Test that basic commands work (proving the new handlers are loaded)
             var enableResult = await device.ProcessCommandAsync("enable");
             var pingResult = await device.ProcessCommandAsync("ping 1.1.1.1");
@@ -182,7 +182,7 @@ namespace NetForge.Simulation.Tests.Devices
             Assert.NotNull(pingResult);
             Assert.NotNull(configResult);
             Assert.NotNull(exitResult);
-            
+
             // Verify vendor is still set correctly
             Assert.Equal("Anira", device.Vendor);
         }
@@ -210,10 +210,10 @@ namespace NetForge.Simulation.Tests.Devices
             // Assert - Verify that network protocols are still registered
             // The constructor should register OSPF, BGP, STP, and LLDP protocols
             Assert.NotNull(device);
-            
+
             // These protocols should be available for routing configuration
             // We can verify this by checking that device is ready for protocol commands
             Assert.Equal("Anira", device.Vendor);
         }
     }
-} 
+}

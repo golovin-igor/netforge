@@ -1,6 +1,6 @@
 using System.Reflection;
 using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;

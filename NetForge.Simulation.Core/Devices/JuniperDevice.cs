@@ -5,7 +5,7 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// Juniper Junos device implementation
@@ -39,7 +39,7 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Juniper handlers to ensure they are available for tests
-            var registry = new NetForge.Simulation.CliHandlers.Juniper.JuniperHandlerRegistry();
+            var registry = new Simulation.CliHandlers.Juniper.JuniperHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 

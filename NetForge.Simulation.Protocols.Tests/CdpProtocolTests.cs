@@ -1,10 +1,8 @@
-using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using NetForge.Simulation.Protocols.CDP;
-using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Tests
 {
@@ -64,7 +62,7 @@ namespace NetForge.Simulation.Protocols.Tests
         public async Task CdpProtocol_WhenEnabled_ShouldActivateProtocol()
         {
             // Arrange
-            var cdpState = _cdpProtocol.GetTypedState<NetForge.Simulation.Protocols.CDP.CdpState>();
+            var cdpState = _cdpProtocol.GetTypedState<CdpState>();
 
             // Act
             await _cdpProtocol.UpdateState(_testDevice);
@@ -98,7 +96,7 @@ namespace NetForge.Simulation.Protocols.Tests
             };
             _neighborDevice.SetCdpConfiguration(neighborCdpConfig);
 
-            var cdpState = _cdpProtocol.GetTypedState<NetForge.Simulation.Protocols.CDP.CdpState>();
+            var cdpState = _cdpProtocol.GetTypedState<CdpState>();
 
             // Act
             await _cdpProtocol.UpdateState(_testDevice);
@@ -114,14 +112,14 @@ namespace NetForge.Simulation.Protocols.Tests
         {
             // Arrange
             await _cdpProtocol.UpdateState(_testDevice);
-            var cdpState = _cdpProtocol.GetTypedState<NetForge.Simulation.Protocols.CDP.CdpState>();
+            var cdpState = _cdpProtocol.GetTypedState<CdpState>();
 
             // Add a test neighbor with old timestamp using the protocol's state management
             var staleNeighbor = cdpState.GetOrCreateCdpNeighbor("StaleDevice:GigabitEthernet0/1",
-                () => new NetForge.Simulation.Protocols.CDP.CdpNeighbor("StaleDevice", "GigabitEthernet0/1", "GigabitEthernet0/1")
+                () => new CdpNeighbor("StaleDevice", "GigabitEthernet0/1", "GigabitEthernet0/1")
                 {
                     Platform = "cisco WS-C2960",
-                    Capabilities = new List<string> { "Switch", "IGMP" },
+                    Capabilities = ["Switch", "IGMP"],
                     LastSeen = DateTime.Now.AddSeconds(-200), // Expired
                     HoldTime = 180
                 });
@@ -187,7 +185,7 @@ namespace NetForge.Simulation.Protocols.Tests
         public void CdpState_InitialState_ShouldBeCorrect()
         {
             // Arrange & Act
-            var state = new NetForge.Simulation.Protocols.CDP.CdpState();
+            var state = new CdpState();
 
             // Assert
             Assert.True(state.IsActive); // Protocols start active in simulation
@@ -201,10 +199,10 @@ namespace NetForge.Simulation.Protocols.Tests
         public void CdpNeighbor_Properties_ShouldStoreCorrectInformation()
         {
             // Arrange & Act
-            var neighbor = new NetForge.Simulation.Protocols.CDP.CdpNeighbor("Switch.example.com", "GigabitEthernet0/1", "GigabitEthernet0/2")
+            var neighbor = new CdpNeighbor("Switch.example.com", "GigabitEthernet0/1", "GigabitEthernet0/2")
             {
                 Platform = "cisco WS-C2960-24TT-L",
-                Capabilities = new List<string> { "Switch", "IGMP" },
+                Capabilities = ["Switch", "IGMP"],
                 Version = "12.2(55)SE12"
             };
 
@@ -231,7 +229,7 @@ namespace NetForge.Simulation.Protocols.Tests
             await _cdpProtocol.UpdateState(_testDevice);
 
             // Assert
-            var cdpState = _cdpProtocol.GetTypedState<NetForge.Simulation.Protocols.CDP.CdpState>();
+            var cdpState = _cdpProtocol.GetTypedState<CdpState>();
             // Note: Protocol may remain active but should clear neighbors when disabled
             Assert.Empty(cdpState.Neighbors);
         }

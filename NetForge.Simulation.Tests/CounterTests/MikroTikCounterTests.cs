@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Devices;
+using NetForge.Simulation.Core.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.CounterTests
@@ -47,13 +47,13 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
             var r2 = new MikroTikDevice("R2");
-            
+
             network.AddDeviceAsync(r1).Wait();
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ether1", "R2", "ether1").Wait();
 
             ConfigureBasicInterfaces(r1, r2);
-            
+
             SimulatePingWithCounters(r1, r2, "ether1", "ether1");
             var initialCounters = r2.GetInterface("ether1").RxPackets;
 
@@ -62,7 +62,7 @@ namespace NetForge.Simulation.Tests.CounterTests
 
             var pingResult = await r1.ProcessCommandAsync("/ping 192.168.1.2");
             var finalCounters = r2.GetInterface("ether1").RxPackets;
-            
+
             Assert.Equal(initialCounters, finalCounters);
             Assert.Contains("No response", pingResult);
         }
@@ -73,7 +73,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
             var r2 = new MikroTikDevice("R2");
-            
+
             network.AddDeviceAsync(r1).Wait();
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ether1", "R2", "ether1").Wait();
@@ -98,7 +98,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
             var r2 = new MikroTikDevice("R2");
-            
+
             network.AddDeviceAsync(r1).Wait();
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ether1", "R2", "ether1").Wait();
@@ -123,7 +123,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
             var r2 = new MikroTikDevice("R2");
-            
+
             network.AddDeviceAsync(r1).Wait();
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ether1", "R2", "ether1").Wait();
@@ -137,7 +137,7 @@ namespace NetForge.Simulation.Tests.CounterTests
 
             var pingResult = await r1.ProcessCommandAsync("/ping 192.168.1.2");
             var finalRxPackets = r2.GetInterface("ether1").RxPackets;
-            
+
             Assert.Equal(initialRxPackets, finalRxPackets);
             Assert.Contains("No response", pingResult);
         }
@@ -148,7 +148,7 @@ namespace NetForge.Simulation.Tests.CounterTests
             var network = new Network();
             var r1 = new MikroTikDevice("R1");
             var r2 = new MikroTikDevice("R2");
-            
+
             network.AddDeviceAsync(r1).Wait();
             network.AddDeviceAsync(r2).Wait();
             network.AddLinkAsync("R1", "ether1", "R2", "ether1").Wait();
@@ -168,13 +168,13 @@ namespace NetForge.Simulation.Tests.CounterTests
 
         #region Helper Methods
 
-        private void SimulatePingWithCounters(MikroTikDevice source, MikroTikDevice dest, 
+        private void SimulatePingWithCounters(MikroTikDevice source, MikroTikDevice dest,
             string sourceIntf, string destIntf)
         {
             var sourceInterface = source.GetInterface(sourceIntf);
             var destInterface = dest.GetInterface(destIntf);
 
-            if (sourceInterface != null && destInterface != null && 
+            if (sourceInterface != null && destInterface != null &&
                 sourceInterface.IsUp && destInterface.IsUp)
             {
                 sourceInterface.TxPackets += 5;
@@ -221,13 +221,13 @@ namespace NetForge.Simulation.Tests.CounterTests
             await r2.ProcessCommandAsync($"/routing bgp peer add instance=default remote-address=192.168.1.1 remote-as={as1}");
         }
 
-        private void SimulateOspfHelloExchange(MikroTikDevice r1, MikroTikDevice r2, 
+        private void SimulateOspfHelloExchange(MikroTikDevice r1, MikroTikDevice r2,
             string r1Intf, string r2Intf, int helloCount)
         {
             var r1Interface = r1.GetInterface(r1Intf);
             var r2Interface = r2.GetInterface(r2Intf);
 
-            if (r1Interface != null && r2Interface != null && 
+            if (r1Interface != null && r2Interface != null &&
                 r1Interface.IsUp && r2Interface.IsUp)
             {
                 r1Interface.TxPackets += helloCount;
@@ -237,13 +237,13 @@ namespace NetForge.Simulation.Tests.CounterTests
             }
         }
 
-        private void SimulateBgpUpdateExchange(MikroTikDevice r1, MikroTikDevice r2, 
+        private void SimulateBgpUpdateExchange(MikroTikDevice r1, MikroTikDevice r2,
             string r1Intf, string r2Intf, int updateCount)
         {
             var r1Interface = r1.GetInterface(r1Intf);
             var r2Interface = r2.GetInterface(r2Intf);
 
-            if (r1Interface != null && r2Interface != null && 
+            if (r1Interface != null && r2Interface != null &&
                 r1Interface.IsUp && r2Interface.IsUp)
             {
                 r1Interface.TxPackets += updateCount;
@@ -255,4 +255,4 @@ namespace NetForge.Simulation.Tests.CounterTests
 
         #endregion
     }
-} 
+}

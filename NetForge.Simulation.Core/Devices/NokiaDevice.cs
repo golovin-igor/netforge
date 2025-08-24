@@ -5,7 +5,7 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Core.Devices
 {
     /// <summary>
     /// Nokia SR OS device implementation
@@ -42,7 +42,7 @@ namespace NetForge.Simulation.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Nokia handlers to ensure they are available for tests
-            var registry = new NetForge.Simulation.CliHandlers.Nokia.NokiaHandlerRegistry();
+            var registry = new Simulation.CliHandlers.Nokia.NokiaHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 
