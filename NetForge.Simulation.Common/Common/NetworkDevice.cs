@@ -6,6 +6,7 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Common.Security;
+using NetForge.Simulation.Common.Services;
 using INetworkProtocol = NetForge.Simulation.Common.Interfaces.INetworkProtocol;
 
 namespace NetForge.Simulation.Common.Common
@@ -59,6 +60,9 @@ namespace NetForge.Simulation.Common.Common
 
         // Registered network protocols
         private readonly List<INetworkProtocol> _protocols = [];
+        
+        // Enhanced protocol service (lazily initialized)
+        private IProtocolService _protocolService;
 
         // CLI state
         protected DeviceMode CurrentMode = DeviceMode.User;
@@ -95,6 +99,45 @@ namespace NetForge.Simulation.Common.Common
         {
             AddLogEntry("AutoRegisterProtocols called - implementation should be provided by device-specific project");
         }
+
+        /// <summary>
+        /// Get the enhanced protocol service for this device
+        /// </summary>
+        /// <returns>Protocol service instance</returns>
+        public IProtocolService GetProtocolService()
+        {
+            if (_protocolService == null)
+            {
+                // Try to create enhanced protocol service if available
+                try
+                {
+                    var enhancedServiceType = Type.GetType("NetForge.Simulation.Protocols.Common.Services.NetworkDeviceProtocolService, NetForge.Simulation.Protocols.Common");
+                    if (enhancedServiceType != null)
+                    {
+                        _protocolService = (IProtocolService)Activator.CreateInstance(enhancedServiceType, this);
+                    }
+                }
+                catch
+                {
+                    // Fall back to basic protocol service if enhanced version not available
+                }
+                
+                // Create basic protocol service if enhanced version failed
+                _protocolService ??= new BasicProtocolService(this);
+            }
+            
+            return _protocolService;
+        }
+
+        /// <summary>
+        /// Get the device name for protocol service compatibility
+        /// </summary>
+        public string DeviceName => Name;
+        
+        /// <summary>
+        /// Get the device type for protocol service compatibility
+        /// </summary>
+        public string DeviceType => Vendor;
 
 
         /// <summary>
