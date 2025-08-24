@@ -248,7 +248,7 @@ namespace NetForge.Simulation.Protocols.HTTP
 
         protected override object GetProtocolConfiguration()
         {
-            return _device?.GetHttpConfiguration() ?? new HttpConfig { IsEnabled = false, Port = 80 };
+            return _device?.GetHttpConfiguration() as HttpConfig ?? new HttpConfig { IsEnabled = false, Port = 80 };
         }
 
         protected override void OnApplyConfiguration(object configuration)
@@ -319,7 +319,7 @@ namespace NetForge.Simulation.Protocols.HTTP
 
         private HttpConfig GetHttpConfig()
         {
-            return _device?.GetHttpConfiguration() ?? new HttpConfig { IsEnabled = false, Port = 80 };
+            return _device?.GetHttpConfiguration() as HttpConfig ?? new HttpConfig { IsEnabled = false, Port = 80 };
         }
 
         protected override void OnDispose()
