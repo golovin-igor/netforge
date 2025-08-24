@@ -7,7 +7,6 @@ using NetForge.Simulation.Configuration;
 using NetForge.Simulation.Core;
 using DiscoveryCdpNeighbor = NetForge.Simulation.Protocols.Discovery.CdpNeighbor;
 using NetForge.Simulation.Protocols.Discovery;
-using NetForge.Simulation.Protocols.Implementations;
 using NetForge.Simulation.Protocols.Routing;
 using NetForge.Simulation.Protocols.Security;
 using NetForge.Simulation.Protocols.Common.Services;

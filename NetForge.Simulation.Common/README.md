@@ -8,14 +8,26 @@ A comprehensive network protocol simulation library for the NetForge platform, p
 NetForge.Simulation.Common/
 ├── Common/                    # Core network device and connection models
 ├── Configuration/             # Device and interface configuration
-├── Protocols/                 # Network protocol implementations
-│   ├── Implementations/       # Protocol business logic
+├── Protocols/                 # Network protocol base classes and utilities
 │   ├── Routing/              # Configuration and state classes
 │   ├── Security/             # Security protocols and ACLs
 │   └── Switching/            # Layer 2 protocols
 ├── Events/                   # Network event system
 ├── CLI/                      # Command-line interface handlers
 └── CommandHistory/           # Command tracking and validation
+
+NetForge.Simulation.Protocols/  # Plugin-based protocol implementations
+├── NetForge.Simulation.Protocols.ARP/     # ARP protocol plugin
+├── NetForge.Simulation.Protocols.BGP/     # BGP protocol plugin
+├── NetForge.Simulation.Protocols.OSPF/    # OSPF protocol plugin
+├── NetForge.Simulation.Protocols.EIGRP/   # EIGRP protocol plugin
+├── NetForge.Simulation.Protocols.RIP/     # RIP protocol plugin
+├── NetForge.Simulation.Protocols.CDP/     # CDP protocol plugin
+├── NetForge.Simulation.Protocols.LLDP/    # LLDP protocol plugin
+├── NetForge.Simulation.Protocols.STP/     # STP protocol plugin
+├── NetForge.Simulation.Protocols.VRRP/    # VRRP protocol plugin
+├── NetForge.Simulation.Protocols.HSRP/    # HSRP protocol plugin
+└── NetForge.Simulation.Protocols.Common/  # Shared protocol base classes
 ```
 
 ## 🌐 **Implemented Network Protocols**
@@ -23,8 +35,8 @@ NetForge.Simulation.Common/
 ### **Layer 3 Routing Protocols**
 
 #### **OSPF (Open Shortest Path First)**
-- **File**: `Protocols/Implementations/OspfProtocol.cs`
-- **State**: `Protocols/Routing/OspfState.cs`
+- **File**: `NetForge.Simulation.Protocols.OSPF/OspfProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.OSPF/OspfState.cs`
 - **Features**:
   - Full neighbor adjacency state machine (Down → Init → 2-Way → ExStart → Exchange → Loading → Full)
   - LSA database management with aging and refresh
@@ -35,8 +47,8 @@ NetForge.Simulation.Common/
 - **State Management**: ✅ Full implementation with topology change detection
 
 #### **BGP (Border Gateway Protocol)**
-- **File**: `Protocols/Implementations/BgpProtocol.cs`
-- **State**: `Protocols/Routing/BgpState.cs`
+- **File**: `NetForge.Simulation.Protocols.BGP/BgpProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.BGP/BgpState.cs`
 - **Features**:
   - Complete BGP finite state machine (Idle → Connect → Active → OpenSent → OpenConfirm → Established)
   - Peer session management with hold timers
@@ -47,8 +59,8 @@ NetForge.Simulation.Common/
 - **State Management**: ✅ Full implementation with policy change detection
 
 #### **EIGRP (Enhanced Interior Gateway Routing Protocol)**
-- **File**: `Protocols/Implementations/EigrpProtocol.cs`
-- **State**: `Protocols/Routing/EigrpState.cs`
+- **File**: `NetForge.Simulation.Protocols.EIGRP/EigrpProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.EIGRP/EigrpState.cs`
 - **Features**:
   - DUAL (Diffusing Update Algorithm) implementation
   - Neighbor discovery and adjacency maintenance
@@ -59,8 +71,8 @@ NetForge.Simulation.Common/
 - **State Management**: ✅ Full implementation with topology change detection
 
 #### **RIP (Routing Information Protocol)**
-- **File**: `Protocols/Implementations/RipProtocol.cs`
-- **State**: `Protocols/Routing/RipState.cs`
+- **File**: `NetForge.Simulation.Protocols.RIP/RipProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.RIP/RipState.cs`
 - **Features**:
   - Distance vector algorithm with hop count metric
   - Route timers (180s timeout, 240s flush)
@@ -71,8 +83,8 @@ NetForge.Simulation.Common/
 - **State Management**: ✅ Full implementation with route aging
 
 #### **IGRP (Interior Gateway Routing Protocol)**
-- **File**: `Protocols/Implementations/IgrpProtocol.cs`
-- **State**: `Protocols/Routing/IgrpState.cs`
+- **File**: `NetForge.Simulation.Protocols.IGRP/IgrpProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.IGRP/IgrpState.cs`
 - **Features**:
   - Cisco proprietary distance vector protocol
   - Composite metric (bandwidth, delay, reliability, load, MTU)
@@ -83,8 +95,8 @@ NetForge.Simulation.Common/
 - **State Management**: ✅ Full implementation with neighbor tracking
 
 #### **IS-IS (Intermediate System to Intermediate System)**
-- **File**: `Protocols/Implementations/IsisProtocol.cs`
-- **State**: `Protocols/Routing/IsisState.cs`
+- **File**: `NetForge.Simulation.Protocols.ISIS/IsisProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.ISIS/IsisState.cs`
 - **Features**:
   - Link-state protocol with LSP database
   - Level-1/Level-2 hierarchy support
@@ -97,8 +109,8 @@ NetForge.Simulation.Common/
 ### **Layer 2 Discovery Protocols**
 
 #### **CDP (Cisco Discovery Protocol)**
-- **File**: `Protocols/Implementations/CdpProtocol.cs`
-- **State**: `Protocols/Routing/CdpState.cs`
+- **File**: `NetForge.Simulation.Protocols.CDP/CdpProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.CDP/CdpState.cs`
 - **Features**:
   - Neighbor discovery with device capabilities
   - Platform and version advertisement
@@ -108,8 +120,8 @@ NetForge.Simulation.Common/
 - **State Management**: ✅ Full implementation with neighbor aging
 
 #### **LLDP (Link Layer Discovery Protocol)**
-- **File**: `Protocols/Implementations/LldpProtocol.cs`
-- **State**: `Protocols/Routing/LldpState.cs`
+- **File**: `NetForge.Simulation.Protocols.LLDP/LldpProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.LLDP/LldpState.cs`
 - **Features**:
   - IEEE 802.1AB standard implementation
   - System and port information exchange
@@ -121,8 +133,8 @@ NetForge.Simulation.Common/
 ### **Layer 2 Redundancy Protocols**
 
 #### **STP (Spanning Tree Protocol)**
-- **File**: `Protocols/Implementations/StpProtocol.cs`
-- **State**: `Protocols/Routing/StpState.cs`
+- **File**: `NetForge.Simulation.Protocols.STP/StpProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.STP/StpState.cs`
 - **Features**:
   - IEEE 802.1D standard implementation
   - Bridge ID calculation and root bridge election
@@ -132,8 +144,8 @@ NetForge.Simulation.Common/
 - **State Management**: ✅ Full implementation with port state tracking
 
 #### **VRRP (Virtual Router Redundancy Protocol)**
-- **File**: `Protocols/Implementations/VrrpProtocol.cs`
-- **State**: `Protocols/Routing/VrrpState.cs`
+- **File**: `NetForge.Simulation.Protocols.VRRP/VrrpProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.VRRP/VrrpState.cs`
 - **Features**:
   - RFC 3768 standard implementation
   - Master/Backup election with priority
@@ -143,8 +155,8 @@ NetForge.Simulation.Common/
 - **State Management**: ✅ Full implementation with group state tracking
 
 #### **HSRP (Hot Standby Router Protocol)**
-- **File**: `Protocols/Implementations/HsrpProtocol.cs`
-- **State**: `Protocols/Routing/HsrpState.cs`
+- **File**: `NetForge.Simulation.Protocols.HSRP/HsrpProtocol.cs`
+- **State**: `NetForge.Simulation.Protocols.HSRP/HsrpState.cs`
 - **Features**:
   - Cisco proprietary redundancy protocol
   - State machine (Initial → Learn → Listen → Speak → Standby/Active)
@@ -269,13 +281,14 @@ private async Task InstallRoutes(NetworkDevice device)
 
 ## 🚀 **Usage Examples**
 
-### **Protocol Initialization**
+### **Protocol Auto-Registration**
 
 ```csharp
-// Initialize OSPF protocol
-var ospfProtocol = new OspfProtocol();
-ospfProtocol.Initialize(device);
-ospfProtocol.SubscribeToEvents(network.EventBus, device);
+// Create a network device (e.g., Cisco device)
+var device = new CiscoDevice("Router1");
+
+// Protocols are automatically registered based on vendor support
+// during device instantiation via AutoRegisterProtocols()
 
 // Configure OSPF
 device.SetOspfConfiguration(new OspfConfig
@@ -287,19 +300,25 @@ device.SetOspfConfiguration(new OspfConfig
     }
 });
 
-// Update protocol state
-await ospfProtocol.UpdateState(device);
+// Protocol state is automatically managed by the device
+await device.UpdateState();
 ```
 
 ### **State Monitoring**
 
 ```csharp
-// Check protocol state
-var ospfState = ospfProtocol.GetState();
-Console.WriteLine($"Neighbors: {ospfState.Neighbors.Count}");
-Console.WriteLine($"LSAs: {ospfState.LsaDatabase.Count}");
-Console.WriteLine($"Last SPF: {ospfState.LastSpfCalculation}");
-Console.WriteLine($"Topology Changed: {ospfState.TopologyChanged}");
+// Access registered protocols via device
+var ospfProtocol = device.GetRegisteredProtocols()
+    .FirstOrDefault(p => p.Type == ProtocolType.OSPF);
+    
+if (ospfProtocol is BaseProtocol baseProtocol)
+{
+    var state = baseProtocol.GetState();
+    Console.WriteLine($"Protocol: {baseProtocol.Name} v{baseProtocol.Version}");
+    Console.WriteLine($"Active: {state.IsActive}");
+    Console.WriteLine($"Last Update: {state.LastUpdate}");
+    Console.WriteLine($"Neighbors: {state.Neighbors.Count}");
+}
 ```
 
 ## 📚 **Additional Documentation**

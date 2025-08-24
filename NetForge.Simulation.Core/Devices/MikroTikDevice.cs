@@ -2,7 +2,6 @@ using System.Text;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Configuration;
-using NetForge.Simulation.Protocols.Implementations;
 using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Devices

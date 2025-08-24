@@ -2,7 +2,6 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Interfaces;
 using System.Text;
-using NetForge.Simulation.Protocols.Implementations;
 using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.CliHandlers.Linux.System;
@@ -430,7 +429,7 @@ public static class SystemHandlers
                 config = new OspfConfig(1);
                 context.Device.SetOspfConfiguration(config);
             }
-            context.Device.RegisterProtocol(new OspfProtocol());
+            // OSPF protocol is auto-registered based on vendor compatibility
 
             switch (action)
             {
@@ -472,7 +471,7 @@ public static class SystemHandlers
                 config = new BgpConfig(65000);
                 context.Device.SetBgpConfiguration(config);
             }
-            context.Device.RegisterProtocol(new BgpProtocol());
+            // BGP protocol is auto-registered based on vendor compatibility
 
             switch (action)
             {
@@ -514,7 +513,7 @@ public static class SystemHandlers
                 config = new RipConfig();
                 context.Device.SetRipConfiguration(config);
             }
-            context.Device.RegisterProtocol(new RipProtocol());
+            // RIP protocol is auto-registered based on vendor compatibility
 
             switch (action)
             {

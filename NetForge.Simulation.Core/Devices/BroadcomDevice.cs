@@ -1,7 +1,6 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Core;
-using NetForge.Simulation.Protocols.Implementations;
 
 namespace NetForge.Simulation.Devices
 {

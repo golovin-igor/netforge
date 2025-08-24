@@ -1,6 +1,5 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Protocols.Implementations;
 using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Examples
@@ -37,10 +36,7 @@ namespace NetForge.Simulation.Examples
             ConfigureOspf(router2, "GigabitEthernet0/0", 0);
             ConfigureOspf(router3, "GigabitEthernet0/0", 0);
 
-            // Register OSPF protocol on devices
-            router1.RegisterProtocol(new OspfProtocol());
-            router2.RegisterProtocol(new OspfProtocol());
-            router3.RegisterProtocol(new OspfProtocol());
+            // Protocols are auto-registered based on device vendor compatibility
 
             Console.WriteLine("1. Creating Physical Connections\n");
 

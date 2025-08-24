@@ -3,7 +3,6 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Configuration;
 using NetForge.Simulation.Core;
-using NetForge.Simulation.Protocols.Implementations;
 using PortChannelConfig = NetForge.Simulation.Configuration.PortChannel;
 
 namespace NetForge.Simulation.Devices
