@@ -1,5 +1,6 @@
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.OSPF
 {
@@ -13,7 +14,7 @@ namespace NetForge.Simulation.Protocols.OSPF
         public override ProtocolType ProtocolType => ProtocolType.OSPF;
         public override int Priority => 110; // OSPF administrative distance
 
-        public override IDeviceProtocol CreateProtocol()
+        public override IEnhancedDeviceProtocol CreateProtocol()
         {
             return new OspfProtocol();
         }

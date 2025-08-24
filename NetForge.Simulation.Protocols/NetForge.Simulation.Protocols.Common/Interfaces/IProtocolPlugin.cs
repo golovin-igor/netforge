@@ -1,5 +1,6 @@
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.Common
 {
@@ -34,7 +35,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// Create a new instance of the protocol
         /// </summary>
         /// <returns>New protocol instance</returns>
-        IDeviceProtocol CreateProtocol();
+        IEnhancedDeviceProtocol CreateProtocol();
 
         /// <summary>
         /// Check if this plugin supports a specific vendor

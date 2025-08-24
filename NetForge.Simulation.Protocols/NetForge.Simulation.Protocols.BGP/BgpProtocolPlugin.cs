@@ -1,5 +1,6 @@
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.BGP
 {
@@ -13,7 +14,7 @@ namespace NetForge.Simulation.Protocols.BGP
         public override ProtocolType ProtocolType => ProtocolType.BGP;
         public override int Priority => 200; // IBGP administrative distance
 
-        public override IDeviceProtocol CreateProtocol()
+        public override IEnhancedDeviceProtocol CreateProtocol()
         {
             return new BgpProtocol();
         }
