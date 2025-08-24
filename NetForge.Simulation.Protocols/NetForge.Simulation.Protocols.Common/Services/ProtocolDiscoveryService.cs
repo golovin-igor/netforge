@@ -39,9 +39,9 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="vendorName">Vendor name</param>
         /// <returns>Enumerable of protocol instances</returns>
-        public IEnumerable<IEnhancedDeviceProtocol> GetProtocolsForVendor(string vendorName)
+        public IEnumerable<IDeviceProtocol> GetProtocolsForVendor(string vendorName)
         {
-            var protocols = new List<IEnhancedDeviceProtocol>();
+            var protocols = new List<IDeviceProtocol>();
 
             // Always include Telnet for management (when available)
             var telnetPlugin = DiscoverProtocolPlugins()
@@ -84,7 +84,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <param name="protocolType">Protocol type to create</param>
         /// <param name="vendorName">Vendor name (default: Generic)</param>
         /// <returns>Protocol instance or null if not available</returns>
-        public IEnhancedDeviceProtocol GetProtocol(ProtocolType protocolType, string vendorName = "Generic")
+        public IDeviceProtocol GetProtocol(ProtocolType protocolType, string vendorName = "Generic")
         {
             var plugin = DiscoverProtocolPlugins()
                 .Where(p => p.ProtocolType == protocolType && p.SupportsVendor(vendorName))

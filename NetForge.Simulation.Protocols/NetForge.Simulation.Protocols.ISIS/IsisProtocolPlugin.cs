@@ -11,7 +11,7 @@ public class IsisProtocolPlugin : ProtocolPluginBase
     public override ProtocolType ProtocolType => ProtocolType.ISIS;
     public override int Priority => 115; // IS-IS administrative distance
 
-    public override IEnhancedDeviceProtocol CreateProtocol()
+    public override IDeviceProtocol CreateProtocol()
     {
         return new IsisProtocol();
     }

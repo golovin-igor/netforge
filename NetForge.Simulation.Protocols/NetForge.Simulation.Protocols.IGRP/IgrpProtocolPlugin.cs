@@ -11,7 +11,7 @@ public class IgrpProtocolPlugin : ProtocolPluginBase
     public override ProtocolType ProtocolType => ProtocolType.IGRP;
     public override int Priority => 100; // IGRP administrative distance
 
-    public override IEnhancedDeviceProtocol CreateProtocol()
+    public override IDeviceProtocol CreateProtocol()
     {
         return new IgrpProtocol();
     }

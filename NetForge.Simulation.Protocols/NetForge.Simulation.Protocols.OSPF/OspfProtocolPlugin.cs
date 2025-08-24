@@ -14,7 +14,7 @@ namespace NetForge.Simulation.Protocols.OSPF
         public override ProtocolType ProtocolType => ProtocolType.OSPF;
         public override int Priority => 110; // OSPF administrative distance
 
-        public override IEnhancedDeviceProtocol CreateProtocol()
+        public override IDeviceProtocol CreateProtocol()
         {
             return new OspfProtocol();
         }

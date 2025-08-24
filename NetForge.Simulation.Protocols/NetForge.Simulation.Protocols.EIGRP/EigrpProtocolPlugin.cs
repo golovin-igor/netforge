@@ -16,7 +16,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
         public override ProtocolType ProtocolType => ProtocolType.EIGRP;
         public override int Priority => 90; // Administrative distance for EIGRP internal routes
 
-        public override IEnhancedDeviceProtocol CreateProtocol()
+        public override IDeviceProtocol CreateProtocol()
         {
             return new EigrpProtocol();
         }

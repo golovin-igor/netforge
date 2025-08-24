@@ -37,7 +37,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <typeparam name="T">The specific protocol type</typeparam>
         /// <returns>Protocol instance or null if not available</returns>
-        public T GetProtocol<T>() where T : class, IEnhancedDeviceProtocol
+        public T GetProtocol<T>() where T : class, IDeviceProtocol
         {
             return GetAllProtocols().OfType<T>().FirstOrDefault();
         }
@@ -47,7 +47,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to retrieve</param>
         /// <returns>Protocol instance or null if not available</returns>
-        public IEnhancedDeviceProtocol GetProtocol(ProtocolType type)
+        public IDeviceProtocol GetProtocol(ProtocolType type)
         {
             return GetAllProtocols().FirstOrDefault(p => p.Type == type);
         }
@@ -68,11 +68,11 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// Get all registered protocol instances
         /// </summary>
         /// <returns>Enumerable of all protocols</returns>
-        public IEnumerable<IEnhancedDeviceProtocol> GetAllProtocols()
+        public IEnumerable<IDeviceProtocol> GetAllProtocols()
         {
             // Convert from old interface to new interface
             return _device.GetRegisteredProtocols()
-                .OfType<IEnhancedDeviceProtocol>()
+                .OfType<IDeviceProtocol>()
                 .ToList();
         }
 
@@ -145,7 +145,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="vendorName">Vendor name to filter by</param>
         /// <returns>Enumerable of protocols supporting the vendor</returns>
-        public IEnumerable<IEnhancedDeviceProtocol> GetProtocolsForVendor(string vendorName)
+        public IEnumerable<IDeviceProtocol> GetProtocolsForVendor(string vendorName)
         {
             return GetAllProtocols().Where(p => p.SupportedVendors.Contains(vendorName, StringComparer.OrdinalIgnoreCase));
         }

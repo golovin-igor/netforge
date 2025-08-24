@@ -9,7 +9,7 @@ using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.RIP;
 
-public class RipProtocol : BaseProtocol, IEnhancedDeviceProtocol
+public class RipProtocol : BaseProtocol, IDeviceProtocol
 {
     public override ProtocolType Type => ProtocolType.RIP;
     public override string Name => "Routing Information Protocol";

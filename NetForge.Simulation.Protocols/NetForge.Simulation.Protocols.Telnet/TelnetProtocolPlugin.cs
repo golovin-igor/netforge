@@ -14,7 +14,7 @@ namespace NetForge.Simulation.Protocols.Telnet
         public override ProtocolType ProtocolType => ProtocolType.TELNET;
         public override int Priority => 1000; // Highest priority for management protocol
 
-        public override IEnhancedDeviceProtocol CreateProtocol() => new TelnetProtocol();
+        public override IDeviceProtocol CreateProtocol() => new TelnetProtocol();
 
         public override IEnumerable<string> GetSupportedVendors()
         {

@@ -15,7 +15,7 @@ namespace NetForge.Simulation.Protocols.SSH
         public override ProtocolType ProtocolType => ProtocolType.SSH;
         public override int Priority => 900; // High priority for management protocol
 
-        public override IEnhancedDeviceProtocol CreateProtocol()
+        public override IDeviceProtocol CreateProtocol()
         {
             return new SshProtocol();
         }

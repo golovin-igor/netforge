@@ -338,7 +338,7 @@ namespace NetForge.Simulation.Protocols.HTTP
         public override ProtocolType ProtocolType => ProtocolType.HTTP;
         public override int Priority => 900; // Lower priority than core management protocols
 
-        public override IEnhancedDeviceProtocol CreateProtocol() => new HttpProtocol();
+        public override IDeviceProtocol CreateProtocol() => new HttpProtocol();
 
         public override IEnumerable<string> GetSupportedVendors()
         {

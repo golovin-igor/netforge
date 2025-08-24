@@ -35,7 +35,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// Create a new instance of the protocol
         /// </summary>
         /// <returns>New protocol instance</returns>
-        public abstract IEnhancedDeviceProtocol CreateProtocol();
+        public abstract IDeviceProtocol CreateProtocol();
 
         /// <summary>
         /// Check if this plugin supports a specific vendor

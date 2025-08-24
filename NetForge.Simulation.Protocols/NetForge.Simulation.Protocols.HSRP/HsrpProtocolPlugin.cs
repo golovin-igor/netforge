@@ -16,7 +16,7 @@ namespace NetForge.Simulation.Protocols.HSRP
         public override ProtocolType ProtocolType => ProtocolType.HSRP;
         public override int Priority => 150; // Medium-high priority for redundancy protocol
 
-        public override IEnhancedDeviceProtocol CreateProtocol()
+        public override IDeviceProtocol CreateProtocol()
         {
             return new HsrpProtocol();
         }

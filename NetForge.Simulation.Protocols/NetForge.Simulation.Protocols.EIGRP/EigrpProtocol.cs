@@ -18,7 +18,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
     /// Cisco proprietary distance vector protocol with DUAL algorithm
     /// Administrative Distance: 90 (internal), 170 (external)
     /// </summary>
-    public class EigrpProtocol : BaseProtocol, IEnhancedDeviceProtocol
+    public class EigrpProtocol : BaseProtocol, IDeviceProtocol
     {
         public override ProtocolType Type => ProtocolType.EIGRP;
         public override string Name => "Enhanced Interior Gateway Routing Protocol";

@@ -15,7 +15,7 @@ namespace NetForge.Simulation.Protocols.LLDP
         public override ProtocolType ProtocolType => ProtocolType.LLDP;
         public override int Priority => 150; // Higher priority than CDP for standards-based protocol
 
-        public override IEnhancedDeviceProtocol CreateProtocol()
+        public override IDeviceProtocol CreateProtocol()
         {
             return new LldpProtocol();
         }

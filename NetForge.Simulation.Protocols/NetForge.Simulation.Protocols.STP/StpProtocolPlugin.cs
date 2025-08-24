@@ -16,7 +16,7 @@ namespace NetForge.Simulation.Protocols.STP
         public override ProtocolType ProtocolType => ProtocolType.STP;
         public override int Priority => 200; // High priority for infrastructure protocol
 
-        public override IEnhancedDeviceProtocol CreateProtocol()
+        public override IDeviceProtocol CreateProtocol()
         {
             return new StpProtocol();
         }

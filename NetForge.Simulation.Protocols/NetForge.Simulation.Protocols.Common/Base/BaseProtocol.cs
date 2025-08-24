@@ -2,21 +2,19 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common.State;
 using NetForge.Simulation.Protocols.Common.Metrics;
 using NetForge.Simulation.Protocols.Common.Base;
 using System.Diagnostics;
-using EnhancedProtocolState = NetForge.Simulation.Protocols.Common.State.IProtocolState;
 
 namespace NetForge.Simulation.Protocols.Common
 {
     /// <summary>
     /// Base implementation of network protocols following the state management pattern
-    /// from PROTOCOL_STATE_MANAGEMENT.md and implementing the standardized IDeviceProtocol interface
+    /// from PROTOCOL_STATE_MANAGEMENT.md and implementing the unified IDeviceProtocol interface
     /// Also implements INetworkProtocol for backward compatibility
     /// </summary>
-    public abstract class BaseProtocol : IEnhancedDeviceProtocol, INetworkProtocol, IDisposable
+    public abstract class BaseProtocol : IDeviceProtocol, INetworkProtocol, IDisposable
     {
         protected NetworkDevice _device;
         protected readonly BaseProtocolState _state;
@@ -175,7 +173,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// Get the current state of the protocol for CLI handlers and monitoring
         /// </summary>
         /// <returns>Protocol state interface</returns>
-        public EnhancedProtocolState GetState() => _state;
+        public IProtocolState GetState() => _state;
 
         /// <summary>
         /// Get the typed state of the protocol
@@ -393,6 +391,15 @@ namespace NetForge.Simulation.Protocols.Common
         /// </summary>
         /// <returns>Protocol metrics interface</returns>
         public virtual IProtocolMetrics GetMetrics()
+        {
+            return _metrics;
+        }
+
+        /// <summary>
+        /// Get performance metrics for this protocol (unified interface compatibility)
+        /// </summary>
+        /// <returns>Protocol metrics as object</returns>
+        object IDeviceProtocol.GetMetrics()
         {
             return _metrics;
         }

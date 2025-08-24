@@ -10,7 +10,7 @@ public class SnmpProtocolPlugin : ProtocolPluginBase
     public override ProtocolType ProtocolType => ProtocolType.SNMP;
     public override int Priority => 200; // High priority for management protocol
 
-    public override IEnhancedDeviceProtocol CreateProtocol()
+    public override IDeviceProtocol CreateProtocol()
     {
         return new SnmpProtocol();
     }

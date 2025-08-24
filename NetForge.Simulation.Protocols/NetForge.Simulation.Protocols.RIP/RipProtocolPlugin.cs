@@ -10,7 +10,7 @@ public class RipProtocolPlugin : ProtocolPluginBase
     public override ProtocolType ProtocolType => ProtocolType.RIP;
     public override int Priority => 120; // Administrative distance as priority
 
-    public override IEnhancedDeviceProtocol CreateProtocol()
+    public override IDeviceProtocol CreateProtocol()
     {
         return new RipProtocol();
     }

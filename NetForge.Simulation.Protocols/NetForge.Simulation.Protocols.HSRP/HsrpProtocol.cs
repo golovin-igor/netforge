@@ -18,7 +18,7 @@ namespace NetForge.Simulation.Protocols.HSRP
     /// Cisco proprietary redundancy protocol for gateway failover
     /// RFC 2281 - provides high availability for default gateways
     /// </summary>
-    public class HsrpProtocol : BaseProtocol, IEnhancedDeviceProtocol
+    public class HsrpProtocol : BaseProtocol, IDeviceProtocol
     {
         public override ProtocolType Type => ProtocolType.HSRP;
         public override string Name => "Hot Standby Router Protocol";

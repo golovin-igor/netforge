@@ -14,7 +14,7 @@ namespace NetForge.Simulation.Protocols.ARP
         public override ProtocolType ProtocolType => ProtocolType.ARP;
         public override int Priority => 1000; // High priority as ARP is fundamental
 
-        public override IEnhancedDeviceProtocol CreateProtocol()
+        public override IDeviceProtocol CreateProtocol()
         {
             return new ArpProtocol();
         }
