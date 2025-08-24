@@ -4,10 +4,12 @@ using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Base;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.RIP;
 
-public class RipProtocol : BaseProtocol
+public class RipProtocol : BaseProtocol, IEnhancedDeviceProtocol
 {
     public override ProtocolType Type => ProtocolType.RIP;
     public override string Name => "Routing Information Protocol";

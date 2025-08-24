@@ -1,7 +1,7 @@
 using Xunit;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Core.Factories;
+using NetForge.Simulation.Core;
 
 namespace NetForge.Simulation.Protocols.Tests
 {

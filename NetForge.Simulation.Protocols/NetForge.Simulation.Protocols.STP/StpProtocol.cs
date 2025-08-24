@@ -7,6 +7,8 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Base;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.STP
 {
@@ -15,7 +17,7 @@ namespace NetForge.Simulation.Protocols.STP
     /// IEEE 802.1D standard for loop prevention in Layer 2 networks
     /// Administrative Distance: N/A (Layer 2 protocol)
     /// </summary>
-    public class StpProtocol : BaseProtocol, IDeviceProtocol
+    public class StpProtocol : BaseProtocol, IEnhancedDeviceProtocol
     {
         public override ProtocolType Type => ProtocolType.STP;
         public override string Name => "Spanning Tree Protocol";

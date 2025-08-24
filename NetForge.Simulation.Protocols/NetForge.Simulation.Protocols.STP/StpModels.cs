@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Base;
 // Use the existing StpConfig from Common project
 
 namespace NetForge.Simulation.Protocols.STP

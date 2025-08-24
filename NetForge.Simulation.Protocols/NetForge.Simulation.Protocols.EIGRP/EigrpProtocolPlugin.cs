@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.EIGRP
 {
@@ -15,7 +16,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
         public override ProtocolType ProtocolType => ProtocolType.EIGRP;
         public override int Priority => 90; // Administrative distance for EIGRP internal routes
 
-        public override IDeviceProtocol CreateProtocol()
+        public override IEnhancedDeviceProtocol CreateProtocol()
         {
             return new EigrpProtocol();
         }

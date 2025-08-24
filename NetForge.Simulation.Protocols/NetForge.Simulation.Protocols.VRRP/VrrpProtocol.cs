@@ -8,6 +8,8 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Base;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.VRRP
 {
@@ -16,7 +18,7 @@ namespace NetForge.Simulation.Protocols.VRRP
     /// RFC 3768 standard for providing high availability for default gateways
     /// Provides redundancy through Master/Backup election
     /// </summary>
-    public class VrrpProtocol : BaseProtocol, IDeviceProtocol
+    public class VrrpProtocol : BaseProtocol, IEnhancedDeviceProtocol
     {
         public override ProtocolType Type => ProtocolType.VRRP;
         public override string Name => "Virtual Router Redundancy Protocol";

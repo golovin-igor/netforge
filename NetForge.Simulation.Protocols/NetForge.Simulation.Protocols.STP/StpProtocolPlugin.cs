@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.STP
 {
@@ -15,7 +16,7 @@ namespace NetForge.Simulation.Protocols.STP
         public override ProtocolType ProtocolType => ProtocolType.STP;
         public override int Priority => 200; // High priority for infrastructure protocol
 
-        public override IDeviceProtocol CreateProtocol()
+        public override IEnhancedDeviceProtocol CreateProtocol()
         {
             return new StpProtocol();
         }
