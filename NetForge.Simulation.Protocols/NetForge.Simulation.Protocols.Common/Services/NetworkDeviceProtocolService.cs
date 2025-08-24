@@ -478,9 +478,10 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <returns>Protocol instance or null if not available</returns>
         T BasicProtocolService.GetProtocol<T>()
         {
-            // Try to convert from enhanced protocol to basic protocol
-            var enhancedProtocol = GetProtocol(typeof(T).Name) as T;
-            if (enhancedProtocol != null) return enhancedProtocol;
+            // Try to get all enhanced protocols and find one that matches T
+            var allProtocols = GetAllProtocols();
+            var matchingProtocol = allProtocols.OfType<T>().FirstOrDefault();
+            if (matchingProtocol != null) return matchingProtocol;
             
             // Fallback: look for legacy protocol implementations
             return _device.GetRegisteredProtocols().OfType<T>().FirstOrDefault();
