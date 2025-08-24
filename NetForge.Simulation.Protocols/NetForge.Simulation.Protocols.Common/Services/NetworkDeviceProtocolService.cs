@@ -17,7 +17,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
     /// Implementation of IProtocolService for NetworkDevice
     /// This provides the bridge between CLI handlers and protocols via IoC/DI
     /// </summary>
-    public class NetworkDeviceProtocolService : IEnhancedProtocolService, BasicProtocolService
+    public class NetworkDeviceProtocolService : IEnhancedProtocolService, BasicProtocolService, IProtocolService
     {
         private readonly NetworkDevice _device;
         private readonly ProtocolDependencyManager _dependencyManager;
@@ -536,6 +536,100 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 .Where(p => !enhancedProtocols.Any(ep => ep.Type == p.Type));
             
             return enhancedProtocols.Concat(legacyProtocols);
+        }
+
+        // Adapter methods for IProtocolService interface
+        
+        /// <summary>
+        /// Get a protocol instance by its type (IProtocolService compatibility)
+        /// </summary>
+        /// <typeparam name="T">The specific protocol type</typeparam>
+        /// <returns>Protocol instance or null if not available</returns>
+        T IProtocolService.GetProtocol<T>()
+        {
+            // Try all enhanced protocols and find one that matches T
+            var allEnhanced = GetAllProtocols();
+            var matchingEnhanced = allEnhanced.OfType<T>().FirstOrDefault();
+            if (matchingEnhanced != null) return matchingEnhanced;
+            
+            // Fallback: look for legacy protocol implementations
+            return _device.GetRegisteredProtocols().OfType<T>().FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Get a protocol instance by protocol type enum (IProtocolService compatibility)
+        /// </summary>
+        /// <param name="type">Protocol type to retrieve</param>
+        /// <returns>Protocol instance or null if not available</returns>
+        INetworkProtocol IProtocolService.GetProtocol(ProtocolType type)
+        {
+            return GetProtocol(type) as INetworkProtocol ?? 
+                   _device.GetRegisteredProtocols().OfType<INetworkProtocol>().FirstOrDefault(p => p.Type == type);
+        }
+
+        /// <summary>
+        /// Get all registered protocol instances (IProtocolService compatibility)
+        /// </summary>
+        /// <returns>Enumerable of all protocols</returns>
+        IEnumerable<INetworkProtocol> IProtocolService.GetAllProtocols()
+        {
+            return GetAllProtocols().OfType<INetworkProtocol>().Concat(
+                _device.GetRegisteredProtocols().OfType<INetworkProtocol>());
+        }
+
+        /// <summary>
+        /// Get the typed state of a specific protocol (IProtocolService compatibility)
+        /// </summary>
+        /// <typeparam name="TState">The specific state type</typeparam>
+        /// <param name="type">Protocol type</param>
+        /// <returns>Typed protocol state or null if not available</returns>
+        TState IProtocolService.GetProtocolState<TState>(ProtocolType type)
+        {
+            // Try enhanced state first
+            var enhancedState = GetProtocolState(type);
+            if (enhancedState is TState state) return state;
+            
+            // Fallback: try legacy protocol state
+            var protocol = GetProtocol(type);
+            return protocol?.GetState()?.GetTypedState<TState>();
+        }
+
+        /// <summary>
+        /// Get protocols that support a specific vendor (IProtocolService compatibility)
+        /// </summary>
+        /// <param name="vendorName">Vendor name to filter by</param>
+        /// <returns>Enumerable of protocols supporting the vendor</returns>
+        IEnumerable<INetworkProtocol> IProtocolService.GetProtocolsForVendor(string vendorName)
+        {
+            return GetProtocolsForVendor(vendorName).OfType<INetworkProtocol>();
+        }
+
+        /// <summary>
+        /// Get states of all active protocols (IProtocolService compatibility)
+        /// </summary>
+        /// <returns>Dictionary mapping protocol type to state</returns>
+        Dictionary<ProtocolType, object> IProtocolService.GetAllProtocolStates()
+        {
+            return GetAllProtocolStates().ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
+        }
+
+        /// <summary>
+        /// Get performance metrics for all protocols (IProtocolService compatibility)
+        /// </summary>
+        /// <returns>Dictionary mapping protocol type to metrics</returns>
+        Dictionary<ProtocolType, object> IProtocolService.GetAllProtocolMetrics()
+        {
+            return GetAllProtocolMetrics().ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
+        }
+
+        /// <summary>
+        /// Get performance metrics for a specific protocol (IProtocolService compatibility)
+        /// </summary>
+        /// <param name="type">Protocol type</param>
+        /// <returns>Protocol metrics or null if not available</returns>
+        object IProtocolService.GetProtocolMetrics(ProtocolType type)
+        {
+            return GetProtocolMetrics(type);
         }
     }
 }

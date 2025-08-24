@@ -1,5 +1,6 @@
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.SNMP;
 
@@ -9,7 +10,7 @@ public class SnmpProtocolPlugin : ProtocolPluginBase
     public override ProtocolType ProtocolType => ProtocolType.SNMP;
     public override int Priority => 200; // High priority for management protocol
 
-    public override IDeviceProtocol CreateProtocol()
+    public override IEnhancedDeviceProtocol CreateProtocol()
     {
         return new SnmpProtocol();
     }

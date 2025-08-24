@@ -1,6 +1,7 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.IGRP;
 
@@ -10,7 +11,7 @@ public class IgrpProtocolPlugin : ProtocolPluginBase
     public override ProtocolType ProtocolType => ProtocolType.IGRP;
     public override int Priority => 100; // IGRP administrative distance
 
-    public override IDeviceProtocol CreateProtocol()
+    public override IEnhancedDeviceProtocol CreateProtocol()
     {
         return new IgrpProtocol();
     }

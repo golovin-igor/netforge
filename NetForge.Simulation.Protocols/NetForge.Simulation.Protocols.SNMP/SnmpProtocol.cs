@@ -3,6 +3,7 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Base;
 
 namespace NetForge.Simulation.Protocols.SNMP;
 
