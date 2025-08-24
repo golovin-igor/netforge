@@ -104,6 +104,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Player", "NetForge
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Scripting", "NetForge.Simulation.Scripting\NetForge.Simulation.Scripting.csproj", "{91DBD19B-A1B6-4E99-BE06-FC5F4B27819F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Protocols.HTTP", "NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.HTTP\NetForge.Simulation.Protocols.HTTP.csproj", "{E00370E4-046D-46DB-B006-78EEC58E1E8A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetForge.Simulation.HttpHandlers", "NetForge.Simulation.HttpHandlers", "{352DC46B-D102-4687-89F9-BB7E632E27E2}"
+	ProjectSection(SolutionItems) = preProject
+		NetForge.Simulation.HttpHandlers\HTTP_HANDLERS_IMPLEMENTATION_PLAN.md = NetForge.Simulation.HttpHandlers\HTTP_HANDLERS_IMPLEMENTATION_PLAN.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -266,6 +273,10 @@ Global
 		{91DBD19B-A1B6-4E99-BE06-FC5F4B27819F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91DBD19B-A1B6-4E99-BE06-FC5F4B27819F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91DBD19B-A1B6-4E99-BE06-FC5F4B27819F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E00370E4-046D-46DB-B006-78EEC58E1E8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E00370E4-046D-46DB-B006-78EEC58E1E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E00370E4-046D-46DB-B006-78EEC58E1E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E00370E4-046D-46DB-B006-78EEC58E1E8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -310,5 +321,7 @@ Global
 		{44E16502-191B-4E81-98E1-18BB8BAD6B88} = {9052BD1E-7B4A-45CB-952E-A7E1FED3333A}
 		{36B3D12C-FE35-4E70-B66A-3FBF7C9C3792} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
 		{66969522-17B7-42DC-BA5C-993840AF25BC} = {9052BD1E-7B4A-45CB-952E-A7E1FED3333A}
+		{E00370E4-046D-46DB-B006-78EEC58E1E8A} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
+		{352DC46B-D102-4687-89F9-BB7E632E27E2} = {9052BD1E-7B4A-45CB-952E-A7E1FED3333A}
 	EndGlobalSection
 EndGlobal
