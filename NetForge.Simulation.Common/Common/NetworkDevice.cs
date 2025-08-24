@@ -51,6 +51,7 @@ namespace NetForge.Simulation.Common.Common
         protected object TelnetConfig;
         protected object SshConfig;
         protected object SnmpConfig;
+        protected object HttpConfig;
         protected readonly Dictionary<string, RoutingPolicy> RoutingPolicies = new();
         protected readonly Dictionary<string, PrefixList> PrefixLists = new();
         protected readonly Dictionary<string, BgpCommunity> BgpCommunities = new();
@@ -399,6 +400,15 @@ namespace NetForge.Simulation.Common.Common
             SnmpConfig = config;
             ParentNetwork?.EventBus?.PublishAsync(new Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.SNMP,
                 wasNull ? "SNMP configuration initialized" : "SNMP configuration updated"));
+        }
+
+        public object GetHttpConfiguration() => HttpConfig;
+        public void SetHttpConfiguration(object config)
+        {
+            bool wasNull = HttpConfig == null;
+            HttpConfig = config;
+            ParentNetwork?.EventBus?.PublishAsync(new Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.HTTP,
+                wasNull ? "HTTP configuration initialized" : "HTTP configuration updated"));
         }
 
         public string GetHostname() => Hostname;

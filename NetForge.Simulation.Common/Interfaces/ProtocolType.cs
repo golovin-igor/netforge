@@ -19,7 +19,8 @@ namespace NetForge.Simulation.Common.Interfaces
         ARP,
         TELNET,
         SSH,
-        SNMP
+        SNMP,
+        HTTP
         // Add other protocol types as needed
     }
 }
