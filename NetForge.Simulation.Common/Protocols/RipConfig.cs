@@ -7,7 +7,7 @@ namespace NetForge.Simulation.Common.Protocols
     {
         public int Version { get; set; } = 2;
         public List<string> Networks { get; set; } = new List<string>();
-        public List<string> Neighbors { get; set; } = new List<string>();
+        public List<RipNeighbor> Neighbors { get; set; } = new List<RipNeighbor>();
         public bool AutoSummary { get; set; } = false;
         public bool Summary { get; set; } = false;
         public Dictionary<string, RipGroup> Groups { get; set; } = new Dictionary<string, RipGroup>();
@@ -18,6 +18,18 @@ namespace NetForge.Simulation.Common.Protocols
         {
             Version = version;
             IsEnabled = true;
+        }
+    }
+
+    public class RipNeighbor
+    {
+        public string IpAddress { get; set; }
+        public string Interface { get; set; }
+
+        public RipNeighbor(string ipAddress, string interfaceName)
+        {
+            IpAddress = ipAddress;
+            Interface = interfaceName;
         }
     }
 
