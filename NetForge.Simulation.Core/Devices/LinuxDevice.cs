@@ -38,11 +38,9 @@ namespace NetForge.Simulation.Devices
             // Initialize vendor-aware handler manager
             _vendorHandlerManager = VendorHandlerFactory.CreateWithDiscovery(this);
 
-            // Register routing protocols for state management
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new RipProtocol());
-            RegisterProtocol(new ArpProtocol());
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "Linux" vendor
+            AutoRegisterProtocols();
         }
 
         public override string GetPrompt()

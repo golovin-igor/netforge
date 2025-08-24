@@ -24,15 +24,9 @@ namespace NetForge.Simulation.Devices
             LogEntries.Add("jan/15 10:23:45 interface,info ether1 link up (speed 1G, full duplex)");
             LogEntries.Add("jan/15 10:24:13 system,info,account user admin logged in from 192.168.88.2 via winbox");
 
-            // Register common protocols for MikroTik devices
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new RipProtocol());
-            RegisterProtocol(new StpProtocol());
-            RegisterProtocol(new CdpProtocol()); // MikroTik supports CDP
-            // LLDP is also common, could add LldpProtocol if created
-            RegisterProtocol(new LldpProtocol()); // Added LLDP (MikroTik supports LLDP)
-            RegisterProtocol(new ArpProtocol());
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "MikroTik" vendor
+            AutoRegisterProtocols();
         }
 
         protected override void InitializeDefaultInterfaces()

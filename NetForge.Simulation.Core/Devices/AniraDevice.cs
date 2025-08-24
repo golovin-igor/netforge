@@ -16,12 +16,9 @@ namespace NetForge.Simulation.Devices
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
 
-            // Register a basic set of common protocols
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new StpProtocol());
-            RegisterProtocol(new LldpProtocol());
-            RegisterProtocol(new ArpProtocol());
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "Anira" vendor
+            AutoRegisterProtocols();
         }
 
         protected override void InitializeDefaultInterfaces()

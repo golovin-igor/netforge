@@ -24,14 +24,9 @@ namespace NetForge.Simulation.Devices
             // InitializeDefaultInterfaces(); // Called by base constructor
             // RegisterDeviceSpecificHandlers(); // Called by base constructor
 
-            // Register common protocols for Aruba devices
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new RipProtocol());
-            RegisterProtocol(new StpProtocol());
-            // Aruba devices primarily use LLDP. CDP may be supported on some models.
-            RegisterProtocol(new LldpProtocol());
-            RegisterProtocol(new ArpProtocol());
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "Aruba" vendor
+            AutoRegisterProtocols();
 
             // Add default VLAN 1
             Vlans[1] = new VlanConfig(1, "DEFAULT_VLAN");

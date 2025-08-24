@@ -27,15 +27,9 @@ namespace NetForge.Simulation.Devices
             // InitializeDefaultInterfaces(); // Called by base constructor
             // RegisterDeviceSpecificHandlers(); // Called by base constructor
 
-            // Register common protocols for Extreme Networks devices
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new RipProtocol());
-            RegisterProtocol(new IsisProtocol()); // More common on VOSS, but good to have for EXOS too
-            RegisterProtocol(new StpProtocol());
-            // LLDP is standard
-            RegisterProtocol(new LldpProtocol()); // Added LLDP (standard for Extreme)
-            RegisterProtocol(new ArpProtocol());
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "Extreme" vendor
+            AutoRegisterProtocols();
 
             // Default VLAN
             Vlans[1] = new VlanConfig(1, "Default");

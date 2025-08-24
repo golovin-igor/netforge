@@ -10,6 +10,8 @@ using NetForge.Simulation.Protocols.Discovery;
 using NetForge.Simulation.Protocols.Implementations;
 using NetForge.Simulation.Protocols.Routing;
 using NetForge.Simulation.Protocols.Security;
+using NetForge.Simulation.Protocols.Common.Services;
+using NetForge.Simulation.Interfaces;
 using PortChannelConfig = NetForge.Simulation.Configuration.PortChannel;
 
 namespace NetForge.Simulation.Devices
@@ -39,20 +41,9 @@ namespace NetForge.Simulation.Devices
             // Register device-specific handlers (now handled by vendor registry)
             RegisterDeviceSpecificHandlers();
 
-            // Register common protocols for Cisco devices
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new RipProtocol());
-            RegisterProtocol(new EigrpProtocol());
-            RegisterProtocol(new IgrpProtocol());
-            RegisterProtocol(new StpProtocol());
-            RegisterProtocol(new CdpProtocol());
-            RegisterProtocol(new IsisProtocol());
-            RegisterProtocol(new LldpProtocol());
-            RegisterProtocol(new HsrpProtocol());
-            RegisterProtocol(new ArpProtocol());
-            // Note: Actual Cisco devices might not run all these by default.
-            // This is for comprehensive registration based on available protocol types.
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "Cisco" vendor
+            AutoRegisterProtocols();
         }
         
         protected override void InitializeDefaultInterfaces()
@@ -70,6 +61,35 @@ namespace NetForge.Simulation.Devices
             var registry = new NetForge.Simulation.CliHandlers.Cisco.CiscoHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
             registry.RegisterHandlers(CommandManager);
+        }
+
+        protected override void AutoRegisterProtocols()
+        {
+            var protocolDiscovery = new ProtocolDiscoveryService();
+            var discoveredProtocols = protocolDiscovery.GetProtocolsForVendor("Cisco");
+            
+            foreach (var protocol in discoveredProtocols)
+            {
+                try
+                {
+                    // Convert IDeviceProtocol to INetworkProtocol if needed
+                    if (protocol is INetworkProtocol networkProtocol)
+                    {
+                        RegisterProtocol(networkProtocol);
+                    }
+                    else
+                    {
+                        AddLogEntry($"Warning: Protocol {protocol.GetType().Name} is not compatible with INetworkProtocol interface");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AddLogEntry($"Error registering protocol {protocol.GetType().Name}: {ex.Message}");
+                }
+            }
+
+            var stats = protocolDiscovery.GetDiscoveryStatistics();
+            AddLogEntry($"Auto-registered protocols for Cisco: {GetRegisteredProtocols().Count()} protocols loaded from {stats["TotalPlugins"]} discovered plugins");
         }
         
         public override string GetPrompt()

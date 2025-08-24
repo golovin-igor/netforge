@@ -92,6 +92,17 @@ namespace NetForge.Simulation.Common
         }
 
         /// <summary>
+        /// Auto-register protocols for this device vendor using the new plugin-based discovery service
+        /// This method should be called after the Vendor property is set
+        /// NOTE: This is a placeholder - actual implementation will be in device-specific projects
+        /// </summary>
+        protected virtual void AutoRegisterProtocols()
+        {
+            AddLogEntry("AutoRegisterProtocols called - implementation should be provided by device-specific project");
+        }
+
+
+        /// <summary>
         /// Process a command and return the output
         /// </summary>
     // Synchronous ProcessCommand removed. Use ProcessCommandAsync instead.

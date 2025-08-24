@@ -16,13 +16,9 @@ namespace NetForge.Simulation.Devices
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
 
-            // Register protocols that F5 BIG-IP supports
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new StpProtocol());
-            RegisterProtocol(new LldpProtocol());
-            RegisterProtocol(new CdpProtocol());
-            RegisterProtocol(new ArpProtocol());
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "F5" vendor
+            AutoRegisterProtocols();
         }
 
         protected override void InitializeDefaultInterfaces()

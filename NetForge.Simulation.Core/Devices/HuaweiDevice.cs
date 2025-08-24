@@ -23,14 +23,9 @@ namespace NetForge.Simulation.Devices
             // InitializeDefaultInterfaces(); // Called by base constructor
             // RegisterDeviceSpecificHandlers(); // Called by base constructor
 
-            // Register common protocols for Huawei devices
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new RipProtocol());
-            RegisterProtocol(new IsisProtocol());
-            RegisterProtocol(new StpProtocol());
-            RegisterProtocol(new LldpProtocol()); // Standard for Huawei
-            RegisterProtocol(new ArpProtocol());
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "Huawei" vendor
+            AutoRegisterProtocols();
         }
 
         protected override void InitializeDefaultInterfaces()

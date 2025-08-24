@@ -26,15 +26,9 @@ namespace NetForge.Simulation.Devices
             // Nokia devices start in admin mode
             base.CurrentMode = DeviceModeExtensions.FromModeString("admin");
 
-            // Register common protocols for Nokia (SR OS) devices
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new IsisProtocol());
-            RegisterProtocol(new RipProtocol());
-            RegisterProtocol(new StpProtocol());
-            RegisterProtocol(new LldpProtocol());
-            RegisterProtocol(new VrrpProtocol());
-            RegisterProtocol(new ArpProtocol());
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "Nokia" vendor
+            AutoRegisterProtocols();
         }
         
         protected override void InitializeDefaultInterfaces()

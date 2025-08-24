@@ -22,15 +22,9 @@ namespace NetForge.Simulation.Devices
             RegisterCommonHandlers();
             RegisterDeviceSpecificHandlers();
 
-            // Register common protocols for Arista devices
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new StpProtocol());
-            RegisterProtocol(new LldpProtocol()); // Added LLDP (standard for Arista)
-            RegisterProtocol(new ArpProtocol());
-            // RegisterProtocol(new RipProtocol()); // Less common by default
-            // RegisterProtocol(new IsisProtocol()); // Less common by default
-            // Arista devices typically use LLDP. We could add CdpProtocol for compatibility testing if needed.
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "Arista" vendor
+            AutoRegisterProtocols();
         }
 
         protected override void InitializeDefaultInterfaces()

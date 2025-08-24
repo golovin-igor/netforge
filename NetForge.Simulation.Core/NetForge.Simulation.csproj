@@ -35,6 +35,7 @@
         <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.MikroTik\NetForge.Simulation.CliHandlers.MikroTik.csproj" />
         <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Nokia\NetForge.Simulation.CliHandlers.Nokia.csproj" />
         <ProjectReference Include="..\NetForge.Simulation.Common\NetForge.Simulation.Common.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.Common\NetForge.Simulation.Protocols.Common.csproj" />
     </ItemGroup>
 
 </Project>

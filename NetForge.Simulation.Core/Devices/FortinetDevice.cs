@@ -32,14 +32,9 @@ namespace NetForge.Simulation.Devices
             // FortiGate uses VLAN 1 by default
             Vlans[1] = new VlanConfig(1, "default");
 
-            // Register common protocols for Fortinet devices
-            RegisterProtocol(new OspfProtocol());
-            RegisterProtocol(new BgpProtocol());
-            RegisterProtocol(new RipProtocol());
-            RegisterProtocol(new StpProtocol());
-            // Fortinet has its own discovery protocols, but CDP can be a stand-in for simulation
-            RegisterProtocol(new LldpProtocol());
-            RegisterProtocol(new ArpProtocol());
+            // Auto-register protocols using the new plugin-based discovery service
+            // This will discover and register protocols that support the "Fortinet" vendor
+            AutoRegisterProtocols();
         }
 
         protected override void InitializeDefaultInterfaces()
