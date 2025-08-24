@@ -7,6 +7,11 @@ using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Implementations
 {
+    /// <summary>
+    /// Legacy LLDP Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.LLDP.LldpProtocol instead
+    /// </summary>
+    [Obsolete("This legacy LLDP implementation is deprecated. Use NetForge.Simulation.Protocols.LLDP.LldpProtocol from the new plugin-based architecture instead.", false)]
     public class LldpProtocol : INetworkProtocol
     {
         private LldpConfig _lldpConfig;

@@ -9,6 +9,11 @@ using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Implementations
 {
+    /// <summary>
+    /// Legacy RIP Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.RIP.RipProtocol instead
+    /// </summary>
+    [Obsolete("This legacy RIP implementation is deprecated. Use NetForge.Simulation.Protocols.RIP.RipProtocol from the new plugin-based architecture instead.", false)]
     public class RipProtocol : INetworkProtocol
     {
         private RipConfig _ripConfig;

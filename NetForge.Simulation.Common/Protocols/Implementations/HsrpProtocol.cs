@@ -7,6 +7,11 @@ using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Implementations
 {
+    /// <summary>
+    /// Legacy HSRP Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.HSRP.HsrpProtocol instead
+    /// </summary>
+    [Obsolete("This legacy HSRP implementation is deprecated. Use NetForge.Simulation.Protocols.HSRP.HsrpProtocol from the new plugin-based architecture instead.", false)]
     public class HsrpProtocol : INetworkProtocol
     {
         private HsrpConfig _hsrpConfig;

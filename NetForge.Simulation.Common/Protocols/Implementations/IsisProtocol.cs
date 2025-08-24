@@ -9,6 +9,11 @@ using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Implementations
 {
+    /// <summary>
+    /// Legacy IS-IS Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.ISIS.IsisProtocol instead
+    /// </summary>
+    [Obsolete("This legacy IS-IS implementation is deprecated. Use NetForge.Simulation.Protocols.ISIS.IsisProtocol from the new plugin-based architecture instead.", false)]
     public class IsisProtocol : INetworkProtocol
     {
         private IsIsConfig _isisConfig;

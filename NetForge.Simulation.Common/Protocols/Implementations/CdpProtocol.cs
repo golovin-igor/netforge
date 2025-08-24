@@ -7,6 +7,11 @@ using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Implementations
 {
+    /// <summary>
+    /// Legacy CDP Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.CDP.CdpProtocol instead
+    /// </summary>
+    [Obsolete("This legacy CDP implementation is deprecated. Use NetForge.Simulation.Protocols.CDP.CdpProtocol from the new plugin-based architecture instead.", false)]
     public class CdpProtocol : INetworkProtocol
     {
         private CdpConfig _cdpConfig;

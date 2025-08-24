@@ -6,6 +6,11 @@ using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Implementations
 {
+    /// <summary>
+    /// Legacy IGRP Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.IGRP.IgrpProtocol instead
+    /// </summary>
+    [Obsolete("This legacy IGRP implementation is deprecated. Use NetForge.Simulation.Protocols.IGRP.IgrpProtocol from the new plugin-based architecture instead.", false)]
     public class IgrpProtocol : INetworkProtocol
     {
         private IgrpConfig _igrpConfig;

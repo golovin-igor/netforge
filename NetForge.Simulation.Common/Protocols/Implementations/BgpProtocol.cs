@@ -10,6 +10,11 @@ using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Implementations
 {
+    /// <summary>
+    /// Legacy BGP Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.BGP.BgpProtocol instead
+    /// </summary>
+    [Obsolete("This legacy BGP implementation is deprecated. Use NetForge.Simulation.Protocols.BGP.BgpProtocol from the new plugin-based architecture instead.", false)]
     public class BgpProtocol : INetworkProtocol
     {
         private BgpConfig _bgpConfig;

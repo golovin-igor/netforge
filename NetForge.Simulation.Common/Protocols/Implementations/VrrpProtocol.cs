@@ -6,6 +6,11 @@ using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Implementations
 {
+    /// <summary>
+    /// Legacy VRRP Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.VRRP.VrrpProtocol instead
+    /// </summary>
+    [Obsolete("This legacy VRRP implementation is deprecated. Use NetForge.Simulation.Protocols.VRRP.VrrpProtocol from the new plugin-based architecture instead.", false)]
     public class VrrpProtocol : INetworkProtocol
     {
         private VrrpConfig _vrrpConfig;

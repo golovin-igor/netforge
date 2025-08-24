@@ -32,4 +32,4 @@ namespace NetForge.Simulation.Interfaces
         // Potentially other common methods, e.g., for configuration
         // string GetConfiguration();
         // void ApplyConfiguration(string configSnippet);
-    }} 
+    }}

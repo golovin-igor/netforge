@@ -8,6 +8,11 @@ using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Implementations
 {
+    /// <summary>
+    /// Legacy STP Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.STP.StpProtocol instead
+    /// </summary>
+    [Obsolete("This legacy STP implementation is deprecated. Use NetForge.Simulation.Protocols.STP.StpProtocol from the new plugin-based architecture instead.", false)]
     public class StpProtocol : INetworkProtocol
     {
         private StpConfig _stpConfig;

@@ -6,11 +6,15 @@ using NetForge.Simulation.Interfaces;
 namespace NetForge.Simulation.Protocols.Implementations
 {
     /// <summary>
+    /// Legacy ARP Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.ARP.ArpProtocol instead
+    /// 
     /// Minimal ARP protocol implementation used to populate and display
     /// the device ARP table. For now this protocol does not actively
     /// generate traffic and simply serves as a marker that ARP is
     /// supported by the device.
     /// </summary>
+    [Obsolete("This legacy ARP implementation is deprecated. Use NetForge.Simulation.Protocols.ARP.ArpProtocol from the new plugin-based architecture instead.", false)]
     public class ArpProtocol : INetworkProtocol
     {
         private NetworkDevice _device;

@@ -9,6 +9,11 @@ using NetForge.Simulation.Protocols.Routing;
 
 namespace NetForge.Simulation.Protocols.Implementations
 {
+    /// <summary>
+    /// Legacy OSPF Protocol implementation - DEPRECATED
+    /// Use NetForge.Simulation.Protocols.OSPF.OspfProtocol instead
+    /// </summary>
+    [Obsolete("This legacy OSPF implementation is deprecated. Use NetForge.Simulation.Protocols.OSPF.OspfProtocol from the new plugin-based architecture instead.", false)]
     public class OspfProtocol : INetworkProtocol
     {
         private OspfConfig _ospfConfig;
