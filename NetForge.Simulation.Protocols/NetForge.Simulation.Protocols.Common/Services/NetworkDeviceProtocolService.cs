@@ -192,7 +192,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                     return false;
                 }
 
-                await protocol.Start(_device);
+                await protocol.Start();
                 return true;
             }
             catch
