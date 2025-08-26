@@ -10,7 +10,8 @@ The common library follows the sophisticated state management patterns documente
 
 ### Interfaces
 
-- **`INetworkProtocol`** - Enhanced protocol interface with state management and vendor support
+- **`IDeviceProtocol`** - Unified comprehensive protocol interface (merged from IDeviceProtocol and IEnhancedDeviceProtocol)
+- **`INetworkProtocol`** - Legacy protocol interface maintained for backward compatibility
 - **`IProtocolState`** - Protocol state management interface with neighbor tracking
 - **`IProtocolPlugin`** - Plugin interface for auto-discovery of protocols
 - **`IProtocolService`** - Service interface for CLI handlers to access protocol state via IoC/DI
@@ -64,7 +65,7 @@ public class MyProtocolPlugin : ProtocolPluginBase
 {
     public override string PluginName => "My Protocol Plugin";
     public override ProtocolType ProtocolType => ProtocolType.OSPF;
-    public override INetworkProtocol CreateProtocol() => new MyProtocol();
+    public override IDeviceProtocol CreateProtocol() => new MyProtocol();
 }
 ```
 
@@ -156,7 +157,7 @@ public class MyProtocolPlugin : ProtocolPluginBase
     public override string PluginName => "My Protocol Plugin";
     public override ProtocolType ProtocolType => ProtocolType.OSPF;
     
-    public override INetworkProtocol CreateProtocol()
+    public override IDeviceProtocol CreateProtocol()
     {
         return new MyProtocol();
     }
@@ -199,6 +200,6 @@ private void AutoRegisterProtocols()
 
 ## Related Documentation
 
-- `Protocol_Implementation_Plan.md` - Complete implementation plan
 - `COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md` - Complete protocol documentation and state management patterns
+- Individual Protocol Project READMEs - Protocol-specific implementation details
 - CLI Handler documentation for similar patterns

@@ -10,7 +10,7 @@ namespace NetForge.Simulation.Protocols.CDP
 {
     /// <summary>
     /// CDP (Cisco Discovery Protocol) implementation
-    /// Following the state management pattern from PROTOCOL_STATE_MANAGEMENT.md
+    /// Following the state management pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
     /// </summary>
     public class CdpProtocol : BaseProtocol
     {

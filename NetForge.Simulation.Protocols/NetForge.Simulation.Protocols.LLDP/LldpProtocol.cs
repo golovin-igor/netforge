@@ -9,7 +9,7 @@ namespace NetForge.Simulation.Protocols.LLDP
 {
     /// <summary>
     /// LLDP (Link Layer Discovery Protocol) implementation - IEEE 802.1AB standard
-    /// Following the state management pattern from PROTOCOL_STATE_MANAGEMENT.md
+    /// Following the state management pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
     /// </summary>
     public class LldpProtocol : BaseProtocol
     {

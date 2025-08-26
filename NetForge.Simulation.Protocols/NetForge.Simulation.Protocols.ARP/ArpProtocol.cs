@@ -9,7 +9,7 @@ namespace NetForge.Simulation.Protocols.ARP
 {
     /// <summary>
     /// ARP (Address Resolution Protocol) implementation
-    /// Following the state management pattern from PROTOCOL_STATE_MANAGEMENT.md
+    /// Following the state management pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
     /// </summary>
     public class ArpProtocol : BaseProtocol
     {

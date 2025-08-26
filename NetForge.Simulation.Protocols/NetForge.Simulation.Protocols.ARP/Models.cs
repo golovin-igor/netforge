@@ -4,7 +4,7 @@ using NetForge.Simulation.Protocols.Common.Base;
 namespace NetForge.Simulation.Protocols.ARP
 {
     /// <summary>
-    /// ARP protocol state following the state management pattern from PROTOCOL_STATE_MANAGEMENT.md
+    /// ARP protocol state following the state management pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
     /// </summary>
     public class ArpState : BaseProtocolState
     {

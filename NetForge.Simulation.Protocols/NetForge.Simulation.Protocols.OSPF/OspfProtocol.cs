@@ -9,7 +9,7 @@ namespace NetForge.Simulation.Protocols.OSPF
 {
     /// <summary>
     /// OSPF (Open Shortest Path First) protocol implementation
-    /// Following the state management pattern from PROTOCOL_STATE_MANAGEMENT.md
+    /// Following the state management pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
     /// </summary>
     public class OspfProtocol : BaseProtocol
     {
@@ -98,7 +98,7 @@ namespace NetForge.Simulation.Protocols.OSPF
 
         private async Task DiscoverOspfNeighbors(NetworkDevice device, OspfConfig config, OspfState state)
         {
-            // Implementation following the existing pattern from PROTOCOL_STATE_MANAGEMENT.md
+            // Implementation following the existing pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
             foreach (var interfaceName in device.GetAllInterfaces().Keys)
             {
                 var interfaceConfig = device.GetInterface(interfaceName);

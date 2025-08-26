@@ -5,7 +5,7 @@ using NetForge.Simulation.Protocols.Common.Base;
 namespace NetForge.Simulation.Protocols.OSPF
 {
     /// <summary>
-    /// OSPF protocol state following the state management pattern from PROTOCOL_STATE_MANAGEMENT.md
+    /// OSPF protocol state following the state management pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
     /// </summary>
     public class OspfState : BaseProtocolState
     {

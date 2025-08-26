@@ -6,7 +6,7 @@ using NetForge.Simulation.Protocols.Common.Base;
 namespace NetForge.Simulation.Protocols.CDP
 {
     /// <summary>
-    /// CDP protocol state following the state management pattern from PROTOCOL_STATE_MANAGEMENT.md
+    /// CDP protocol state following the state management pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
     /// </summary>
     public class CdpState : BaseProtocolState
     {

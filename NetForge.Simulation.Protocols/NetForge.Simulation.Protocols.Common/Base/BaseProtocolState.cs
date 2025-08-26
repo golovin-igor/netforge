@@ -8,7 +8,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
     /// </summary>
     public abstract class BaseProtocolState : IProtocolState
     {
-        // Core state tracking from PROTOCOL_STATE_MANAGEMENT.md
+        // Core state tracking from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
         public bool StateChanged { get; set; } = true;
         public DateTime LastUpdate { get; set; } = DateTime.MinValue;
         public bool IsActive { get; set; } = true;

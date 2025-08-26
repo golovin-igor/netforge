@@ -171,7 +171,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 // Find assemblies that contain protocol plugins
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies()
                     .Where(a => !a.IsDynamic &&
-                               (a.FullName?.Contains("NetForge.Simulation.Core.Protocols.") ?? false) &&
+                               (a.FullName?.Contains("NetForge.Simulation.Protocols.") ?? false) &&
                                !a.FullName.Contains("Common"))
                     .ToList();
 

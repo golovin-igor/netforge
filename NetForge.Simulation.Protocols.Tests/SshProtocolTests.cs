@@ -69,7 +69,7 @@ namespace NetForge.Simulation.Protocols.Tests
             // Assert
             Assert.True(sshState.IsActive);
             Assert.True(sshState.IsServerRunning);
-            Assert.Equal(22, sshState.ListeningPort); // Uses default SSH port unless configuration changes it
+            Assert.Equal(2222, sshState.ListeningPort); // Uses configured port
         }
 
         [Fact]

@@ -10,7 +10,7 @@ namespace NetForge.Simulation.Protocols.Common
 {
     /// <summary>
     /// Base implementation of network protocols following the state management pattern
-    /// from PROTOCOL_STATE_MANAGEMENT.md and implementing the unified IDeviceProtocol interface
+    /// from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md and implementing the unified IDeviceProtocol interface
     /// Also implements INetworkProtocol for backward compatibility
     /// </summary>
     public abstract class BaseProtocol : IDeviceProtocol, INetworkProtocol, IDisposable
@@ -58,7 +58,7 @@ namespace NetForge.Simulation.Protocols.Common
         protected virtual void OnInitialized() { }
 
         /// <summary>
-        /// Core state management pattern from PROTOCOL_STATE_MANAGEMENT.md
+        /// Core state management pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
         /// Update the protocol state (called periodically by the simulation engine)
         /// Enhanced with performance tracking and metrics collection
         /// </summary>

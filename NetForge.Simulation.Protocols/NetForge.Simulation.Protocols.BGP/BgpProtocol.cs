@@ -9,7 +9,7 @@ namespace NetForge.Simulation.Protocols.BGP
 {
     /// <summary>
     /// BGP (Border Gateway Protocol) protocol implementation
-    /// Following the state management pattern from PROTOCOL_STATE_MANAGEMENT.md
+    /// Following the state management pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
     /// </summary>
     public class BgpProtocol : BaseProtocol
     {
