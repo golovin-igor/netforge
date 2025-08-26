@@ -43,9 +43,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{868FD21A-97B3-4991-8411-FB9763469FC4}"
 	ProjectSection(SolutionItems) = preProject
 		NetForge.Simulation.Tests\TESTING_STRATEGY.md = NetForge.Simulation.Tests\TESTING_STRATEGY.md
-		NetForge.Simulation.Tests\TEST_ACTUALIZATION_SUMMARY.md = NetForge.Simulation.Tests\TEST_ACTUALIZATION_SUMMARY.md
-		NetForge.Simulation.Tests\TEST_ALIGNMENT_STATUS.md = NetForge.Simulation.Tests\TEST_ALIGNMENT_STATUS.md
-		NetForge.Simulation.Tests\TEST_COMPLETION_REPORT.md = NetForge.Simulation.Tests\TEST_COMPLETION_REPORT.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.CliHandlers.Tests", "NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Tests\NetForge.Simulation.CliHandlers.Tests.csproj", "{DA32C07B-2D25-4638-904D-72BFBB9B9716}"
