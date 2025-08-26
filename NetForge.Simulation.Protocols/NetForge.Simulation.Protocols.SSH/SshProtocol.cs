@@ -59,9 +59,15 @@ namespace NetForge.Simulation.Protocols.SSH
             sshState.SessionStatistics = _sessionManager.GetSessionStatistics();
 
             // Ensure server is running if it should be
-            if (sshConfig.IsEnabled && (_sshServer == null || !_sshServer.IsRunning))
+            if (_sshServer == null || !_sshServer.IsRunning)
             {
                 StartSshServer(sshConfig);
+            }
+            else
+            {
+                // Server is running and SSH is enabled, ensure state reflects this
+                sshState.IsActive = true;
+                sshState.UpdateServerStatus(true, sshConfig.Port, sshConfig.ProtocolVersion);
             }
         }
 
