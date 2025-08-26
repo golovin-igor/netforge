@@ -39,7 +39,8 @@ namespace NetForge.Simulation.Protocols.Tests
                 AllowPasswordAuthentication = true,
                 AllowPublicKeyAuthentication = false,
                 Username = "admin",
-                Password = "test123"
+                Password = "test123",
+                TestMode = true // Enable test mode to prevent actual network binding
             };
             _testDevice.SetSshConfiguration(sshConfig);
             _deviceLogs.Clear();
@@ -66,8 +67,17 @@ namespace NetForge.Simulation.Protocols.Tests
             // Act
             await _sshProtocol.UpdateState(_testDevice);
 
+            // Debug: Check logs if assertion fails
+            if (!sshState.IsActive)
+            {
+                foreach (var log in _deviceLogs)
+                {
+                    Console.WriteLine($"Device Log: {log}");
+                }
+            }
+
             // Assert
-            Assert.True(sshState.IsActive);
+            Assert.True(sshState.IsActive, $"SSH should be active. IsServerRunning: {sshState.IsServerRunning}");
             Assert.True(sshState.IsServerRunning);
             Assert.Equal(2222, sshState.ListeningPort); // Uses configured port
         }

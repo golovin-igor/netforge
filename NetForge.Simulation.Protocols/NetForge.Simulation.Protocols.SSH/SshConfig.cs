@@ -101,6 +101,11 @@ namespace NetForge.Simulation.Protocols.SSH
         public int MaxAuthAttempts { get; set; } = 3;
         
         /// <summary>
+        /// Enable test mode (disables actual network binding for testing)
+        /// </summary>
+        public bool TestMode { get; set; } = false;
+        
+        /// <summary>
         /// Clone this configuration
         /// </summary>
         /// <returns>A copy of this configuration</returns>
@@ -126,7 +131,8 @@ namespace NetForge.Simulation.Protocols.SSH
                 KeyExchangeTimeout = KeyExchangeTimeout,
                 AllowPasswordAuthentication = AllowPasswordAuthentication,
                 AllowPublicKeyAuthentication = AllowPublicKeyAuthentication,
-                MaxAuthAttempts = MaxAuthAttempts
+                MaxAuthAttempts = MaxAuthAttempts,
+                TestMode = TestMode
             };
         }
         

@@ -42,16 +42,19 @@ namespace NetForge.Simulation.Protocols.SSH
 
             try
             {
-                _listener = new TcpListener(IPAddress.Any, _config.Port);
-                _listener.Start();
+                if (!_config.TestMode)
+                {
+                    _listener = new TcpListener(IPAddress.Any, _config.Port);
+                    _listener.Start();
 
-                _cancellationTokenSource = new CancellationTokenSource();
+                    _cancellationTokenSource = new CancellationTokenSource();
+
+                    // Start accepting connections in background
+                    _ = Task.Run(AcceptConnectionsAsync, _cancellationTokenSource.Token);
+                }
+
                 _isRunning = true;
-
-                // Start accepting connections in background
-                _ = Task.Run(AcceptConnectionsAsync, _cancellationTokenSource.Token);
-
-                _device.AddLogEntry($"SSH server started on port {_config.Port}");
+                _device.AddLogEntry($"SSH server started on port {_config.Port}{(_config.TestMode ? " (test mode)" : "")}");
             }
             catch (Exception ex)
             {
