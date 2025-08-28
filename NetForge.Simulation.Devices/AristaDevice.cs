@@ -1,18 +1,17 @@
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.Arista;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Common.Security;
-using NetForge.Simulation.Core;
 using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
-    public class AristaDevice : NetworkDevice
+    public sealed class AristaDevice : NetworkDevice
     {
-        private string currentRouterProtocol = "";
-        private int currentVlanId = 0;
-        private int currentAclNumber = 0;
+        private string _currentRouterProtocol = "";
+        private int _currentVlanId = 0;
+        private int _currentAclNumber = 0;
 
         public AristaDevice(string name) : base(name)
         {
@@ -39,7 +38,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Arista handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Arista.AristaHandlerRegistry();
+            var registry = new AristaHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 
@@ -51,9 +50,9 @@ namespace NetForge.Simulation.Core.Devices
                 DeviceMode.Privileged => $"{Hostname}#",
                 DeviceMode.Config => $"{Hostname}(config)#",
                 DeviceMode.Interface => $"{Hostname}(config-if-{base.CurrentInterface})#",
-                DeviceMode.Router => $"{Hostname}(config-router-{currentRouterProtocol})#",
+                DeviceMode.Router => $"{Hostname}(config-router-{_currentRouterProtocol})#",
                 DeviceMode.Vlan => $"{Hostname}(config-vlan-{Vlans.Keys.LastOrDefault()})#",
-                DeviceMode.Acl => $"{Hostname}(config-acl-{currentAclNumber})#",
+                DeviceMode.Acl => $"{Hostname}(config-acl-{_currentAclNumber})#",
                 _ => $"{Hostname}>"
             };
         }
@@ -69,11 +68,11 @@ namespace NetForge.Simulation.Core.Devices
         }
 
         // Device-specific public methods for handlers
-        public string GetCurrentRouterProtocol() => currentRouterProtocol;
-        public void SetCurrentRouterProtocol(string protocol) => currentRouterProtocol = protocol;
+        public string GetCurrentRouterProtocol() => _currentRouterProtocol;
+        public void SetCurrentRouterProtocol(string protocol) => _currentRouterProtocol = protocol;
 
-        public int GetCurrentVlanId() => currentVlanId;
-        public void SetCurrentVlanId(int vlanId) => currentVlanId = vlanId;
+        public int GetCurrentVlanId() => _currentVlanId;
+        public void SetCurrentVlanId(int vlanId) => _currentVlanId = vlanId;
 
         public new void SetHostname(string name)
         {
@@ -166,7 +165,7 @@ namespace NetForge.Simulation.Core.Devices
 
         public void SetCurrentAclNumber(int aclNumber)
         {
-            currentAclNumber = aclNumber;
+            _currentAclNumber = aclNumber;
             if (!AccessLists.ContainsKey(aclNumber))
             {
                 AccessLists[aclNumber] = new AccessList(aclNumber);

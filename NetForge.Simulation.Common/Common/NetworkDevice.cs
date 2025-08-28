@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.Text;
 using NetForge.Simulation.Common.CLI.Base;
-using NetForge.Simulation.Common.CLI.CommonHandlers;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
@@ -637,7 +636,6 @@ namespace NetForge.Simulation.Common.Common
         /// </summary>
         protected virtual void RegisterCommonHandlers()
         {
-            CommandManager.RegisterHandler(new CommonPingCommandHandler());
         }
 
         /// <summary>

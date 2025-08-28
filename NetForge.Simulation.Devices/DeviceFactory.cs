@@ -1,15 +1,13 @@
-using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Core.Devices;
 
-namespace NetForge.Simulation.Core
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Factory for creating network device instances
     /// </summary>
     public static class DeviceFactory
     {
-        private static readonly Dictionary<string, Func<string, NetworkDevice>> _vendors =
+        private static readonly Dictionary<string, Func<string, NetworkDevice>> Vendors =
             new(StringComparer.OrdinalIgnoreCase);
 
         static DeviceFactory()
@@ -39,10 +37,10 @@ namespace NetForge.Simulation.Core
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Vendor name cannot be null or empty", nameof(name));
-            if (ctor == null)
-                throw new ArgumentNullException(nameof(ctor));
 
-            _vendors[name] = ctor;
+            ArgumentNullException.ThrowIfNull(ctor);
+
+            Vendors[name] = ctor;
         }
 
         /// <summary>
@@ -53,7 +51,7 @@ namespace NetForge.Simulation.Core
             if (vendor == null)
                 throw new NotSupportedException("Vendor 'null' is not supported");
 
-            if (_vendors.TryGetValue(vendor, out var ctor))
+            if (Vendors.TryGetValue(vendor, out var ctor))
             {
                 return ctor(name);
             }
@@ -66,7 +64,7 @@ namespace NetForge.Simulation.Core
         /// </summary>
         public static string[] GetSupportedVendors()
         {
-            return _vendors.Keys.ToArray();
+            return Vendors.Keys.ToArray();
         }
     }
 }

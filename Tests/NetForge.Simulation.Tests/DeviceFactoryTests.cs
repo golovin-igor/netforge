@@ -1,7 +1,5 @@
-using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Core;
-using NetForge.Simulation.Core.Devices;
+using NetForge.Simulation.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests

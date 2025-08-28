@@ -258,7 +258,7 @@ namespace NetForge.Simulation.Protocols.Examples
     /// </summary>
     public class ProtocolArchitectureDemo
     {
-        private readonly NetForge.Simulation.Protocols.Common.Services.IProtocolService _protocolService;
+        private readonly NetForge.Simulation.Common.Interfaces.IProtocolService _protocolService;
         private readonly IProtocolConfigurationManager _configManager;
         private readonly IProtocolDependencyManager _dependencyManager;
 

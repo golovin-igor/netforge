@@ -1,14 +1,13 @@
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.Anira;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Simple Anira device implementation using vendor registry system
     /// </summary>
-    public class AniraDevice : NetworkDevice
+    public sealed class AniraDevice : NetworkDevice
     {
         public AniraDevice(string name) : base(name)
         {
@@ -32,7 +31,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Anira handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Anira.AniraHandlerRegistry();
+            var registry = new AniraHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 

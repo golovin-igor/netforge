@@ -1,19 +1,18 @@
 using System.Text;
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.Juniper;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
-using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Juniper Junos device implementation
     /// </summary>
-    public class JuniperDevice : NetworkDevice
+    public sealed class JuniperDevice : NetworkDevice
     {
-        private List<string> candidateConfig = new List<string>();
-        private bool inConfigMode = false;
+        private List<string> _candidateConfig = new List<string>();
+        private bool _inConfigMode = false;
 
         public JuniperDevice(string name) : base(name)
         {
@@ -39,7 +38,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Juniper handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Juniper.JuniperHandlerRegistry();
+            var registry = new JuniperHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 
@@ -54,7 +53,7 @@ namespace NetForge.Simulation.Core.Devices
         public override void SetMode(string mode)
         {
             base.SetMode(mode);
-            inConfigMode = (mode == "configuration");
+            _inConfigMode = (mode == "configuration");
         }
 
         /// <summary>
@@ -62,7 +61,7 @@ namespace NetForge.Simulation.Core.Devices
         /// </summary>
         public void AddToCandidateConfig(string configLine)
         {
-            candidateConfig.Add(configLine);
+            _candidateConfig.Add(configLine);
         }
 
         /// <summary>
@@ -70,7 +69,7 @@ namespace NetForge.Simulation.Core.Devices
         /// </summary>
         public List<string> GetCandidateConfig()
         {
-            return new List<string>(candidateConfig);
+            return new List<string>(_candidateConfig);
         }
 
         /// <summary>
@@ -78,7 +77,7 @@ namespace NetForge.Simulation.Core.Devices
         /// </summary>
         public void ClearCandidateConfig()
         {
-            candidateConfig.Clear();
+            _candidateConfig.Clear();
         }
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace NetForge.Simulation.Core.Devices
         /// </summary>
         public void DeleteFromCandidateConfig(string configPath)
         {
-            candidateConfig.RemoveAll(c => c.Contains(configPath));
+            _candidateConfig.RemoveAll(c => c.Contains(configPath));
         }
 
         /// <summary>
@@ -94,11 +93,11 @@ namespace NetForge.Simulation.Core.Devices
         /// </summary>
         public void CommitCandidateConfig()
         {
-            foreach (var configLine in candidateConfig)
+            foreach (var configLine in _candidateConfig)
             {
                 ApplyConfigurationLine(configLine);
             }
-            candidateConfig.Clear();
+            _candidateConfig.Clear();
         }
 
         /// <summary>
@@ -109,12 +108,12 @@ namespace NetForge.Simulation.Core.Devices
             try
             {
                 // Apply candidate configuration
-                foreach (var configLine in candidateConfig)
+                foreach (var configLine in _candidateConfig)
                 {
                     ApplyConfigurationLine(configLine);
                 }
 
-                candidateConfig.Clear();
+                _candidateConfig.Clear();
                 return "commit complete\n";
             }
             catch (Exception ex)
@@ -443,24 +442,24 @@ namespace NetForge.Simulation.Core.Devices
         public new void SetCurrentMode(string mode)
         {
             base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
-            inConfigMode = (mode == "configuration");
+            _inConfigMode = (mode == "configuration");
         }
 
         public new string GetCurrentInterface() => CurrentInterface;
         public new void SetCurrentInterface(string iface) => CurrentInterface = iface;
 
         // Juniper-specific helper methods
-        public bool IsInConfigMode() => inConfigMode;
+        public bool IsInConfigMode() => _inConfigMode;
         public void EnterConfigMode()
         {
-            inConfigMode = true;
-            candidateConfig.Clear();
+            _inConfigMode = true;
+            _candidateConfig.Clear();
         }
 
         public void ExitConfigMode()
         {
-            inConfigMode = false;
-            candidateConfig.Clear();
+            _inConfigMode = false;
+            _candidateConfig.Clear();
         }
 
         public void UpdateProtocols()
@@ -502,7 +501,7 @@ namespace NetForge.Simulation.Core.Devices
         private string ShowCandidateConfig()
         {
             var output = new StringBuilder();
-            foreach (var line in candidateConfig.OrderBy(c => c))
+            foreach (var line in _candidateConfig.OrderBy(c => c))
             {
                 output.AppendLine(line);
             }

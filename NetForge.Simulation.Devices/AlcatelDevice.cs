@@ -1,14 +1,13 @@
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.Alcatel;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Alcatel-Lucent network device with OmniSwitch operating system
     /// </summary>
-    public class AlcatelDevice : NetworkDevice
+    public sealed class AlcatelDevice : NetworkDevice
     {
         public AlcatelDevice(string name) : base(name)
         {
@@ -34,7 +33,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Alcatel handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Alcatel.AlcatelHandlerRegistry();
+            var registry = new AlcatelHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
             registry.RegisterHandlers(CommandManager);
         }

@@ -1,22 +1,21 @@
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.Fortinet;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
-using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Fortinet FortiOS device implementation
     /// </summary>
-    public class FortinetDevice : NetworkDevice
+    public sealed class FortinetDevice : NetworkDevice
     {
-        private int currentVlanId = 0;
-        private string currentNeighborIp = "";
-        private string currentBgpNetwork = "";
-        private string currentStaticRoute = "";
-        private int currentStaticRouteId = 0;
-        private Dictionary<int, (string Network, string Mask, string Gateway, string Device)> pendingStaticRoutes = new Dictionary<int, (string, string, string, string)>();
+        private int _currentVlanId = 0;
+        private string _currentNeighborIp = "";
+        private string _currentBgpNetwork = "";
+        private string _currentStaticRoute = "";
+        private int _currentStaticRouteId = 0;
+        private Dictionary<int, (string Network, string Mask, string Gateway, string Device)> _pendingStaticRoutes = new Dictionary<int, (string, string, string, string)>();
 
         public FortinetDevice(string name) : base(name)
         {
@@ -48,7 +47,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Fortinet handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Fortinet.FortinetHandlerRegistry();
+            var registry = new FortinetHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 
@@ -99,8 +98,8 @@ namespace NetForge.Simulation.Core.Devices
         public new string GetCurrentInterface() => base.CurrentInterface;
         public new void SetCurrentInterface(string iface) => base.CurrentInterface = iface;
 
-        public int GetCurrentVlanId() => currentVlanId;
-        public void SetCurrentVlanId(int vlanId) => currentVlanId = vlanId;
+        public int GetCurrentVlanId() => _currentVlanId;
+        public void SetCurrentVlanId(int vlanId) => _currentVlanId = vlanId;
 
         public string GetMode() => base.CurrentMode.ToModeString();
         public new void SetCurrentMode(string mode) => base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
@@ -125,7 +124,7 @@ namespace NetForge.Simulation.Core.Devices
             {
                 Vlans[vlanId] = new VlanConfig(vlanId);
             }
-            currentVlanId = vlanId;
+            _currentVlanId = vlanId;
         }
 
         public void AddInterfaceToVlan(string interfaceName, int vlanId)
@@ -138,9 +137,9 @@ namespace NetForge.Simulation.Core.Devices
 
         public void SetCurrentVlanName(string name)
         {
-            if (currentVlanId > 0 && Vlans.ContainsKey(currentVlanId))
+            if (_currentVlanId > 0 && Vlans.ContainsKey(_currentVlanId))
             {
-                Vlans[currentVlanId].Name = name;
+                Vlans[_currentVlanId].Name = name;
             }
         }
 
@@ -191,74 +190,74 @@ namespace NetForge.Simulation.Core.Devices
 
         public void SetCurrentBgpNeighbor(string neighborIp)
         {
-            currentNeighborIp = neighborIp;
+            _currentNeighborIp = neighborIp;
         }
 
         public string GetCurrentBgpNeighbor()
         {
-            return currentNeighborIp;
+            return _currentNeighborIp;
         }
 
         public void SetCurrentBgpNetwork(string networkId)
         {
-            currentBgpNetwork = networkId;
+            _currentBgpNetwork = networkId;
         }
 
         public string GetCurrentBgpNetwork()
         {
-            return currentBgpNetwork;
+            return _currentBgpNetwork;
         }
 
         public void SetCurrentStaticRoute(string routeId)
         {
-            currentStaticRoute = routeId;
+            _currentStaticRoute = routeId;
             if (int.TryParse(routeId, out int id))
             {
-                currentStaticRouteId = id;
-                if (!pendingStaticRoutes.ContainsKey(id))
+                _currentStaticRouteId = id;
+                if (!_pendingStaticRoutes.ContainsKey(id))
                 {
-                    pendingStaticRoutes[id] = ("", "", "", "");
+                    _pendingStaticRoutes[id] = ("", "", "", "");
                 }
             }
         }
 
         public string GetCurrentStaticRoute()
         {
-            return currentStaticRoute;
+            return _currentStaticRoute;
         }
 
         public void SetStaticRouteDst(int routeId, string network, string mask)
         {
-            if (pendingStaticRoutes.ContainsKey(routeId))
+            if (_pendingStaticRoutes.ContainsKey(routeId))
             {
-                var current = pendingStaticRoutes[routeId];
-                pendingStaticRoutes[routeId] = (network, mask, current.Gateway, current.Device);
+                var current = _pendingStaticRoutes[routeId];
+                _pendingStaticRoutes[routeId] = (network, mask, current.Gateway, current.Device);
             }
         }
 
         public void SetStaticRouteGateway(int routeId, string gateway)
         {
-            if (pendingStaticRoutes.ContainsKey(routeId))
+            if (_pendingStaticRoutes.ContainsKey(routeId))
             {
-                var current = pendingStaticRoutes[routeId];
-                pendingStaticRoutes[routeId] = (current.Network, current.Mask, gateway, current.Device);
+                var current = _pendingStaticRoutes[routeId];
+                _pendingStaticRoutes[routeId] = (current.Network, current.Mask, gateway, current.Device);
             }
         }
 
         public void SetStaticRouteDevice(int routeId, string device)
         {
-            if (pendingStaticRoutes.ContainsKey(routeId))
+            if (_pendingStaticRoutes.ContainsKey(routeId))
             {
-                var current = pendingStaticRoutes[routeId];
-                pendingStaticRoutes[routeId] = (current.Network, current.Mask, current.Gateway, device);
+                var current = _pendingStaticRoutes[routeId];
+                _pendingStaticRoutes[routeId] = (current.Network, current.Mask, current.Gateway, device);
             }
         }
 
         public void AddStaticRouteToTable()
         {
-            if (currentStaticRouteId > 0 && pendingStaticRoutes.ContainsKey(currentStaticRouteId))
+            if (_currentStaticRouteId > 0 && _pendingStaticRoutes.ContainsKey(_currentStaticRouteId))
             {
-                var route = pendingStaticRoutes[currentStaticRouteId];
+                var route = _pendingStaticRoutes[_currentStaticRouteId];
                 if (!string.IsNullOrEmpty(route.Network) && !string.IsNullOrEmpty(route.Gateway))
                 {
                     var routeEntry = new Route(route.Network, route.Mask, route.Gateway, route.Device, "Static")

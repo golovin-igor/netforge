@@ -1,9 +1,7 @@
-using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Factories;
 using NetForge.Simulation.Common.CLI.Implementations;
-using NetForge.Simulation.Core.Devices;
+using NetForge.Simulation.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Integration

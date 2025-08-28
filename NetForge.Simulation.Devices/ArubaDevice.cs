@@ -1,21 +1,20 @@
 using System.Text;
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.Aruba;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Core;
 using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// HPE/Aruba switch running ArubaOS-Switch (formerly ProCurve)
     /// </summary>
-    public class ArubaDevice : NetworkDevice
+    public sealed class ArubaDevice : NetworkDevice
     {
         // Mode shadowing removed - using base class currentMode
-        private string currentRouterProtocol = "";
-        private int currentVlanId = 0;
-        private int currentAclNumber = 0;
+        private string _currentRouterProtocol = "";
+        private int _currentVlanId = 0;
+        private int _currentAclNumber = 0;
 
         public ArubaDevice(string name) : base(name)
         {
@@ -51,7 +50,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Aruba handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Aruba.ArubaHandlerRegistry();
+            var registry = new ArubaHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 
@@ -64,7 +63,7 @@ namespace NetForge.Simulation.Core.Devices
                 DeviceMode.Config => $"{Hostname}(config)#",
                 DeviceMode.Interface => $"{Hostname}(eth-{GetSimplifiedInterfaceName(CurrentInterface)})#",
                 DeviceMode.Vlan => $"{Hostname}(vlan-{Vlans.Keys.LastOrDefault()})#",
-                DeviceMode.Router => $"{Hostname}(config-{currentRouterProtocol})#",
+                DeviceMode.Router => $"{Hostname}(config-{_currentRouterProtocol})#",
                 _ => $"{Hostname}>"
             };
         }
@@ -118,8 +117,8 @@ namespace NetForge.Simulation.Core.Devices
         public new void SetCurrentInterface(string iface) => CurrentInterface = iface;
 
         // Aruba-specific helper methods
-        public string GetCurrentRouterProtocol() => currentRouterProtocol;
-        public void SetCurrentRouterProtocol(string protocol) => currentRouterProtocol = protocol;
+        public string GetCurrentRouterProtocol() => _currentRouterProtocol;
+        public void SetCurrentRouterProtocol(string protocol) => _currentRouterProtocol = protocol;
 
         public void AppendToRunningConfig(string line)
         {
@@ -151,12 +150,12 @@ namespace NetForge.Simulation.Core.Devices
 
         public int GetCurrentVlanId()
         {
-            return currentVlanId;
+            return _currentVlanId;
         }
 
         public void SetCurrentVlanId(int vlanId)
         {
-            currentVlanId = vlanId;
+            _currentVlanId = vlanId;
         }
 
         public string GetRunningConfig()

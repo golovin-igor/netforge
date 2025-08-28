@@ -1,24 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Text;
-using System.Threading.Tasks;
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.Extreme;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
-using NetForge.Simulation.Core;
 using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Extreme Networks EXOS device implementation
     /// </summary>
-    public class ExtremeDevice : NetworkDevice
+    public sealed class ExtremeDevice : NetworkDevice
     {
-        private Dictionary<int, string> vlanNameMap = new Dictionary<int, string>();
+        private Dictionary<int, string> _vlanNameMap = new Dictionary<int, string>();
 
         public ExtremeDevice(string name) : base(name)
         {
@@ -32,7 +26,7 @@ namespace NetForge.Simulation.Core.Devices
 
             // Default VLAN
             Vlans[1] = new VlanConfig(1, "Default");
-            vlanNameMap[1] = "Default";
+            _vlanNameMap[1] = "Default";
         }
 
         protected override void InitializeDefaultInterfaces()
@@ -53,7 +47,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Extreme handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Extreme.ExtremeHandlerRegistry();
+            var registry = new ExtremeHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 
@@ -145,8 +139,8 @@ namespace NetForge.Simulation.Core.Devices
             UpdateConnectedRoutes();
         }
 
-        public Dictionary<int, string> GetVlanNameMap() => vlanNameMap;
-        public void SetVlanName(int vlanId, string name) => vlanNameMap[vlanId] = name;
+        public Dictionary<int, string> GetVlanNameMap() => _vlanNameMap;
+        public void SetVlanName(int vlanId, string name) => _vlanNameMap[vlanId] = name;
 
         public void InitializeOspf(int processId)
         {
@@ -240,7 +234,7 @@ namespace NetForge.Simulation.Core.Devices
             {
                 foreach (var vlan in Vlans.Values)
                 {
-                    var vlanName = vlanNameMap.GetValueOrDefault(vlan.Id, vlan.Name);
+                    var vlanName = _vlanNameMap.GetValueOrDefault(vlan.Id, vlan.Name);
                     var vlanIface = Interfaces.Values.FirstOrDefault(i => i.VlanId == vlan.Id && !string.IsNullOrEmpty(i.IpAddress));
 
                     if (vlanIface != null)
@@ -290,7 +284,7 @@ namespace NetForge.Simulation.Core.Devices
             {
                 foreach (var vlan in Vlans.Values.OrderBy(v => v.Id))
                 {
-                    var vlanName = vlanNameMap.GetValueOrDefault(vlan.Id, vlan.Name);
+                    var vlanName = _vlanNameMap.GetValueOrDefault(vlan.Id, vlan.Name);
                     output.AppendLine($"VLAN Interface[{vlan.Id}] with name \"{vlanName}\" created by user");
                     output.AppendLine($"    Tagging:          802.1Q Tag {vlan.Id}");
                     output.AppendLine($"    Priority:         802.1P Priority 0");
@@ -321,7 +315,7 @@ namespace NetForge.Simulation.Core.Devices
 
                 foreach (var vlan in Vlans.Values.OrderBy(v => v.Id))
                 {
-                    var vlanName = vlanNameMap.GetValueOrDefault(vlan.Id, vlan.Name);
+                    var vlanName = _vlanNameMap.GetValueOrDefault(vlan.Id, vlan.Name);
                     var flags = "/32";
                     var ports = vlan.Interfaces.Count;
 
@@ -345,7 +339,7 @@ namespace NetForge.Simulation.Core.Devices
                 foreach (var iface in Interfaces.Values)
                 {
                     var displayString = string.IsNullOrEmpty(iface.Description) ? "" : iface.Description;
-                    var vlan = iface.VlanId > 0 ? vlanNameMap.GetValueOrDefault(iface.VlanId, $"VLAN{iface.VlanId}") : "0";
+                    var vlan = iface.VlanId > 0 ? _vlanNameMap.GetValueOrDefault(iface.VlanId, $"VLAN{iface.VlanId}") : "0";
                     var portState = iface.IsShutdown ? "D" : "E";
                     var linkState = iface.IsUp ? "A" : "R";
 
@@ -533,7 +527,7 @@ namespace NetForge.Simulation.Core.Devices
             {
                 if (!string.IsNullOrEmpty(iface.IpAddress))
                 {
-                    var vlanName = iface.VlanId > 0 ? vlanNameMap.GetValueOrDefault(iface.VlanId, "Default") : "Default";
+                    var vlanName = iface.VlanId > 0 ? _vlanNameMap.GetValueOrDefault(iface.VlanId, "Default") : "Default";
                     output.AppendLine($"VR-Default    {iface.IpAddress,-16} aa:bb:cc:00:01:00  12   NO      {vlanName}");
                 }
             }
@@ -559,7 +553,7 @@ namespace NetForge.Simulation.Core.Devices
             if (parts.Length > 2)
             {
                 var vlanName = parts[2].Trim('"');
-                var vlanId = Vlans.FirstOrDefault(v => vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
+                var vlanId = Vlans.FirstOrDefault(v => _vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
 
                 if (vlanId > 0)
                 {
@@ -591,8 +585,8 @@ namespace NetForge.Simulation.Core.Devices
                                     var vlan = Vlans[vlanId];
                                     Vlans.Remove(vlanId);
                                     Vlans[newTag] = vlan;
-                                    vlanNameMap[newTag] = vlanName;
-                                    vlanNameMap.Remove(vlanId);
+                                    _vlanNameMap[newTag] = vlanName;
+                                    _vlanNameMap.Remove(vlanId);
                                     RunningConfig.AppendLine($"configure vlan {vlanName} tag {newTag}");
                                 }
                                 break;
@@ -677,7 +671,7 @@ namespace NetForge.Simulation.Core.Devices
             if (parts.Length > 3)
             {
                 var vlanName = parts[2].Trim('"');
-                var vlanId = Vlans.FirstOrDefault(v => vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
+                var vlanId = Vlans.FirstOrDefault(v => _vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
 
                 if (vlanId > 0)
                 {
@@ -732,7 +726,7 @@ namespace NetForge.Simulation.Core.Devices
                         if (parts.Length > 4 && parts[3].ToLower() == "vlan")
                         {
                             var vlanName = parts[4];
-                            var vlanId = Vlans.FirstOrDefault(v => vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
+                            var vlanId = Vlans.FirstOrDefault(v => _vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
 
                             if (vlanId > 0)
                             {

@@ -1,17 +1,15 @@
-using NetForge.Simulation.Common;
-using NetForge.Simulation.CliHandlers;
+using NetForge.Simulation.CliHandlers.Linux;
 using NetForge.Simulation.Common.CLI.Extensions;
 using NetForge.Simulation.Common.CLI.Services;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Simple Linux host implementation with vendor-agnostic CLI handlers
     /// </summary>
-    public class LinuxDevice : NetworkDevice
+    public sealed class LinuxDevice : NetworkDevice
     {
         private VendorAwareCliHandlerManager? _vendorHandlerManager;
 
@@ -31,7 +29,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Linux handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Linux.LinuxHandlerRegistry();
+            var registry = new LinuxHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
 
             // Initialize vendor-aware handler manager

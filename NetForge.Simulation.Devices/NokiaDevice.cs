@@ -1,22 +1,21 @@
 using System.Text;
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.Nokia;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
-using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Nokia SR OS device implementation
     /// </summary>
-    public class NokiaDevice : NetworkDevice
+    public sealed class NokiaDevice : NetworkDevice
     {
-        private string currentContext = "";
-        private string currentPort = "";
-        private string currentRouterInterface = "";
-        private string currentVlan = "";
-        private string currentRouterProtocol = "";
+        private string _currentContext = "";
+        private string _currentPort = "";
+        private string _currentRouterInterface = "";
+        private string _currentVlan = "";
+        private string _currentRouterProtocol = "";
 
         public NokiaDevice(string name) : base(name)
         {
@@ -42,54 +41,54 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Nokia handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Nokia.NokiaHandlerRegistry();
+            var registry = new NokiaHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()
         {
             var mode = GetCurrentMode();
-            var context = string.IsNullOrEmpty(currentContext) ? "" : $"[{currentContext}]";
-            var port = string.IsNullOrEmpty(currentPort) ? "" : $"[Port {currentPort}]";
-            var router = string.IsNullOrEmpty(currentRouterInterface) ? "" : $"[Router {currentRouterInterface}]";
-            var vlan = string.IsNullOrEmpty(currentVlan) ? "" : $"[VLAN {currentVlan}]";
-            var protocol = string.IsNullOrEmpty(currentRouterProtocol) ? "" : $"[{currentRouterProtocol}]";
+            var context = string.IsNullOrEmpty(_currentContext) ? "" : $"[{_currentContext}]";
+            var port = string.IsNullOrEmpty(_currentPort) ? "" : $"[Port {_currentPort}]";
+            var router = string.IsNullOrEmpty(_currentRouterInterface) ? "" : $"[Router {_currentRouterInterface}]";
+            var vlan = string.IsNullOrEmpty(_currentVlan) ? "" : $"[VLAN {_currentVlan}]";
+            var protocol = string.IsNullOrEmpty(_currentRouterProtocol) ? "" : $"[{_currentRouterProtocol}]";
 
             // Handle basic privileged mode vs complex configuration contexts
-            if (mode == "privileged" && string.IsNullOrEmpty(currentContext) && string.IsNullOrEmpty(currentPort) &&
-                string.IsNullOrEmpty(currentRouterInterface) && string.IsNullOrEmpty(currentVlan) && string.IsNullOrEmpty(currentRouterProtocol))
+            if (mode == "privileged" && string.IsNullOrEmpty(_currentContext) && string.IsNullOrEmpty(_currentPort) &&
+                string.IsNullOrEmpty(_currentRouterInterface) && string.IsNullOrEmpty(_currentVlan) && string.IsNullOrEmpty(_currentRouterProtocol))
             {
                 // Basic privileged mode: A:TestRouter#
                 return $"A:{Name}# ";
             }
-            else if (mode == "config" && string.IsNullOrEmpty(currentContext) && string.IsNullOrEmpty(currentPort) &&
-                string.IsNullOrEmpty(currentRouterInterface) && string.IsNullOrEmpty(currentVlan) && string.IsNullOrEmpty(currentRouterProtocol))
+            else if (mode == "config" && string.IsNullOrEmpty(_currentContext) && string.IsNullOrEmpty(_currentPort) &&
+                string.IsNullOrEmpty(_currentRouterInterface) && string.IsNullOrEmpty(_currentVlan) && string.IsNullOrEmpty(_currentRouterProtocol))
             {
                 // Basic config mode: A:TestRouter(config)#
                 return $"A:{Name}(config)# ";
             }
-            else if (mode == "admin" && string.IsNullOrEmpty(currentContext) && string.IsNullOrEmpty(currentPort) &&
-                     string.IsNullOrEmpty(currentRouterInterface) && string.IsNullOrEmpty(currentVlan) && string.IsNullOrEmpty(currentRouterProtocol))
+            else if (mode == "admin" && string.IsNullOrEmpty(_currentContext) && string.IsNullOrEmpty(_currentPort) &&
+                     string.IsNullOrEmpty(_currentRouterInterface) && string.IsNullOrEmpty(_currentVlan) && string.IsNullOrEmpty(_currentRouterProtocol))
             {
                 // Basic admin mode: A:TestRouter>admin#
                 return $"A:{Name}>admin# ";
             }
-            else if (!string.IsNullOrEmpty(currentContext) || !string.IsNullOrEmpty(currentPort) ||
-                     !string.IsNullOrEmpty(currentRouterInterface) || !string.IsNullOrEmpty(currentVlan) || !string.IsNullOrEmpty(currentRouterProtocol))
+            else if (!string.IsNullOrEmpty(_currentContext) || !string.IsNullOrEmpty(_currentPort) ||
+                     !string.IsNullOrEmpty(_currentRouterInterface) || !string.IsNullOrEmpty(_currentVlan) || !string.IsNullOrEmpty(_currentRouterProtocol))
             {
                 // Complex configuration contexts: A:TestRouter>config>router>ospf#
                 var contextPath = new StringBuilder();
-                if (!string.IsNullOrEmpty(currentContext))
+                if (!string.IsNullOrEmpty(_currentContext))
                 {
-                    contextPath.Append(">").Append(currentContext.Replace("configure", "config"));
+                    contextPath.Append(">").Append(_currentContext.Replace("configure", "config"));
                 }
-                if (!string.IsNullOrEmpty(currentRouterInterface))
+                if (!string.IsNullOrEmpty(_currentRouterInterface))
                 {
                     contextPath.Append(">router>interface");
                 }
-                if (!string.IsNullOrEmpty(currentRouterProtocol))
+                if (!string.IsNullOrEmpty(_currentRouterProtocol))
                 {
-                    contextPath.Append(">router>").Append(currentRouterProtocol);
+                    contextPath.Append(">router>").Append(_currentRouterProtocol);
                 }
                 return $"A:{Name}{contextPath}#";
             }
@@ -101,12 +100,12 @@ namespace NetForge.Simulation.Core.Devices
         }
 
         // Helper methods for command handlers
-        public string GetCurrentContext() => currentContext;
-        public void SetContext(string context) => currentContext = context;
-        public void SetRouterProtocol(string protocol) => currentRouterProtocol = protocol;
-        public void SetRouterInterface(string iface) => currentRouterInterface = iface;
-        public void SetCurrentPort(string port) => currentPort = port;
-        public void SetCurrentVlan(string vlan) => currentVlan = vlan;
+        public string GetCurrentContext() => _currentContext;
+        public void SetContext(string context) => _currentContext = context;
+        public void SetRouterProtocol(string protocol) => _currentRouterProtocol = protocol;
+        public void SetRouterInterface(string iface) => _currentRouterInterface = iface;
+        public void SetCurrentPort(string port) => _currentPort = port;
+        public void SetCurrentVlan(string vlan) => _currentVlan = vlan;
 
         public string GetMode() => base.CurrentMode.ToModeString();
         public new void SetCurrentMode(string mode) => base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
@@ -157,30 +156,30 @@ namespace NetForge.Simulation.Core.Devices
         // Context navigation methods that handlers can use
         public void NavigateToConfigureContext()
         {
-            currentContext = "configure";
+            _currentContext = "configure";
         }
 
         public void ExitCurrentContext()
         {
-            if (!string.IsNullOrEmpty(currentRouterProtocol))
-                currentRouterProtocol = "";
-            else if (!string.IsNullOrEmpty(currentVlan))
-                currentVlan = "";
-            else if (!string.IsNullOrEmpty(currentRouterInterface))
-                currentRouterInterface = "";
-            else if (!string.IsNullOrEmpty(currentPort))
-                currentPort = "";
-            else if (currentContext == "configure")
-                currentContext = "";
+            if (!string.IsNullOrEmpty(_currentRouterProtocol))
+                _currentRouterProtocol = "";
+            else if (!string.IsNullOrEmpty(_currentVlan))
+                _currentVlan = "";
+            else if (!string.IsNullOrEmpty(_currentRouterInterface))
+                _currentRouterInterface = "";
+            else if (!string.IsNullOrEmpty(_currentPort))
+                _currentPort = "";
+            else if (_currentContext == "configure")
+                _currentContext = "";
         }
 
         public void BackToRoot()
         {
-            currentContext = "";
-            currentPort = "";
-            currentRouterInterface = "";
-            currentVlan = "";
-            currentRouterProtocol = "";
+            _currentContext = "";
+            _currentPort = "";
+            _currentRouterInterface = "";
+            _currentVlan = "";
+            _currentRouterProtocol = "";
         }
 
         // Protocol initialization helpers
@@ -295,7 +294,7 @@ namespace NetForge.Simulation.Core.Devices
                 case "port":
                     if (parts.Length > 1)
                     {
-                        currentPort = parts[1];
+                        _currentPort = parts[1];
                         return "\n";
                     }
                     return "Error: Invalid command\n";
@@ -303,31 +302,31 @@ namespace NetForge.Simulation.Core.Devices
                 case "router":
                     if (parts.Length > 1)
                     {
-                        currentContext = "configure router";
+                        _currentContext = "configure router";
                         if (parts[1].ToLower() == "interface" && parts.Length > 2)
                         {
-                            currentRouterInterface = parts[2].Trim('"');
+                            _currentRouterInterface = parts[2].Trim('"');
                             return "\n";
                         }
                         else if (parts[1].ToLower() == "ospf" || parts[1].ToLower() == "bgp" || parts[1].ToLower() == "rip")
                         {
-                            currentRouterProtocol = parts[1].ToLower();
-                            InitializeRoutingProtocol(currentRouterProtocol);
+                            _currentRouterProtocol = parts[1].ToLower();
+                            InitializeRoutingProtocol(_currentRouterProtocol);
                             return "\n";
                         }
                     }
                     else
                     {
-                        currentContext = "configure router";
+                        _currentContext = "configure router";
                     }
                     return "\n";
 
                 case "vlan":
                     if (parts.Length > 1)
                     {
-                        currentContext = "configure vlan";
-                        currentVlan = parts[1];
-                        if (int.TryParse(currentVlan, out int vlanId))
+                        _currentContext = "configure vlan";
+                        _currentVlan = parts[1];
+                        if (int.TryParse(_currentVlan, out int vlanId))
                         {
                             if (!Vlans.ContainsKey(vlanId))
                             {
@@ -339,18 +338,18 @@ namespace NetForge.Simulation.Core.Devices
                     return "Error: Invalid command\n";
 
                 case "system":
-                    currentContext = "configure system";
+                    _currentContext = "configure system";
                     return "\n";
 
                 default:
                     // Handle commands within contexts
-                    if (!string.IsNullOrEmpty(currentPort))
+                    if (!string.IsNullOrEmpty(_currentPort))
                         return ProcessPortContext(parts);
-                    else if (currentContext == "configure router")
+                    else if (_currentContext == "configure router")
                         return ProcessRouterContext(parts);
-                    else if (currentContext == "configure vlan")
+                    else if (_currentContext == "configure vlan")
                         return ProcessVlanContext(parts);
-                    else if (currentContext == "configure system")
+                    else if (_currentContext == "configure system")
                         return ProcessSystemContext(parts);
 
                     return "Error: Invalid command\n";
@@ -361,19 +360,19 @@ namespace NetForge.Simulation.Core.Devices
         {
             var cmd = parts[0].ToLower();
 
-            if (!Interfaces.ContainsKey(currentPort))
+            if (!Interfaces.ContainsKey(_currentPort))
             {
-                Interfaces[currentPort] = new InterfaceConfig(currentPort, this);
+                Interfaces[_currentPort] = new InterfaceConfig(_currentPort, this);
             }
 
-            var iface = Interfaces[currentPort];
+            var iface = Interfaces[_currentPort];
 
             switch (cmd)
             {
                 case "shutdown":
                     iface.IsShutdown = true;
                     iface.IsUp = false;
-                    RunningConfig.AppendLine($"    port {currentPort}");
+                    RunningConfig.AppendLine($"    port {_currentPort}");
                     RunningConfig.AppendLine("        shutdown");
                     ParentNetwork?.UpdateProtocols();
                     return "\n";
@@ -383,7 +382,7 @@ namespace NetForge.Simulation.Core.Devices
                     {
                         iface.IsShutdown = false;
                         iface.IsUp = true;
-                        RunningConfig.AppendLine($"    port {currentPort}");
+                        RunningConfig.AppendLine($"    port {_currentPort}");
                         RunningConfig.AppendLine("        no shutdown");
                         ParentNetwork?.UpdateProtocols();
                         return "\n";
@@ -394,14 +393,14 @@ namespace NetForge.Simulation.Core.Devices
                     if (parts.Length > 1)
                     {
                         iface.Description = string.Join(" ", parts.Skip(1)).Trim('"');
-                        RunningConfig.AppendLine($"    port {currentPort}");
+                        RunningConfig.AppendLine($"    port {_currentPort}");
                         RunningConfig.AppendLine($"        description \"{iface.Description}\"");
                         return "\n";
                     }
                     return "Error: Invalid command\n";
 
                 case "ethernet":
-                    RunningConfig.AppendLine($"    port {currentPort}");
+                    RunningConfig.AppendLine($"    port {_currentPort}");
                     RunningConfig.AppendLine("        ethernet");
                     return "\n";
 
@@ -414,11 +413,11 @@ namespace NetForge.Simulation.Core.Devices
         {
             var cmd = parts[0].ToLower();
 
-            if (!string.IsNullOrEmpty(currentRouterInterface))
+            if (!string.IsNullOrEmpty(_currentRouterInterface))
             {
                 return ProcessRouterInterfaceContext(parts);
             }
-            else if (!string.IsNullOrEmpty(currentRouterProtocol))
+            else if (!string.IsNullOrEmpty(_currentRouterProtocol))
             {
                 return ProcessRoutingProtocolContext(parts);
             }
@@ -428,7 +427,7 @@ namespace NetForge.Simulation.Core.Devices
                 case "interface":
                     if (parts.Length > 1)
                     {
-                        currentRouterInterface = parts[1].Trim('"');
+                        _currentRouterInterface = parts[1].Trim('"');
                         return "\n";
                     }
                     return "Error: Invalid command\n";
@@ -456,7 +455,7 @@ namespace NetForge.Simulation.Core.Devices
                 case "ospf":
                 case "bgp":
                 case "rip":
-                    currentRouterProtocol = cmd;
+                    _currentRouterProtocol = cmd;
                     InitializeRoutingProtocol(cmd);
                     return "\n";
 
@@ -470,7 +469,7 @@ namespace NetForge.Simulation.Core.Devices
             var cmd = parts[0].ToLower();
 
             // Create a virtual interface for router interfaces
-            var ifaceName = $"router-{currentRouterInterface}";
+            var ifaceName = $"router-{_currentRouterInterface}";
             if (!Interfaces.ContainsKey(ifaceName))
             {
                 Interfaces[ifaceName] = new InterfaceConfig(ifaceName, this);
@@ -488,7 +487,7 @@ namespace NetForge.Simulation.Core.Devices
                         {
                             iface.IpAddress = addressParts[0];
                             iface.SubnetMask = CidrToMask(int.Parse(addressParts[1]));
-                            RunningConfig.AppendLine($"        interface \"{currentRouterInterface}\"");
+                            RunningConfig.AppendLine($"        interface \"{_currentRouterInterface}\"");
                             RunningConfig.AppendLine($"            address {parts[1]}");
                             UpdateConnectedRoutes();
                             ParentNetwork?.UpdateProtocols();
@@ -500,7 +499,7 @@ namespace NetForge.Simulation.Core.Devices
                 case "port":
                     if (parts.Length > 1)
                     {
-                        RunningConfig.AppendLine($"        interface \"{currentRouterInterface}\"");
+                        RunningConfig.AppendLine($"        interface \"{_currentRouterInterface}\"");
                         RunningConfig.AppendLine($"            port {parts[1]}");
                         return "\n";
                     }
@@ -515,7 +514,7 @@ namespace NetForge.Simulation.Core.Devices
         {
             var cmd = parts[0].ToLower();
 
-            switch (currentRouterProtocol)
+            switch (_currentRouterProtocol)
             {
                 case "ospf":
                     return ProcessOspfContext(parts);
@@ -630,7 +629,7 @@ namespace NetForge.Simulation.Core.Devices
         {
             var cmd = parts[0].ToLower();
 
-            if (int.TryParse(currentVlan, out int vlanId) && Vlans.ContainsKey(vlanId))
+            if (int.TryParse(_currentVlan, out int vlanId) && Vlans.ContainsKey(vlanId))
             {
                 var vlan = Vlans[vlanId];
 

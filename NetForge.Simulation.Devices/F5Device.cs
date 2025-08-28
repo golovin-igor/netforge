@@ -1,14 +1,13 @@
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.F5;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// F5 BIG-IP device implementation using vendor registry system
     /// </summary>
-    public class F5Device : NetworkDevice
+    public sealed class F5Device : NetworkDevice
     {
         public F5Device(string name) : base(name)
         {
@@ -39,7 +38,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register F5 handlers to ensure they are available
-            var registry = new Simulation.CliHandlers.F5.F5HandlerRegistry();
+            var registry = new F5HandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 

@@ -1,15 +1,14 @@
 using System.Text;
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.Dell;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Dell EMC OS10 device implementation
     /// </summary>
-    public class DellDevice : NetworkDevice
+    public sealed class DellDevice : NetworkDevice
     {
         // Device state is now managed by command handlers
 
@@ -42,7 +41,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Dell handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Dell.DellHandlerRegistry();
+            var registry = new DellHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 

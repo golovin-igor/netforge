@@ -25,7 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Arista\NetForge.Simulation.CliHandlers.Arista.csproj" />
-    <ProjectReference Include="..\..\NetForge.Simulation.Core\NetForge.Simulation.Core.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.Devices\NetForge.Simulation.Devices.csproj" />
   </ItemGroup>
 
 

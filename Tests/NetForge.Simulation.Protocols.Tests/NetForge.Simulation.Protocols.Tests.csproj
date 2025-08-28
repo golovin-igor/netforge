@@ -28,7 +28,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\NetForge.Simulation.Common\NetForge.Simulation.Common.csproj" />
-        <ProjectReference Include="..\..\NetForge.Simulation.Core\NetForge.Simulation.Core.csproj" />
+        <ProjectReference Include="..\..\NetForge.Simulation.Devices\NetForge.Simulation.Devices.csproj" />
         <ProjectReference Include="..\..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.ARP\NetForge.Simulation.Protocols.ARP.csproj" />
         <ProjectReference Include="..\..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.BGP\NetForge.Simulation.Protocols.BGP.csproj" />
         <ProjectReference Include="..\..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.CDP\NetForge.Simulation.Protocols.CDP.csproj" />

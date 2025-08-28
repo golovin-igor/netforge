@@ -1,4 +1,3 @@
-using System;
 using NetForge.Simulation.Common.Configuration;
 using Xunit;
 

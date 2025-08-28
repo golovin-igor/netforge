@@ -2,6 +2,7 @@ using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.CliHandlers.Common;
 using NetForge.Simulation.CliHandlers.Common.Common;
 using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.Common.CLI.CommonHandlers;
 using NetForge.Simulation.Common.CLI.Interfaces;
 using NetForge.Simulation.Common.Interfaces;
 
@@ -20,6 +21,7 @@ namespace NetForge.Simulation.CliHandlers.Common
             // Register common history recall handlers - these work for ALL vendors
             manager.RegisterHandler(new HistoryRecallCommandHandler());
             manager.RegisterHandler(new HistoryNumberRecallCommandHandler());
+            manager.RegisterHandler(new CommonPingCommandHandler());
         }
 
         public override IVendorContext CreateVendorContext(INetworkDevice device)

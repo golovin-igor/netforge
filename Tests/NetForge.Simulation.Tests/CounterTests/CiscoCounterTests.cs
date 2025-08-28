@@ -1,8 +1,6 @@
-using NetForge.Simulation.Common;
-using NetForge.Simulation.Core.Devices;
 using Xunit;
-using System;
 using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Devices;
 
 namespace NetForge.Simulation.Tests.CounterTests
 {

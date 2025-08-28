@@ -1,29 +1,26 @@
 using System.Text;
 using NetForge.Simulation.CliHandlers.Cisco;
-using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Common.Security;
-using NetForge.Simulation.Core;
 using NetForge.Simulation.Protocols.Common.Services;
-using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Cisco IOS device implementation
     /// </summary>
-    public class CiscoDevice : NetworkDevice
+    public sealed class CiscoDevice : NetworkDevice
     {
         // Removed mode shadowing - using base class strongly typed currentMode
-        private string currentRouterProtocol = "";
-        private int currentVlanId = 0;
-        private int currentAclNumber = 0;
-        private bool cdpEnabled = true;
-        private int cdpTimer = 60;
-        private int cdpHoldtime = 180;
+        private string _currentRouterProtocol = "";
+        private int _currentVlanId = 0;
+        private int _currentAclNumber = 0;
+        private bool _cdpEnabled = true;
+        private int _cdpTimer = 60;
+        private int _cdpHoldtime = 180;
 
         public CiscoDevice(string name) : base(name)
         {
@@ -53,7 +50,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Cisco handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Cisco.CiscoHandlerRegistry();
+            var registry = new CiscoHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
             registry.RegisterHandlers(CommandManager);
         }
@@ -155,13 +152,13 @@ namespace NetForge.Simulation.Core.Devices
             return await base.ProcessCommandAsync(command);
         }
 
-        protected string CidrToMask(int cidr)
+        private string CidrToMask(int cidr)
         {
             uint mask = 0xFFFFFFFF << (32 - cidr);
             return $"{(mask >> 24) & 0xFF}.{(mask >> 16) & 0xFF}.{(mask >> 8) & 0xFF}.{mask & 0xFF}";
         }
 
-        protected string WildcardToMask(string wildcard)
+        private string WildcardToMask(string wildcard)
         {
             if (string.IsNullOrEmpty(wildcard)) return "255.255.255.255";
             var parts = wildcard.Split('.').Select(int.Parse).ToArray();
@@ -173,7 +170,7 @@ namespace NetForge.Simulation.Core.Devices
             return string.Join(".", maskParts);
         }
 
-        protected int MaskToCidr(string mask)
+        private int MaskToCidr(string mask)
         {
             if (string.IsNullOrEmpty(mask)) return 0;
             var parts = mask.Split('.').Select(int.Parse).ToArray();
@@ -231,7 +228,7 @@ namespace NetForge.Simulation.Core.Devices
         }
         public List<VlanConfig> GetVlans() => Vlans.Values.ToList();
         public new List<Route> GetRoutingTable() => RoutingTable;
-        public int GetCurrentVlanId() => currentVlanId;
+        public int GetCurrentVlanId() => _currentVlanId;
 
         // Add interface management method
         public void AddInterface(string name)
@@ -254,15 +251,15 @@ namespace NetForge.Simulation.Core.Devices
             {
                 Vlans[vlanId] = new VlanConfig(vlanId);
             }
-            currentVlanId = vlanId; // Set the current VLAN ID for name commands
+            _currentVlanId = vlanId; // Set the current VLAN ID for name commands
             RunningConfig.AppendLine($"vlan {vlanId}");
         }
 
         public void SetCurrentVlanName(string name)
         {
-            if (currentVlanId > 0 && Vlans.ContainsKey(currentVlanId))
+            if (_currentVlanId > 0 && Vlans.ContainsKey(_currentVlanId))
             {
-                Vlans[currentVlanId].Name = name;
+                Vlans[_currentVlanId].Name = name;
                 RunningConfig.AppendLine($" name {name}");
             }
         }
@@ -305,7 +302,7 @@ namespace NetForge.Simulation.Core.Devices
 
         public void SetCurrentRouterProtocol(string protocol)
         {
-            currentRouterProtocol = protocol;
+            _currentRouterProtocol = protocol;
         }
 
         public void AppendToRunningConfig(string line)
@@ -326,24 +323,9 @@ namespace NetForge.Simulation.Core.Devices
             }
         }
 
-        public void CreateOrUpdatePortChannel(int channelId, string interfaceName, string mode)
-        {
-            if (!PortChannels.ContainsKey(channelId))
-            {
-                PortChannels[channelId] = new PortChannelConfig(channelId);
-            }
-            PortChannels[channelId].MemberInterfaces.Add(interfaceName);
-            PortChannels[channelId].Mode = mode;
-        }
-
-        public override void AddStaticRoute(string network, string mask, string nextHop, int metric)
-        {
-            base.AddStaticRoute(network, mask, nextHop, metric);
-            // Additional Cisco-specific route logic here
-        }
 
         // Router protocol helper methods
-        public string GetCurrentRouterProtocol() => currentRouterProtocol;
+        public string GetCurrentRouterProtocol() => _currentRouterProtocol;
 
         public void AddOspfNetwork(string network, string wildcard, int area)
         {
@@ -522,14 +504,14 @@ namespace NetForge.Simulation.Core.Devices
         // ACL helper methods
         public void SetCurrentAclNumber(int aclNumber)
         {
-            currentAclNumber = aclNumber;
+            _currentAclNumber = aclNumber;
             if (!AccessLists.ContainsKey(aclNumber))
             {
                 AccessLists[aclNumber] = new AccessList(aclNumber);
             }
         }
 
-        public int GetCurrentAclNumber() => currentAclNumber;
+        public int GetCurrentAclNumber() => _currentAclNumber;
 
         public void AddAclEntry(int aclNumber, AclEntry entry)
         {
@@ -632,13 +614,13 @@ namespace NetForge.Simulation.Core.Devices
         // CDP helper methods
         public void EnableCdpGlobal()
         {
-            cdpEnabled = true;
+            _cdpEnabled = true;
             RunningConfig.AppendLine("cdp run");
         }
 
         public void DisableCdpGlobal()
         {
-            cdpEnabled = false;
+            _cdpEnabled = false;
             RunningConfig.AppendLine("no cdp run");
         }
 
@@ -660,13 +642,13 @@ namespace NetForge.Simulation.Core.Devices
 
         public void SetCdpTimer(int seconds)
         {
-            cdpTimer = seconds;
+            _cdpTimer = seconds;
             RunningConfig.AppendLine($"cdp timer {seconds}");
         }
 
         public void SetCdpHoldtime(int seconds)
         {
-            cdpHoldtime = seconds;
+            _cdpHoldtime = seconds;
             RunningConfig.AppendLine($"cdp holdtime {seconds}");
         }
 
@@ -674,8 +656,8 @@ namespace NetForge.Simulation.Core.Devices
         {
             var output = new StringBuilder();
             output.AppendLine($"Global CDP information:");
-            output.AppendLine($"        Sending CDP packets every {cdpTimer} seconds");
-            output.AppendLine($"        Sending a holdtime value of {cdpHoldtime} seconds");
+            output.AppendLine($"        Sending CDP packets every {_cdpTimer} seconds");
+            output.AppendLine($"        Sending a holdtime value of {_cdpHoldtime} seconds");
             output.AppendLine($"        Sending CDPv2 advertisements is enabled");
             return output.ToString();
         }
@@ -710,8 +692,8 @@ namespace NetForge.Simulation.Core.Devices
             {
                 output.AppendLine($"{iface.Name} is {iface.GetStatus()}, line protocol is {(iface.IsUp ? "up" : "down")}");
                 output.AppendLine($"  Encapsulation ARPA");
-                output.AppendLine($"  Sending CDP packets every {cdpTimer} seconds");
-                output.AppendLine($"  Holdtime is {cdpHoldtime} seconds");
+                output.AppendLine($"  Sending CDP packets every {_cdpTimer} seconds");
+                output.AppendLine($"  Holdtime is {_cdpHoldtime} seconds");
                 output.AppendLine();
             }
             return output.ToString();

@@ -1,8 +1,6 @@
-using System;
-using System.Linq;
 using Xunit;
 using NetForge.Simulation.CliHandlers.Dell;
-using NetForge.Simulation.Core.Devices;
+using NetForge.Simulation.Devices;
 
 namespace NetForge.Simulation.Tests.AliasTests
 {

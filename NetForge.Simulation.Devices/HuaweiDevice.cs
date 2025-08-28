@@ -1,18 +1,17 @@
-using NetForge.Simulation.Common;
+using NetForge.Simulation.CliHandlers.Huawei;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
-using NetForge.Simulation.Core;
 
-namespace NetForge.Simulation.Core.Devices
+namespace NetForge.Simulation.Devices
 {
     /// <summary>
     /// Huawei VRP device implementation
     /// </summary>
-    public class HuaweiDevice : NetworkDevice
+    public sealed class HuaweiDevice : NetworkDevice
     {
-        private int currentVlanId = 0;
-        private int currentAclNumber = 0;
+        private int _currentVlanId = 0;
+        private int _currentAclNumber = 0;
 
         public HuaweiDevice(string name) : base(name)
         {
@@ -39,7 +38,7 @@ namespace NetForge.Simulation.Core.Devices
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Huawei handlers to ensure they are available for tests
-            var registry = new Simulation.CliHandlers.Huawei.HuaweiHandlerRegistry();
+            var registry = new HuaweiHandlerRegistry();
             registry.RegisterHandlers(CommandManager);
         }
 
@@ -51,11 +50,11 @@ namespace NetForge.Simulation.Core.Devices
                 DeviceMode.Privileged => $"<{Hostname}>",
                 DeviceMode.Config => $"[{Hostname}]",
                 DeviceMode.Interface => $"[{Hostname}-{base.CurrentInterface}]",
-                DeviceMode.Vlan => $"[{Hostname}-vlan{currentVlanId}]",
+                DeviceMode.Vlan => $"[{Hostname}-vlan{_currentVlanId}]",
                 DeviceMode.RouterOspf => $"[{Hostname}-ospf-{OspfConfig?.ProcessId ?? 1}]",
                 DeviceMode.RouterBgp => $"[{Hostname}-bgp]",
                 DeviceMode.RouterRip => $"[{Hostname}-rip]",
-                DeviceMode.Acl => $"[{Hostname}-acl-basic-{currentAclNumber}]",
+                DeviceMode.Acl => $"[{Hostname}-acl-basic-{_currentAclNumber}]",
                 _ => $"<{Hostname}>"
             };
         }
@@ -82,11 +81,11 @@ namespace NetForge.Simulation.Core.Devices
         }
 
         // Helper methods for command handlers (similar to AristaDevice)
-        public int GetCurrentVlanId() => currentVlanId;
-        public void SetCurrentVlanId(int vlanId) => currentVlanId = vlanId;
+        public int GetCurrentVlanId() => _currentVlanId;
+        public void SetCurrentVlanId(int vlanId) => _currentVlanId = vlanId;
 
-        public int GetCurrentAclNumber() => currentAclNumber;
-        public void SetCurrentAclNumber(int aclNumber) => currentAclNumber = aclNumber;
+        public int GetCurrentAclNumber() => _currentAclNumber;
+        public void SetCurrentAclNumber(int aclNumber) => _currentAclNumber = aclNumber;
 
         public void AppendToRunningConfig(string line)
         {
