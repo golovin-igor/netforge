@@ -2,6 +2,7 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 
@@ -12,7 +13,7 @@ public class SnmpProtocol : BaseProtocol
     private SnmpAgent? _snmpAgent;
     private readonly SnmpState _snmpState = new();
 
-    public override ProtocolType Type => ProtocolType.SNMP;
+    public override NetworkProtocolType Type => NetworkProtocolType.SNMP;
     public override string Name => "Simple Network Management Protocol";
 
     protected override BaseProtocolState CreateInitialState()
@@ -29,7 +30,7 @@ public class SnmpProtocol : BaseProtocol
         }
     }
 
-    protected override async Task RunProtocolCalculation(NetworkDevice device)
+    protected override async Task RunProtocolCalculation(INetworkDevice device)
     {
         var snmpConfig = GetSnmpConfig();
 
@@ -137,7 +138,7 @@ public class SnmpProtocol : BaseProtocol
         await Task.CompletedTask;
     }
 
-    private async Task UpdateMibDatabase(NetworkDevice device, SnmpConfig config)
+    private async Task UpdateMibDatabase(INetworkDevice device, SnmpConfig config)
     {
         // Update system uptime
         if (_snmpState.MibDatabase.TryGetValue("1.3.6.1.2.1.1.3.0", out var uptimeVar))
@@ -163,7 +164,7 @@ public class SnmpProtocol : BaseProtocol
         _snmpState.MarkStateChanged();
     }
 
-    private async Task UpdateInterfaceStatistics(NetworkDevice device)
+    private async Task UpdateInterfaceStatistics(INetworkDevice device)
     {
         var interfaces = device.GetAllInterfaces();
         var ifIndex = 1;
@@ -210,7 +211,7 @@ public class SnmpProtocol : BaseProtocol
         await Task.CompletedTask;
     }
 
-    private async Task UpdateIpRouteTable(NetworkDevice device)
+    private async Task UpdateIpRouteTable(INetworkDevice device)
     {
         var routes = device.GetRoutingTable();
         var routeIndex = 1;
@@ -259,7 +260,7 @@ public class SnmpProtocol : BaseProtocol
         }
     }
 
-    protected override void OnSubscribeToEvents(NetworkEventBus eventBus, NetworkDevice self)
+    protected override void OnSubscribeToEvents(INetworkEventBus eventBus, INetworkDevice self)
     {
         // TODO: Add event subscriptions for interface status changes and route updates
         // This will require proper event type definitions in the Events namespace

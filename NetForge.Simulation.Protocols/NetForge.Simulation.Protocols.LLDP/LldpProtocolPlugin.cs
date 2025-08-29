@@ -1,6 +1,7 @@
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.LLDP
 {
@@ -12,7 +13,7 @@ namespace NetForge.Simulation.Protocols.LLDP
     {
         public override string PluginName => "LLDP Protocol Plugin";
         public override string Version => "1.0.0";
-        public override ProtocolType ProtocolType => ProtocolType.LLDP;
+        public override NetworkProtocolType ProtocolType => NetworkProtocolType.LLDP;
         public override int Priority => 150; // Higher priority than CDP for standards-based protocol
 
         public override IDeviceProtocol CreateProtocol()
@@ -33,7 +34,7 @@ namespace NetForge.Simulation.Protocols.LLDP
                 // Test that we can create a protocol instance
                 var protocol = CreateProtocol();
                 return protocol != null &&
-                       protocol.Type == ProtocolType.LLDP &&
+                       protocol.Type == NetworkProtocolType.LLDP &&
                        !string.IsNullOrEmpty(protocol.Name);
             }
             catch

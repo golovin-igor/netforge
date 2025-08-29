@@ -2,6 +2,7 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 
@@ -13,7 +14,7 @@ namespace NetForge.Simulation.Protocols.LLDP
     /// </summary>
     public class LldpProtocol : BaseProtocol
     {
-        public override ProtocolType Type => ProtocolType.LLDP;
+        public override NetworkProtocolType Type => NetworkProtocolType.LLDP;
         public override string Name => "Link Layer Discovery Protocol";
         public override string Version => "1.0.0";
 
@@ -40,7 +41,7 @@ namespace NetForge.Simulation.Protocols.LLDP
             }
         }
 
-        protected override async Task UpdateNeighbors(NetworkDevice device)
+        protected override async Task UpdateNeighbors(INetworkDevice device)
         {
             var lldpState = (LldpState)_state;
             var lldpConfig = GetLldpConfig();
@@ -55,7 +56,7 @@ namespace NetForge.Simulation.Protocols.LLDP
             await DiscoverLldpNeighbors(device, lldpConfig, lldpState);
         }
 
-        protected override async Task ProcessTimers(NetworkDevice device)
+        protected override async Task ProcessTimers(INetworkDevice device)
         {
             var lldpState = (LldpState)_state;
             var lldpConfig = GetLldpConfig();
@@ -70,7 +71,7 @@ namespace NetForge.Simulation.Protocols.LLDP
             }
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var lldpState = (LldpState)_state;
 
@@ -96,7 +97,7 @@ namespace NetForge.Simulation.Protocols.LLDP
             await Task.CompletedTask;
         }
 
-        private async Task DiscoverLldpNeighbors(NetworkDevice device, LldpConfig config, LldpState state)
+        private async Task DiscoverLldpNeighbors(INetworkDevice device, LldpConfig config, LldpState state)
         {
             // LLDP discovery based on physical connections
             foreach (var interfaceName in device.GetAllInterfaces().Keys)
@@ -130,8 +131,8 @@ namespace NetForge.Simulation.Protocols.LLDP
             await Task.CompletedTask;
         }
 
-        private async Task ProcessLldpNeighbor(NetworkDevice device, LldpState state, LldpConfig config,
-            string localInterface, NetworkDevice neighborDevice, string neighborInterface)
+        private async Task ProcessLldpNeighbor(INetworkDevice device, LldpState state, LldpConfig config,
+            string localInterface, INetworkDevice neighborDevice, string neighborInterface)
         {
             var neighborConfig = GetNeighborLldpConfig(neighborDevice);
             if (neighborConfig == null) return;
@@ -167,7 +168,7 @@ namespace NetForge.Simulation.Protocols.LLDP
             await Task.CompletedTask;
         }
 
-        private async Task SendLldpAdvertisements(NetworkDevice device, LldpConfig config, LldpState state)
+        private async Task SendLldpAdvertisements(INetworkDevice device, LldpConfig config, LldpState state)
         {
             var sentCount = 0;
 
@@ -215,7 +216,7 @@ namespace NetForge.Simulation.Protocols.LLDP
             return _device?.GetLldpConfiguration() as LldpConfig;
         }
 
-        private LldpConfig? GetNeighborLldpConfig(NetworkDevice neighbor)
+        private LldpConfig? GetNeighborLldpConfig(INetworkDevice neighbor)
         {
             return neighbor?.GetLldpConfiguration() as LldpConfig;
         }
@@ -340,7 +341,7 @@ namespace NetForge.Simulation.Protocols.LLDP
         /// <summary>
         /// Helper method to get device management IP address
         /// </summary>
-        private string GetDeviceManagementIp(NetworkDevice? device = null)
+        private string GetDeviceManagementIp(INetworkDevice? device = null)
         {
             var targetDevice = device ?? _device;
             if (targetDevice == null) return "";

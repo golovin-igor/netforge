@@ -3,8 +3,10 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
+using NetForge.Simulation.Protocols.Common.Events;
 
 // TODO: Replace with local Route class in next migration phase
 
@@ -12,7 +14,7 @@ namespace NetForge.Simulation.Protocols.ISIS;
 
 public class IsisProtocol : BaseProtocol
 {
-    public override ProtocolType Type => ProtocolType.ISIS;
+    public override NetworkProtocolType Type => NetworkProtocolType.ISIS;
     public override string Name => "Intermediate System to Intermediate System";
 
     private DateTime _lastHelloSent = DateTime.MinValue;
@@ -46,7 +48,7 @@ public class IsisProtocol : BaseProtocol
         }
     }
 
-    protected override async Task UpdateNeighbors(NetworkDevice device)
+    protected override async Task UpdateNeighbors(INetworkDevice device)
     {
         var isisState = (IsisState)_state;
         var isisConfig = GetIsisConfig();
@@ -82,7 +84,7 @@ public class IsisProtocol : BaseProtocol
         await CleanupExpiredLsps(device, isisState);
     }
 
-    protected override async Task RunProtocolCalculation(NetworkDevice device)
+    protected override async Task RunProtocolCalculation(INetworkDevice device)
     {
         var isisState = (IsisState)_state;
 
@@ -104,7 +106,7 @@ public class IsisProtocol : BaseProtocol
         LogProtocolEvent("IS-IS: SPF calculation completed");
     }
 
-    private async Task SendHelloPdus(NetworkDevice device, IsisConfig config, IsisState state)
+    private async Task SendHelloPdus(INetworkDevice device, IsisConfig config, IsisState state)
     {
         foreach (var interfaceName in config.Interfaces.Keys.Where(i => config.Interfaces[i]))
         {
@@ -117,7 +119,7 @@ public class IsisProtocol : BaseProtocol
         }
     }
 
-    private async Task DiscoverIsisNeighbors(NetworkDevice device, IsisConfig config, IsisState state)
+    private async Task DiscoverIsisNeighbors(INetworkDevice device, IsisConfig config, IsisState state)
     {
         foreach (var interfaceName in config.Interfaces.Keys.Where(i => config.Interfaces[i]))
         {
@@ -179,7 +181,7 @@ public class IsisProtocol : BaseProtocol
         }
     }
 
-    private async Task RefreshLsps(NetworkDevice device, IsisConfig config, IsisState state)
+    private async Task RefreshLsps(INetworkDevice device, IsisConfig config, IsisState state)
     {
         // Generate LSP for this system
         var myLsp = GenerateSystemLsp(device, config, state);
@@ -188,7 +190,7 @@ public class IsisProtocol : BaseProtocol
         LogProtocolEvent($"IS-IS: Refreshed LSP {myLsp.LspId} (seq: {myLsp.SequenceNumber})");
     }
 
-    private IsisLsp GenerateSystemLsp(NetworkDevice device, IsisConfig config, IsisState state)
+    private IsisLsp GenerateSystemLsp(INetworkDevice device, IsisConfig config, IsisState state)
     {
         var lsp = new IsisLsp
         {
@@ -255,7 +257,7 @@ public class IsisProtocol : BaseProtocol
         return lsp;
     }
 
-    private async Task CleanupExpiredLsps(NetworkDevice device, IsisState state)
+    private async Task CleanupExpiredLsps(INetworkDevice device, IsisState state)
     {
         var expiredLsps = state.GetExpiredLsps();
         foreach (var lspId in expiredLsps)
@@ -270,7 +272,7 @@ public class IsisProtocol : BaseProtocol
         }
     }
 
-    private async Task RunSpfCalculation(NetworkDevice device, IsisState state)
+    private async Task RunSpfCalculation(INetworkDevice device, IsisState state)
     {
         var routes = new Dictionary<string, IsisRoute>();
 
@@ -304,7 +306,7 @@ public class IsisProtocol : BaseProtocol
         LogProtocolEvent($"IS-IS: SPF calculated {state.CalculatedRoutes.Count} routes");
     }
 
-    private async Task RunDijkstraSpf(NetworkDevice device, IsisState state, Dictionary<string, IsisRoute> routes)
+    private async Task RunDijkstraSpf(INetworkDevice device, IsisState state, Dictionary<string, IsisRoute> routes)
     {
         var visited = new HashSet<string>();
         var distances = new Dictionary<string, int>();
@@ -391,7 +393,7 @@ public class IsisProtocol : BaseProtocol
         return ""; // No path found
     }
 
-    private string FindOutgoingInterface(NetworkDevice device, string nextHop)
+    private string FindOutgoingInterface(INetworkDevice device, string nextHop)
     {
         // Find the interface to reach the next hop
         if (string.IsNullOrEmpty(nextHop))
@@ -414,7 +416,7 @@ public class IsisProtocol : BaseProtocol
         return "";
     }
 
-    private async Task InstallRoutes(NetworkDevice device, IsisState state)
+    private async Task InstallRoutes(INetworkDevice device, IsisState state)
     {
         foreach (var route in state.CalculatedRoutes.Where(r => r.NextHop != "0.0.0.0"))
         {
@@ -429,7 +431,7 @@ public class IsisProtocol : BaseProtocol
         }
     }
 
-    protected override bool IsNeighborReachable(NetworkDevice device, string interfaceName, NetworkDevice neighbor)
+    protected override bool IsNeighborReachable(INetworkDevice device, string interfaceName, INetworkDevice neighbor)
     {
         var connection = device.GetPhysicalConnectionMetrics(interfaceName);
         return connection?.IsSuitableForRouting ?? false;
@@ -484,7 +486,7 @@ public class IsisProtocol : BaseProtocol
         }
     }
 
-    private IsisProtocol GetNeighborIsisProtocol(NetworkDevice neighborDevice)
+    private IsisProtocol GetNeighborIsisProtocol(INetworkDevice neighborDevice)
     {
         // In the new architecture, protocols are discovered through the device's protocol list
         // For now, return null - neighbor discovery will be handled differently
@@ -520,7 +522,7 @@ public class IsisProtocol : BaseProtocol
         }
     }
 
-    protected override void OnSubscribeToEvents(NetworkEventBus eventBus, NetworkDevice self)
+    protected override void OnSubscribeToEvents(INetworkEventBus eventBus, INetworkDevice self)
     {
         // Subscribe to interface up/down events
         eventBus.Subscribe<InterfaceStateChangedEventArgs>(args =>

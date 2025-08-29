@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.STP
 {
@@ -13,7 +14,7 @@ namespace NetForge.Simulation.Protocols.STP
     public class StpProtocolPlugin : ProtocolPluginBase
     {
         public override string PluginName => "STP Protocol Plugin";
-        public override ProtocolType ProtocolType => ProtocolType.STP;
+        public override NetworkProtocolType ProtocolType => NetworkProtocolType.STP;
         public override int Priority => 200; // High priority for infrastructure protocol
 
         public override IDeviceProtocol CreateProtocol()

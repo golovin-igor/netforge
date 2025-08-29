@@ -1,7 +1,8 @@
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.SSH
 {
@@ -12,7 +13,7 @@ namespace NetForge.Simulation.Protocols.SSH
     {
         public override string PluginName => "SSH Protocol Plugin";
         public override string Version => "2.0.0";
-        public override ProtocolType ProtocolType => ProtocolType.SSH;
+        public override NetworkProtocolType ProtocolType => NetworkProtocolType.SSH;
         public override int Priority => 900; // High priority for management protocol
 
         public override IDeviceProtocol CreateProtocol()

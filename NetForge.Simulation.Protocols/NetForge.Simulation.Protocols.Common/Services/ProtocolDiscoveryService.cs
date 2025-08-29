@@ -46,7 +46,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
 
             // Always include Telnet for management (when available)
             var telnetPlugin = DiscoverProtocolPlugins()
-                .FirstOrDefault(p => p.NetworkProtocolType == NetworkProtocolType.TELNET);
+                .FirstOrDefault(p => p.ProtocolType == NetworkProtocolType.TELNET);
             if (telnetPlugin != null)
             {
                 try
@@ -62,7 +62,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
             // Add vendor-specific protocols (excluding Telnet which is already added)
             foreach (var plugin in DiscoverProtocolPlugins())
             {
-                if (plugin.NetworkProtocolType != NetworkProtocolType.TELNET && plugin.SupportsVendor(vendorName))
+                if (plugin.ProtocolType != NetworkProtocolType.TELNET && plugin.SupportsVendor(vendorName))
                 {
                     try
                     {
@@ -88,7 +88,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         public IDeviceProtocol GetProtocol(NetworkProtocolType networkProtocolType, string vendorName = "Generic")
         {
             var plugin = DiscoverProtocolPlugins()
-                .Where(p => p.NetworkProtocolType == networkProtocolType && p.SupportsVendor(vendorName))
+                .Where(p => p.ProtocolType == networkProtocolType && p.SupportsVendor(vendorName))
                 .OrderByDescending(p => p.Priority)
                 .FirstOrDefault();
 
@@ -103,7 +103,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         public IEnumerable<IProtocolPlugin> GetPluginsForProtocol(NetworkProtocolType networkProtocolType)
         {
             return DiscoverProtocolPlugins()
-                .Where(p => p.NetworkProtocolType == networkProtocolType)
+                .Where(p => p.ProtocolType == networkProtocolType)
                 .OrderByDescending(p => p.Priority);
         }
 
@@ -126,7 +126,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <returns>True if available, false otherwise</returns>
         public bool IsProtocolAvailable(NetworkProtocolType networkProtocolType)
         {
-            return DiscoverProtocolPlugins().Any(p => p.NetworkProtocolType == networkProtocolType);
+            return DiscoverProtocolPlugins().Any(p => p.ProtocolType == networkProtocolType);
         }
 
         /// <summary>
@@ -152,9 +152,9 @@ namespace NetForge.Simulation.Protocols.Common.Services
             return new Dictionary<string, object>
             {
                 ["TotalPlugins"] = plugins.Count,
-                ["ProtocolTypes"] = plugins.Select(p => p.NetworkProtocolType).Distinct().Count(),
+                ["ProtocolTypes"] = plugins.Select(p => p.ProtocolType).Distinct().Count(),
                 ["SupportedVendors"] = GetSupportedVendors().Count(),
-                ["PluginsByType"] = plugins.GroupBy(p => p.NetworkProtocolType)
+                ["PluginsByType"] = plugins.GroupBy(p => p.ProtocolType)
                     .ToDictionary(g => g.Key.ToString(), g => g.Count()),
                 ["PluginsByVendor"] = plugins.SelectMany(p => p.GetSupportedVendors())
                     .GroupBy(v => v)

@@ -1,17 +1,19 @@
+using System.Net.Sockets;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.RIP;
 
 public class RipProtocol : BaseProtocol, IDeviceProtocol
 {
-    public override ProtocolType Type => ProtocolType.RIP;
+    public override NetworkProtocolType Type => NetworkProtocolType.RIP;
     public override string Name => "Routing Information Protocol";
 
     private DateTime _lastUpdate = DateTime.MinValue;
@@ -42,7 +44,7 @@ public class RipProtocol : BaseProtocol, IDeviceProtocol
         }
     }
 
-    protected override async Task UpdateNeighbors(NetworkDevice device)
+    protected override async Task UpdateNeighbors(INetworkDevice device)
     {
         var ripState = (RipState)_state;
         var ripConfig = GetRipConfig();
@@ -64,7 +66,7 @@ public class RipProtocol : BaseProtocol, IDeviceProtocol
         }
     }
 
-    protected override async Task RunProtocolCalculation(NetworkDevice device)
+    protected override async Task RunProtocolCalculation(INetworkDevice device)
     {
         var ripState = (RipState)_state;
         var ripConfig = GetRipConfig();
@@ -83,7 +85,7 @@ public class RipProtocol : BaseProtocol, IDeviceProtocol
         LogProtocolEvent($"RIP calculation completed - {ripState.Routes.Count} routes in table");
     }
 
-    protected override async Task ProcessTimers(NetworkDevice device)
+    protected override async Task ProcessTimers(INetworkDevice device)
     {
         var ripState = (RipState)_state;
 
@@ -128,7 +130,7 @@ public class RipProtocol : BaseProtocol, IDeviceProtocol
         return (DateTime.Now - _lastPeriodicUpdate).TotalSeconds >= UPDATE_INTERVAL;
     }
 
-    private async Task ProcessReceivedUpdates(NetworkDevice device, RipState ripState)
+    private async Task ProcessReceivedUpdates(INetworkDevice device, RipState ripState)
     {
         // In a real implementation, this would process received RIP packets
         // For simulation purposes, we discover routes from connected neighbors
@@ -158,7 +160,7 @@ public class RipProtocol : BaseProtocol, IDeviceProtocol
         }
     }
 
-    private async Task ProcessNeighborRoutes(NetworkDevice device, NetworkDevice neighbor, string localInterface, RipState ripState)
+    private async Task ProcessNeighborRoutes(INetworkDevice device, INetworkDevice neighbor, string localInterface, RipState ripState)
     {
         // Get neighbor's routing table and process as RIP advertisements
         var neighborRoutes = neighbor.GetRoutingTable();
@@ -224,7 +226,7 @@ public class RipProtocol : BaseProtocol, IDeviceProtocol
         await Task.CompletedTask;
     }
 
-    private string? GetNextHopForNeighbor(NetworkDevice device, NetworkDevice neighbor, string localInterface)
+    private string? GetNextHopForNeighbor(INetworkDevice device, INetworkDevice neighbor, string localInterface)
     {
         var localInterfaceConfig = device.GetInterface(localInterface);
         var connection = device.GetConnectedDevice(localInterface);
@@ -238,7 +240,7 @@ public class RipProtocol : BaseProtocol, IDeviceProtocol
         return null;
     }
 
-    private async Task SendPeriodicUpdates(NetworkDevice device, RipConfig ripConfig, RipState ripState)
+    private async Task SendPeriodicUpdates(INetworkDevice device, RipConfig ripConfig, RipState ripState)
     {
         LogProtocolEvent($"Sending periodic RIP updates on {ripConfig.Networks.Count} networks");
 
@@ -262,7 +264,7 @@ public class RipProtocol : BaseProtocol, IDeviceProtocol
         await Task.CompletedTask;
     }
 
-    private async Task AgeRoutes(NetworkDevice device, RipState ripState)
+    private async Task AgeRoutes(INetworkDevice device, RipState ripState)
     {
         var now = DateTime.Now;
         var routesToRemove = new List<string>();
@@ -299,7 +301,7 @@ public class RipProtocol : BaseProtocol, IDeviceProtocol
         await Task.CompletedTask;
     }
 
-    private async Task InstallRipRoutes(NetworkDevice device, RipState ripState)
+    private async Task InstallRipRoutes(INetworkDevice device, RipState ripState)
     {
         foreach (var route in ripState.Routes.Values)
         {
@@ -352,7 +354,7 @@ public class RipProtocol : BaseProtocol, IDeviceProtocol
         return new[] { "Cisco", "Juniper", "Generic" };
     }
 
-    protected override void OnSubscribeToEvents(NetworkEventBus eventBus, NetworkDevice self)
+    protected override void OnSubscribeToEvents(INetworkEventBus eventBus, INetworkDevice self)
     {
         // Subscribe to interface state change events for triggered updates
         // In a complete implementation, would trigger immediate updates when interfaces change

@@ -1,6 +1,7 @@
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.OSPF
 {
@@ -11,7 +12,7 @@ namespace NetForge.Simulation.Protocols.OSPF
     {
         public override string PluginName => "OSPF Protocol Plugin";
         public override string Version => "2.0.0";
-        public override ProtocolType ProtocolType => ProtocolType.OSPF;
+        public override NetworkProtocolType ProtocolType => NetworkProtocolType.OSPF;
         public override int Priority => 110; // OSPF administrative distance
 
         public override IDeviceProtocol CreateProtocol()
@@ -32,7 +33,7 @@ namespace NetForge.Simulation.Protocols.OSPF
                 // Test that we can create a protocol instance
                 var protocol = CreateProtocol();
                 return protocol != null &&
-                       protocol.Type == ProtocolType.OSPF &&
+                       protocol.Type == NetworkProtocolType.OSPF &&
                        !string.IsNullOrEmpty(protocol.Name);
             }
             catch

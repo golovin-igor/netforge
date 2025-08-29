@@ -12,7 +12,7 @@ namespace NetForge.Simulation.Protocols.ARP
     {
         public override string PluginName => "ARP Protocol Plugin";
         public override string Version => "1.0.0";
-        public override NetworkProtocolType NetworkProtocolType => NetworkProtocolType.ARP;
+        public override NetworkProtocolType ProtocolType => NetworkProtocolType.ARP;
         public override int Priority => 1000; // High priority as ARP is fundamental
 
         public override IDeviceProtocol CreateProtocol()

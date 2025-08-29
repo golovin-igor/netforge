@@ -1,6 +1,7 @@
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.Telnet
 {
@@ -11,7 +12,7 @@ namespace NetForge.Simulation.Protocols.Telnet
     {
         public override string PluginName => "Telnet Protocol Plugin";
         public override string Version => "1.0.0";
-        public override ProtocolType ProtocolType => ProtocolType.TELNET;
+        public override NetworkProtocolType ProtocolType => NetworkProtocolType.TELNET;
         public override int Priority => 1000; // Highest priority for management protocol
 
         public override IDeviceProtocol CreateProtocol() => new TelnetProtocol();

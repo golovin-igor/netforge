@@ -13,7 +13,7 @@ namespace NetForge.Simulation.Protocols.SSH
         private readonly TcpClient _tcpClient;
         private readonly NetworkStream _networkStream;
         private readonly SshConfig _config;
-        private readonly NetworkDevice _device;
+        private readonly INetworkDevice _device;
         private readonly string _sessionId;
         private readonly DateTime _connectionTime;
         private readonly StreamReader _reader;
@@ -33,7 +33,7 @@ namespace NetForge.Simulation.Protocols.SSH
         public bool IsConnected => _tcpClient.Connected && !_isDisposed;
         public string EncryptionAlgorithm { get; private set; } = "aes128-ctr"; // Simulated encryption
 
-        public SshSession(TcpClient tcpClient, SshConfig config, NetworkDevice device)
+        public SshSession(TcpClient tcpClient, SshConfig config, INetworkDevice device)
         {
             _tcpClient = tcpClient ?? throw new ArgumentNullException(nameof(tcpClient));
             _config = config ?? throw new ArgumentNullException(nameof(config));

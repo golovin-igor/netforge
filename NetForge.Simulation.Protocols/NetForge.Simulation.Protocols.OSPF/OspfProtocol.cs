@@ -2,6 +2,7 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 
@@ -13,7 +14,7 @@ namespace NetForge.Simulation.Protocols.OSPF
     /// </summary>
     public class OspfProtocol : BaseProtocol
     {
-        public override ProtocolType Type => ProtocolType.OSPF;
+        public override NetworkProtocolType Type => NetworkProtocolType.OSPF;
         public override string Name => "Open Shortest Path First";
         public override string Version => "2.0.0";
 
@@ -38,7 +39,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             }
         }
 
-        protected override async Task UpdateNeighbors(NetworkDevice device)
+        protected override async Task UpdateNeighbors(INetworkDevice device)
         {
             var ospfState = (OspfState)_state;
             var ospfConfig = GetOspfConfig();
@@ -53,7 +54,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             await DiscoverOspfNeighbors(device, ospfConfig, ospfState);
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var ospfState = (OspfState)_state;
 
@@ -96,7 +97,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             }
         }
 
-        private async Task DiscoverOspfNeighbors(NetworkDevice device, OspfConfig config, OspfState state)
+        private async Task DiscoverOspfNeighbors(INetworkDevice device, OspfConfig config, OspfState state)
         {
             // Implementation following the existing pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
             foreach (var interfaceName in device.GetAllInterfaces().Keys)
@@ -130,8 +131,8 @@ namespace NetForge.Simulation.Protocols.OSPF
             await Task.CompletedTask;
         }
 
-        private async Task ProcessOspfNeighbor(NetworkDevice device, OspfState state, OspfConfig config,
-            string localInterface, NetworkDevice neighborDevice, string neighborInterface)
+        private async Task ProcessOspfNeighbor(INetworkDevice device, OspfState state, OspfConfig config,
+            string localInterface, INetworkDevice neighborDevice, string neighborInterface)
         {
             var neighborKey = $"{neighborDevice.Name}:{neighborInterface}";
             var neighborConfig = GetNeighborOspfConfig(neighborDevice);
@@ -176,8 +177,8 @@ namespace NetForge.Simulation.Protocols.OSPF
             state.Neighbors[neighborKey] = neighbor;
         }
 
-        private async Task UpdateNeighborStateMachine(OspfNeighbor neighbor, NetworkDevice device,
-            NetworkDevice neighborDevice, string localInterface, string neighborInterface)
+        private async Task UpdateNeighborStateMachine(OspfNeighbor neighbor, INetworkDevice device,
+            INetworkDevice neighborDevice, string localInterface, string neighborInterface)
         {
             // Simplified OSPF neighbor state machine
             switch (neighbor.State)
@@ -227,7 +228,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             await Task.CompletedTask;
         }
 
-        private bool CanEstablishAdjacency(NetworkDevice device, NetworkDevice neighbor, string localInterface, string neighborInterface)
+        private bool CanEstablishAdjacency(INetworkDevice device, INetworkDevice neighbor, string localInterface, string neighborInterface)
         {
             // Simplified check - ensure both interfaces are up and in same subnet
             var localInterfaceConfig = device.GetInterface(localInterface);
@@ -239,14 +240,14 @@ namespace NetForge.Simulation.Protocols.OSPF
                    !neighborInterfaceConfig.IsShutdown;
         }
 
-        private bool ShouldFormAdjacency(NetworkDevice device, NetworkDevice neighbor, string localInterface)
+        private bool ShouldFormAdjacency(INetworkDevice device, INetworkDevice neighbor, string localInterface)
         {
             // For simulation purposes, always form adjacency on point-to-point links
             // In real OSPF, this depends on DR/BDR election for multi-access networks
             return true;
         }
 
-        private async Task BuildLinkStateDatabase(NetworkDevice device, OspfState state)
+        private async Task BuildLinkStateDatabase(INetworkDevice device, OspfState state)
         {
             // Build router LSA for this router
             var routerLsa = new LinkStateAdvertisement
@@ -287,7 +288,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             await Task.CompletedTask;
         }
 
-        private async Task RunSpfCalculationForArea(NetworkDevice device, OspfState state, OspfArea area)
+        private async Task RunSpfCalculationForArea(INetworkDevice device, OspfState state, OspfArea area)
         {
             // Simplified Dijkstra's algorithm implementation
             var shortestPaths = new Dictionary<string, (int cost, string nextHop, string outInterface)>();
@@ -325,7 +326,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             await Task.CompletedTask;
         }
 
-        private async Task ProcessRouterLinks(NetworkDevice device, OspfState state, string currentRouter,
+        private async Task ProcessRouterLinks(INetworkDevice device, OspfState state, string currentRouter,
             Dictionary<string, (int cost, string nextHop, string outInterface)> shortestPaths,
             SortedDictionary<int, List<string>> candidates, HashSet<string> visited)
         {
@@ -374,7 +375,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             await Task.CompletedTask;
         }
 
-        private void ConvertShortestPathsToRoutes(NetworkDevice device, OspfState state,
+        private void ConvertShortestPathsToRoutes(INetworkDevice device, OspfState state,
             Dictionary<string, (int cost, string nextHop, string outInterface)> shortestPaths)
         {
             foreach (var (destination, (cost, nextHop, outInterface)) in shortestPaths)
@@ -403,7 +404,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             }
         }
 
-        private async Task InstallOspfRoutes(NetworkDevice device, OspfState state)
+        private async Task InstallOspfRoutes(INetworkDevice device, OspfState state)
         {
             foreach (var route in state.CalculatedRoutes)
             {
@@ -434,7 +435,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             return _device?.GetOspfConfiguration() as OspfConfig;
         }
 
-        private OspfConfig GetNeighborOspfConfig(NetworkDevice neighbor)
+        private OspfConfig GetNeighborOspfConfig(INetworkDevice neighbor)
         {
             return neighbor?.GetOspfConfiguration() as OspfConfig;
         }
@@ -467,7 +468,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             return 10; // Default cost
         }
 
-        private string GetInterfaceToNeighbor(NetworkDevice device, string neighborId)
+        private string GetInterfaceToNeighbor(INetworkDevice device, string neighborId)
         {
             // Find interface connected to neighbor
             foreach (var interfaceName in device.GetAllInterfaces().Keys)
@@ -481,7 +482,7 @@ namespace NetForge.Simulation.Protocols.OSPF
             return "";
         }
 
-        private string GetNextHopIpAddress(NetworkDevice device, string nextHopRouter, string outInterface)
+        private string GetNextHopIpAddress(INetworkDevice device, string nextHopRouter, string outInterface)
         {
             // Get the IP address of the next hop router on the connected interface
             var connectedDevice = device.GetConnectedDevice(outInterface);

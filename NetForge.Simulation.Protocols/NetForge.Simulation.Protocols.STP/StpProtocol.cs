@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.STP
 {
@@ -19,7 +21,7 @@ namespace NetForge.Simulation.Protocols.STP
     /// </summary>
     public class StpProtocol : BaseProtocol, IDeviceProtocol
     {
-        public override ProtocolType Type => ProtocolType.STP;
+        public override NetworkProtocolType Type => NetworkProtocolType.STP;
         public override string Name => "Spanning Tree Protocol";
 
         protected override BaseProtocolState CreateInitialState()
@@ -52,7 +54,7 @@ namespace NetForge.Simulation.Protocols.STP
             _device.AddLogEntry($"STP: Initialized with Bridge ID {stpState.BridgeId}");
         }
 
-        protected override async Task UpdateNeighbors(NetworkDevice device)
+        protected override async Task UpdateNeighbors(INetworkDevice device)
         {
             var stpConfig = GetStpConfig();
             var stpState = (StpState)_state;
@@ -75,7 +77,7 @@ namespace NetForge.Simulation.Protocols.STP
             await UpdatePortTimers(device, stpState);
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var stpState = (StpState)_state;
             var stpConfig = GetStpConfig();
@@ -98,7 +100,7 @@ namespace NetForge.Simulation.Protocols.STP
             device.AddLogEntry("STP: Spanning tree calculation completed");
         }
 
-        private async Task SendHelloBpdus(NetworkDevice device, StpConfig config, StpState state)
+        private async Task SendHelloBpdus(INetworkDevice device, StpConfig config, StpState state)
         {
             var now = DateTime.Now;
 
@@ -121,7 +123,7 @@ namespace NetForge.Simulation.Protocols.STP
             }
         }
 
-        private async Task SendConfigurationBpdu(NetworkDevice device, string portName, StpState state, StpConfig config)
+        private async Task SendConfigurationBpdu(INetworkDevice device, string portName, StpState state, StpConfig config)
         {
             var portInfo = state.PortInfo[portName];
 
@@ -153,7 +155,7 @@ namespace NetForge.Simulation.Protocols.STP
             }
         }
 
-        private async Task ProcessReceivedBpdus(NetworkDevice device, StpState state)
+        private async Task ProcessReceivedBpdus(INetworkDevice device, StpState state)
         {
             // Simulate receiving BPDUs from connected bridges
             foreach (var portName in state.PortInfo.Keys)
@@ -178,8 +180,8 @@ namespace NetForge.Simulation.Protocols.STP
             }
         }
 
-        private async Task ProcessNeighborBpdu(NetworkDevice device, string portName,
-            NetworkDevice neighborDevice, string neighborInterface, StpState state)
+        private async Task ProcessNeighborBpdu(INetworkDevice device, string portName,
+            INetworkDevice neighborDevice, string neighborInterface, StpState state)
         {
             var neighborStpConfig = neighborDevice.GetStpConfiguration();
             var neighborBridgeId = GenerateBridgeId(neighborStpConfig);
@@ -203,7 +205,7 @@ namespace NetForge.Simulation.Protocols.STP
             await ProcessBpdu(device, receivedBpdu, state);
         }
 
-        private async Task ProcessBpdu(NetworkDevice device, StpBpdu receivedBpdu, StpState state)
+        private async Task ProcessBpdu(INetworkDevice device, StpBpdu receivedBpdu, StpState state)
         {
             var portInfo = state.PortInfo[receivedBpdu.SourceInterface];
             portInfo.LastBpduReceived = DateTime.Now;
@@ -240,7 +242,7 @@ namespace NetForge.Simulation.Protocols.STP
             device.AddLogEntry($"STP: Processed BPDU from {receivedBpdu.BridgeId} on port {receivedBpdu.SourceInterface}");
         }
 
-        private async Task ProcessSuperiorBpdu(NetworkDevice device, StpBpdu receivedBpdu, StpState state)
+        private async Task ProcessSuperiorBpdu(INetworkDevice device, StpBpdu receivedBpdu, StpState state)
         {
             bool topologyChanged = false;
 
@@ -270,7 +272,7 @@ namespace NetForge.Simulation.Protocols.STP
             }
         }
 
-        private async Task UpdatePortTimers(NetworkDevice device, StpState state)
+        private async Task UpdatePortTimers(INetworkDevice device, StpState state)
         {
             var config = GetStpConfig();
 
@@ -294,7 +296,7 @@ namespace NetForge.Simulation.Protocols.STP
             }
         }
 
-        private async Task HandleMessageAgeExpiry(NetworkDevice device, string portName, StpState state)
+        private async Task HandleMessageAgeExpiry(INetworkDevice device, string portName, StpState state)
         {
             var portInfo = state.PortInfo[portName];
 
@@ -311,7 +313,7 @@ namespace NetForge.Simulation.Protocols.STP
             portInfo.DesignatedCost = state.RootPathCost;
         }
 
-        private async Task HandleForwardDelayExpiry(NetworkDevice device, string portName, StpState state, StpConfig config)
+        private async Task HandleForwardDelayExpiry(INetworkDevice device, string portName, StpState state, StpConfig config)
         {
             var portInfo = state.PortInfo[portName];
             var stateMachine = new StpStateMachine(portInfo);
@@ -331,7 +333,7 @@ namespace NetForge.Simulation.Protocols.STP
             state.UpdatePortState(portName, portInfo.State);
         }
 
-        private async Task ElectRootBridge(NetworkDevice device, StpState state)
+        private async Task ElectRootBridge(INetworkDevice device, StpState state)
         {
             // In a full implementation, this would consider all received BPDUs
             // For simulation, we'll use a simplified approach
@@ -367,7 +369,7 @@ namespace NetForge.Simulation.Protocols.STP
             }
         }
 
-        private async Task SelectRootPort(NetworkDevice device, StpState state)
+        private async Task SelectRootPort(INetworkDevice device, StpState state)
         {
             if (state.IsRootBridge)
             {
@@ -412,7 +414,7 @@ namespace NetForge.Simulation.Protocols.STP
             }
         }
 
-        private async Task SelectDesignatedPorts(NetworkDevice device, StpState state)
+        private async Task SelectDesignatedPorts(INetworkDevice device, StpState state)
         {
             foreach (var portName in state.PortInfo.Keys)
             {
@@ -459,7 +461,7 @@ namespace NetForge.Simulation.Protocols.STP
             }
         }
 
-        private async Task UpdatePortStates(NetworkDevice device, StpState state, StpConfig config)
+        private async Task UpdatePortStates(INetworkDevice device, StpState state, StpConfig config)
         {
             foreach (var kvp in state.PortInfo)
             {
@@ -556,7 +558,7 @@ namespace NetForge.Simulation.Protocols.STP
             };
         }
 
-        private async Task SimulateBpduTransmission(NetworkDevice device, string portName, StpBpdu bpdu)
+        private async Task SimulateBpduTransmission(INetworkDevice device, string portName, StpBpdu bpdu)
         {
             // Simulate BPDU transmission - in real implementation this would send actual Layer 2 frames
             await Task.Delay(1); // Simulate network delay

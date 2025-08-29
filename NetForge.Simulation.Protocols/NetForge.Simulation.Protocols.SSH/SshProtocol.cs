@@ -1,6 +1,7 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 
@@ -15,7 +16,7 @@ namespace NetForge.Simulation.Protocols.SSH
         private SshServer? _sshServer;
         private readonly SshSessionManager _sessionManager = new();
 
-        public override ProtocolType Type => ProtocolType.SSH;
+        public override NetworkProtocolType Type => NetworkProtocolType.SSH;
         public override string Name => "SSH Protocol";
         public override string Version => "2.0.0";
 
@@ -33,7 +34,7 @@ namespace NetForge.Simulation.Protocols.SSH
             }
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var sshState = (SshState)_state;
             var sshConfig = GetSshConfig();

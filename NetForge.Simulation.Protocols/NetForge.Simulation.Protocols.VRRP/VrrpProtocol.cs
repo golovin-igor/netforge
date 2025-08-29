@@ -11,7 +11,6 @@ using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.VRRP
 {
@@ -105,7 +104,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             device.AddLogEntry("VRRP: State machine calculation completed");
         }
 
-        private async Task SendAdvertisements(NetworkDevice device, VrrpConfig config, VrrpState state)
+        private async Task SendAdvertisements(INetworkDevice device, VrrpConfig config, VrrpState state)
         {
             var now = DateTime.Now;
 
@@ -130,7 +129,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             }
         }
 
-        private async Task SendAdvertisementPacket(NetworkDevice device, VrrpGroupState groupState, VrrpState state)
+        private async Task SendAdvertisementPacket(INetworkDevice device, VrrpGroupState groupState, VrrpState state)
         {
             var advertisement = new VrrpAdvertisement
             {
@@ -151,7 +150,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             await SimulatePacketTransmission(device, groupState.Interface, advertisement);
         }
 
-        private async Task ProcessReceivedAdvertisements(NetworkDevice device, VrrpState state)
+        private async Task ProcessReceivedAdvertisements(INetworkDevice device, VrrpState state)
         {
             // Simulate receiving VRRP Advertisement packets from connected routers
             foreach (var groupId in state.Groups.Keys)
@@ -178,8 +177,8 @@ namespace NetForge.Simulation.Protocols.VRRP
             }
         }
 
-        private async Task ProcessNeighborAdvertisement(NetworkDevice device, VrrpGroupState groupState,
-            NetworkDevice neighborDevice, string neighborInterface, VrrpState state)
+        private async Task ProcessNeighborAdvertisement(INetworkDevice device, VrrpGroupState groupState,
+            INetworkDevice neighborDevice, string neighborInterface, VrrpState state)
         {
             var neighborVrrpConfig = neighborDevice.GetVrrpConfiguration();
             var neighborGroup = neighborVrrpConfig.Groups[groupState.GroupId];
@@ -201,7 +200,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             await ProcessAdvertisementPacket(device, receivedAdvertisement, groupState, state);
         }
 
-        private async Task ProcessAdvertisementPacket(NetworkDevice device, VrrpAdvertisement packet, VrrpGroupState groupState, VrrpState state)
+        private async Task ProcessAdvertisementPacket(INetworkDevice device, VrrpAdvertisement packet, VrrpGroupState groupState, VrrpState state)
         {
             // Update neighbor information
             var neighborKey = $"{packet.SourceRouter}:{packet.VirtualRouterId}";
@@ -244,7 +243,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             device.AddLogEntry($"VRRP: Processed Advertisement from {packet.SourceRouter} for group {packet.VirtualRouterId} (priority: {packet.Priority})");
         }
 
-        private async Task UpdateGroupTimers(NetworkDevice device, VrrpState state)
+        private async Task UpdateGroupTimers(INetworkDevice device, VrrpState state)
         {
             foreach (var kvp in state.Groups)
             {
@@ -267,7 +266,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             }
         }
 
-        private async Task ProcessGroupStateMachine(NetworkDevice device, VrrpGroupState groupState)
+        private async Task ProcessGroupStateMachine(INetworkDevice device, VrrpGroupState groupState)
         {
             var stateMachine = new VrrpStateMachine(groupState);
 
@@ -313,7 +312,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             return $"00:00:5e:00:01:{groupId:x2}";
         }
 
-        private async Task SimulatePacketTransmission(NetworkDevice device, string interfaceName, VrrpAdvertisement packet)
+        private async Task SimulatePacketTransmission(INetworkDevice device, string interfaceName, VrrpAdvertisement packet)
         {
             // Simulate packet transmission - in real implementation this would send actual VRRP packets
             await Task.Delay(1); // Simulate network delay

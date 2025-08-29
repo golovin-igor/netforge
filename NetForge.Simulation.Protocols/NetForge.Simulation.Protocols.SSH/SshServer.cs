@@ -8,10 +8,10 @@ namespace NetForge.Simulation.Protocols.SSH
     /// <summary>
     /// SSH server for handling incoming SSH connections
     /// </summary>
-    public class SshServer(NetworkDevice device, SshConfig config, SshSessionManager sessionManager)
+    public class SshServer(INetworkDevice device, SshConfig config, SshSessionManager sessionManager)
         : IDisposable
     {
-        private readonly NetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
         private readonly SshConfig _config = config ?? throw new ArgumentNullException(nameof(config));
         private readonly SshSessionManager _sessionManager = sessionManager ?? throw new ArgumentNullException(nameof(sessionManager));
         private TcpListener? _listener;

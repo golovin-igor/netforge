@@ -1,6 +1,7 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 
@@ -15,7 +16,7 @@ namespace NetForge.Simulation.Protocols.Telnet
         private TelnetServer? _telnetServer;
         private readonly TelnetSessionManager _sessionManager = new();
 
-        public override ProtocolType Type => ProtocolType.TELNET;
+        public override NetworkProtocolType Type => NetworkProtocolType.TELNET;
         public override string Name => "Telnet Protocol";
         public override string Version => "1.0.0";
 
@@ -33,7 +34,7 @@ namespace NetForge.Simulation.Protocols.Telnet
             }
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var telnetState = (TelnetState)_state;
             var telnetConfig = GetTelnetConfig();

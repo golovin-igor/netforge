@@ -11,7 +11,7 @@ namespace NetForge.Simulation.Protocols.CDP
     {
         public override string PluginName => "CDP Protocol Plugin";
         public override string Version => "2.0.0";
-        public override NetworkProtocolType NetworkProtocolType => NetworkProtocolType.CDP;
+        public override NetworkProtocolType ProtocolType => NetworkProtocolType.CDP;
         public override int Priority => 200; // Higher priority than generic protocols
 
         public override IDeviceProtocol CreateProtocol()

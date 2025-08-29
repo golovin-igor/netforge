@@ -1,13 +1,13 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.SNMP;
 
 public class SnmpAgent(INetworkDevice device, SnmpConfig config, SnmpState state) : IDisposable
 {
-    private readonly INetworkDevice _device = device;
     private UdpClient? _udpListener;
     private UdpClient? _trapSender;
     private Task? _listenerTask;
@@ -33,11 +33,11 @@ public class SnmpAgent(INetworkDevice device, SnmpConfig config, SnmpState state
             state.StartTime = DateTime.Now;
             state.MarkStateChanged();
 
-            _device.AddLogEntry($"SNMP agent started on port {config.Port}");
+            device.AddLogEntry($"SNMP agent started on port {config.Port}");
         }
         catch (Exception ex)
         {
-            _device.AddLogEntry($"Failed to start SNMP agent: {ex.Message}");
+            device.AddLogEntry($"Failed to start SNMP agent: {ex.Message}");
             state.AgentRunning = false;
             throw;
         }
@@ -68,7 +68,7 @@ public class SnmpAgent(INetworkDevice device, SnmpConfig config, SnmpState state
         state.AgentRunning = false;
         state.MarkStateChanged();
 
-        _device.AddLogEntry("SNMP agent stopped");
+        device.AddLogEntry("SNMP agent stopped");
     }
 
     private async Task ListenForRequests()
@@ -86,7 +86,7 @@ public class SnmpAgent(INetworkDevice device, SnmpConfig config, SnmpState state
             }
             catch (Exception ex)
             {
-                _device.AddLogEntry($"SNMP listener error: {ex.Message}");
+                device.AddLogEntry($"SNMP listener error: {ex.Message}");
             }
         }
     }
@@ -108,7 +108,7 @@ public class SnmpAgent(INetworkDevice device, SnmpConfig config, SnmpState state
             // Validate community string
             if (config.EnableAuthentication && !IsValidCommunity(request.Community, request.RequestType))
             {
-                _device.AddLogEntry($"SNMP authentication failed for community '{request.Community}' from {remoteEndPoint}");
+                device.AddLogEntry($"SNMP authentication failed for community '{request.Community}' from {remoteEndPoint}");
                 state.IncrementErrors();
                 return;
             }
@@ -128,7 +128,7 @@ public class SnmpAgent(INetworkDevice device, SnmpConfig config, SnmpState state
         }
         catch (Exception ex)
         {
-            _device.AddLogEntry($"Error processing SNMP request: {ex.Message}");
+            device.AddLogEntry($"Error processing SNMP request: {ex.Message}");
             state.IncrementErrors();
         }
     }
@@ -175,7 +175,7 @@ public class SnmpAgent(INetworkDevice device, SnmpConfig config, SnmpState state
         }
         catch (Exception ex)
         {
-            _device.AddLogEntry($"Error processing SNMP {request.RequestType}: {ex.Message}");
+            device.AddLogEntry($"Error processing SNMP {request.RequestType}: {ex.Message}");
             response.ErrorStatus = SnmpErrorStatus.GenErr;
         }
 
@@ -246,7 +246,7 @@ public class SnmpAgent(INetworkDevice device, SnmpConfig config, SnmpState state
                     Type = variable.Type
                 });
 
-                _device.AddLogEntry($"SNMP SET: {request.Oid} = {request.Value}");
+                device.AddLogEntry($"SNMP SET: {request.Oid} = {request.Value}");
                 state.MarkStateChanged();
             }
         }
@@ -274,7 +274,7 @@ public class SnmpAgent(INetworkDevice device, SnmpConfig config, SnmpState state
                 {
                     var endpoint = new IPEndPoint(addr, config.TrapPort);
                     await _trapSender!.SendAsync(trapData, endpoint);
-                    _device.AddLogEntry($"SNMP trap sent to {destination}: {trapOid}");
+                    device.AddLogEntry($"SNMP trap sent to {destination}: {trapOid}");
                 }
             }
 
@@ -282,7 +282,7 @@ public class SnmpAgent(INetworkDevice device, SnmpConfig config, SnmpState state
         }
         catch (Exception ex)
         {
-            _device.AddLogEntry($"Error sending SNMP trap: {ex.Message}");
+            device.AddLogEntry($"Error sending SNMP trap: {ex.Message}");
         }
     }
 

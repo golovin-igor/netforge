@@ -1,18 +1,20 @@
+using System.Net.Sockets;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
+using NetForge.Simulation.Protocols.Common.Events;
 
-// TODO: Replace with local Route class in next migration phase
 
 namespace NetForge.Simulation.Protocols.IGRP;
 
 public class IgrpProtocol : BaseProtocol
 {
-    public override ProtocolType Type => ProtocolType.IGRP;
+    public override NetworkProtocolType Type => NetworkProtocolType.IGRP;
     public override string Name => "Interior Gateway Routing Protocol";
 
     private DateTime _lastUpdate = DateTime.MinValue;
@@ -40,7 +42,7 @@ public class IgrpProtocol : BaseProtocol
         }
     }
 
-    protected override async Task UpdateNeighbors(NetworkDevice device)
+    protected override async Task UpdateNeighbors(INetworkDevice device)
     {
         var igrpState = (IgrpState)_state;
         var igrpConfig = GetIgrpConfig();
@@ -68,7 +70,7 @@ public class IgrpProtocol : BaseProtocol
         await ProcessRouteTimers(device, igrpConfig, igrpState);
     }
 
-    protected override async Task RunProtocolCalculation(NetworkDevice device)
+    protected override async Task RunProtocolCalculation(INetworkDevice device)
     {
         var igrpState = (IgrpState)_state;
 
@@ -88,7 +90,7 @@ public class IgrpProtocol : BaseProtocol
         LogProtocolEvent("IGRP: Route calculation completed");
     }
 
-    private async Task DiscoverIgrpNeighbors(NetworkDevice device, IgrpConfig config, IgrpState state)
+    private async Task DiscoverIgrpNeighbors(INetworkDevice device, IgrpConfig config, IgrpState state)
     {
         foreach (var networkConfig in config.Networks)
         {
@@ -134,7 +136,7 @@ public class IgrpProtocol : BaseProtocol
         }
     }
 
-    private async Task SendPeriodicUpdates(NetworkDevice device, IgrpConfig config, IgrpState state)
+    private async Task SendPeriodicUpdates(INetworkDevice device, IgrpConfig config, IgrpState state)
     {
         LogProtocolEvent($"IGRP: Sending periodic updates for AS {config.AutonomousSystem}");
 
@@ -147,7 +149,7 @@ public class IgrpProtocol : BaseProtocol
         }
     }
 
-    private async Task ProcessRouteTimers(NetworkDevice device, IgrpConfig config, IgrpState state)
+    private async Task ProcessRouteTimers(INetworkDevice device, IgrpConfig config, IgrpState state)
     {
         var now = DateTime.Now;
         var routesChanged = false;
@@ -179,7 +181,7 @@ public class IgrpProtocol : BaseProtocol
         }
     }
 
-    private async Task CalculateIgrpRoutes(NetworkDevice device, IgrpState state)
+    private async Task CalculateIgrpRoutes(INetworkDevice device, IgrpState state)
     {
         var routes = new Dictionary<string, IgrpRoute>();
 
@@ -236,7 +238,7 @@ public class IgrpProtocol : BaseProtocol
         LogProtocolEvent($"IGRP: Calculated {state.CalculatedRoutes.Count} routes");
     }
 
-    private async Task InstallRoutes(NetworkDevice device, IgrpState state)
+    private async Task InstallRoutes(INetworkDevice device, IgrpState state)
     {
         foreach (var route in state.CalculatedRoutes.Where(r => r.Source == "IGRP"))
         {
@@ -251,7 +253,7 @@ public class IgrpProtocol : BaseProtocol
         }
     }
 
-    protected override bool IsNeighborReachable(NetworkDevice device, string interfaceName, NetworkDevice neighbor)
+    protected override bool IsNeighborReachable(INetworkDevice device, string interfaceName, INetworkDevice neighbor)
     {
         var connection = device.GetPhysicalConnectionMetrics(interfaceName);
         return connection?.IsSuitableForRouting ?? false;
@@ -322,7 +324,7 @@ public class IgrpProtocol : BaseProtocol
         }
     }
 
-    private IEnumerable<string> GetInterfacesForNetwork(NetworkDevice device, string networkConfig)
+    private IEnumerable<string> GetInterfacesForNetwork(INetworkDevice device, string networkConfig)
     {
         var interfaces = new List<string>();
 
@@ -358,14 +360,14 @@ public class IgrpProtocol : BaseProtocol
         return 280; // Default
     }
 
-    private IgrpProtocol GetNeighborIgrpProtocol(NetworkDevice neighborDevice)
+    private IgrpProtocol GetNeighborIgrpProtocol(INetworkDevice neighborDevice)
     {
         // In the new architecture, protocols are discovered through the device's protocol list
         // For now, return null - neighbor discovery will be handled differently
         return null;
     }
 
-    protected override void OnSubscribeToEvents(NetworkEventBus eventBus, NetworkDevice self)
+    protected override void OnSubscribeToEvents(INetworkEventBus eventBus, INetworkDevice self)
     {
         // Subscribe to interface up/down events
         eventBus.Subscribe<InterfaceStateChangedEventArgs>(args =>

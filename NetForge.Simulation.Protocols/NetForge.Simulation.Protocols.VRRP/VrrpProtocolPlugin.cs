@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.VRRP
 {
@@ -13,7 +14,7 @@ namespace NetForge.Simulation.Protocols.VRRP
     public class VrrpProtocolPlugin : ProtocolPluginBase
     {
         public override string PluginName => "VRRP Protocol Plugin";
-        public override ProtocolType ProtocolType => ProtocolType.VRRP;
+        public override NetworkProtocolType ProtocolType => NetworkProtocolType.VRRP;
         public override int Priority => 150; // Medium-high priority for redundancy protocol
 
         public override IDeviceProtocol CreateProtocol()

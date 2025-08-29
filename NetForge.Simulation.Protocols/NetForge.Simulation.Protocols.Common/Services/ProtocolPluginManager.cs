@@ -235,7 +235,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
             lock (_lockObject)
             {
                 return _plugins.Values
-                    .Where(p => p.NetworkProtocolType == networkProtocolType && IsPluginEnabled(p.PluginName))
+                    .Where(p => p.ProtocolType == networkProtocolType && IsPluginEnabled(p.PluginName))
                     .OrderByDescending(p => p.Priority)
                     .ToList();
             }
@@ -342,7 +342,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
             {
                 ["PluginName"] = plugin.PluginName,
                 ["Version"] = plugin.Version,
-                ["ProtocolType"] = plugin.NetworkProtocolType.ToString(),
+                ["ProtocolType"] = plugin.ProtocolType.ToString(),
                 ["Priority"] = plugin.Priority,
                 ["SupportedVendors"] = plugin.GetSupportedVendors().ToList(),
                 ["IsEnabled"] = IsPluginEnabled(pluginName),
@@ -433,7 +433,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 var disabledCount = _plugins.Count - enabledCount;
 
                 var protocolTypes = _plugins.Values
-                    .Select(p => p.NetworkProtocolType)
+                    .Select(p => p.ProtocolType)
                     .Distinct()
                     .Count();
 
@@ -450,7 +450,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                     ["ProtocolTypes"] = protocolTypes,
                     ["SupportedVendors"] = vendors,
                     ["PluginsByProtocol"] = _plugins.Values
-                        .GroupBy(p => p.NetworkProtocolType)
+                        .GroupBy(p => p.ProtocolType)
                         .ToDictionary(g => g.Key.ToString(), g => g.Count())
                 };
             }
