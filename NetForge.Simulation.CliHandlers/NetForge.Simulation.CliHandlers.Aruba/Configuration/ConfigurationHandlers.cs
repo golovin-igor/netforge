@@ -10,10 +10,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba configure command handler
         /// </summary>
-        public class ArubaConfigureHandler : VendorAgnosticCliHandler
+        public class ArubaConfigureHandler() : VendorAgnosticCliHandler("configure", "Enter configuration mode")
         {
-            public ArubaConfigureHandler() : base("configure", "Enter configuration mode") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -40,10 +38,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba exit command handler
         /// </summary>
-        public class ArubaExitHandler : VendorAgnosticCliHandler
+        public class ArubaExitHandler() : VendorAgnosticCliHandler("exit", "Exit current mode")
         {
-            public ArubaExitHandler() : base("exit", "Exit current mode") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -82,10 +78,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba interface command handler
         /// </summary>
-        public class ArubaInterfaceHandler : VendorAgnosticCliHandler
+        public class ArubaInterfaceHandler() : VendorAgnosticCliHandler("interface", "Configure interface")
         {
-            public ArubaInterfaceHandler() : base("interface", "Configure interface") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -140,10 +134,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba VLAN command handler
         /// </summary>
-        public class ArubaVlanHandler : VendorAgnosticCliHandler
+        public class ArubaVlanHandler() : VendorAgnosticCliHandler("vlan", "Configure VLAN")
         {
-            public ArubaVlanHandler() : base("vlan", "Configure VLAN") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -188,10 +180,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba IP command handler (for interface mode)
         /// </summary>
-        public class ArubaIpHandler : VendorAgnosticCliHandler
+        public class ArubaIpHandler() : VendorAgnosticCliHandler("ip", "Configure IP settings")
         {
-            public ArubaIpHandler() : base("ip", "Configure IP settings") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -248,10 +238,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba switchport command handler
         /// </summary>
-        public class ArubaSwitchportHandler : VendorAgnosticCliHandler
+        public class ArubaSwitchportHandler() : VendorAgnosticCliHandler("switchport", "Configure switchport settings")
         {
-            public ArubaSwitchportHandler() : base("switchport", "Configure switchport settings") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -319,10 +307,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba shutdown command handler
         /// </summary>
-        public class ArubaShutdownHandler : VendorAgnosticCliHandler
+        public class ArubaShutdownHandler() : VendorAgnosticCliHandler("shutdown", "Shutdown interface")
         {
-            public ArubaShutdownHandler() : base("shutdown", "Shutdown interface") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -354,10 +340,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba no command handler
         /// </summary>
-        public class ArubaNoHandler : VendorAgnosticCliHandler
+        public class ArubaNoHandler() : VendorAgnosticCliHandler("no", "Negate a command")
         {
-            public ArubaNoHandler() : base("no", "Negate a command") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -403,10 +387,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba VLAN name command handler
         /// </summary>
-        public class ArubaVlanNameHandler : VendorAgnosticCliHandler
+        public class ArubaVlanNameHandler() : VendorAgnosticCliHandler("name", "Set VLAN name")
         {
-            public ArubaVlanNameHandler() : base("name", "Set VLAN name") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -441,10 +423,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba VLAN tagged command handler
         /// </summary>
-        public class ArubaVlanTaggedHandler : VendorAgnosticCliHandler
+        public class ArubaVlanTaggedHandler() : VendorAgnosticCliHandler("tagged", "Add tagged ports to VLAN")
         {
-            public ArubaVlanTaggedHandler() : base("tagged", "Add tagged ports to VLAN") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -485,10 +465,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba VLAN untagged command handler
         /// </summary>
-        public class ArubaVlanUntaggedHandler : VendorAgnosticCliHandler
+        public class ArubaVlanUntaggedHandler() : VendorAgnosticCliHandler("untagged", "Add untagged ports to VLAN")
         {
-            public ArubaVlanUntaggedHandler() : base("untagged", "Add untagged ports to VLAN") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -529,10 +507,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba IP route command handler (for static routes)
         /// </summary>
-        public class ArubaIpRouteHandler : VendorAgnosticCliHandler
+        public class ArubaIpRouteHandler() : VendorAgnosticCliHandler("route", "Configure static routes")
         {
-            public ArubaIpRouteHandler() : base("route", "Configure static routes") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 2 &&
@@ -576,10 +552,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba clear command handler 
         /// </summary>
-        public class ArubaClearHandler : VendorAgnosticCliHandler
+        public class ArubaClearHandler() : VendorAgnosticCliHandler("clear", "Clear counters and statistics")
         {
-            public ArubaClearHandler() : base("clear", "Clear counters and statistics") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -633,10 +607,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba disable command handler (for interfaces)
         /// </summary>
-        public class ArubaDisableHandler : VendorAgnosticCliHandler
+        public class ArubaDisableHandler() : VendorAgnosticCliHandler("disable", "Disable interface")
         {
-            public ArubaDisableHandler() : base("disable", "Disable interface") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -666,10 +638,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba name command handler (for interfaces)
         /// </summary>
-        public class ArubaInterfaceNameHandler : VendorAgnosticCliHandler
+        public class ArubaInterfaceNameHandler() : VendorAgnosticCliHandler("name", "Set interface description")
         {
-            public ArubaInterfaceNameHandler() : base("name", "Set interface description") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -705,10 +675,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba speed command handler (for interfaces)
         /// </summary>
-        public class ArubaSpeedHandler : VendorAgnosticCliHandler
+        public class ArubaSpeedHandler() : VendorAgnosticCliHandler("speed", "Set interface speed")
         {
-            public ArubaSpeedHandler() : base("speed", "Set interface speed") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
@@ -736,10 +704,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// <summary>
         /// Aruba duplex command handler (for interfaces)
         /// </summary>
-        public class ArubaDuplexHandler : VendorAgnosticCliHandler
+        public class ArubaDuplexHandler() : VendorAgnosticCliHandler("duplex", "Set interface duplex")
         {
-            public ArubaDuplexHandler() : base("duplex", "Set interface duplex") { }
-
             public override bool CanHandle(CliContext context)
             {
                 return context.CommandParts.Length >= 1 &&

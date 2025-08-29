@@ -7,16 +7,10 @@ namespace NetForge.Simulation.CliHandlers.Extreme
     /// <summary>
     /// Extreme-specific vendor context implementation
     /// </summary>
-    public class ExtremeVendorContext : IVendorContext
+    public class ExtremeVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly ExtremeVendorCapabilities _capabilities;
-
-        public ExtremeVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new ExtremeVendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly ExtremeVendorCapabilities _capabilities = new(device);
 
         public string VendorName => "Extreme";
         public IVendorCapabilities Capabilities => _capabilities;

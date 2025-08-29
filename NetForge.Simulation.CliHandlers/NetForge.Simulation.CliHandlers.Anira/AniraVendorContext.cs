@@ -1,22 +1,16 @@
-using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Interfaces;
 using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Anira
 {
     /// <summary>
     /// Anira-specific vendor context implementation
     /// </summary>
-    public class AniraVendorContext : IVendorContext
+    public class AniraVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly AniraVendorCapabilities _capabilities;
-
-        public AniraVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new AniraVendorCapabilities();
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly AniraVendorCapabilities _capabilities = new();
 
         public string VendorName => "Anira";
         public IVendorCapabilities Capabilities => _capabilities;

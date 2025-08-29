@@ -9,12 +9,8 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
     /// <summary>
     /// Juniper configure command handler with candidate configuration support
     /// </summary>
-    public class ConfigureCommandHandler : VendorAgnosticCliHandler
+    public class ConfigureCommandHandler() : VendorAgnosticCliHandler("configure", "Enter configuration mode")
     {
-        public ConfigureCommandHandler() : base("configure", "Enter configuration mode")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
@@ -39,12 +35,8 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
     /// <summary>
     /// Juniper commit command handler - CRITICAL vendor-specific functionality
     /// </summary>
-    public class CommitCommandHandler : VendorAgnosticCliHandler
+    public class CommitCommandHandler() : VendorAgnosticCliHandler("commit", "Commit candidate configuration")
     {
-        public CommitCommandHandler() : base("commit", "Commit candidate configuration")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
@@ -86,12 +78,8 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
     /// <summary>
     /// Juniper rollback command handler - CRITICAL vendor-specific functionality
     /// </summary>
-    public class RollbackCommandHandler : VendorAgnosticCliHandler
+    public class RollbackCommandHandler() : VendorAgnosticCliHandler("rollback", "Rollback candidate configuration")
     {
-        public RollbackCommandHandler() : base("rollback", "Rollback candidate configuration")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
@@ -136,12 +124,8 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
     /// <summary>
     /// Juniper exit command handler with configuration mode awareness
     /// </summary>
-    public class ExitCommandHandler : VendorAgnosticCliHandler
+    public class ExitCommandHandler() : VendorAgnosticCliHandler("exit", "Exit current mode")
     {
-        public ExitCommandHandler() : base("exit", "Exit current mode")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
@@ -174,12 +158,8 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
     /// <summary>
     /// Juniper delete command handler for configuration elements
     /// </summary>
-    public class DeleteCommandHandler : VendorAgnosticCliHandler
+    public class DeleteCommandHandler() : VendorAgnosticCliHandler("delete", "Delete configuration elements")
     {
-        public DeleteCommandHandler() : base("delete", "Delete configuration elements")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))
@@ -226,12 +206,8 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
     /// <summary>
     /// Juniper ping command handler with JunOS-style output
     /// </summary>
-    public class PingCommandHandler : VendorAgnosticCliHandler
+    public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        public PingCommandHandler() : base("ping", "Send ping packets")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Juniper"))

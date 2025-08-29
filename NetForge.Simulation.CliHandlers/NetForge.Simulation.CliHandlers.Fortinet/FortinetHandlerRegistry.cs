@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Interfaces;
@@ -11,17 +12,17 @@ namespace NetForge.Simulation.CliHandlers.Fortinet
         public string VendorName => "Fortinet";
         public int Priority => 120;
 
-        public bool SupportsDevice(NetworkDevice device)
+        public bool SupportsDevice(INetworkDevice device)
         {
             return device?.Vendor?.Equals("Fortinet", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            return new FortinetVendorContext((NetworkDevice)device);
+            return new FortinetVendorContext(device);
         }
 
-        public void RegisterHandlers(CliHandlerManager manager)
+        public void RegisterHandlers(ICliHandlerManager manager)
         {
             var handlers = GetHandlers();
             foreach (var handler in handlers)

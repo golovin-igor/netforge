@@ -10,14 +10,9 @@ namespace NetForge.Simulation.CliHandlers.Nokia
     /// <summary>
     /// Nokia-specific vendor capabilities implementation for SR OS
     /// </summary>
-    public class NokiaVendorCapabilities : IVendorCapabilities
+    public class NokiaVendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public NokiaVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string VendorName => "Nokia";
         public string CliStyle => "SR OS";
@@ -30,7 +25,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia
             config.AppendLine("# Generated configuration");
             config.AppendLine("configure");
             config.AppendLine($"    system name \"{_device.GetHostname()}\"");
-            
+
             foreach (var iface in _device.GetAllInterfaces().Values)
             {
                 if (!string.IsNullOrEmpty(iface.IpAddress) || !string.IsNullOrEmpty(iface.Description))
@@ -52,7 +47,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia
                     config.AppendLine("        exit");
                 }
             }
-            
+
             config.AppendLine("exit all");
             return config.ToString();
         }

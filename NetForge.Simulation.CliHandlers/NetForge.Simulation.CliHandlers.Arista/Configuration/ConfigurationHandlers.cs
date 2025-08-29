@@ -44,12 +44,8 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
     /// <summary>
     /// Arista exit command handler
     /// </summary>
-    public class ExitCommandHandler : VendorAgnosticCliHandler
+    public class ExitCommandHandler() : VendorAgnosticCliHandler("exit", "Exit current mode")
     {
-        public ExitCommandHandler() : base("exit", "Exit current mode")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
@@ -130,12 +126,8 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
     /// <summary>
     /// Arista hostname command handler
     /// </summary>
-    public class HostnameCommandHandler : VendorAgnosticCliHandler
+    public class HostnameCommandHandler() : VendorAgnosticCliHandler("hostname", "Set device hostname")
     {
-        public HostnameCommandHandler() : base("hostname", "Set device hostname")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
@@ -188,12 +180,8 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
     /// <summary>
     /// Arista VLAN command handler
     /// </summary>
-    public class VlanCommandHandler : VendorAgnosticCliHandler
+    public class VlanCommandHandler() : VendorAgnosticCliHandler("vlan", "Configure VLAN")
     {
-        public VlanCommandHandler() : base("vlan", "Configure VLAN")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
@@ -245,12 +233,8 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
     /// <summary>
     /// Arista no command handler
     /// </summary>
-    public class NoCommandHandler : VendorAgnosticCliHandler
+    public class NoCommandHandler() : VendorAgnosticCliHandler("no", "Negate a command")
     {
-        public NoCommandHandler() : base("no", "Negate a command")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))
@@ -351,12 +335,8 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
     /// <summary>
     /// Arista ip command handler for configuration mode
     /// </summary>
-    public class IpCommandHandler : VendorAgnosticCliHandler
+    public class IpCommandHandler() : VendorAgnosticCliHandler("ip", "IP configuration commands")
     {
-        public IpCommandHandler() : base("ip", "IP configuration commands")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Arista"))

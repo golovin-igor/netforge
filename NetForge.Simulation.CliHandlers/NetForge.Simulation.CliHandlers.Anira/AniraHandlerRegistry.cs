@@ -1,9 +1,9 @@
-using NetForge.Simulation.CliHandlers;
-using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common.CLI.Factories;
 using NetForge.Simulation.Common.CLI.Interfaces;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Handlers.Common;
 
 namespace NetForge.Simulation.CliHandlers.Anira
 {
@@ -15,7 +15,7 @@ namespace NetForge.Simulation.CliHandlers.Anira
         public override string VendorName => "Anira";
         public override int Priority => 100; // Lower priority than Cisco
 
-        public override void RegisterHandlers(CliHandlerManager manager)
+        public override void RegisterHandlers(ICliHandlerManager manager)
         {
             // Register basic handlers (only the ones that actually exist)
             manager.RegisterHandler(new Basic.EnableCommandHandler());
@@ -34,7 +34,7 @@ namespace NetForge.Simulation.CliHandlers.Anira
 
         public override IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            if (device is NetworkDevice networkDevice)
+            if (device is { } networkDevice)
             {
                 return new AniraVendorContext(networkDevice);
             }

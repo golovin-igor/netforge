@@ -10,12 +10,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
     /// <summary>
     /// Cisco ping command handler
     /// </summary>
-    public class PingCommandHandler : VendorAgnosticCliHandler
+    public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        public PingCommandHandler() : base("ping", "Send ping packets")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -289,12 +285,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
     /// <summary>
     /// Cisco reload command handler
     /// </summary>
-    public class ReloadCommandHandler : VendorAgnosticCliHandler
+    public class ReloadCommandHandler() : VendorAgnosticCliHandler("reload", "Reload the device")
     {
-        public ReloadCommandHandler() : base("reload", "Reload the device")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -353,12 +345,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
     /// <summary>
     /// Cisco history command handler
     /// </summary>
-    public class HistoryCommandHandler : VendorAgnosticCliHandler
+    public class HistoryCommandHandler() : VendorAgnosticCliHandler("history", "Display command history")
     {
-        public HistoryCommandHandler() : base("history", "Display command history")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -382,12 +370,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
     /// <summary>
     /// Cisco copy command handler
     /// </summary>
-    public class CopyCommandHandler : VendorAgnosticCliHandler
+    public class CopyCommandHandler() : VendorAgnosticCliHandler("copy", "Copy configuration or files")
     {
-        public CopyCommandHandler() : base("copy", "Copy configuration or files")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -530,12 +514,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
     /// <summary>
     /// Cisco clear command handler
     /// </summary>
-    public class ClearCommandHandler : VendorAgnosticCliHandler
+    public class ClearCommandHandler() : VendorAgnosticCliHandler("clear", "Clear counters and statistics")
     {
-        public ClearCommandHandler() : base("clear", "Clear counters and statistics")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))

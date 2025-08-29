@@ -1,9 +1,11 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Factories;
 using NetForge.Simulation.Common.CLI.Interfaces;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Handlers.Common;
 
 namespace NetForge.Simulation.CliHandlers.F5
 {
@@ -15,7 +17,7 @@ namespace NetForge.Simulation.CliHandlers.F5
         public override string VendorName => "F5";
         public override int Priority => 160;
 
-        public override void RegisterHandlers(CliHandlerManager manager)
+        public override void RegisterHandlers(ICliHandlerManager manager)
         {
             // Register F5 BIG-IP vendor-specific handlers
             manager.RegisterHandler(new Basic.EnableCommandHandler());
@@ -35,7 +37,7 @@ namespace NetForge.Simulation.CliHandlers.F5
 
         public override IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            if (device is NetworkDevice networkDevice)
+            if (device is INetworkDevice networkDevice)
             {
                 return new F5VendorContext(networkDevice);
             }

@@ -7,12 +7,8 @@ namespace NetForge.Simulation.CliHandlers.F5.Configuration
     /// <summary>
     /// F5 BIG-IP hostname command handler
     /// </summary>
-    public class HostnameCommandHandler : VendorAgnosticCliHandler
+    public class HostnameCommandHandler() : VendorAgnosticCliHandler("hostname", "Set device hostname")
     {
-        public HostnameCommandHandler() : base("hostname", "Set device hostname")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "F5"))

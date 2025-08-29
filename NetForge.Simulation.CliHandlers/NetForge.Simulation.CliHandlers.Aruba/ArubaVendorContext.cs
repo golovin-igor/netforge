@@ -7,16 +7,10 @@ namespace NetForge.Simulation.CliHandlers.Aruba
     /// <summary>
     /// Vendor-specific context for Aruba devices
     /// </summary>
-    public class ArubaVendorContext : IVendorContext
+    public class ArubaVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly ArubaVendorCapabilities _capabilities;
-
-        public ArubaVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new ArubaVendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly ArubaVendorCapabilities _capabilities = new(device);
 
         public string VendorName => "Aruba";
 
@@ -55,12 +49,12 @@ namespace NetForge.Simulation.CliHandlers.Aruba
         {
             var hostname = _device.Name;
             var mode = _device.GetCurrentMode();
-            
+
             return mode switch
             {
                 "config" => $"{hostname}(config)# ",
                 "interface" => $"{hostname}(eth0)# ",
-                "vlan" => $"{hostname}(vlan)# ", 
+                "vlan" => $"{hostname}(vlan)# ",
                 "privileged" => $"{hostname}# ",
                 _ => $"{hostname}> "
             };
@@ -86,7 +80,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba
             return new List<string>
             {
                 "vlan_support",
-                "interface_configuration", 
+                "interface_configuration",
                 "ip_routing",
                 "access_lists",
                 "port_security",
@@ -100,7 +94,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba
             return command.ToLower() switch
             {
                 "ping" => "Send ICMP echo requests",
-                "configure" => "Enter global configuration mode", 
+                "configure" => "Enter global configuration mode",
                 "show" => "Display system information",
                 "interface" => "Configure interface parameters",
                 "vlan" => "Configure VLAN parameters",
@@ -163,4 +157,4 @@ namespace NetForge.Simulation.CliHandlers.Aruba
             return currentInterface?.Name ?? "";
         }
     }
-} 
+}

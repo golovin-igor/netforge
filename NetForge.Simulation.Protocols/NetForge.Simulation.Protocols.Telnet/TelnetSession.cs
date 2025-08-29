@@ -19,33 +19,33 @@ namespace NetForge.Simulation.Protocols.Telnet
     /// <summary>
     /// Represents a Telnet session with a connected client
     /// </summary>
-    public class TelnetSession : IDisposable
+    public class TelnetSession(TcpClient tcpClient) : IDisposable
     {
-        private readonly TcpClient _tcpClient;
-        private readonly NetworkStream _stream;
-        private readonly CancellationTokenSource _cancellationTokenSource;
+        private readonly TcpClient _tcpClient = tcpClient ?? throw new ArgumentNullException(nameof(tcpClient));
+        private readonly NetworkStream _stream = tcpClient.GetStream();
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
         private bool _disposed = false;
         
         /// <summary>
         /// Unique session ID
         /// </summary>
-        public string SessionId { get; }
-        
+        public string SessionId { get; } = Guid.NewGuid().ToString("N")[..8];
+
         /// <summary>
         /// Client endpoint information
         /// </summary>
-        public EndPoint ClientEndpoint { get; }
-        
+        public EndPoint ClientEndpoint { get; } = tcpClient.Client.RemoteEndPoint ?? new IPEndPoint(IPAddress.None, 0);
+
         /// <summary>
         /// When the session was created
         /// </summary>
-        public DateTime CreatedAt { get; }
-        
+        public DateTime CreatedAt { get; } = DateTime.Now;
+
         /// <summary>
         /// Last activity timestamp
         /// </summary>
-        public DateTime LastActivity { get; private set; }
-        
+        public DateTime LastActivity { get; private set; } = DateTime.Now;
+
         /// <summary>
         /// Whether the session is authenticated
         /// </summary>
@@ -80,19 +80,7 @@ namespace NetForge.Simulation.Protocols.Telnet
         /// Event fired when the session is disconnected
         /// </summary>
         public event EventHandler<TelnetSessionEventArgs>? SessionDisconnected;
-        
-        public TelnetSession(TcpClient tcpClient)
-        {
-            _tcpClient = tcpClient ?? throw new ArgumentNullException(nameof(tcpClient));
-            _stream = tcpClient.GetStream();
-            _cancellationTokenSource = new CancellationTokenSource();
-            
-            SessionId = Guid.NewGuid().ToString("N")[..8];
-            ClientEndpoint = tcpClient.Client.RemoteEndPoint ?? new IPEndPoint(IPAddress.None, 0);
-            CreatedAt = DateTime.Now;
-            LastActivity = DateTime.Now;
-        }
-        
+
         /// <summary>
         /// Start processing commands from this session
         /// </summary>
@@ -288,28 +276,17 @@ namespace NetForge.Simulation.Protocols.Telnet
     /// <summary>
     /// Event arguments for Telnet command events
     /// </summary>
-    public class TelnetCommandEventArgs : EventArgs
+    public class TelnetCommandEventArgs(TelnetSession session, string command) : EventArgs
     {
-        public TelnetSession Session { get; }
-        public string Command { get; }
-        
-        public TelnetCommandEventArgs(TelnetSession session, string command)
-        {
-            Session = session;
-            Command = command;
-        }
+        public TelnetSession Session { get; } = session;
+        public string Command { get; } = command;
     }
     
     /// <summary>
     /// Event arguments for Telnet session events
     /// </summary>
-    public class TelnetSessionEventArgs : EventArgs
+    public class TelnetSessionEventArgs(TelnetSession session) : EventArgs
     {
-        public TelnetSession Session { get; }
-        
-        public TelnetSessionEventArgs(TelnetSession session)
-        {
-            Session = session;
-        }
+        public TelnetSession Session { get; } = session;
     }
 }

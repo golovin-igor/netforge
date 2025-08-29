@@ -6,14 +6,9 @@ using NetForge.Simulation.Common.Protocols;
 
 namespace NetForge.Simulation.CliHandlers.Extreme
 {
-    public class ExtremeVendorCapabilities : IVendorCapabilities
+    public class ExtremeVendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public ExtremeVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string GetRunningConfiguration()
         {

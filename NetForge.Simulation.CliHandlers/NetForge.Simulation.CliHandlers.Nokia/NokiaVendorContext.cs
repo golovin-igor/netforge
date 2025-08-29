@@ -7,16 +7,10 @@ namespace NetForge.Simulation.CliHandlers.Nokia
     /// <summary>
     /// Nokia-specific vendor context implementation
     /// </summary>
-    public class NokiaVendorContext : IVendorContext
+    public class NokiaVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly NokiaVendorCapabilities _capabilities;
-
-        public NokiaVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new NokiaVendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly NokiaVendorCapabilities _capabilities = new(device);
 
         public string VendorName => "Nokia";
         public IVendorCapabilities Capabilities => _capabilities;

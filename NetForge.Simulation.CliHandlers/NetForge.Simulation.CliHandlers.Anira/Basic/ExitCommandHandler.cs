@@ -1,5 +1,4 @@
-using System.Threading.Tasks;
-using NetForge.Simulation.Common;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common.CLI.Base;
 
 namespace NetForge.Simulation.CliHandlers.Anira.Basic
@@ -7,21 +6,17 @@ namespace NetForge.Simulation.CliHandlers.Anira.Basic
     /// <summary>
     /// Anira exit command handler
     /// </summary>
-    public class ExitCommandHandler : VendorAgnosticCliHandler
+    public class ExitCommandHandler() : VendorAgnosticCliHandler("exit", "Exit current mode")
     {
-        public ExitCommandHandler() : base("exit", "Exit current mode")
-        {
-        }
-        
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {
                 return RequireVendor(context, "Anira");
             }
-            
+
             var currentMode = context.Device.GetCurrentMode();
-            
+
             switch (currentMode)
             {
                 case "interface":
@@ -40,7 +35,7 @@ namespace NetForge.Simulation.CliHandlers.Anira.Basic
                     SetMode(context, "user");
                     break;
             }
-            
+
             return Success("");
         }
     }

@@ -1,4 +1,5 @@
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.Common.Dependencies
@@ -17,22 +18,22 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
     /// <summary>
     /// Represents a dependency relationship between protocols
     /// </summary>
-    public class ProtocolDependency
+    public class ProtocolDependency(ProtocolType requiredProtocol, DependencyType type, string reason)
     {
         /// <summary>
         /// The protocol type that is depended upon
         /// </summary>
-        public ProtocolType RequiredProtocol { get; set; }
+        public ProtocolType RequiredProtocol { get; set; } = requiredProtocol;
 
         /// <summary>
         /// Type of dependency relationship
         /// </summary>
-        public DependencyType Type { get; set; }
+        public DependencyType Type { get; set; } = type;
 
         /// <summary>
         /// Human-readable reason for the dependency
         /// </summary>
-        public string Reason { get; set; }
+        public string Reason { get; set; } = reason;
 
         /// <summary>
         /// Minimum version required (if applicable)
@@ -42,21 +43,12 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
         /// <summary>
         /// Whether this dependency can be dynamically resolved
         /// </summary>
-        public bool IsDynamic { get; set; }
+        public bool IsDynamic { get; set; } = false;
 
         /// <summary>
         /// Priority level for dependency resolution
         /// </summary>
-        public int Priority { get; set; }
-
-        public ProtocolDependency(ProtocolType requiredProtocol, DependencyType type, string reason)
-        {
-            RequiredProtocol = requiredProtocol;
-            Type = type;
-            Reason = reason;
-            IsDynamic = false;
-            Priority = 0;
-        }
+        public int Priority { get; set; } = 0;
     }
 
     /// <summary>
@@ -230,7 +222,7 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
         public IEnumerable<ProtocolDependency> GetDependents(ProtocolType protocol)
         {
             var result = new List<ProtocolDependency>();
-            
+
             foreach (var dependent in _dependents.GetValueOrDefault(protocol, new List<ProtocolType>()))
             {
                 var deps = GetDependencies(dependent);
@@ -493,7 +485,7 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
             return chains;
         }
 
-        private void GetDependencyChainsRecursive(ProtocolType protocol, List<ProtocolType> currentChain, 
+        private void GetDependencyChainsRecursive(ProtocolType protocol, List<ProtocolType> currentChain,
             List<List<ProtocolType>> chains, HashSet<ProtocolType> visited)
         {
             if (visited.Contains(protocol))
@@ -599,7 +591,7 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
                 ["TotalDependencies"] = totalDependencies,
                 ["HasCircularDependencies"] = circularDependencies,
                 ["DependencyTypes"] = dependencyTypes,
-                ["AverageDependenciesPerProtocol"] = protocolsWithDependencies > 0 ? 
+                ["AverageDependenciesPerProtocol"] = protocolsWithDependencies > 0 ?
                     (double)totalDependencies / protocolsWithDependencies : 0
             };
         }

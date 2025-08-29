@@ -8,11 +8,12 @@ namespace NetForge.Simulation.Protocols.SSH
     /// <summary>
     /// SSH server for handling incoming SSH connections
     /// </summary>
-    public class SshServer : IDisposable
+    public class SshServer(NetworkDevice device, SshConfig config, SshSessionManager sessionManager)
+        : IDisposable
     {
-        private readonly NetworkDevice _device;
-        private readonly SshConfig _config;
-        private readonly SshSessionManager _sessionManager;
+        private readonly NetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly SshConfig _config = config ?? throw new ArgumentNullException(nameof(config));
+        private readonly SshSessionManager _sessionManager = sessionManager ?? throw new ArgumentNullException(nameof(sessionManager));
         private TcpListener? _listener;
         private bool _isRunning;
         private CancellationTokenSource? _cancellationTokenSource;
@@ -24,13 +25,6 @@ namespace NetForge.Simulation.Protocols.SSH
         public event EventHandler<SshAuthenticationEventArgs>? AuthenticationFailed;
 
         public bool IsRunning => _isRunning;
-
-        public SshServer(NetworkDevice device, SshConfig config, SshSessionManager sessionManager)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-            _sessionManager = sessionManager ?? throw new ArgumentNullException(nameof(sessionManager));
-        }
 
         /// <summary>
         /// Start the SSH server
@@ -297,39 +291,22 @@ namespace NetForge.Simulation.Protocols.SSH
     }
 
     // Event argument classes
-    public class SshConnectionEventArgs : EventArgs
+    public class SshConnectionEventArgs(SshSession session) : EventArgs
     {
-        public SshSession Session { get; }
-
-        public SshConnectionEventArgs(SshSession session)
-        {
-            Session = session;
-        }
+        public SshSession Session { get; } = session;
     }
 
-    public class SshCommandEventArgs : EventArgs
+    public class SshCommandEventArgs(SshSession session, string command) : EventArgs
     {
-        public SshSession Session { get; }
-        public string Command { get; }
-
-        public SshCommandEventArgs(SshSession session, string command)
-        {
-            Session = session;
-            Command = command;
-        }
+        public SshSession Session { get; } = session;
+        public string Command { get; } = command;
     }
 
-    public class SshAuthenticationEventArgs : EventArgs
+    public class SshAuthenticationEventArgs(SshSession session, string username, string? failureReason = null)
+        : EventArgs
     {
-        public SshSession Session { get; }
-        public string Username { get; }
-        public string? FailureReason { get; }
-
-        public SshAuthenticationEventArgs(SshSession session, string username, string? failureReason = null)
-        {
-            Session = session;
-            Username = username;
-            FailureReason = failureReason;
-        }
+        public SshSession Session { get; } = session;
+        public string Username { get; } = username;
+        public string? FailureReason { get; } = failureReason;
     }
 }

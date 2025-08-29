@@ -8,12 +8,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Handles 'access-list' command in configuration mode
     /// </summary>
-    public class AccessListCommandHandler : VendorAgnosticCliHandler
+    public class AccessListCommandHandler() : VendorAgnosticCliHandler("access-list", "Configure access control lists")
     {
-        public AccessListCommandHandler() : base("access-list", "Configure access control lists")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -276,12 +272,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class IpAccessListStandardHandler : VendorAgnosticCliHandler
+    public class IpAccessListStandardHandler() : VendorAgnosticCliHandler("standard", "Standard IP access list")
     {
-        public IpAccessListStandardHandler() : base("standard", "Standard IP access list")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
@@ -338,12 +330,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class IpAccessListExtendedHandler : VendorAgnosticCliHandler
+    public class IpAccessListExtendedHandler() : VendorAgnosticCliHandler("extended", "Extended IP access list")
     {
-        public IpAccessListExtendedHandler() : base("extended", "Extended IP access list")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
@@ -403,12 +391,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Handles 'permit' command in ACL configuration mode
     /// </summary>
-    public class PermitCommandHandler : VendorAgnosticCliHandler
+    public class PermitCommandHandler() : VendorAgnosticCliHandler("permit", "Permit packets")
     {
-        public PermitCommandHandler() : base("permit", "Permit packets")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -567,12 +551,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Handles 'deny' command in ACL configuration mode
     /// </summary>
-    public class DenyCommandHandler : VendorAgnosticCliHandler
+    public class DenyCommandHandler() : VendorAgnosticCliHandler("deny", "Deny packets")
     {
-        public DenyCommandHandler() : base("deny", "Deny packets")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))

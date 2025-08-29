@@ -8,12 +8,7 @@ namespace NetForge.Simulation.Tests.Integration
 {
     public class VendorAgnosticArchitectureIntegrationTests
     {
-        private readonly CiscoDevice _ciscoDevice;
-
-        public VendorAgnosticArchitectureIntegrationTests()
-        {
-            _ciscoDevice = new CiscoDevice("CiscoRouter");
-        }
+        private readonly CiscoDevice _ciscoDevice = new CiscoDevice("CiscoRouter");
 
         [Fact]
         public void VendorAgnosticArchitecture_FullFlow_ShouldWorkEndToEnd()
@@ -240,13 +235,9 @@ namespace NetForge.Simulation.Tests.Integration
     /// <summary>
     /// Test handler that works with multiple vendors
     /// </summary>
-    public class TestMultiVendorHandler : VendorAgnosticCliHandler
+    public class TestMultiVendorHandler() : VendorAgnosticCliHandler("test", "Test command for multiple vendors")
     {
-        public TestMultiVendorHandler() : base("test", "Test command for multiple vendors")
-        {
-        }
-
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var vendorContext = GetVendorContext(context);
             var vendorName = vendorContext?.VendorName ?? "Unknown";
@@ -258,13 +249,9 @@ namespace NetForge.Simulation.Tests.Integration
     /// <summary>
     /// Test handler that only works with Cisco devices
     /// </summary>
-    public class TestCiscoOnlyHandler : VendorAgnosticCliHandler
+    public class TestCiscoOnlyHandler() : VendorAgnosticCliHandler("cisco-only", "Command that only works on Cisco devices")
     {
-        public TestCiscoOnlyHandler() : base("cisco-only", "Command that only works on Cisco devices")
-        {
-        }
-
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var vendorCheck = RequireVendor(context, "Cisco");
             if (!vendorCheck.Success)
@@ -277,13 +264,9 @@ namespace NetForge.Simulation.Tests.Integration
     /// <summary>
     /// Test handler that demonstrates error handling with vendor context
     /// </summary>
-    public class TestErrorHandler : VendorAgnosticCliHandler
+    public class TestErrorHandler() : VendorAgnosticCliHandler("error-test", "Test error handling")
     {
-        public TestErrorHandler() : base("error-test", "Test error handling")
-        {
-        }
-
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var errorMessage = GetVendorError(context, "invalid_command");
             return Error(CliErrorType.InvalidCommand, errorMessage);

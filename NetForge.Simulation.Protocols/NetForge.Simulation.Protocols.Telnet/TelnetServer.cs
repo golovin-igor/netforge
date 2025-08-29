@@ -253,13 +253,8 @@ namespace NetForge.Simulation.Protocols.Telnet
     /// <summary>
     /// Event arguments for Telnet connection events
     /// </summary>
-    public class TelnetConnectionEventArgs : EventArgs
+    public class TelnetConnectionEventArgs(TelnetSession session) : EventArgs
     {
-        public TelnetSession Session { get; }
-        
-        public TelnetConnectionEventArgs(TelnetSession session)
-        {
-            Session = session;
-        }
+        public TelnetSession Session { get; } = session;
     }
 }

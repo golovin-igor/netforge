@@ -9,6 +9,7 @@
 // - Display licensing and usage information
 
 using System.Reflection;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Interfaces;
 using NetForge.Simulation.Common.Interfaces;

@@ -7,14 +7,9 @@ namespace NetForge.Simulation.CliHandlers.MikroTik
     /// <summary>
     /// MikroTik-specific vendor capabilities implementation
     /// </summary>
-    public class MikroTikVendorCapabilities : IVendorCapabilities
+    public class MikroTikVendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public MikroTikVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string GetRunningConfiguration()
         {
@@ -382,4 +377,4 @@ namespace NetForge.Simulation.CliHandlers.MikroTik
             return true;
         }
     }
-} 
+}

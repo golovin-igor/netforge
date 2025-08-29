@@ -8,14 +8,9 @@ namespace NetForge.Simulation.CliHandlers.Aruba
     /// <summary>
     /// Vendor-specific capabilities for Aruba devices
     /// </summary>
-    public class ArubaVendorCapabilities : IVendorCapabilities
+    public class ArubaVendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public ArubaVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string GetRunningConfiguration()
         {
@@ -162,13 +157,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba
 
             var config = new StringBuilder();
             config.AppendLine($"interface {FormatInterfaceName(interfaceName)}");
-            
+
             if (!string.IsNullOrEmpty(iface.Description))
                 config.AppendLine($" description {iface.Description}");
-                
+
             if (!string.IsNullOrEmpty(iface.IpAddress))
                 config.AppendLine($" ip address {iface.IpAddress} {iface.SubnetMask}");
-                
+
             if (iface.IsShutdown)
                 config.AppendLine(" shutdown");
 
@@ -769,4 +764,4 @@ namespace NetForge.Simulation.CliHandlers.Aruba
             _currentInterface = interfaceName;
         }
     }
-} 
+}

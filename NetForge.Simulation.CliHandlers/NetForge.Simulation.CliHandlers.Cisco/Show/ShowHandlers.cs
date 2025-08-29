@@ -1,6 +1,7 @@
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -151,12 +152,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
     /// <summary>
     /// Show version handler
     /// </summary>
-    public class ShowVersionHandler : VendorAgnosticCliHandler
+    public class ShowVersionHandler() : VendorAgnosticCliHandler("version", "Display system hardware and software status")
     {
-        public ShowVersionHandler() : base("version", "Display system hardware and software status")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -307,12 +304,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
     /// <summary>
     /// Show VLAN brief handler
     /// </summary>
-    public class ShowVlanBriefHandler : VendorAgnosticCliHandler
+    public class ShowVlanBriefHandler() : VendorAgnosticCliHandler("brief", "Display VLAN brief information")
     {
-        public ShowVlanBriefHandler() : base("brief", "Display VLAN brief information")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -406,12 +399,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
     /// <summary>
     /// Show IP route handler
     /// </summary>
-    public class ShowIpRouteHandler : VendorAgnosticCliHandler
+    public class ShowIpRouteHandler() : VendorAgnosticCliHandler("route", "Display IP routing table")
     {
-        public ShowIpRouteHandler() : base("route", "Display IP routing table")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -482,12 +471,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
     /// <summary>
     /// Show IP interface brief handler
     /// </summary>
-    public class ShowIpInterfaceBriefHandler : VendorAgnosticCliHandler
+    public class ShowIpInterfaceBriefHandler() : VendorAgnosticCliHandler("brief", "Display brief IP interface status")
     {
-        public ShowIpInterfaceBriefHandler() : base("brief", "Display brief IP interface status")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -540,12 +525,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
     /// <summary>
     /// Show IP OSPF neighbor handler
     /// </summary>
-    public class ShowIpOspfNeighborHandler : VendorAgnosticCliHandler
+    public class ShowIpOspfNeighborHandler() : VendorAgnosticCliHandler("neighbor", "Display OSPF neighbor information")
     {
-        public ShowIpOspfNeighborHandler() : base("neighbor", "Display OSPF neighbor information")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -567,12 +548,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
     /// <summary>
     /// Show IP OSPF database handler
     /// </summary>
-    public class ShowIpOspfDatabaseHandler : VendorAgnosticCliHandler
+    public class ShowIpOspfDatabaseHandler() : VendorAgnosticCliHandler("database", "Display OSPF database information")
     {
-        public ShowIpOspfDatabaseHandler() : base("database", "Display OSPF database information")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -596,12 +573,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
     /// <summary>
     /// Show IP OSPF interface handler
     /// </summary>
-    public class ShowIpOspfInterfaceHandler : VendorAgnosticCliHandler
+    public class ShowIpOspfInterfaceHandler() : VendorAgnosticCliHandler("interface", "Display OSPF interface information")
     {
-        public ShowIpOspfInterfaceHandler() : base("interface", "Display OSPF interface information")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -730,12 +703,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
     /// <summary>
     /// Show CDP neighbors detail handler
     /// </summary>
-    public class ShowCdpNeighborsDetailHandler : VendorAgnosticCliHandler
+    public class ShowCdpNeighborsDetailHandler() : VendorAgnosticCliHandler("detail", "Display detailed CDP neighbor information")
     {
-        public ShowCdpNeighborsDetailHandler() : base("detail", "Display detailed CDP neighbor information")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -769,12 +738,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
     /// <summary>
     /// Show CDP interface handler
     /// </summary>
-    public class ShowCdpInterfaceHandler : VendorAgnosticCliHandler
+    public class ShowCdpInterfaceHandler() : VendorAgnosticCliHandler("interface", "Display CDP interface information")
     {
-        public ShowCdpInterfaceHandler() : base("interface", "Display CDP interface information")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -796,12 +761,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
     /// <summary>
     /// Show CDP entry handler
     /// </summary>
-    public class ShowCdpEntryHandler : VendorAgnosticCliHandler
+    public class ShowCdpEntryHandler() : VendorAgnosticCliHandler("entry", "Display CDP entry information")
     {
-        public ShowCdpEntryHandler() : base("entry", "Display CDP entry information")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))

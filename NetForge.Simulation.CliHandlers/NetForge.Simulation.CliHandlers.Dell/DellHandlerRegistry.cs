@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
@@ -15,17 +16,17 @@ namespace NetForge.Simulation.CliHandlers.Dell
         public string VendorName => "Dell";
         public int Priority => 140; // Dell priority
 
-        public bool SupportsDevice(NetworkDevice device)
+        public bool SupportsDevice(INetworkDevice device)
         {
             return device?.Vendor?.Equals("Dell", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            return new DellVendorContext((NetworkDevice)device);
+            return new DellVendorContext(device);
         }
 
-        public void RegisterHandlers(CliHandlerManager manager)
+        public void RegisterHandlers(ICliHandlerManager manager)
         {
             // Register Dell basic handlers
             manager.RegisterHandler(new Basic.EnableCommandHandler());

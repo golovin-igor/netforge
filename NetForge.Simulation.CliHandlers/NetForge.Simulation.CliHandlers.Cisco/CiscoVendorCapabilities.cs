@@ -8,14 +8,9 @@ namespace NetForge.Simulation.CliHandlers.Cisco
     /// <summary>
     /// Cisco-specific vendor capabilities implementation
     /// </summary>
-    public class CiscoVendorCapabilities : IVendorCapabilities
+    public class CiscoVendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public CiscoVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string GetRunningConfiguration()
         {

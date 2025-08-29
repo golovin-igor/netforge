@@ -274,14 +274,8 @@ namespace NetForge.Simulation.Tests.CiscoVendor
 
     public class CiscoHandlerRegistryTests
     {
-        private readonly CiscoHandlerRegistry _registry;
-        private readonly CiscoDevice _testDevice;
-
-        public CiscoHandlerRegistryTests()
-        {
-            _registry = new CiscoHandlerRegistry();
-            _testDevice = new CiscoDevice("CiscoRouter");
-        }
+        private readonly CiscoHandlerRegistry _registry = new CiscoHandlerRegistry();
+        private readonly CiscoDevice _testDevice = new CiscoDevice("CiscoRouter");
 
         [Fact]
         public async Task CiscoHandlerRegistry_VendorName_ShouldBeCisco()
@@ -381,14 +375,8 @@ namespace NetForge.Simulation.Tests.CiscoVendor
 
     public class CiscoVendorIntegrationTests
     {
-        private readonly CiscoDevice _testDevice;
-        private readonly CiscoHandlerRegistry _registry;
-
-        public CiscoVendorIntegrationTests()
-        {
-            _testDevice = new CiscoDevice("CiscoRouter");
-            _registry = new CiscoHandlerRegistry();
-        }
+        private readonly CiscoDevice _testDevice = new CiscoDevice("CiscoRouter");
+        private readonly CiscoHandlerRegistry _registry = new CiscoHandlerRegistry();
 
         [Fact]
         public async Task CiscoVendor_EndToEndTest_ShouldWorkCorrectly()

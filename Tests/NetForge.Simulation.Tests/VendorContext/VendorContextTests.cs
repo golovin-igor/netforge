@@ -213,12 +213,7 @@ namespace NetForge.Simulation.Tests.VendorContext
 
     public class VendorContextFactoryTests
     {
-        private readonly CiscoDevice _testDevice;
-
-        public VendorContextFactoryTests()
-        {
-            _testDevice = new CiscoDevice("TestRouter");
-        }
+        private readonly CiscoDevice _testDevice = new CiscoDevice("TestRouter");
 
         [Fact]
         public void RegisterVendorContext_WhenCalled_ShouldRegisterFactory()

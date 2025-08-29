@@ -8,55 +8,51 @@ namespace NetForge.Simulation.CliHandlers.F5
     /// <summary>
     /// F5 BIG-IP vendor capabilities implementation
     /// </summary>
-    public class F5VendorCapabilities : IVendorCapabilities
+    public class F5VendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-        private readonly HashSet<string> _supportedCommands;
-        private readonly Dictionary<string, string> _helpTexts;
-
-        public F5VendorCapabilities(NetworkDevice device)
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly HashSet<string> _supportedCommands = new(StringComparer.OrdinalIgnoreCase)
         {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
+            // Basic commands
+            "enable", "disable", "exit", "quit", "help", "?", "ping", "traceroute",
 
-            _supportedCommands = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                // Basic commands
-                "enable", "disable", "exit", "quit", "help", "?", "ping", "traceroute",
+            // Show commands
+            "show", "show running-config", "show startup-config", "show version",
+            "show interfaces", "show ip interface", "show ip route", "show arp",
+            "show vlan", "show trunk", "show spanning-tree", "show cdp",
 
-                // Show commands
-                "show", "show running-config", "show startup-config", "show version",
-                "show interfaces", "show ip interface", "show ip route", "show arp",
-                "show vlan", "show trunk", "show spanning-tree", "show cdp",
+            // Configuration commands
+            "configure", "configure terminal", "hostname", "interface", "ip",
+            "no", "shutdown", "no shutdown", "description", "ip address",
 
-                // Configuration commands
-                "configure", "configure terminal", "hostname", "interface", "ip",
-                "no", "shutdown", "no shutdown", "description", "ip address",
+            // F5 BIG-IP specific commands
+            "tmsh", "bash", "list", "create", "modify", "delete", "show ltm",
+            "show gtm", "show asm", "show apm", "show net", "show sys",
+            "create ltm pool", "create ltm virtual", "create ltm node",
+            "modify ltm pool", "modify ltm virtual", "modify ltm node",
+            "delete ltm pool", "delete ltm virtual", "delete ltm node",
+            "show ltm pool", "show ltm virtual", "show ltm node"
+        };
+        private readonly Dictionary<string, string> _helpTexts = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["tmsh"] = "Enter TMSH (Traffic Management Shell) mode",
+            ["bash"] = "Enter bash shell mode",
+            ["list"] = "List objects in current context",
+            ["create"] = "Create a new object",
+            ["modify"] = "Modify an existing object",
+            ["delete"] = "Delete an object",
+            ["show ltm"] = "Show LTM (Local Traffic Manager) objects",
+            ["show gtm"] = "Show GTM (Global Traffic Manager) objects",
+            ["show asm"] = "Show ASM (Application Security Manager) objects",
+            ["show apm"] = "Show APM (Access Policy Manager) objects",
+            ["show net"] = "Show network configuration",
+            ["show sys"] = "Show system configuration"
+        };
 
-                // F5 BIG-IP specific commands
-                "tmsh", "bash", "list", "create", "modify", "delete", "show ltm",
-                "show gtm", "show asm", "show apm", "show net", "show sys",
-                "create ltm pool", "create ltm virtual", "create ltm node",
-                "modify ltm pool", "modify ltm virtual", "modify ltm node",
-                "delete ltm pool", "delete ltm virtual", "delete ltm node",
-                "show ltm pool", "show ltm virtual", "show ltm node"
-            };
-
-            _helpTexts = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-            {
-                ["tmsh"] = "Enter TMSH (Traffic Management Shell) mode",
-                ["bash"] = "Enter bash shell mode",
-                ["list"] = "List objects in current context",
-                ["create"] = "Create a new object",
-                ["modify"] = "Modify an existing object",
-                ["delete"] = "Delete an object",
-                ["show ltm"] = "Show LTM (Local Traffic Manager) objects",
-                ["show gtm"] = "Show GTM (Global Traffic Manager) objects",
-                ["show asm"] = "Show ASM (Application Security Manager) objects",
-                ["show apm"] = "Show APM (Access Policy Manager) objects",
-                ["show net"] = "Show network configuration",
-                ["show sys"] = "Show system configuration"
-            };
-        }
+        // Basic commands
+        // Show commands
+        // Configuration commands
+        // F5 BIG-IP specific commands
 
         public string VendorName => "F5";
         public int Priority => 160;

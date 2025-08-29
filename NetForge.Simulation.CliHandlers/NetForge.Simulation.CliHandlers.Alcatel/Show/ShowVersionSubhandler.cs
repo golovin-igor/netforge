@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Interfaces;
 
@@ -6,7 +7,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Show;
 
 public class ShowVersionSubhandler(ShowCommandHandler parent) : ICliSubhandler
 {
-    public CliResult Handle(CliContext context)
+    public CliResult Handle(ICliContext context)
     {
         var device = context.Device;
         var output = new StringBuilder();

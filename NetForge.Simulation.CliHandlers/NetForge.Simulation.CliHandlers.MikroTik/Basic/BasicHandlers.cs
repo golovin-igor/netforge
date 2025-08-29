@@ -35,12 +35,8 @@ namespace NetForge.Simulation.CliHandlers.MikroTik.Basic
     /// <summary>
     /// MikroTik ping command handler
     /// </summary>
-    public class PingCommandHandler : VendorAgnosticCliHandler
+    public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        public PingCommandHandler() : base("ping", "Send ping packets")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "MikroTik"))

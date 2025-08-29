@@ -7,6 +7,7 @@ using NetForge.Simulation.Protocols.Common.Dependencies;
 using NetForge.Simulation.Protocols.Common.Services;
 using NetForge.Simulation.Protocols.Common.State;
 using System.ComponentModel.DataAnnotations;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Protocols.Examples
 {
@@ -129,7 +130,7 @@ namespace NetForge.Simulation.Protocols.Examples
             // OSPF Hello timer (10 seconds)
             // OSPF Dead interval (40 seconds)
             // LSA refresh timer (30 minutes)
-            
+
             await Task.CompletedTask;
         }
     }
@@ -258,18 +259,11 @@ namespace NetForge.Simulation.Protocols.Examples
     /// </summary>
     public class ProtocolArchitectureDemo
     {
-        private readonly NetForge.Simulation.Common.Interfaces.IProtocolService _protocolService;
-        private readonly IProtocolConfigurationManager _configManager;
-        private readonly IProtocolDependencyManager _dependencyManager;
+        private readonly NetForge.Simulation.Common.Interfaces.IProtocolService _protocolService = null; // Would be implemented in Phase 1 completion
+        private readonly IProtocolConfigurationManager _configManager = new ProtocolConfigurationManager();
+        private readonly IProtocolDependencyManager _dependencyManager = new ProtocolDependencyManager();
 
-        public ProtocolArchitectureDemo()
-        {
-            _configManager = new ProtocolConfigurationManager();
-            _dependencyManager = new ProtocolDependencyManager();
-            
-            // In real implementation, this would be injected
-            _protocolService = null; // Would be implemented in Phase 1 completion
-        }
+        // In real implementation, this would be injected
 
         /// <summary>
         /// Demonstrate protocol configuration with validation
@@ -299,7 +293,7 @@ namespace NetForge.Simulation.Protocols.Examples
             if (_configManager.ValidateConfiguration(ospfConfig))
             {
                 Console.WriteLine("✓ OSPF configuration is valid");
-                
+
                 // Apply configuration
                 var success = await _configManager.ApplyConfiguration(ProtocolType.OSPF, ospfConfig);
                 if (success)
@@ -320,7 +314,7 @@ namespace NetForge.Simulation.Protocols.Examples
             // Create and save template
             await _configManager.SaveConfigurationTemplate(
                 ProtocolType.OSPF, "BasicBackboneArea", ospfConfig);
-            
+
             // Backup configuration
             var backup = await _configManager.BackupConfiguration(ProtocolType.OSPF);
             Console.WriteLine($"Configuration backed up: {backup?.Length} characters");
@@ -342,7 +336,7 @@ namespace NetForge.Simulation.Protocols.Examples
             // Validate adding BGP to a network with OSPF and ARP
             var activeProtocols = new[] { ProtocolType.OSPF, ProtocolType.ARP };
             var validationResult = _dependencyManager.ValidateProtocolAddition(activeProtocols, ProtocolType.BGP);
-            
+
             Console.WriteLine($"Adding BGP: {(validationResult.IsValid ? "✓ Valid" : "✗ Invalid")}");
             foreach (var error in validationResult.Errors)
             {
@@ -379,7 +373,7 @@ namespace NetForge.Simulation.Protocols.Examples
         public async Task DemonstrateLayeredArchitecture()
         {
             var device = new CiscoDevice("Router1");
-            
+
             // Layer 3 Routing Protocols
             var ospfProtocol = new EnhancedOspfProtocol();
             device.RegisterProtocol(ospfProtocol);
@@ -392,7 +386,7 @@ namespace NetForge.Simulation.Protocols.Examples
             };
 
             await _configManager.ApplyConfiguration(ProtocolType.OSPF, ospfConfig);
-            
+
             // Monitor protocol state
             var routingState = ospfProtocol.GetRoutingState();
             Console.WriteLine($"OSPF State: {routingState.Status}");
@@ -410,7 +404,7 @@ namespace NetForge.Simulation.Protocols.Examples
 
             // Simulate protocol operation
             await ospfProtocol.UpdateState(device);
-            
+
             Console.WriteLine($"Performance Score: {((ProtocolMetrics)metrics).GetPerformanceScore():F1}");
         }
         */
@@ -443,7 +437,7 @@ namespace NetForge.Simulation.Protocols.Examples
         {
             _dependencyManager = new ProtocolDependencyManager();
             _configManager = new ProtocolConfigurationManager();
-            
+
             // Register Cisco-specific validation rules
             RegisterCiscoValidationRules();
         }
@@ -456,8 +450,8 @@ namespace NetForge.Simulation.Protocols.Examples
                 "Cisco OSPF process ID must be <= 65535");
 
             // Cisco-specific dependencies
-            _dependencyManager.RegisterDependency(ProtocolType.EIGRP, 
-                new ProtocolDependency(ProtocolType.CDP, DependencyType.Enhancement, 
+            _dependencyManager.RegisterDependency(ProtocolType.EIGRP,
+                new ProtocolDependency(ProtocolType.CDP, DependencyType.Enhancement,
                 "CDP enhances EIGRP neighbor discovery on Cisco devices"));
         }
 
@@ -466,7 +460,7 @@ namespace NetForge.Simulation.Protocols.Examples
             // Validate dependencies first
             var activeProtocols = GetRegisteredProtocols().Select(p => p.Type);
             var dependencyResult = _dependencyManager.ValidateProtocolAddition(activeProtocols, type);
-            
+
             if (!dependencyResult.IsValid)
             {
                 AddLogEntry($"Cannot configure {type}: Dependency validation failed");

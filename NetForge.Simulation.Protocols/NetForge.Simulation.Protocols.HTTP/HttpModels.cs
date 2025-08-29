@@ -119,20 +119,15 @@ namespace NetForge.Simulation.Protocols.HTTP
     /// <summary>
     /// HTTP request representation
     /// </summary>
-    public class HttpRequest
+    public class HttpRequest(IPEndPoint clientEndpoint)
     {
         public string Method { get; set; } = "GET";
         public string Url { get; set; } = "/";
         public string Version { get; set; } = "HTTP/1.1";
         public Dictionary<string, string> Headers { get; set; } = new();
         public string Body { get; set; } = "";
-        public IPEndPoint ClientEndpoint { get; set; }
+        public IPEndPoint ClientEndpoint { get; set; } = clientEndpoint;
         public DateTime Timestamp { get; set; } = DateTime.Now;
-
-        public HttpRequest(IPEndPoint clientEndpoint)
-        {
-            ClientEndpoint = clientEndpoint;
-        }
     }
 
     /// <summary>
@@ -184,63 +179,42 @@ namespace NetForge.Simulation.Protocols.HTTP
     /// <summary>
     /// HTTP response content
     /// </summary>
-    public class HttpResponseContent
+    public class HttpResponseContent(int statusCode, string statusText, string content, string contentType = "text/html")
     {
-        public int StatusCode { get; set; }
-        public string StatusText { get; set; }
-        public string Content { get; set; }
-        public string ContentType { get; set; }
-
-        public HttpResponseContent(int statusCode, string statusText, string content, string contentType = "text/html")
-        {
-            StatusCode = statusCode;
-            StatusText = statusText;
-            Content = content;
-            ContentType = contentType;
-        }
+        public int StatusCode { get; set; } = statusCode;
+        public string StatusText { get; set; } = statusText;
+        public string Content { get; set; } = content;
+        public string ContentType { get; set; } = contentType;
     }
 
     /// <summary>
     /// HTTP request event arguments
     /// </summary>
-    public class HttpRequestEventArgs : EventArgs
+    public class HttpRequestEventArgs(HttpRequest request, HttpResponse response) : EventArgs
     {
-        public HttpRequest Request { get; }
-        public HttpResponse Response { get; }
-
-        public HttpRequestEventArgs(HttpRequest request, HttpResponse response)
-        {
-            Request = request;
-            Response = response;
-        }
+        public HttpRequest Request { get; } = request;
+        public HttpResponse Response { get; } = response;
     }
 
     /// <summary>
     /// Simple HTTP server implementation
     /// </summary>
-    public class HttpServer : IDisposable
+    public class HttpServer(NetworkDevice device, HttpConfig config, HttpSessionManager sessionManager)
+        : IDisposable
     {
-        private readonly NetworkDevice _device;
-        private readonly HttpConfig _config;
-        private readonly HttpSessionManager _sessionManager;
+        private readonly NetworkDevice _device = device;
+        private readonly HttpSessionManager _sessionManager = sessionManager;
         private TcpListener? _listener;
         private CancellationTokenSource? _cancellationTokenSource;
         private bool _isRunning = false;
 
         public event EventHandler<HttpRequestEventArgs>? RequestReceived;
 
-        public HttpServer(NetworkDevice device, HttpConfig config, HttpSessionManager sessionManager)
-        {
-            _device = device;
-            _config = config;
-            _sessionManager = sessionManager;
-        }
-
         public void Start()
         {
             if (_isRunning) return;
 
-            _listener = new TcpListener(IPAddress.Any, _config.Port);
+            _listener = new TcpListener(IPAddress.Any, config.Port);
             _cancellationTokenSource = new CancellationTokenSource();
             _listener.Start();
             _isRunning = true;
@@ -398,10 +372,10 @@ namespace NetForge.Simulation.Protocols.HTTP
     /// <summary>
     /// HTTP session representation
     /// </summary>
-    public class HttpSession
+    public class HttpSession(IPEndPoint clientEndpoint)
     {
         public string SessionId { get; } = Guid.NewGuid().ToString();
-        public IPEndPoint ClientEndpoint { get; set; }
+        public IPEndPoint ClientEndpoint { get; set; } = clientEndpoint;
         public DateTime StartTime { get; } = DateTime.Now;
         public DateTime LastActivity { get; set; } = DateTime.Now;
         public bool IsAuthenticated { get; set; } = false;
@@ -409,10 +383,5 @@ namespace NetForge.Simulation.Protocols.HTTP
         public int TimeoutMinutes { get; set; } = 30;
 
         public bool IsExpired => (DateTime.Now - LastActivity).TotalMinutes > TimeoutMinutes;
-
-        public HttpSession(IPEndPoint clientEndpoint)
-        {
-            ClientEndpoint = clientEndpoint;
-        }
     }
 }

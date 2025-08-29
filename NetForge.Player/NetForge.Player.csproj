@@ -24,7 +24,6 @@
       <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Linux\NetForge.Simulation.CliHandlers.Linux.csproj" />
       <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.MikroTik\NetForge.Simulation.CliHandlers.MikroTik.csproj" />
       <ProjectReference Include="..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Nokia\NetForge.Simulation.CliHandlers.Nokia.csproj" />
-      <ProjectReference Include="..\NetForge.Simulation.Common\NetForge.Simulation.Common.csproj" />
       <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.ARP\NetForge.Simulation.Protocols.ARP.csproj" />
       <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.BGP\NetForge.Simulation.Protocols.BGP.csproj" />
       <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.CDP\NetForge.Simulation.Protocols.CDP.csproj" />
@@ -41,6 +40,7 @@
       <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.STP\NetForge.Simulation.Protocols.STP.csproj" />
       <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.Telnet\NetForge.Simulation.Protocols.Telnet.csproj" />
       <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.VRRP\NetForge.Simulation.Protocols.VRRP.csproj" />
+      <ProjectReference Include="..\NetForge.Simulation.Topology\NetForge.Simulation.Topology.csproj" />
     </ItemGroup>
 
 </Project>

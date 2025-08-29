@@ -6,14 +6,9 @@ using NetForge.Simulation.Common.Protocols;
 
 namespace NetForge.Simulation.CliHandlers.Fortinet
 {
-    public class FortinetVendorCapabilities : IVendorCapabilities
+    public class FortinetVendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public FortinetVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string GetRunningConfiguration()
         {

@@ -5,6 +5,7 @@ using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common.Metrics;
 using NetForge.Simulation.Protocols.Common.Base;
 using System.Diagnostics;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Protocols.Common
 {
@@ -13,14 +14,14 @@ namespace NetForge.Simulation.Protocols.Common
     /// from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md and implementing the unified IDeviceProtocol interface
     /// Also implements INetworkProtocol for backward compatibility
     /// </summary>
-    public abstract class BaseProtocol : IDeviceProtocol, INetworkProtocol, IDisposable
+    public abstract class BaseProtocol : IDeviceProtocol, IDisposable
     {
-        protected NetworkDevice _device;
+        protected INetworkDevice _device;
         protected readonly BaseProtocolState _state;
         protected readonly ProtocolMetrics _metrics;
 
         // Abstract properties that derived classes must implement
-        public abstract ProtocolType Type { get; }
+
         public abstract string Name { get; }
         public virtual string Version => "1.0.0";
 
@@ -41,7 +42,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// Initialize the protocol with device context
         /// </summary>
         /// <param name="device">The network device this protocol runs on</param>
-        public virtual void Initialize(NetworkDevice device)
+        public virtual void Initialize(INetworkDevice device)
         {
             _device = device;
             _state.IsConfigured = true;
@@ -55,7 +56,9 @@ namespace NetForge.Simulation.Protocols.Common
         /// Called after basic initialization is complete
         /// Override to add protocol-specific initialization logic
         /// </summary>
-        protected virtual void OnInitialized() { }
+        protected virtual void OnInitialized()
+        {
+        }
 
         /// <summary>
         /// Core state management pattern from COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
@@ -63,7 +66,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// Enhanced with performance tracking and metrics collection
         /// </summary>
         /// <param name="device">The network device this protocol runs on</param>
-        public virtual async Task UpdateState(NetworkDevice device)
+        public virtual async Task UpdateState(INetworkDevice device)
         {
             if (!_state.IsActive || !_state.IsConfigured)
                 return;
@@ -111,7 +114,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// Override to implement protocol-specific neighbor discovery
         /// </summary>
         /// <param name="device">Network device</param>
-        protected virtual async Task UpdateNeighbors(NetworkDevice device)
+        protected virtual async Task UpdateNeighbors(INetworkDevice device)
         {
             // Default implementation does nothing
             await Task.CompletedTask;
@@ -122,7 +125,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// Uses the base state management for automatic cleanup
         /// </summary>
         /// <param name="device">Network device</param>
-        protected virtual async Task CleanupStaleNeighbors(NetworkDevice device)
+        protected virtual async Task CleanupStaleNeighbors(INetworkDevice device)
         {
             var staleNeighbors = _state.GetStaleNeighbors(GetNeighborTimeoutSeconds());
             foreach (var neighborId in staleNeighbors)
@@ -131,6 +134,7 @@ namespace NetForge.Simulation.Protocols.Common
                 _state.RemoveNeighbor(neighborId);
                 OnNeighborRemoved(neighborId);
             }
+
             await Task.CompletedTask;
         }
 
@@ -139,7 +143,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// Override to implement advertisement timers, hello timers, etc.
         /// </summary>
         /// <param name="device">Network device</param>
-        protected virtual async Task ProcessTimers(NetworkDevice device)
+        protected virtual async Task ProcessTimers(INetworkDevice device)
         {
             // Default implementation does nothing
             await Task.CompletedTask;
@@ -150,14 +154,16 @@ namespace NetForge.Simulation.Protocols.Common
         /// This is only called when state has changed
         /// </summary>
         /// <param name="device">Network device</param>
-        protected abstract Task RunProtocolCalculation(NetworkDevice device);
+        protected abstract Task RunProtocolCalculation(INetworkDevice device);
 
         /// <summary>
         /// Called when a neighbor is removed due to timeout
         /// Override to add protocol-specific cleanup logic
         /// </summary>
         /// <param name="neighborId">ID of the removed neighbor</param>
-        protected virtual void OnNeighborRemoved(string neighborId) { }
+        protected virtual void OnNeighborRemoved(string neighborId)
+        {
+        }
 
         /// <summary>
         /// Get the neighbor timeout in seconds for this protocol
@@ -315,6 +321,8 @@ namespace NetForge.Simulation.Protocols.Common
         /// </summary>
         public virtual IEnumerable<string> SupportedVendors => GetSupportedVendors();
 
+        public virtual ProtocolType Type { get; set; }
+
         /// <summary>
         /// Get the list of vendor names this protocol supports
         /// Override for vendor-specific protocols (e.g., EIGRP for Cisco only)
@@ -339,7 +347,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// </summary>
         /// <param name="eventBus">The network event bus</param>
         /// <param name="self">Reference to the device running this protocol</param>
-        public virtual void SubscribeToEvents(NetworkEventBus eventBus, NetworkDevice self)
+        public virtual void SubscribeToEvents(INetworkEventBus eventBus, INetworkDevice self)
         {
             OnSubscribeToEvents(eventBus, self);
         }
@@ -350,7 +358,9 @@ namespace NetForge.Simulation.Protocols.Common
         /// </summary>
         /// <param name="eventBus">Event bus</param>
         /// <param name="self">Device reference</param>
-        protected virtual void OnSubscribeToEvents(NetworkEventBus eventBus, NetworkDevice self) { }
+        protected virtual void OnSubscribeToEvents(INetworkEventBus eventBus, INetworkDevice self)
+        {
+        }
 
         // Protocol dependencies and compatibility - New IDeviceProtocol methods
         /// <summary>
@@ -413,7 +423,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// <param name="interfaceName">Local interface name</param>
         /// <param name="neighbor">Remote neighbor device</param>
         /// <returns>True if connection is suitable, false otherwise</returns>
-        protected virtual bool IsNeighborReachable(NetworkDevice device, string interfaceName, NetworkDevice neighbor)
+        protected virtual bool IsNeighborReachable(INetworkDevice device, string interfaceName, INetworkDevice neighbor)
         {
             var connection = device.GetPhysicalConnectionMetrics(interfaceName);
             return connection?.IsSuitableForRouting ?? false;

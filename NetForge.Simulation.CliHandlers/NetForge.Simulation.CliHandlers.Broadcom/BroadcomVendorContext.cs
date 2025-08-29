@@ -7,16 +7,10 @@ namespace NetForge.Simulation.CliHandlers.Broadcom
     /// <summary>
     /// Broadcom-specific vendor context implementation
     /// </summary>
-    public class BroadcomVendorContext : IVendorContext
+    public class BroadcomVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly BroadcomVendorCapabilities _capabilities;
-
-        public BroadcomVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new BroadcomVendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly BroadcomVendorCapabilities _capabilities = new(device);
 
         public string VendorName => "Broadcom";
         public IVendorCapabilities Capabilities => _capabilities;

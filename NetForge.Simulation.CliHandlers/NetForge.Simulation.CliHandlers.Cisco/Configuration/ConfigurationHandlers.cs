@@ -59,12 +59,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Cisco exit command handler
     /// </summary>
-    public class ExitCommandHandler : VendorAgnosticCliHandler
+    public class ExitCommandHandler() : VendorAgnosticCliHandler("exit", "Exit from current mode")
     {
-        public ExitCommandHandler() : base("exit", "Exit from current mode")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -186,12 +182,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Cisco IP command handler
     /// </summary>
-    public class IpCommandHandler : VendorAgnosticCliHandler
+    public class IpCommandHandler() : VendorAgnosticCliHandler("ip", "Configure IP parameters")
     {
-        public IpCommandHandler() : base("ip", "Configure IP parameters")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -319,12 +311,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Cisco no command handler
     /// </summary>
-    public class NoCommandHandler : VendorAgnosticCliHandler
+    public class NoCommandHandler() : VendorAgnosticCliHandler("no", "Remove or disable configuration")
     {
-        public NoCommandHandler() : base("no", "Remove or disable configuration")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -516,12 +504,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Cisco hostname command handler
     /// </summary>
-    public class HostnameCommandHandler : VendorAgnosticCliHandler
+    public class HostnameCommandHandler() : VendorAgnosticCliHandler("hostname", "Set system's network name")
     {
-        public HostnameCommandHandler() : base("hostname", "Set system's network name")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -559,12 +543,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Cisco VLAN command handler
     /// </summary>
-    public class VlanCommandHandler : VendorAgnosticCliHandler
+    public class VlanCommandHandler() : VendorAgnosticCliHandler("vlan", "Configure VLAN parameters")
     {
-        public VlanCommandHandler() : base("vlan", "Configure VLAN parameters")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -647,12 +627,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Router OSPF sub-handler
     /// </summary>
-    public class RouterOspfHandler : VendorAgnosticCliHandler
+    public class RouterOspfHandler() : VendorAgnosticCliHandler("ospf", "Open Shortest Path First (OSPF)")
     {
-        public RouterOspfHandler() : base("ospf", "Open Shortest Path First (OSPF)")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -684,12 +660,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Router BGP sub-handler
     /// </summary>
-    public class RouterBgpHandler : VendorAgnosticCliHandler
+    public class RouterBgpHandler() : VendorAgnosticCliHandler("bgp", "Border Gateway Protocol (BGP)")
     {
-        public RouterBgpHandler() : base("bgp", "Border Gateway Protocol (BGP)")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -721,12 +693,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Router RIP sub-handler
     /// </summary>
-    public class RouterRipHandler : VendorAgnosticCliHandler
+    public class RouterRipHandler() : VendorAgnosticCliHandler("rip", "Routing Information Protocol (RIP)")
     {
-        public RouterRipHandler() : base("rip", "Routing Information Protocol (RIP)")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -744,12 +712,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Router EIGRP sub-handler
     /// </summary>
-    public class RouterEigrpHandler : VendorAgnosticCliHandler
+    public class RouterEigrpHandler() : VendorAgnosticCliHandler("eigrp", "Enhanced Interior Gateway Routing Protocol (EIGRP)")
     {
-        public RouterEigrpHandler() : base("eigrp", "Enhanced Interior Gateway Routing Protocol (EIGRP)")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -866,12 +830,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Cisco access group configuration handler
     /// </summary>
-    public class IpAccessGroupCommandHandler : VendorAgnosticCliHandler
+    public class IpAccessGroupCommandHandler() : VendorAgnosticCliHandler("access-group", "Apply an access group to interface")
     {
-        public IpAccessGroupCommandHandler() : base("access-group", "Apply an access group to interface")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -927,12 +887,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Cisco shutdown command handler
     /// </summary>
-    public class ShutdownCommandHandler : VendorAgnosticCliHandler
+    public class ShutdownCommandHandler() : VendorAgnosticCliHandler("shutdown", "Shutdown the interface")
     {
-        public ShutdownCommandHandler() : base("shutdown", "Shutdown the interface")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -969,12 +925,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Cisco no shutdown command handler
     /// </summary>
-    public class NoShutdownHandler : VendorAgnosticCliHandler
+    public class NoShutdownHandler() : VendorAgnosticCliHandler("shutdown", "Enable an interface")
     {
-        public NoShutdownHandler() : base("shutdown", "Enable an interface")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -1086,12 +1038,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// No IP address handler
     /// </summary>
-    public class NoIpAddressHandler : VendorAgnosticCliHandler
+    public class NoIpAddressHandler() : VendorAgnosticCliHandler("address", "Remove IP address")
     {
-        public NoIpAddressHandler() : base("address", "Remove IP address")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -1128,12 +1076,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// No IP access group handler
     /// </summary>
-    public class NoIpAccessGroupHandler : VendorAgnosticCliHandler
+    public class NoIpAccessGroupHandler() : VendorAgnosticCliHandler("access-group", "Remove IP access group")
     {
-        public NoIpAccessGroupHandler() : base("access-group", "Remove IP access group")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -1170,12 +1114,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Cisco VLAN name command handler
     /// </summary>
-    public class CiscoVlanNameHandler : VendorAgnosticCliHandler
+    public class CiscoVlanNameHandler() : VendorAgnosticCliHandler("name", "Set VLAN name")
     {
-        public CiscoVlanNameHandler() : base("name", "Set VLAN name")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -1222,12 +1162,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// <summary>
     /// Cisco router mode command handler - handles commands when in router configuration mode
     /// </summary>
-    public class CiscoRouterModeCommandHandler : VendorAgnosticCliHandler
+    public class CiscoRouterModeCommandHandler() : VendorAgnosticCliHandler("", "Router mode commands")
     {
-        public CiscoRouterModeCommandHandler() : base("", "Router mode commands")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return IsInMode(context, "router");

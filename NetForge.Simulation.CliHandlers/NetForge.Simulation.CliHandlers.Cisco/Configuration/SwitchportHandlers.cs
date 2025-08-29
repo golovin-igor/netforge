@@ -88,12 +88,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SwitchportModeAccessHandler : VendorAgnosticCliHandler
+    public class SwitchportModeAccessHandler() : VendorAgnosticCliHandler("access", "Set switchport to access mode")
     {
-        public SwitchportModeAccessHandler() : base("access", "Set switchport to access mode")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -141,12 +137,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SwitchportModeTrunkHandler : VendorAgnosticCliHandler
+    public class SwitchportModeTrunkHandler() : VendorAgnosticCliHandler("trunk", "Set switchport to trunk mode")
     {
-        public SwitchportModeTrunkHandler() : base("trunk", "Set switchport to trunk mode")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -209,12 +201,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SwitchportModeDynamicAutoHandler : VendorAgnosticCliHandler
+    public class SwitchportModeDynamicAutoHandler() : VendorAgnosticCliHandler("auto", "Set to dynamic auto mode")
     {
-        public SwitchportModeDynamicAutoHandler() : base("auto", "Set to dynamic auto mode")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -254,12 +242,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SwitchportModeDynamicDesirableHandler : VendorAgnosticCliHandler
+    public class SwitchportModeDynamicDesirableHandler() : VendorAgnosticCliHandler("desirable", "Set to dynamic desirable mode")
     {
-        public SwitchportModeDynamicDesirableHandler() : base("desirable", "Set to dynamic desirable mode")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -316,12 +300,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SwitchportAccessVlanHandler : VendorAgnosticCliHandler
+    public class SwitchportAccessVlanHandler() : VendorAgnosticCliHandler("vlan", "Set access VLAN")
     {
-        public SwitchportAccessVlanHandler() : base("vlan", "Set access VLAN")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
@@ -476,12 +456,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SwitchportTrunkEncapsulationDot1qHandler : VendorAgnosticCliHandler
+    public class SwitchportTrunkEncapsulationDot1qHandler() : VendorAgnosticCliHandler("dot1q", "Set 802.1Q encapsulation")
     {
-        public SwitchportTrunkEncapsulationDot1qHandler() : base("dot1q", "Set 802.1Q encapsulation")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -514,12 +490,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SwitchportTrunkEncapsulationIslHandler : VendorAgnosticCliHandler
+    public class SwitchportTrunkEncapsulationIslHandler() : VendorAgnosticCliHandler("isl", "Set ISL encapsulation")
     {
-        public SwitchportTrunkEncapsulationIslHandler() : base("isl", "Set ISL encapsulation")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -566,12 +538,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SwitchportTrunkAllowedVlanHandler : VendorAgnosticCliHandler
+    public class SwitchportTrunkAllowedVlanHandler() : VendorAgnosticCliHandler("vlan", "Set allowed VLANs")
     {
-        public SwitchportTrunkAllowedVlanHandler() : base("vlan", "Set allowed VLANs")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
@@ -665,12 +633,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SwitchportTrunkNativeVlanHandler : VendorAgnosticCliHandler
+    public class SwitchportTrunkNativeVlanHandler() : VendorAgnosticCliHandler("vlan", "Set native VLAN")
     {
-        public SwitchportTrunkNativeVlanHandler() : base("vlan", "Set native VLAN")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)
@@ -737,12 +701,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SwitchportVoiceVlanHandler : VendorAgnosticCliHandler
+    public class SwitchportVoiceVlanHandler() : VendorAgnosticCliHandler("vlan", "Set voice VLAN")
     {
-        public SwitchportVoiceVlanHandler() : base("vlan", "Set voice VLAN")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)

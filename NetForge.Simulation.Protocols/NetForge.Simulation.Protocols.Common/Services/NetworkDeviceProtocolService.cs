@@ -15,20 +15,12 @@ namespace NetForge.Simulation.Protocols.Common.Services
     /// Implementation of IProtocolService for NetworkDevice
     /// This provides the bridge between CLI handlers and protocols via IoC/DI
     /// </summary>
-    public class NetworkDeviceProtocolService : CommonProtocolService
+    public class NetworkDeviceProtocolService(NetworkDevice device) : CommonProtocolService
     {
-        private readonly NetworkDevice _device;
-        private readonly ProtocolDependencyManager _dependencyManager;
-        private readonly ProtocolConfigurationManager _configurationManager;
-        private readonly Dictionary<ProtocolType, IProtocolMetrics> _metricsCache;
-
-        public NetworkDeviceProtocolService(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _dependencyManager = new ProtocolDependencyManager();
-            _configurationManager = new ProtocolConfigurationManager();
-            _metricsCache = new Dictionary<ProtocolType, IProtocolMetrics>();
-        }
+        private readonly NetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly ProtocolDependencyManager _dependencyManager = new();
+        private readonly ProtocolConfigurationManager _configurationManager = new();
+        private readonly Dictionary<ProtocolType, IProtocolMetrics> _metricsCache = new();
 
         /// <summary>
         /// Get a protocol instance by its type

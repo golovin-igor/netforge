@@ -14,17 +14,12 @@ namespace NetForge.Simulation.Protocols.HTTP
     public class HttpProtocol : BaseManagementProtocol
     {
         private HttpServer? _httpServer;
-        private readonly HttpSessionManager _sessionManager;
+        private readonly HttpSessionManager _sessionManager = new();
 
         public override ProtocolType Type => ProtocolType.HTTP;
         public override string Name => "HTTP Protocol";
         public override string Version => "1.1.0";
         public override int DefaultPort => 80;
-
-        public HttpProtocol()
-        {
-            _sessionManager = new HttpSessionManager();
-        }
 
         protected override BaseProtocolState CreateInitialState()
         {

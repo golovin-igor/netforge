@@ -6,12 +6,8 @@ namespace NetForge.Simulation.CliHandlers.F5.Basic
     /// <summary>
     /// F5 BIG-IP exit command handler
     /// </summary>
-    public class ExitCommandHandler : VendorAgnosticCliHandler
+    public class ExitCommandHandler() : VendorAgnosticCliHandler("exit", "Exit current mode or session")
     {
-        public ExitCommandHandler() : base("exit", "Exit current mode or session")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "F5"))

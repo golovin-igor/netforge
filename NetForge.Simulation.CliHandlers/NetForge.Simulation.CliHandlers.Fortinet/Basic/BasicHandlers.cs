@@ -36,12 +36,8 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
     /// <summary>
     /// Fortinet ping command handler
     /// </summary>
-    public class PingCommandHandler : VendorAgnosticCliHandler
+    public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        public PingCommandHandler() : base("ping", "Send ping packets")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
@@ -78,12 +74,8 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
     /// <summary>
     /// Fortinet execute command handler
     /// </summary>
-    public class ExecuteCommandHandler : VendorAgnosticCliHandler
+    public class ExecuteCommandHandler() : VendorAgnosticCliHandler("execute", "Execute operational commands")
     {
-        public ExecuteCommandHandler() : base("execute", "Execute operational commands")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
@@ -137,12 +129,8 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
     /// <summary>
     /// Fortinet config command handler
     /// </summary>
-    public class ConfigCommandHandler : VendorAgnosticCliHandler
+    public class ConfigCommandHandler() : VendorAgnosticCliHandler("config", "Enter configuration mode")
     {
-        public ConfigCommandHandler() : base("config", "Enter configuration mode")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
@@ -229,12 +217,8 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
     /// <summary>
     /// Fortinet edit command handler
     /// </summary>
-    public class EditCommandHandler : VendorAgnosticCliHandler
+    public class EditCommandHandler() : VendorAgnosticCliHandler("edit", "Edit configuration object")
     {
-        public EditCommandHandler() : base("edit", "Edit configuration object")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
@@ -273,12 +257,8 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
     /// <summary>
     /// Fortinet set command handler
     /// </summary>
-    public class SetCommandHandler : VendorAgnosticCliHandler
+    public class SetCommandHandler() : VendorAgnosticCliHandler("set", "Set configuration parameter")
     {
-        public SetCommandHandler() : base("set", "Set configuration parameter")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
@@ -398,12 +378,8 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
     /// <summary>
     /// Fortinet next command handler - moves to the next configuration object
     /// </summary>
-    public class NextCommandHandler : VendorAgnosticCliHandler
+    public class NextCommandHandler() : VendorAgnosticCliHandler("next", "Move to next configuration object")
     {
-        public NextCommandHandler() : base("next", "Move to next configuration object")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
@@ -435,12 +411,8 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
     /// <summary>
     /// Fortinet end command handler - exits configuration mode
     /// </summary>
-    public class EndCommandHandler : VendorAgnosticCliHandler
+    public class EndCommandHandler() : VendorAgnosticCliHandler("end", "Exit configuration mode")
     {
-        public EndCommandHandler() : base("end", "Exit configuration mode")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))

@@ -2,6 +2,7 @@ using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Protocols.Common.Configuration
 {
@@ -91,7 +92,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         public bool IsEnabled { get; set; } = true;
 
         public abstract string ProtocolName { get; }
-        
+
         public virtual string ConfigurationVersion => "1.0";
 
         /// <summary>
@@ -479,16 +480,16 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
                 if (_configurations.TryGetValue(type, out var config))
                 {
                     var backup = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
-                    
+
                     // Store backup reference
                     if (!_backups.ContainsKey(type))
                     {
                         _backups[type] = new List<string>();
                     }
-                    
+
                     var backupId = $"{type}_{DateTime.Now:yyyyMMdd_HHmmss}";
                     _backups[type].Add(backupId);
-                    
+
                     return backup;
                 }
 

@@ -6,12 +6,8 @@ namespace NetForge.Simulation.CliHandlers.F5.Basic
     /// <summary>
     /// F5 BIG-IP ping command handler
     /// </summary>
-    public class PingCommandHandler : VendorAgnosticCliHandler
+    public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Ping a host")
     {
-        public PingCommandHandler() : base("ping", "Ping a host")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "F5"))

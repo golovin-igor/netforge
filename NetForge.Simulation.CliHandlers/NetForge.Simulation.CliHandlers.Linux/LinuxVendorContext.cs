@@ -7,16 +7,10 @@ namespace NetForge.Simulation.CliHandlers.Linux
     /// <summary>
     /// Linux-specific vendor context implementation
     /// </summary>
-    public class LinuxVendorContext : IVendorContext
+    public class LinuxVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly LinuxVendorCapabilities _capabilities;
-
-        public LinuxVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new LinuxVendorCapabilities();
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly LinuxVendorCapabilities _capabilities = new();
 
         public string VendorName => "Linux";
         public IVendorCapabilities Capabilities => _capabilities;

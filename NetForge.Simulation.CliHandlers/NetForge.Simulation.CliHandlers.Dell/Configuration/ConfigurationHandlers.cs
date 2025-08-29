@@ -9,12 +9,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// <summary>
     /// Dell configure terminal command handler
     /// </summary>
-    public class ConfigureCommandHandler : VendorAgnosticCliHandler
+    public class ConfigureCommandHandler() : VendorAgnosticCliHandler("configure", "Enter configuration mode")
     {
-        public ConfigureCommandHandler() : base("configure", "Enter configuration mode")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
@@ -36,12 +32,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// <summary>
     /// Interface configuration command handler with comprehensive Dell OS10 support
     /// </summary>
-    public class InterfaceCommandHandler : VendorAgnosticCliHandler
+    public class InterfaceCommandHandler() : VendorAgnosticCliHandler("interface", "Configure interface parameters")
     {
-        public InterfaceCommandHandler() : base("interface", "Configure interface parameters")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
@@ -145,12 +137,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// <summary>
     /// Interface mode configuration commands with comprehensive Dell OS10 support
     /// </summary>
-    public class InterfaceModeCommandHandler : VendorAgnosticCliHandler
+    public class InterfaceModeCommandHandler() : VendorAgnosticCliHandler("", "Interface mode commands")
     {
-        public InterfaceModeCommandHandler() : base("", "Interface mode commands")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return IsInMode(context, "interface");
@@ -420,12 +408,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// <summary>
     /// Hostname configuration command handler
     /// </summary>
-    public class HostnameCommandHandler : VendorAgnosticCliHandler
+    public class HostnameCommandHandler() : VendorAgnosticCliHandler("hostname", "Set system hostname")
     {
-        public HostnameCommandHandler() : base("hostname", "Set system hostname")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
@@ -451,12 +435,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// <summary>
     /// VLAN configuration command handler with comprehensive Dell OS10 support
     /// </summary>
-    public class VlanCommandHandler : VendorAgnosticCliHandler
+    public class VlanCommandHandler() : VendorAgnosticCliHandler("vlan", "Configure VLAN parameters")
     {
-        public VlanCommandHandler() : base("vlan", "Configure VLAN parameters")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
@@ -507,12 +487,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// <summary>
     /// Router configuration command handler for OSPF, BGP, RIP protocols
     /// </summary>
-    public class RouterCommandHandler : VendorAgnosticCliHandler
+    public class RouterCommandHandler() : VendorAgnosticCliHandler("router", "Configure routing protocols")
     {
-        public RouterCommandHandler() : base("router", "Configure routing protocols")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
@@ -582,12 +558,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// <summary>
     /// Router mode configuration commands for routing protocols
     /// </summary>
-    public class RouterModeCommandHandler : VendorAgnosticCliHandler
+    public class RouterModeCommandHandler() : VendorAgnosticCliHandler("", "Router mode commands")
     {
-        public RouterModeCommandHandler() : base("", "Router mode commands")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return IsInMode(context, "router");
@@ -695,12 +667,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// <summary>
     /// IP route configuration command handler
     /// </summary>
-    public class IpRouteCommandHandler : VendorAgnosticCliHandler
+    public class IpRouteCommandHandler() : VendorAgnosticCliHandler("ip", "Configure IP parameters")
     {
-        public IpRouteCommandHandler() : base("ip", "Configure IP parameters")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return context.CommandParts.Length > 1 && context.CommandParts[1] == "route";
@@ -749,12 +717,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// <summary>
     /// Exit command handler for configuration modes
     /// </summary>
-    public class ExitCommandHandler : VendorAgnosticCliHandler
+    public class ExitCommandHandler() : VendorAgnosticCliHandler("exit", "Exit current configuration mode")
     {
-        public ExitCommandHandler() : base("exit", "Exit current configuration mode")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))

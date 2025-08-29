@@ -248,14 +248,9 @@ namespace NetForge.Simulation.Protocols.HSRP
     }
 
     // HSRP State Machine
-    public class HsrpStateMachine
+    public class HsrpStateMachine(HsrpGroupState groupState)
     {
-        public HsrpGroupState GroupState { get; set; }
-
-        public HsrpStateMachine(HsrpGroupState groupState)
-        {
-            GroupState = groupState;
-        }
+        public HsrpGroupState GroupState { get; set; } = groupState;
 
         public void ProcessEvent(HsrpEvent eventType, HsrpHelloPacket? packet = null)
         {

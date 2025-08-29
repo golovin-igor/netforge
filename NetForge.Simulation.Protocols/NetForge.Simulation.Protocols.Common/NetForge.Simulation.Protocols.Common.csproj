@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\NetForge.Simulation.Common\NetForge.Simulation.Common.csproj" />
+    <ProjectReference Include="..\..\NetForge.Interfaces\NetForge.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

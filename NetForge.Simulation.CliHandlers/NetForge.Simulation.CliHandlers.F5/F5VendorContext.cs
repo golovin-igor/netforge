@@ -8,16 +8,10 @@ namespace NetForge.Simulation.CliHandlers.F5
     /// <summary>
     /// F5 BIG-IP vendor context implementation
     /// </summary>
-    public class F5VendorContext : IVendorContext
+    public class F5VendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly F5VendorCapabilities _capabilities;
-
-        public F5VendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new F5VendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly F5VendorCapabilities _capabilities = new(device);
 
         public string VendorName => "F5";
         public IVendorCapabilities Capabilities => _capabilities;

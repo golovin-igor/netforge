@@ -1,9 +1,11 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Factories;
 using NetForge.Simulation.Common.CLI.Interfaces;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Handlers.Common;
 
 namespace NetForge.Simulation.CliHandlers.Cisco
 {
@@ -15,7 +17,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         public override string VendorName => "Cisco";
         public override int Priority => 200; // Higher priority for well-tested vendor
 
-        public override void RegisterHandlers(CliHandlerManager manager)
+        public override void RegisterHandlers(ICliHandlerManager manager)
         {
             // Register basic handlers (migrated from old architecture)
             manager.RegisterHandler(new Basic.EnableCommandHandler());
@@ -112,7 +114,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
 
         public override IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            if (device is NetworkDevice networkDevice)
+            if (device is {} networkDevice)
             {
                 return new CiscoVendorContext(networkDevice);
             }

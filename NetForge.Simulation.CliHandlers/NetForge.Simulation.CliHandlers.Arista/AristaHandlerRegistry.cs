@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Interfaces;
@@ -17,7 +18,7 @@ public class AristaHandlerRegistry : IVendorHandlerRegistry
         return vendorName.Equals("Arista", StringComparison.OrdinalIgnoreCase);
     }
 
-    public void RegisterHandlers(CliHandlerManager manager)
+    public void RegisterHandlers(ICliHandlerManager manager)
     {
         // Register Arista show handlers
         manager.RegisterHandler(new Show.ShowCommandHandler());
@@ -43,7 +44,7 @@ public class AristaHandlerRegistry : IVendorHandlerRegistry
 
     public IVendorContext CreateVendorContext(INetworkDevice device)
     {
-        return new AristaVendorContext((NetworkDevice)device);
+        return new AristaVendorContext(device);
     }
 
     public IEnumerable<string> GetSupportedDeviceTypes()

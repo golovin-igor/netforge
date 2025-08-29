@@ -1,5 +1,6 @@
 using System.Text;
 using System.Threading.Tasks;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 
@@ -14,21 +15,21 @@ namespace NetForge.Simulation.CliHandlers.Alcatel.Basic
         {
             AddAlias("hist");
         }
-        
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Alcatel"))
             {
                 return RequireVendor(context, "Alcatel");
             }
-            
+
             var output = new StringBuilder();
             output.AppendLine("Command History:");
             output.AppendLine("  1  enable");
             output.AppendLine("  2  show version");
             output.AppendLine("  3  show system");
             output.AppendLine("  4  history");
-            
+
             return Success(output.ToString());
         }
     }

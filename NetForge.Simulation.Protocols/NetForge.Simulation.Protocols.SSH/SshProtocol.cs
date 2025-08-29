@@ -13,16 +13,11 @@ namespace NetForge.Simulation.Protocols.SSH
     public class SshProtocol : BaseProtocol
     {
         private SshServer? _sshServer;
-        private readonly SshSessionManager _sessionManager;
+        private readonly SshSessionManager _sessionManager = new();
 
         public override ProtocolType Type => ProtocolType.SSH;
         public override string Name => "SSH Protocol";
         public override string Version => "2.0.0";
-
-        public SshProtocol()
-        {
-            _sessionManager = new SshSessionManager();
-        }
 
         protected override BaseProtocolState CreateInitialState()
         {

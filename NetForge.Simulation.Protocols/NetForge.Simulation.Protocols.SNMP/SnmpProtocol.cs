@@ -10,15 +10,10 @@ namespace NetForge.Simulation.Protocols.SNMP;
 public class SnmpProtocol : BaseProtocol
 {
     private SnmpAgent? _snmpAgent;
-    private readonly SnmpState _snmpState;
+    private readonly SnmpState _snmpState = new();
 
     public override ProtocolType Type => ProtocolType.SNMP;
     public override string Name => "Simple Network Management Protocol";
-
-    public SnmpProtocol()
-    {
-        _snmpState = new SnmpState();
-    }
 
     protected override BaseProtocolState CreateInitialState()
     {

@@ -8,11 +8,9 @@ namespace NetForge.Simulation.CliHandlers.Linux.System;
 
 public static class SystemHandlers
 {
-    public class IpLinkSetHandler : VendorAgnosticCliHandler
+    public class IpLinkSetHandler() : VendorAgnosticCliHandler("ip", "IP configuration commands")
     {
-        public IpLinkSetHandler() : base("ip", "IP configuration commands") { }
-
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             var args = context.CommandParts;
             
@@ -167,12 +165,8 @@ public static class SystemHandlers
         }
     }
 
-    public class IpAddressHandler : VendorAgnosticCliHandler
+    public class IpAddressHandler() : VendorAgnosticCliHandler("ip address", "Configure interface IP addresses")
     {
-        public IpAddressHandler() : base("ip address", "Configure interface IP addresses")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return context.CommandParts.Length >= 5 &&
@@ -228,12 +222,8 @@ public static class SystemHandlers
         }
     }
 
-    public class IpRouteHandler : VendorAgnosticCliHandler
+    public class IpRouteHandler() : VendorAgnosticCliHandler("ip route", "Manage static routes")
     {
-        public IpRouteHandler() : base("ip route", "Manage static routes")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return context.CommandParts.Length >= 2 &&
@@ -307,12 +297,8 @@ public static class SystemHandlers
         }
     }
 
-    public class IfconfigHandler : VendorAgnosticCliHandler
+    public class IfconfigHandler() : VendorAgnosticCliHandler("ifconfig", "Display interface configuration")
     {
-        public IfconfigHandler() : base("ifconfig", "Display interface configuration")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return context.CommandParts.Length >= 1 &&
@@ -338,12 +324,8 @@ public static class SystemHandlers
         }
     }
 
-    public class RouteHandler : VendorAgnosticCliHandler
+    public class RouteHandler() : VendorAgnosticCliHandler("route", "Display routing table")
     {
-        public RouteHandler() : base("route", "Display routing table")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return context.CommandParts.Length >= 1 &&
@@ -368,12 +350,8 @@ public static class SystemHandlers
         }
     }
 
-    public class ArpHandler : VendorAgnosticCliHandler
+    public class ArpHandler() : VendorAgnosticCliHandler("arp", "Display ARP table")
     {
-        public ArpHandler() : base("arp", "Display ARP table")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             if (context.CommandParts.Length == 0)
@@ -405,12 +383,8 @@ public static class SystemHandlers
         }
     }
 
-    public class OspfHandler : VendorAgnosticCliHandler
+    public class OspfHandler() : VendorAgnosticCliHandler("ospf", "OSPF routing protocol")
     {
-        public OspfHandler() : base("ospf", "OSPF routing protocol")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return context.CommandParts.Length >= 1 &&
@@ -447,12 +421,8 @@ public static class SystemHandlers
         }
     }
 
-    public class BgpHandler : VendorAgnosticCliHandler
+    public class BgpHandler() : VendorAgnosticCliHandler("bgp", "BGP routing protocol")
     {
-        public BgpHandler() : base("bgp", "BGP routing protocol")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return context.CommandParts.Length >= 1 &&
@@ -489,12 +459,8 @@ public static class SystemHandlers
         }
     }
 
-    public class RipHandler : VendorAgnosticCliHandler
+    public class RipHandler() : VendorAgnosticCliHandler("rip", "RIP routing protocol")
     {
-        public RipHandler() : base("rip", "RIP routing protocol")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return context.CommandParts.Length >= 1 &&
@@ -531,12 +497,8 @@ public static class SystemHandlers
         }
     }
 
-    public class LsmodHandler : VendorAgnosticCliHandler
+    public class LsmodHandler() : VendorAgnosticCliHandler("lsmod", "Show loaded kernel modules")
     {
-        public LsmodHandler() : base("lsmod", "Show loaded kernel modules")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return context.CommandParts.Length >= 1 &&
@@ -549,12 +511,8 @@ public static class SystemHandlers
         }
     }
 
-    public class IpLinkHandler : VendorAgnosticCliHandler
+    public class IpLinkHandler() : VendorAgnosticCliHandler("ip link", "Configure interface link state")
     {
-        public IpLinkHandler() : base("ip link", "Configure interface link state")
-        {
-        }
-
         public override bool CanHandle(CliContext context)
         {
             return context.CommandParts.Length >= 2 &&

@@ -59,7 +59,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// Implements common discovery logic while allowing protocol-specific customization
         /// </summary>
         /// <param name="device">Network device</param>
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             try
             {
@@ -204,8 +204,8 @@ namespace NetForge.Simulation.Protocols.Common.Base
         public Dictionary<string, object> GetDiscoveredDevicesOnInterface(string interfaceName)
         {
             return _discoveredDevices
-                .Where(kvp => kvp.Value is Dictionary<string, object> info && 
-                             info.ContainsKey("Interface") && 
+                .Where(kvp => kvp.Value is Dictionary<string, object> info &&
+                             info.ContainsKey("Interface") &&
                              info["Interface"].ToString() == interfaceName)
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
@@ -241,7 +241,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         protected override async Task ProcessTimers(NetworkDevice device)
         {
             var now = DateTime.Now;
-            
+
             // Check if it's time for next advertisement
             if ((now - _lastDiscoveryRun).TotalSeconds >= AdvertisementInterval)
             {

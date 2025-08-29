@@ -14,32 +14,32 @@ namespace NetForge.Simulation.CliHandlers.Cisco
             { "gi", "GigabitEthernet" },
             { "gig", "GigabitEthernet" },
             { "gigabit", "GigabitEthernet" },
-            
+
             // FastEthernet aliases
             { "fa", "FastEthernet" },
             { "fast", "FastEthernet" },
-            
+
             // TenGigabitEthernet aliases
             { "te", "TenGigabitEthernet" },
             { "ten", "TenGigabitEthernet" },
-            
+
             // Ethernet aliases
             { "eth", "Ethernet" },
-            
+
             // Loopback aliases
             { "lo", "Loopback" },
             { "loop", "Loopback" },
-            
+
             // Port-channel aliases
             { "po", "Port-channel" },
             { "port", "Port-channel" },
-            
+
             // VLAN aliases
             { "vl", "Vlan" },
-            
+
             // Serial aliases
             { "se", "Serial" },
-            
+
             // Tunnel aliases
             { "tu", "Tunnel" }
         };
@@ -53,12 +53,12 @@ namespace NetForge.Simulation.CliHandlers.Cisco
                 return interfaceName;
 
             var normalized = interfaceName.ToLowerInvariant().Trim();
-            
+
             foreach (var kvp in InterfaceAliasMap)
             {
                 var alias = kvp.Key;
                 var fullName = kvp.Value;
-                
+
                 if (ShouldExpandAlias(normalized, alias, fullName))
                 {
                     return interfaceName.Replace(alias, fullName, StringComparison.OrdinalIgnoreCase);
@@ -66,14 +66,14 @@ namespace NetForge.Simulation.CliHandlers.Cisco
             }
 
             // Handle special case for vlan/Vlan capitalization
-            if (normalized.StartsWith("vlan", StringComparison.OrdinalIgnoreCase) && 
+            if (normalized.StartsWith("vlan", StringComparison.OrdinalIgnoreCase) &&
                 !char.IsUpper(interfaceName[0]))
             {
                 return interfaceName.Replace("vlan", "Vlan", StringComparison.OrdinalIgnoreCase);
             }
 
             // Handle special case for tunnel/Tunnel capitalization
-            if (normalized.StartsWith("tunnel", StringComparison.OrdinalIgnoreCase) && 
+            if (normalized.StartsWith("tunnel", StringComparison.OrdinalIgnoreCase) &&
                 !char.IsUpper(interfaceName[0]))
             {
                 return interfaceName.Replace("tunnel", "Tunnel", StringComparison.OrdinalIgnoreCase);
@@ -89,7 +89,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
 
             // Don't expand if it already starts with a longer form
             var lowerFullName = fullName.ToLowerInvariant();
-            
+
             // Special handling for hierarchical aliases (gi -> gig -> gigabit -> gigabitethernet)
             return alias switch
             {
@@ -143,7 +143,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
                 return false;
 
             var normalized = interfaceName.ToLower().Trim();
-            
+
             // Check for valid interface patterns with proper numbering
             // Limit to reasonable depth (max 3 levels: x/y/z)
             var patterns = new[]
@@ -173,7 +173,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
                 @"^vl\d+$",                                          // vl100
                 @"^vlan\d+$"                                         // vlan100
             };
-            
+
             return patterns.Any(pattern => System.Text.RegularExpressions.Regex.IsMatch(normalized, pattern));
         }
 
@@ -184,13 +184,13 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         {
             if (string.IsNullOrEmpty(name1) && string.IsNullOrEmpty(name2))
                 return true;
-            
+
             if (string.IsNullOrEmpty(name1) || string.IsNullOrEmpty(name2))
                 return false;
 
             var expanded1 = ExpandInterfaceAlias(name1);
             var expanded2 = ExpandInterfaceAlias(name2);
-            
+
             return string.Equals(expanded1, expanded2, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -200,17 +200,17 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         public static List<string> GetInterfaceAliases(string interfaceName)
         {
             var aliases = new List<string>();
-            
+
             if (string.IsNullOrEmpty(interfaceName))
                 return aliases;
 
             var expanded = ExpandInterfaceAlias(interfaceName);
             var normalized = expanded.ToLower();
-            
+
             // Always include the original and expanded forms
             aliases.Add(interfaceName);
             aliases.Add(expanded);
-            
+
             // Generate all possible aliases based on interface type
             if (normalized.StartsWith("gigabitethernet"))
             {
@@ -255,7 +255,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
                 aliases.Add($"port{number}");
                 aliases.Add($"Port-channel{number}");
             }
-            
+
             return aliases.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         }
 
@@ -301,14 +301,14 @@ namespace NetForge.Simulation.CliHandlers.Cisco
                 return "";
 
             var expanded = ExpandInterfaceAlias(interfaceName);
-            
+
             // Extract number part - handle special cases like Port-channel
             if (expanded.StartsWith("Port-channel", StringComparison.OrdinalIgnoreCase))
             {
                 var match = System.Text.RegularExpressions.Regex.Match(expanded, @"Port-channel(\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
                 return match.Success ? match.Groups[1].Value : "";
             }
-            
+
             // For other interfaces, extract everything after the alphabetic prefix
             var generalMatch = System.Text.RegularExpressions.Regex.Match(expanded, @"^[a-zA-Z-]+(.*)");
             return generalMatch.Success ? generalMatch.Groups[1].Value : "";
@@ -331,7 +331,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco
         /// <summary>
         /// Processes command shortcuts and abbreviations
         /// </summary>
-        public static string ProcessShortcuts(string command, NetworkDevice device)
+        public static string ProcessShortcuts(string command, INetworkDevice device)
         {
             if (string.IsNullOrEmpty(command))
                 return command;
@@ -372,4 +372,4 @@ namespace NetForge.Simulation.CliHandlers.Cisco
             return command;
         }
     }
-} 
+}

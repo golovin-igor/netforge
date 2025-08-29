@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\NetForge.Simulation.Common\NetForge.Simulation.Common.csproj" />
         <ProjectReference Include="..\NetForge.Simulation.Protocols.Common\NetForge.Simulation.Protocols.Common.csproj" />
     </ItemGroup>
 

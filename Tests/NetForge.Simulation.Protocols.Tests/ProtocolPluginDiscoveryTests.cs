@@ -10,12 +10,7 @@ namespace NetForge.Simulation.Protocols.Tests
     /// </summary>
     public class ProtocolPluginDiscoveryTests
     {
-        private readonly ProtocolDiscoveryService _discoveryService;
-
-        public ProtocolPluginDiscoveryTests()
-        {
-            _discoveryService = new ProtocolDiscoveryService();
-        }
+        private readonly ProtocolDiscoveryService _discoveryService = new();
 
         [Fact]
         public void ProtocolDiscovery_ShouldFindAllExpectedPlugins()

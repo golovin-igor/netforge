@@ -7,16 +7,10 @@ namespace NetForge.Simulation.CliHandlers.Dell
     /// <summary>
     /// Dell-specific vendor context implementation
     /// </summary>
-    public class DellVendorContext : IVendorContext
+    public class DellVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly DellVendorCapabilities _capabilities;
-
-        public DellVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new DellVendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly DellVendorCapabilities _capabilities = new(device);
 
         public string VendorName => "Dell";
         public IVendorCapabilities Capabilities => _capabilities;

@@ -35,12 +35,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
     /// <summary>
     /// Dell ping command handler
     /// </summary>
-    public class PingCommandHandler : VendorAgnosticCliHandler
+    public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        public PingCommandHandler() : base("ping", "Send ping packets")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
@@ -162,12 +158,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
     /// <summary>
     /// Dell reload command handler
     /// </summary>
-    public class ReloadCommandHandler : VendorAgnosticCliHandler
+    public class ReloadCommandHandler() : VendorAgnosticCliHandler("reload", "Restart the system")
     {
-        public ReloadCommandHandler() : base("reload", "Restart the system")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
@@ -224,12 +216,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
     /// <summary>
     /// Dell copy command handler
     /// </summary>
-    public class CopyCommandHandler : VendorAgnosticCliHandler
+    public class CopyCommandHandler() : VendorAgnosticCliHandler("copy", "Copy files")
     {
-        public CopyCommandHandler() : base("copy", "Copy files")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))
@@ -244,12 +232,8 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
     /// <summary>
     /// Dell clear command handler
     /// </summary>
-    public class ClearCommandHandler : VendorAgnosticCliHandler
+    public class ClearCommandHandler() : VendorAgnosticCliHandler("clear", "Clear screen or counters")
     {
-        public ClearCommandHandler() : base("clear", "Clear screen or counters")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Dell"))

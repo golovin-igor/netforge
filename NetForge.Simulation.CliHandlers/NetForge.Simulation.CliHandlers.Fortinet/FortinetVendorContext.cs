@@ -7,16 +7,10 @@ namespace NetForge.Simulation.CliHandlers.Fortinet
     /// <summary>
     /// Fortinet-specific vendor context implementation
     /// </summary>
-    public class FortinetVendorContext : IVendorContext
+    public class FortinetVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly FortinetVendorCapabilities _capabilities;
-
-        public FortinetVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new FortinetVendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly FortinetVendorCapabilities _capabilities = new(device);
 
         public string VendorName => "Fortinet";
         public IVendorCapabilities Capabilities => _capabilities;

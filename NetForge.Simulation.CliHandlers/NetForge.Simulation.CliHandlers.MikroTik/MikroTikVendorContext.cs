@@ -7,16 +7,10 @@ namespace NetForge.Simulation.CliHandlers.MikroTik
     /// <summary>
     /// MikroTik-specific vendor context implementation
     /// </summary>
-    public class MikroTikVendorContext : IVendorContext
+    public class MikroTikVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly MikroTikVendorCapabilities _capabilities;
-
-        public MikroTikVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new MikroTikVendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly MikroTikVendorCapabilities _capabilities = new MikroTikVendorCapabilities(device);
 
         public string VendorName => "MikroTik";
         public IVendorCapabilities Capabilities => _capabilities;

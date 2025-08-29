@@ -150,18 +150,13 @@ namespace NetForge.Simulation.Protocols.Routing
     /// <summary>
     /// Interface state for CDP
     /// </summary>
-    public class CdpInterfaceState
+    public class CdpInterfaceState(string interfaceName)
     {
-        public string InterfaceName { get; set; }
+        public string InterfaceName { get; set; } = interfaceName;
         public bool IsEnabled { get; set; } = true;
         public DateTime LastAdvertisementSent { get; set; } = DateTime.MinValue;
         public int AdvertisementInterval { get; set; } = 60;
-        
-        public CdpInterfaceState(string interfaceName)
-        {
-            InterfaceName = interfaceName;
-        }
-        
+
         public bool ShouldSendAdvertisement()
         {
             return (DateTime.Now - LastAdvertisementSent).TotalSeconds >= AdvertisementInterval;

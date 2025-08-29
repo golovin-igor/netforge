@@ -35,13 +35,9 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Basic
     /// <summary>
     /// Nokia ping command handler
     /// </summary>
-    public class PingCommandHandler : VendorAgnosticCliHandler
+    public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        public PingCommandHandler() : base("ping", "Send ping packets")
-        {
-        }
-        
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -163,13 +159,9 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Basic
     /// <summary>
     /// Nokia history command handler
     /// </summary>
-    public class HistoryCommandHandler : VendorAgnosticCliHandler
+    public class HistoryCommandHandler() : VendorAgnosticCliHandler("history", "Show command history")
     {
-        public HistoryCommandHandler() : base("history", "Show command history")
-        {
-        }
-        
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -190,13 +182,9 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Basic
     /// <summary>
     /// Nokia copy command handler
     /// </summary>
-    public class CopyCommandHandler : VendorAgnosticCliHandler
+    public class CopyCommandHandler() : VendorAgnosticCliHandler("copy", "Copy files or configuration")
     {
-        public CopyCommandHandler() : base("copy", "Copy files or configuration")
-        {
-        }
-        
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {

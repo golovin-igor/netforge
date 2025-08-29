@@ -7,14 +7,9 @@ namespace NetForge.Simulation.CliHandlers.Huawei
     /// <summary>
     /// Huawei-specific vendor capabilities implementation
     /// </summary>
-    public class HuaweiVendorCapabilities : IVendorCapabilities
+    public class HuaweiVendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public HuaweiVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string GetRunningConfiguration()
         {

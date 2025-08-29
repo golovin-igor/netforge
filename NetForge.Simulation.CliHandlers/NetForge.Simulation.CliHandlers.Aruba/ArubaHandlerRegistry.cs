@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Interfaces;
@@ -17,17 +18,17 @@ namespace NetForge.Simulation.CliHandlers.Aruba
         public string VendorName => "Aruba";
         public int Priority => 150; // Aruba priority
 
-        public bool SupportsDevice(NetworkDevice device)
+        public bool SupportsDevice(INetworkDevice device)
         {
             return device?.Vendor?.Equals("Aruba", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            return new ArubaVendorContext((NetworkDevice)device);
+            return new ArubaVendorContext((INetworkDevice)device);
         }
 
-        public void RegisterHandlers(CliHandlerManager manager)
+        public void RegisterHandlers(ICliHandlerManager manager)
         {
             var handlers = GetHandlers();
             foreach (var handler in handlers)
@@ -66,8 +67,8 @@ namespace NetForge.Simulation.CliHandlers.Aruba
                 new Basic.BasicHandlers.ArubaWriteHandler(),
                 new Basic.BasicHandlers.ArubaReloadHandler(),
                 new Basic.BasicHandlers.ArubaEnableHandler(),
-                
-                // Configuration Commands  
+
+                // Configuration Commands
                 new Configuration.ConfigurationHandlers.ArubaConfigureHandler(),
                 new Configuration.ConfigurationHandlers.ArubaExitHandler(),
                 new Configuration.ConfigurationHandlers.ArubaInterfaceHandler(),
@@ -76,24 +77,24 @@ namespace NetForge.Simulation.CliHandlers.Aruba
                 new Configuration.ConfigurationHandlers.ArubaSwitchportHandler(),
                 new Configuration.ConfigurationHandlers.ArubaShutdownHandler(),
                 new Configuration.ConfigurationHandlers.ArubaNoHandler(),
-                
+
                 // VLAN Management Commands (migrated)
                 new Configuration.ConfigurationHandlers.ArubaVlanNameHandler(),
                 new Configuration.ConfigurationHandlers.ArubaVlanTaggedHandler(),
                 new Configuration.ConfigurationHandlers.ArubaVlanUntaggedHandler(),
-                
+
                 // Routing Commands (migrated)
                 new Configuration.ConfigurationHandlers.ArubaIpRouteHandler(),
-                
+
                 // Clear Commands (migrated)
                 new Configuration.ConfigurationHandlers.ArubaClearHandler(),
-                
+
                 // Interface Commands (additional)
                 new Configuration.ConfigurationHandlers.ArubaDisableHandler(),
                 new Configuration.ConfigurationHandlers.ArubaInterfaceNameHandler(),
                 new Configuration.ConfigurationHandlers.ArubaSpeedHandler(),
                 new Configuration.ConfigurationHandlers.ArubaDuplexHandler(),
-                
+
                 // Show Commands
                 new Show.ShowHandlers.ArubaShowHandler()
             };
@@ -116,7 +117,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba
             return new Dictionary<string, string>
             {
                 ["configure"] = "config",
-                ["interface"] = "interface", 
+                ["interface"] = "interface",
                 ["vlan"] = "vlan",
                 ["exit"] = "previous",
                 ["end"] = "privileged"
@@ -128,4 +129,4 @@ namespace NetForge.Simulation.CliHandlers.Aruba
             return new List<string> { "user", "privileged", "config", "interface", "vlan" };
         }
     }
-} 
+}

@@ -48,12 +48,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SpanningTreeModePvstHandler : VendorAgnosticCliHandler
+    public class SpanningTreeModePvstHandler() : VendorAgnosticCliHandler("pvst", "Per-VLAN spanning tree mode")
     {
-        public SpanningTreeModePvstHandler() : base("pvst", "Per-VLAN spanning tree mode")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -75,12 +71,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SpanningTreeModeRapidPvstHandler : VendorAgnosticCliHandler
+    public class SpanningTreeModeRapidPvstHandler() : VendorAgnosticCliHandler("rapid-pvst", "Rapid per-VLAN spanning tree mode")
     {
-        public SpanningTreeModeRapidPvstHandler() : base("rapid-pvst", "Rapid per-VLAN spanning tree mode")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -102,12 +94,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SpanningTreeModeMstHandler : VendorAgnosticCliHandler
+    public class SpanningTreeModeMstHandler() : VendorAgnosticCliHandler("mst", "Multiple spanning tree mode")
     {
-        public SpanningTreeModeMstHandler() : base("mst", "Multiple spanning tree mode")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -129,12 +117,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SpanningTreeVlanHandler : VendorAgnosticCliHandler
+    public class SpanningTreeVlanHandler() : VendorAgnosticCliHandler("vlan", "VLAN spanning tree configuration")
     {
-        public SpanningTreeVlanHandler() : base("vlan", "VLAN spanning tree configuration")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 3)
@@ -233,12 +217,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SpanningTreePortfastDefaultHandler : VendorAgnosticCliHandler
+    public class SpanningTreePortfastDefaultHandler() : VendorAgnosticCliHandler("default", "Enable portfast by default on all access ports")
     {
-        public SpanningTreePortfastDefaultHandler() : base("default", "Enable portfast by default on all access ports")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -296,12 +276,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SpanningTreePortfastBpduguardDefaultHandler : VendorAgnosticCliHandler
+    public class SpanningTreePortfastBpduguardDefaultHandler() : VendorAgnosticCliHandler("default", "Enable BPDU guard by default")
     {
-        public SpanningTreePortfastBpduguardDefaultHandler() : base("default", "Enable BPDU guard by default")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Cisco"))
@@ -323,12 +299,8 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         }
     }
 
-    public class SpanningTreePriorityHandler : VendorAgnosticCliHandler
+    public class SpanningTreePriorityHandler() : VendorAgnosticCliHandler("priority", "Set bridge priority")
     {
-        public SpanningTreePriorityHandler() : base("priority", "Set bridge priority")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (context.CommandParts.Length < 2)

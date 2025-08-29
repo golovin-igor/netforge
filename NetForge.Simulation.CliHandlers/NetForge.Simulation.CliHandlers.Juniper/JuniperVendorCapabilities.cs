@@ -9,14 +9,9 @@ namespace NetForge.Simulation.CliHandlers.Juniper
     /// <summary>
     /// Juniper-specific vendor capabilities implementation
     /// </summary>
-    public class JuniperVendorCapabilities : IVendorCapabilities
+    public class JuniperVendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public JuniperVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string VendorName => "Juniper";
         public string VendorVersion => "JUNOS 20.x";
@@ -135,17 +130,17 @@ namespace NetForge.Simulation.CliHandlers.Juniper
         {
             var interfaces = _device.GetAllInterfaces();
             var vlans = _device.GetAllVlans();
-            
+
             var config = "# Juniper Configuration\n";
             config += $"set system host-name {_device.GetHostname()}\n";
-            
+
             foreach (var vlan in vlans.Values.OrderBy(v => v.Id))
             {
                 config += $"set vlans vlan{vlan.Id} vlan-id {vlan.Id}\n";
                 if (!string.IsNullOrEmpty(vlan.Name))
                     config += $"set vlans vlan{vlan.Id} description {vlan.Name}\n";
             }
-            
+
             foreach (var iface in interfaces.Values.OrderBy(i => i.Name))
             {
                 config += $"set interfaces {iface.Name} unit 0\n";
@@ -154,7 +149,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper
                 if (iface.IsShutdown)
                     config += $"set interfaces {iface.Name} disable\n";
             }
-            
+
             return config;
         }
 

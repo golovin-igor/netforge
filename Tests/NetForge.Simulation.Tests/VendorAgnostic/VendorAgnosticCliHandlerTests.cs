@@ -10,14 +10,8 @@ namespace NetForge.Simulation.Tests.VendorAgnostic
 {
     public class VendorAgnosticCliHandlerTests
     {
-        private readonly CiscoDevice _testDevice;
-        private readonly TestVendorAgnosticHandler _testHandler;
-
-        public VendorAgnosticCliHandlerTests()
-        {
-            _testDevice = new CiscoDevice("TestRouter");
-            _testHandler = new TestVendorAgnosticHandler();
-        }
+        private readonly CiscoDevice _testDevice = new CiscoDevice("TestRouter");
+        private readonly TestVendorAgnosticHandler _testHandler = new();
 
         [Fact]
         public void VendorAgnosticCliHandler_GetVendorContext_ShouldReturnCorrectContext()
@@ -202,13 +196,9 @@ namespace NetForge.Simulation.Tests.VendorAgnostic
     /// <summary>
     /// Test implementation of VendorAgnosticCliHandler to expose protected methods for testing
     /// </summary>
-    public class TestVendorAgnosticHandler : VendorAgnosticCliHandler
+    public class TestVendorAgnosticHandler() : VendorAgnosticCliHandler("test", "Test handler for testing vendor-agnostic functionality")
     {
-        public TestVendorAgnosticHandler() : base("test", "Test handler for testing vendor-agnostic functionality")
-        {
-        }
-
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             return Success("Test command executed");
         }
@@ -240,12 +230,7 @@ namespace NetForge.Simulation.Tests.VendorAgnostic
 
     public class VendorRegistryBaseTests
     {
-        private readonly TestVendorRegistry _testRegistry;
-
-        public VendorRegistryBaseTests()
-        {
-            _testRegistry = new TestVendorRegistry();
-        }
+        private readonly TestVendorRegistry _testRegistry = new();
 
         [Fact]
         public void VendorHandlerRegistryBase_VendorName_ShouldReturnCorrectName()

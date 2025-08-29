@@ -4,21 +4,15 @@ using NetForge.Simulation.Common.CLI.Interfaces;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
-using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
 namespace NetForge.Simulation.CliHandlers.Alcatel
 {
     /// <summary>
     /// Alcatel-specific vendor capabilities implementation
     /// </summary>
-    public class AlcatelVendorCapabilities : IVendorCapabilities
+    public class AlcatelVendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public AlcatelVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string VendorName => "Alcatel";
         public string CliStyle => "OmniSwitch";
@@ -320,7 +314,7 @@ namespace NetForge.Simulation.CliHandlers.Alcatel
             var portChannels = _device.GetPortChannels();
             if (!portChannels.ContainsKey(channelNumber))
             {
-                portChannels[channelNumber] = new PortChannelConfig(channelNumber);
+                portChannels[channelNumber] = new PortChannel(channelNumber);
             }
             return true;
         }

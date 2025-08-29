@@ -1,5 +1,4 @@
-using System.Threading.Tasks;
-using NetForge.Simulation.Common;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common.CLI.Base;
 
 namespace NetForge.Simulation.CliHandlers.Anira.Basic
@@ -14,19 +13,19 @@ namespace NetForge.Simulation.CliHandlers.Anira.Basic
             AddAlias("en");
             AddAlias("ena");
         }
-        
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Anira"))
             {
                 return RequireVendor(context, "Anira");
             }
-            
+
             if (IsInMode(context, "privileged"))
             {
                 return Success("");
             }
-            
+
             SetMode(context, "privileged");
             return Success("");
         }

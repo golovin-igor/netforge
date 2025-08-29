@@ -80,12 +80,8 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
     /// <summary>
     /// Fortinet get command handler - retrieves specific information
     /// </summary>
-    public class GetCommandHandler : VendorAgnosticCliHandler
+    public class GetCommandHandler() : VendorAgnosticCliHandler("get", "Get specific device information")
     {
-        public GetCommandHandler() : base("get", "Get specific device information")
-        {
-        }
-
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "Fortinet"))

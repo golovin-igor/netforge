@@ -8,16 +8,10 @@ namespace NetForge.Simulation.CliHandlers.Cisco
     /// <summary>
     /// Cisco-specific vendor context implementation
     /// </summary>
-    public class CiscoVendorContext : IVendorContext
+    public class CiscoVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly CiscoVendorCapabilities _capabilities;
-
-        public CiscoVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new CiscoVendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly CiscoVendorCapabilities _capabilities = new(device);
 
         public string VendorName => "Cisco";
         public IVendorCapabilities Capabilities => _capabilities;

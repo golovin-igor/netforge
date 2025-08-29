@@ -7,16 +7,11 @@ namespace NetForge.Simulation.Protocols.SSH
     /// </summary>
     public class SshSessionManager : IDisposable
     {
-        private readonly ConcurrentDictionary<string, SshSession> _sessions;
+        private readonly ConcurrentDictionary<string, SshSession> _sessions = new();
         private readonly object _lockObject = new();
         private long _totalConnections;
         private bool _isDisposed;
-        
-        public SshSessionManager()
-        {
-            _sessions = new ConcurrentDictionary<string, SshSession>();
-        }
-        
+
         /// <summary>
         /// Add a new session
         /// </summary>

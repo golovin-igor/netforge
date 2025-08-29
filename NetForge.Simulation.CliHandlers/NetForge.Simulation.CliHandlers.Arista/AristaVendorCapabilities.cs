@@ -10,14 +10,9 @@ namespace NetForge.Simulation.CliHandlers.Arista
     /// <summary>
     /// Arista-specific vendor capabilities implementation
     /// </summary>
-    public class AristaVendorCapabilities : IVendorCapabilities
+    public class AristaVendorCapabilities(NetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public AristaVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly NetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string VendorName => "Arista";
         public string VendorVersion => "EOS 4.x";

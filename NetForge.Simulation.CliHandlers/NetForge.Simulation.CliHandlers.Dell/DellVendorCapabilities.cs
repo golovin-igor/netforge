@@ -10,14 +10,9 @@ namespace NetForge.Simulation.CliHandlers.Dell
     /// <summary>
     /// Dell-specific vendor capabilities implementation for OS10
     /// </summary>
-    public class DellVendorCapabilities : IVendorCapabilities
+    public class DellVendorCapabilities(INetworkDevice device) : IVendorCapabilities
     {
-        private readonly NetworkDevice _device;
-
-        public DellVendorCapabilities(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
 
         public string VendorName => "Dell";
         public string CliStyle => "OS10";

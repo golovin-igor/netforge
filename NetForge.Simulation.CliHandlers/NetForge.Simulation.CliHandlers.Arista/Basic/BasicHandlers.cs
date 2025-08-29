@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common.CLI.Base;
@@ -17,7 +18,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
             AddAlias("ena");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -40,13 +41,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
     /// <summary>
     /// Arista ping command handler
     /// </summary>
-    public class PingCommandHandler : VendorAgnosticCliHandler
+    public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        public PingCommandHandler() : base("ping", "Send ping packets")
-        {
-        }
-
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -91,13 +88,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
     /// <summary>
     /// Arista write command handler
     /// </summary>
-    public class WriteCommandHandler : VendorAgnosticCliHandler
+    public class WriteCommandHandler() : VendorAgnosticCliHandler("write", "Write configuration to memory")
     {
-        public WriteCommandHandler() : base("write", "Write configuration to memory")
-        {
-        }
-
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -112,7 +105,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
 
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,
@@ -135,13 +128,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
     /// <summary>
     /// Arista reload command handler
     /// </summary>
-    public class ReloadCommandHandler : VendorAgnosticCliHandler
+    public class ReloadCommandHandler() : VendorAgnosticCliHandler("reload", "Reload the device")
     {
-        public ReloadCommandHandler() : base("reload", "Reload the device")
-        {
-        }
-
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -156,7 +145,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
 
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,
@@ -196,13 +185,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
     /// <summary>
     /// Arista history command handler
     /// </summary>
-    public class HistoryCommandHandler : VendorAgnosticCliHandler
+    public class HistoryCommandHandler() : VendorAgnosticCliHandler("history", "Display command history")
     {
-        public HistoryCommandHandler() : base("history", "Display command history")
-        {
-        }
-
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -225,13 +210,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
     /// <summary>
     /// Arista copy command handler
     /// </summary>
-    public class CopyCommandHandler : VendorAgnosticCliHandler
+    public class CopyCommandHandler() : VendorAgnosticCliHandler("copy", "Copy configuration or files")
     {
-        public CopyCommandHandler() : base("copy", "Copy configuration or files")
-        {
-        }
-
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -262,11 +243,11 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
             };
         }
 
-        private CliResult HandleCopyRunningToStartup(CliContext context)
+        private CliResult HandleCopyRunningToStartup(ICliContext context)
         {
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,
@@ -284,16 +265,11 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
             }
         }
 
-        private CliResult HandleCopyStartupToRunning(CliContext context)
+        private CliResult HandleCopyStartupToRunning(ICliContext context)
         {
             try
             {
-                var device = context.Device as NetworkDevice;
-                if (device == null)
-                {
-                    return Error(CliErrorType.ExecutionError,
-                        "% Device not available");
-                }
+                var device = context.Device;
 
                 device.AddLogEntry("Startup configuration loaded to running configuration");
 
@@ -317,7 +293,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Basic
             AddAlias("tracert");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {

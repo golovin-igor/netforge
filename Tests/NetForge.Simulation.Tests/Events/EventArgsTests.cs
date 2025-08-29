@@ -4,14 +4,9 @@ using Xunit;
 namespace NetForge.Simulation.Tests.Events
 {
     // Test implementation of abstract NetworkEventArgs for testing
-    public class TestNetworkEventArgs : NetworkEventArgs
+    public class TestNetworkEventArgs(string testProperty = "test") : NetworkEventArgs
     {
-        public string TestProperty { get; set; }
-
-        public TestNetworkEventArgs(string testProperty = "test")
-        {
-            TestProperty = testProperty;
-        }
+        public string TestProperty { get; set; } = testProperty;
     }
 
     public class NetworkEventArgsTests

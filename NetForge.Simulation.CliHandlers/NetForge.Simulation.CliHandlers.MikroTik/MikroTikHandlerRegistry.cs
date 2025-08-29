@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Interfaces;
@@ -11,17 +12,17 @@ namespace NetForge.Simulation.CliHandlers.MikroTik
         public string VendorName => "MikroTik";
         public int Priority => 100;
 
-        public bool SupportsDevice(NetworkDevice device)
+        public bool SupportsDevice(INetworkDevice device)
         {
             return device?.Vendor?.Equals("MikroTik", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            return new MikroTikVendorContext((NetworkDevice)device);
+            return new MikroTikVendorContext(device);
         }
 
-        public void RegisterHandlers(CliHandlerManager manager)
+        public void RegisterHandlers(ICliHandlerManager manager)
         {
             var handlers = GetHandlers();
             foreach (var handler in handlers)
@@ -50,10 +51,10 @@ namespace NetForge.Simulation.CliHandlers.MikroTik
                 // Basic handlers
                 new Basic.EnableCommandHandler(),
                 new Basic.PingCommandHandler(),
-                
+
                 // Show handlers
                 new Show.ShowCommandHandler()
             };
         }
     }
-} 
+}

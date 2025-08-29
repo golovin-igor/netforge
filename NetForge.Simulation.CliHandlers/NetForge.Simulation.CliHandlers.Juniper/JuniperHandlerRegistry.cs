@@ -1,9 +1,11 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Factories;
 using NetForge.Simulation.Common.CLI.Interfaces;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Handlers.Common;
 
 namespace NetForge.Simulation.CliHandlers.Juniper
 {
@@ -15,7 +17,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper
         public override string VendorName => "Juniper";
         public override int Priority => 180;
 
-        public override void RegisterHandlers(CliHandlerManager manager)
+        public override void RegisterHandlers(ICliHandlerManager manager)
         {
             // Register Juniper vendor-specific handlers - CRITICAL functionality
             manager.RegisterHandler(new Basic.ConfigureCommandHandler());
@@ -24,18 +26,18 @@ namespace NetForge.Simulation.CliHandlers.Juniper
             manager.RegisterHandler(new Basic.ExitCommandHandler());
             manager.RegisterHandler(new Basic.DeleteCommandHandler());
             manager.RegisterHandler(new Basic.PingCommandHandler());
-            
+
             // Register Juniper show handlers
             manager.RegisterHandler(new Show.ShowCommandHandler());
         }
 
         public override IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            if (device is NetworkDevice networkDevice)
+            if (device is { } networkDevice)
             {
                 return new JuniperVendorContext(networkDevice);
             }
-            
+
             throw new ArgumentException($"Device type {device.GetType().Name} is not compatible with Juniper handler registry");
         }
 
@@ -63,4 +65,4 @@ namespace NetForge.Simulation.CliHandlers.Juniper
             base.Cleanup();
         }
     }
-} 
+}

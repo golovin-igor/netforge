@@ -13,16 +13,11 @@ namespace NetForge.Simulation.Protocols.Telnet
     public class TelnetProtocol : BaseProtocol
     {
         private TelnetServer? _telnetServer;
-        private readonly TelnetSessionManager _sessionManager;
+        private readonly TelnetSessionManager _sessionManager = new();
 
         public override ProtocolType Type => ProtocolType.TELNET;
         public override string Name => "Telnet Protocol";
         public override string Version => "1.0.0";
-
-        public TelnetProtocol()
-        {
-            _sessionManager = new TelnetSessionManager();
-        }
 
         protected override BaseProtocolState CreateInitialState()
         {

@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common.CLI.Base;
@@ -16,22 +17,22 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             AddAlias("sh");
             AddAlias("sho");
         }
-        
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
                 return RequireVendor(context, "Arista");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need show option");
             }
-            
+
             var option = context.CommandParts[1];
-            
+
             return option switch
             {
                 "version" => HandleShowVersion(context),
@@ -53,16 +54,16 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 "port-channel" => HandleShowPortChannel(context),
                 "bgp" => HandleShowBgp(context),
                 "mac" => HandleShowMac(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     $"% Invalid show option: {option}")
             };
         }
-        
+
         private CliResult HandleShowVersion(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             output.AppendLine("Arista DCS-7050TX-64");
             output.AppendLine("Hardware version:    01.00");
             output.AppendLine("Serial number:       JPE12345678");
@@ -76,15 +77,15 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("Uptime:                 1 week, 2 days, 3 hours and 24 minutes");
             output.AppendLine("Total memory:           3891940 kB");
             output.AppendLine("Free memory:            2170728 kB");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowRunningConfig(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             output.AppendLine("! Command: show running-config");
             output.AppendLine("! device: " + device?.Name);
             output.AppendLine("! boot system flash:/EOS.swi");
@@ -93,7 +94,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("!");
             output.AppendLine("hostname " + device?.Name);
             output.AppendLine("!");
-            
+
             // Show interface configurations
             if (device != null)
             {
@@ -102,18 +103,18 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 {
                     var iface = kvp.Value;
                     output.AppendLine($"interface {iface.Name}");
-                    
+
                     if (!string.IsNullOrEmpty(iface.Description))
                     {
                         output.AppendLine($"   description {iface.Description}");
                     }
-                    
+
                     if (!string.IsNullOrEmpty(iface.IpAddress))
                     {
                         var cidr = MaskToCidr(iface.SubnetMask);
                         output.AppendLine($"   ip address {iface.IpAddress}/{cidr}");
                     }
-                    
+
                     if (iface.IsShutdown)
                     {
                         output.AppendLine("   shutdown");
@@ -122,29 +123,29 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                     {
                         output.AppendLine("   no shutdown");
                     }
-                    
+
                     output.AppendLine("!");
                 }
             }
-            
+
             output.AppendLine("!");
             output.AppendLine("end");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowStartupConfig(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             output.AppendLine("! Command: show startup-config");
             output.AppendLine("! device: " + device?.Name);
             output.AppendLine("! boot system flash:/EOS.swi");
             output.AppendLine("!");
             output.AppendLine("hostname " + device?.Name);
             output.AppendLine("!");
-            
+
             // Add interface configurations (same as running-config for Arista)
             if (device != null)
             {
@@ -153,42 +154,42 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 {
                     var iface = kvp.Value;
                     output.AppendLine($"interface {iface.Name}");
-                    
+
                     if (!string.IsNullOrEmpty(iface.Description))
                     {
                         output.AppendLine($"   description {iface.Description}");
                     }
-                    
+
                     if (!string.IsNullOrEmpty(iface.IpAddress))
                     {
                         output.AppendLine($"   ip address {iface.IpAddress}/24");
                     }
-                    
+
                     if (!iface.IsShutdown)
                     {
                         output.AppendLine("   no shutdown");
                     }
-                    
+
                     output.AppendLine("!");
                 }
             }
-            
+
             output.AppendLine("end");
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInterfaces(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var interfaces = device.GetAllInterfaces();
-            
+
             // Check for sub-commands
             if (context.CommandParts.Length > 2)
             {
@@ -200,29 +201,29 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                     _ => HandleShowSpecificInterface(context, subCommand)
                 };
             }
-            
+
             // Show all interfaces summary
             foreach (var kvp in interfaces)
             {
                 var iface = kvp.Value;
                 output.AppendLine($"{iface.Name} is {(iface.IsUp ? "up" : "down")}, line protocol is {(iface.IsUp ? "up" : "down")}");
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInterfacesStatus(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("Port       Name   Status       Vlan     Duplex Speed  Type         Flags Encapsulation");
-            
+
             var interfaces = device.GetAllInterfaces();
             foreach (var kvp in interfaces)
             {
@@ -231,22 +232,22 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 var vlan = iface.SwitchportMode == "access" ? iface.VlanId.ToString() : "trunk";
                 output.AppendLine($"{iface.Name,-10} {iface.Description,-6} {status,-12} {vlan,-8} full   1G     EtherSVI");
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInterfacesDescription(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("Interface                      Status         Protocol Description");
-            
+
             var interfaces = device.GetAllInterfaces();
             foreach (var kvp in interfaces)
             {
@@ -255,20 +256,20 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 var protocol = iface.IsUp ? "up" : "down";
                 output.AppendLine($"{iface.Name,-30} {status,-14} {protocol,-8} {iface.Description}");
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowSpecificInterface(CliContext context, string interfaceName)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var iface = device.GetInterface(interfaceName);
             if (iface != null)
             {
@@ -286,26 +287,26 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             {
                 output.AppendLine($"% Interface {interfaceName} not found");
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowVlan(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             // Check for sub-commands
             if (context.CommandParts.Length > 2 && context.CommandParts[2] == "brief")
             {
                 return HandleShowVlanBrief(context);
             }
-            
+
             // Default VLAN display
             output.AppendLine("VLAN Name                             Status    Ports");
             output.AppendLine("---- -------------------------------- --------- -------------------------------");
@@ -320,23 +321,23 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("10   enet  100010     1500  -      -      -        -    -        0      0");
             output.AppendLine("20   enet  100020     1500  -      -      -        -    -        0      0");
             output.AppendLine("100  enet  100100     1500  -      -      -        -    -        0      0");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowVlanBrief(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("VLAN Name                             Status    Ports");
             output.AppendLine("---- -------------------------------- --------- -------------------------------");
-            
+
             var vlans = device.GetAllVlans();
             if (vlans.Count == 0)
             {
@@ -351,24 +352,24 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                     var ports = string.Join(", ", interfaceNames.Take(3));
                     if (interfaceNames.Count > 3)
                         ports += "...";
-                    
+
                     output.AppendLine($"{vlan.Id,-4} {vlan.Name,-32} {(vlan.Active ? "active" : "suspend"),-9} {ports}");
                 }
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIp(CliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need IP option");
             }
-            
+
             var ipOption = context.CommandParts[2];
-            
+
             return ipOption switch
             {
                 "route" => HandleShowIpRoute(context),
@@ -376,21 +377,21 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 "arp" => HandleShowIpArp(context),
                 "bgp" => HandleShowIpBgp(context),
                 "ospf" => HandleShowIpOspf(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     $"% Invalid IP show option: {ipOption}")
             };
         }
-        
+
         private CliResult HandleShowIpRoute(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("VRF: default");
             output.AppendLine("Codes: C - connected, S - static, K - kernel,");
             output.AppendLine("       O - OSPF, IA - OSPF inter area, E1 - OSPF external type 1,");
@@ -400,7 +401,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("");
             output.AppendLine("Gateway of last resort is not set");
             output.AppendLine("");
-            
+
             var routes = device.GetRoutingTable().OrderBy(r => r.AdminDistance).ThenBy(r => r.Network);
             if (routes.Any())
             {
@@ -415,7 +416,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                         "RIP" => "R",
                         _ => "?"
                     };
-                    
+
                     if (route.Protocol == "Connected")
                     {
                         output.AppendLine($" {code}      {route.Network}/24 is directly connected, {route.Interface}");
@@ -431,29 +432,29 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 output.AppendLine(" C        192.168.1.0/24 is directly connected, Management1");
                 output.AppendLine(" S        0.0.0.0/0 [1/0] via 192.168.1.1, Management1");
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpInterface(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var interfaces = device.GetAllInterfaces();
-            
+
             // Check for brief sub-command
             if (context.CommandParts.Length > 3 && context.CommandParts[3] == "brief")
             {
                 output.AppendLine("                                                                          Address");
                 output.AppendLine("Interface       IP Address            Status       Protocol         MTU    Owner");
                 output.AppendLine("--------------- --------------------- ------------ ------------- --------- -------");
-                
+
                 foreach (var kvp in interfaces)
                 {
                     var iface = kvp.Value;
@@ -482,31 +483,31 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 }
                 else
                 {
-                    return Error(CliErrorType.InvalidParameter, 
+                    return Error(CliErrorType.InvalidParameter,
                         $"% Interface {interfaceName} not found");
                 }
             }
             else
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need interface name or 'brief'");
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpArp(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("Address         Age (min)  Hardware Addr   Interface");
-            
+
             var interfaces = device.GetAllInterfaces();
             foreach (var kvp in interfaces)
             {
@@ -516,38 +517,38 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                     output.AppendLine($"{iface.IpAddress,-15} 0          aabb.cc00.0100  {iface.Name}");
                 }
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowLldp(CliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need LLDP option");
             }
-            
+
             var lldpOption = context.CommandParts[2];
-            
+
             return lldpOption switch
             {
                 "neighbors" => HandleShowLldpNeighbors(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     $"% Invalid LLDP show option: {lldpOption}")
             };
         }
-        
+
         private CliResult HandleShowLldpNeighbors(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("Last table change time   : Never");
             output.AppendLine("Number of table inserts  : 0");
             output.AppendLine("Number of table deletes  : 0");
@@ -556,20 +557,20 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("");
             output.AppendLine("Local Interface    Neighbor Device ID           Neighbor Port ID    TTL");
             output.AppendLine("Et1                Switch2.example.com          Et1                 120");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowSpanningTree(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             output.AppendLine("MST0");
             output.AppendLine("  Spanning tree enabled protocol mstp");
             output.AppendLine("  Root ID    Priority    32768");
@@ -579,7 +580,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("");
             output.AppendLine("Interface           Role Sts Cost      Prio.Nbr Type");
             output.AppendLine("------------------- ---- --- --------- -------- --------------------------------");
-            
+
             var interfaces = device.GetAllInterfaces();
             foreach (var kvp in interfaces.Take(5))
             {
@@ -590,10 +591,10 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                     output.AppendLine($"{iface.Name,-19} Desg {status} 20000     128.1    P2p");
                 }
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         // Helper methods
         private string GetUptime(NetworkDevice device)
         {
@@ -601,7 +602,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             var uptime = DateTime.Now.Subtract(DateTime.Today.AddHours(8));
             return $"{uptime.Days} days, {uptime.Hours} hours, {uptime.Minutes} minutes";
         }
-        
+
         private string FormatInterfaceName(string interfaceName)
         {
             // Convert interface names to match Arista format
@@ -612,14 +613,14 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 return "Ethernet" + interfaceName.Substring(2);
             return interfaceName;
         }
-        
+
         private int MaskToCidr(string mask)
         {
             if (string.IsNullOrEmpty(mask)) return 24; // Default
-            
+
             var parts = mask.Split('.');
             if (parts.Length != 4) return 24;
-            
+
             uint maskValue = 0;
             for (int i = 0; i < 4; i++)
             {
@@ -628,7 +629,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                     maskValue = (maskValue << 8) | octet;
                 }
             }
-            
+
             // Count the number of 1 bits
             int cidr = 0;
             for (int i = 31; i >= 0; i--)
@@ -638,16 +639,16 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 else
                     break;
             }
-            
+
             return cidr;
         }
-        
+
         private CliResult HandleShowArp(CliContext context)
         {
             // This is just an alias for "show ip arp"
             return HandleShowIpArp(context);
         }
-        
+
         private CliResult HandleShowEnvironment(CliContext context)
         {
             var output = new StringBuilder();
@@ -665,10 +666,10 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("Power Supply Status:");
             output.AppendLine("  PSU 1:               OK (350W)");
             output.AppendLine("  PSU 2:               OK (350W)");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInventory(CliContext context)
         {
             var output = new StringBuilder();
@@ -683,10 +684,10 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("");
             output.AppendLine("NAME: \"Fan Module 1\", DESCR: \"System Fan Module\"");
             output.AppendLine("PID: FAN-7050-F           , VID: 01, SN: FAN123456");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowVxlan(CliContext context)
         {
             var output = new StringBuilder();
@@ -699,20 +700,20 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("--------- ----------------- --------- ---------");
             output.AppendLine("10100     239.1.1.100       default   Vlan100");
             output.AppendLine("10200     239.1.1.200       default   Vlan200");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowClock(CliContext context)
         {
             var output = new StringBuilder();
             var now = DateTime.Now;
             output.AppendLine($"{now:ddd MMM dd HH:mm:ss yyyy}");
             output.AppendLine("Time source is NTP");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowMlag(CliContext context)
         {
             var output = new StringBuilder();
@@ -728,15 +729,15 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("-------  ------  ------------  ------------");
             output.AppendLine("1        Active  Po2           Po2");
             output.AppendLine("2        Active  Po3           Po3");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowSystem(CliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
-            
+
             output.AppendLine("System Information:");
             output.AppendLine($"  System Name:       {device?.Name ?? "Unknown"}");
             output.AppendLine("  System Model:      DCS-7050TX-64");
@@ -745,10 +746,10 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("  Total Memory:      3891940 kB");
             output.AppendLine("  Available Memory:  2170728 kB");
             output.AppendLine("  CPU Utilization:   15%");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowPortChannel(CliContext context)
         {
             var output = new StringBuilder();
@@ -761,10 +762,10 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("");
             output.AppendLine("Flags: (R) Routed, (S) Suspended, (I) Individual");
             output.AppendLine("       (P) Port-channel member, (U) Up");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowBgp(CliContext context)
         {
             // Check for sub-commands
@@ -775,14 +776,14 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 {
                     "evpn" => HandleShowBgpEvpn(context),
                     "summary" => HandleShowBgpSummary(context),
-                    _ => Error(CliErrorType.InvalidCommand, 
+                    _ => Error(CliErrorType.InvalidCommand,
                         $"% Invalid BGP show option: {subCommand}")
                 };
             }
-            
+
             return HandleShowBgpSummary(context);
         }
-        
+
         private CliResult HandleShowBgpEvpn(CliContext context)
         {
             var output = new StringBuilder();
@@ -794,10 +795,10 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("                    192.168.1.1              0      0  32768 i");
             output.AppendLine("*> [2][0][48][aabb.cc00.0200][0]/216");
             output.AppendLine("                    192.168.1.2              0      0  32768 i");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowBgpSummary(CliContext context)
         {
             var output = new StringBuilder();
@@ -809,10 +810,10 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd");
             output.AppendLine("192.168.1.2     4        65002      45      47        5    0    0 00:30:15        1");
             output.AppendLine("192.168.1.3     4        65003      32      35        5    0    0 00:25:10        1");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowMac(CliContext context)
         {
             // Check for sub-commands
@@ -820,10 +821,10 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             {
                 return HandleShowMacAddressTable(context);
             }
-            
+
             return HandleShowMacAddressTable(context);
         }
-        
+
         private CliResult HandleShowMacAddressTable(CliContext context)
         {
             var output = new StringBuilder();
@@ -838,10 +839,10 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("200     aabb.cc00.0400    DYNAMIC     Et4");
             output.AppendLine("");
             output.AppendLine("Total Mac Addresses for this criterion: 4");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpBgp(CliContext context)
         {
             // Check for sub-commands
@@ -851,11 +852,11 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 return subCommand switch
                 {
                     "summary" => HandleShowBgpSummary(context),
-                    _ => Error(CliErrorType.InvalidCommand, 
+                    _ => Error(CliErrorType.InvalidCommand,
                         $"% Invalid IP BGP show option: {subCommand}")
                 };
             }
-            
+
             var output = new StringBuilder();
             output.AppendLine("BGP table version is 5, local router ID is 192.168.1.1");
             output.AppendLine("Status codes: s suppressed, d damped, h history, * valid, > best, i - internal,");
@@ -866,10 +867,10 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("   Network          Next Hop            Metric LocPrf Weight Path");
             output.AppendLine("*> 10.1.1.0/24      0.0.0.0                  0         32768 i");
             output.AppendLine("*> 10.2.2.0/24      192.168.1.2              0             0 65002 i");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpOspf(CliContext context)
         {
             // Check for sub-commands
@@ -880,11 +881,11 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
                 {
                     "neighbor" => HandleShowIpOspfNeighbor(context),
                     "database" => HandleShowIpOspfDatabase(context),
-                    _ => Error(CliErrorType.InvalidCommand, 
+                    _ => Error(CliErrorType.InvalidCommand,
                         $"% Invalid IP OSPF show option: {subCommand}")
                 };
             }
-            
+
             var output = new StringBuilder();
             output.AppendLine("Routing Process \"ospf 1\" with ID 192.168.1.1");
             output.AppendLine("Process has been running for 1 week, 2 days");
@@ -894,20 +895,20 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("Area 0.0.0.0:");
             output.AppendLine("    Number of interfaces in this area is 2");
             output.AppendLine("    Number of fully adjacent neighbors is 1");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpOspfNeighbor(CliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Neighbor ID     Pri   State           Dead Time   Address         Interface");
             output.AppendLine("192.168.1.2       1   Full/DR         00:00:35    192.168.1.2     Ethernet1");
             output.AppendLine("192.168.1.3       1   Full/BDR        00:00:38    192.168.1.3     Ethernet2");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowIpOspfDatabase(CliContext context)
         {
             var output = new StringBuilder();
@@ -918,7 +919,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             output.AppendLine("Link ID         ADV Router      Age         Seq#       Checksum Link count");
             output.AppendLine("192.168.1.1     192.168.1.1     156         0x80000003 0x004D62  2");
             output.AppendLine("192.168.1.2     192.168.1.2     145         0x80000002 0x003F52  2");
-            
+
             return Success(output.ToString());
         }
     }

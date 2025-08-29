@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Interfaces;
@@ -11,17 +12,17 @@ namespace NetForge.Simulation.CliHandlers.Nokia
         public string VendorName => "Nokia";
         public int Priority => 90;
 
-        public bool SupportsDevice(NetworkDevice device)
+        public bool SupportsDevice(INetworkDevice device)
         {
             return device?.Vendor?.Equals("Nokia", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            return new NokiaVendorContext((NetworkDevice)device);
+            return new NokiaVendorContext(device);
         }
 
-        public void RegisterHandlers(CliHandlerManager manager)
+        public void RegisterHandlers(ICliHandlerManager manager)
         {
             var handlers = GetHandlers();
             foreach (var handler in handlers)
@@ -55,10 +56,10 @@ namespace NetForge.Simulation.CliHandlers.Nokia
                 new Basic.ReloadCommandHandler(),
                 new Basic.HistoryCommandHandler(),
                 new Basic.CopyCommandHandler(),
-                
+
                 // Show handlers
                 new Show.ShowCommandHandler()
             };
         }
     }
-} 
+}

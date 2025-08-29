@@ -7,16 +7,10 @@ namespace NetForge.Simulation.CliHandlers.Juniper
     /// <summary>
     /// Juniper-specific vendor context implementation
     /// </summary>
-    public class JuniperVendorContext : IVendorContext
+    public class JuniperVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly JuniperVendorCapabilities _capabilities;
-
-        public JuniperVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new JuniperVendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly JuniperVendorCapabilities _capabilities = new JuniperVendorCapabilities(device);
 
         public string VendorName => "Juniper";
         public IVendorCapabilities Capabilities => _capabilities;

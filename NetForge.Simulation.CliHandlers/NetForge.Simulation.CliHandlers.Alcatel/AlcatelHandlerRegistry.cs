@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Interfaces;
@@ -11,17 +12,17 @@ namespace NetForge.Simulation.CliHandlers.Alcatel
         public string VendorName => "Alcatel";
         public int Priority => 80;
 
-        public bool SupportsDevice(NetworkDevice device)
+        public bool SupportsDevice(INetworkDevice device)
         {
             return device?.Vendor?.Equals("Alcatel", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         public IVendorContext CreateVendorContext(INetworkDevice device)
         {
-            return new AlcatelVendorContext((NetworkDevice)device);
+            return new AlcatelVendorContext(device);
         }
 
-        public void RegisterHandlers(CliHandlerManager manager)
+        public void RegisterHandlers(ICliHandlerManager manager)
         {
             var handlers = GetHandlers();
             foreach (var handler in handlers)

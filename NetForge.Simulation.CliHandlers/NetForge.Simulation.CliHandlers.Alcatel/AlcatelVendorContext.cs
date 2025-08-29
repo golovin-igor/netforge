@@ -7,16 +7,10 @@ namespace NetForge.Simulation.CliHandlers.Alcatel
     /// <summary>
     /// Alcatel-specific vendor context implementation
     /// </summary>
-    public class AlcatelVendorContext : IVendorContext
+    public class AlcatelVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device;
-        private readonly AlcatelVendorCapabilities _capabilities;
-
-        public AlcatelVendorContext(NetworkDevice device)
-        {
-            _device = device ?? throw new ArgumentNullException(nameof(device));
-            _capabilities = new AlcatelVendorCapabilities(device);
-        }
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly AlcatelVendorCapabilities _capabilities = new(device);
 
         public string VendorName => "Alcatel";
         public IVendorCapabilities Capabilities => _capabilities;

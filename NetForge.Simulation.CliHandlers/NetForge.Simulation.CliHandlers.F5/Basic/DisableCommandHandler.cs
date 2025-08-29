@@ -6,12 +6,8 @@ namespace NetForge.Simulation.CliHandlers.F5.Basic
     /// <summary>
     /// F5 BIG-IP disable command handler
     /// </summary>
-    public class DisableCommandHandler : VendorAgnosticCliHandler
+    public class DisableCommandHandler() : VendorAgnosticCliHandler("disable", "Exit privileged mode")
     {
-        public DisableCommandHandler() : base("disable", "Exit privileged mode")
-        {
-        }
-        
         protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
         {
             if (!IsVendor(context, "F5"))

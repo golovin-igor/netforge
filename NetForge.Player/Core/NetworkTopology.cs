@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Topology.Devices;
 
 namespace NetForge.Player.Core;
 
@@ -20,11 +21,11 @@ public class NetworkTopology
     // - Performance statistics
     // - Topology validation results
     // - Export/import capabilities
-    
+
     public List<NetworkDevice> Devices { get; set; } = new();
     public List<NetworkLink> Links { get; set; } = new();
     public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
-    
+
     // TODO: Add topology analysis properties
     // public TopologyStatistics Statistics { get; set; } = new();
     // public List<TopologyIssue> Issues { get; set; } = new();
