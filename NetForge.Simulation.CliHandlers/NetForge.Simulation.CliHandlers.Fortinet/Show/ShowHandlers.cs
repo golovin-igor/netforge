@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -40,7 +41,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
 
         private CliResult HandleShowVersion(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine($"Fortinet Network Device");
@@ -54,7 +55,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
 
         private CliResult HandleShowInterfaces(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -147,7 +148,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
 
             if (ospfOption.Equals("neighbor", StringComparison.OrdinalIgnoreCase))
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var output = new StringBuilder();
 
                 // Generate sample OSPF neighbor output for testing
@@ -181,7 +182,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
 
         private CliResult HandleGetSystemInterface(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)

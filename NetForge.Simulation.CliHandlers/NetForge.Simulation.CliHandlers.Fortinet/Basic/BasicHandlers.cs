@@ -240,7 +240,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
             {
                 SetMode(context, "interface");
                 // Store current interface for later reference
-                if (context.Device is NetworkDevice device)
+                if (context.Device is {} device)
                 {
                     device.AddLogEntry($"Editing interface: {objectName}");
                     // Store the current interface name in the context
@@ -287,7 +287,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
                 var subnetMask = context.CommandParts[3];
 
                 // Set IP on current interface (actually set the IP)
-                if (context.Device is NetworkDevice device)
+                if (context.Device is { } device)
                 {
                     device.AddLogEntry($"Set IP: {ipAddress}/{subnetMask}");
 
@@ -328,7 +328,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
 
                 var description = string.Join(" ", context.CommandParts.Skip(2)).Trim('"');
 
-                if (context.Device is NetworkDevice device)
+                if (context.Device is {} device)
                 {
                     device.AddLogEntry($"Set description: {description}");
                 }
@@ -346,7 +346,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
 
                 var allowAccess = string.Join(" ", context.CommandParts.Skip(2));
 
-                if (context.Device is NetworkDevice device)
+                if (context.Device is {} device)
                 {
                     device.AddLogEntry($"Set allowaccess: {allowAccess}");
                 }
@@ -364,7 +364,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Basic
 
                 var hostname = context.CommandParts[2].Trim('"');
 
-                if (context.Device is NetworkDevice device)
+                if (context.Device is {} device)
                 {
                     device.AddLogEntry($"Set hostname: {hostname}");
                 }

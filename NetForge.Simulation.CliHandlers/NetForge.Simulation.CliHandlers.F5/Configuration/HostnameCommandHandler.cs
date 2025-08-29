@@ -16,20 +16,20 @@ namespace NetForge.Simulation.CliHandlers.F5.Configuration
             {
                 return RequireVendor(context, "F5");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
                 return Error(CliErrorType.IncompleteCommand, "Usage: hostname <name>");
             }
-            
+
             var newHostname = context.CommandParts[1];
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             if (device != null)
             {
                 device.SetHostname(newHostname);
             }
-            
+
             return Success($"Hostname set to: {newHostname}");
         }
     }
-} 
+}

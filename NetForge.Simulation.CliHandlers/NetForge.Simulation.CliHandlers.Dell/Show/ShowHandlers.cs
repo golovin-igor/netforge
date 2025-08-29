@@ -53,7 +53,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowRunningConfig(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
@@ -195,7 +195,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowInterfaces(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
@@ -218,7 +218,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             return HandleShowInterfacesBrief(context, interfaces);
         }
 
-        private CliResult HandleShowInterfacesStatus(ICliContext context, Dictionary<string, InterfaceConfig> interfaces)
+        private CliResult HandleShowInterfacesStatus(ICliContext context, Dictionary<string, IInterfaceConfig> interfaces)
         {
             var output = new StringBuilder();
             output.AppendLine("Port          Description     Status   Speed      Duplex  Mode   Type");
@@ -237,7 +237,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowInterfacesBrief(ICliContext context, Dictionary<string, InterfaceConfig> interfaces)
+        private CliResult HandleShowInterfacesBrief(ICliContext context, Dictionary<string, IInterfaceConfig> interfaces)
         {
             var output = new StringBuilder();
             output.AppendLine("Interface                          Status Protocol Description");
@@ -253,7 +253,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowSpecificInterface(ICliContext context, Dictionary<string, InterfaceConfig> interfaces, string interfaceName)
+        private CliResult HandleShowSpecificInterface(ICliContext context, Dictionary<string, IInterfaceConfig> interfaces, string interfaceName)
         {
             interfaceName = FormatInterfaceName(interfaceName);
 
@@ -311,7 +311,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowIpRoute(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
@@ -349,7 +349,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowIpInterface(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
@@ -372,7 +372,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowIpInterfaceBrief(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
             output.AppendLine("Interface                      IP-Address      OK? Method Status                Protocol");
             output.AppendLine("====================================================================================");
@@ -394,7 +394,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowIpSpecificInterface(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var ifaceName = string.Join(" ", context.CommandParts.Skip(3));
             ifaceName = FormatInterfaceName(ifaceName);
 
@@ -442,7 +442,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowIpOspfNeighbor(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
             var ospfConfig = device?.GetOspfConfiguration();
 
@@ -474,7 +474,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowIpOspfInterface(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
             var ospfConfig = device?.GetOspfConfiguration();
 
@@ -520,7 +520,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowIpOspfGeneral(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
             var ospfConfig = device?.GetOspfConfiguration();
 
@@ -550,7 +550,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
                 return HandleShowIpBgpSummary(context);
             }
 
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
             var bgpConfig = device?.GetBgpConfiguration();
 
@@ -579,7 +579,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowIpBgpSummary(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
             var bgpConfig = device?.GetBgpConfiguration();
 
@@ -608,7 +608,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowVlan(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -638,7 +638,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowSpanningTree(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -692,7 +692,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowArp(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -823,7 +823,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Show
 
         private CliResult HandleShowIpVrf(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)

@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common.CLI.Base;
@@ -16,38 +17,38 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
             AddAlias("sh");
             AddAlias("sho");
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Juniper"))
             {
                 return RequireVendor(context, "Juniper");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need show option");
             }
-            
+
             var option = context.CommandParts[1];
-            
+
             return option switch
             {
                 "version" => HandleShowVersion(context),
                 "configuration" => HandleShowConfiguration(context),
                 "interfaces" => HandleShowInterfaces(context),
                 "route" => HandleShowRoute(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     $"% Invalid show option: {option}")
             };
         }
-        
+
         private CliResult HandleShowVersion(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
-            
+
             output.AppendLine("Hostname: " + device?.Name);
             output.AppendLine("Model: mx240");
             output.AppendLine("Junos: 20.4R3.8");
@@ -59,15 +60,15 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
             output.AppendLine("JUNOS Web Management [20.4R3.8]");
             output.AppendLine("JUNOS py-extensions [20.4R3.8]");
             output.AppendLine("JUNOS py-base [20.4R3.8]");
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowConfiguration(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
-            
+
             output.AppendLine("## Last commit: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " UTC by admin");
             output.AppendLine("version 20.4R3.8;");
             output.AppendLine("system {");
@@ -85,7 +86,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
             output.AppendLine("        }");
             output.AppendLine("    }");
             output.AppendLine("}");
-            
+
             // Show interface configurations
             if (device != null)
             {
@@ -95,7 +96,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
                 {
                     var iface = kvp.Value;
                     output.AppendLine($"    {iface.Name} {{");
-                    
+
                     if (!string.IsNullOrEmpty(iface.IpAddress))
                     {
                         output.AppendLine("        unit 0 {");
@@ -104,37 +105,37 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
                         output.AppendLine("            }");
                         output.AppendLine("        }");
                     }
-                    
+
                     if (iface.IsShutdown)
                     {
                         output.AppendLine("        disable;");
                     }
-                    
+
                     output.AppendLine("    }");
                 }
                 output.AppendLine("}");
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowInterfaces(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
-            
+
             if (device == null)
             {
                 return Error(CliErrorType.ExecutionError, "% Device not available");
             }
-            
+
             var interfaces = device.GetAllInterfaces();
-            
+
             foreach (var kvp in interfaces)
             {
                 var iface = kvp.Value;
                 var status = iface.IsUp ? "up" : "down";
-                
+
                 output.AppendLine($"Physical interface: {iface.Name}, Enabled, Physical link is {status}");
                 output.AppendLine($"  Interface index: 128, SNMP ifIndex: 501");
                 output.AppendLine($"  Link-level type: Ethernet, MTU: {iface.Mtu}, Speed: {iface.Speed}");
@@ -149,7 +150,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
                 output.AppendLine($"    Input  packets:            {iface.RxPackets}");
                 output.AppendLine($"    Output packets:            {iface.TxPackets}");
                 output.AppendLine("");
-                
+
                 if (!string.IsNullOrEmpty(iface.IpAddress))
                 {
                     output.AppendLine($"  Logical interface {iface.Name}.0 (Index 70) (SNMP ifIndex 502)");
@@ -160,15 +161,15 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
                     output.AppendLine("");
                 }
             }
-            
+
             return Success(output.ToString());
         }
-        
+
         private CliResult HandleShowRoute(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
-            
+
             output.AppendLine("inet.0: 5 destinations, 5 routes (5 active, 0 holddown, 0 hidden)");
             output.AppendLine("+ = Active Route, - = Last Active, * = Both");
             output.AppendLine("");
@@ -180,7 +181,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
             output.AppendLine("                      Local via ge-0/0/0.0");
             output.AppendLine("224.0.0.0/4        *[Direct/0] 1w0d 12:34:56");
             output.AppendLine("                    > via ge-0/0/0.0");
-            
+
             return Success(output.ToString());
         }
     }

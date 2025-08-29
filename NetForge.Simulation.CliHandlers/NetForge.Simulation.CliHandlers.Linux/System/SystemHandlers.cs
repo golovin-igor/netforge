@@ -1,6 +1,7 @@
 using NetForge.Simulation.Common;
 using NetForge.Simulation.CliHandlers;
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Protocols;
 
@@ -13,7 +14,7 @@ public static class SystemHandlers
         protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             var args = context.CommandParts;
-            
+
             if (!IsVendor(context, "Linux"))
                 return Error(CliErrorType.InvalidMode, "This command is only available on Linux devices");
 
@@ -21,7 +22,7 @@ public static class SystemHandlers
                 return Error(CliErrorType.InvalidParameter, "Usage: ip <subcommand>");
 
             var subcommand = args[1];
-            
+
             return subcommand switch
             {
                 "link" => HandleIpLink(context, args),
@@ -37,7 +38,7 @@ public static class SystemHandlers
                 return Error(CliErrorType.InvalidParameter, "Usage: ip link <show|set>");
 
             var action = args[2];
-            
+
             return action switch
             {
                 "show" => ShowInterfaces(context, args),
@@ -78,7 +79,7 @@ public static class SystemHandlers
                 return Error(CliErrorType.InvalidParameter, "Usage: ip addr <add|del|show>");
 
             var action = args[2];
-            
+
             return action switch
             {
                 "add" => AddIpAddress(context, args),
@@ -125,7 +126,7 @@ public static class SystemHandlers
                 return Error(CliErrorType.InvalidParameter, "Usage: ip route <add|del|show>");
 
             var action = args[2];
-            
+
             return action switch
             {
                 "add" => AddRoute(context, args),
@@ -142,7 +143,7 @@ public static class SystemHandlers
 
             var network = args[3];
             var gateway = args[5];
-            
+
             return Success($"Route {network} via {gateway} added");
         }
 
@@ -152,7 +153,7 @@ public static class SystemHandlers
                 return Error(CliErrorType.InvalidParameter, "Usage: ip route del <network>");
 
             var network = args[3];
-            
+
             return Success($"Route {network} deleted");
         }
 
@@ -160,7 +161,7 @@ public static class SystemHandlers
         {
             var output = "default via 192.168.1.1 dev eth0\n" +
                         "192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.100\n";
-            
+
             return Success(output);
         }
     }
@@ -237,7 +238,7 @@ public static class SystemHandlers
                 return Error(CliErrorType.IncompleteCommand, "Usage: ip route <show|add|del>");
 
             var action = context.CommandParts[2].ToLower();
-            
+
             switch (action)
             {
                 case "show":
@@ -526,7 +527,7 @@ public static class SystemHandlers
                 return Error(CliErrorType.IncompleteCommand, "Usage: ip link <show|set>");
 
             var action = context.CommandParts[2].ToLower();
-            
+
             switch (action)
             {
                 case "show":
@@ -583,15 +584,15 @@ public static class SystemHandlers
             if (string.IsNullOrEmpty(mask)) return 0;
             var parts = mask.Split('.');
             if (parts.Length != 4) return 0;
-            
+
             uint maskInt = 0;
             foreach (var part in parts)
             {
                 if (!byte.TryParse(part, out byte b)) return 0;
                 maskInt = (maskInt << 8) | b;
             }
-            
+
             return 32 - (int)Math.Log2(~maskInt + 1);
         }
     }
-} 
+}

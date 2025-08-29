@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -59,7 +60,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
 
         private CliResult HandleShowVersion(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine($"Huawei Network Device");
@@ -73,7 +74,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
 
         private CliResult HandleShowInterfaces(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -97,7 +98,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
 
         private CliResult HandleShowArp(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var table = device?.GetArpTableOutput();
             if (string.IsNullOrEmpty(table))
                 return Success("ARP table is empty.\n");
@@ -121,7 +122,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
 
         private CliResult HandleShowInterfaceBrief(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -147,7 +148,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
 
         private CliResult HandleShowVlan(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -177,7 +178,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
 
         private CliResult HandleShowCurrentConfiguration(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine("#");
@@ -199,7 +200,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
 
         private CliResult HandleShowDevice(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine("Device information:");
@@ -259,7 +260,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
                 return HandleShowIpInterfaceBrief(context);
             }
 
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -284,7 +285,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
 
         private CliResult HandleShowIpInterfaceBrief(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -322,7 +323,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
 
         private CliResult HandleShowMacAddress(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine("MAC address table:");

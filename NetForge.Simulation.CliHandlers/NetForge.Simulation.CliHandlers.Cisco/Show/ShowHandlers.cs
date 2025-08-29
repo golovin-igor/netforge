@@ -7,6 +7,7 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.CliHandlers.Cisco.Show
 {
@@ -683,7 +684,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID");
 
             // In test environment, simulate CDP neighbors with sample data
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             if (device?.ParentNetwork != null)
             {
                 // Get all devices in the network except this one

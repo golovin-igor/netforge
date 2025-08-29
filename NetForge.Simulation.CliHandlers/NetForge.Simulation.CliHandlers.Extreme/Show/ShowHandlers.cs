@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -59,7 +60,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
 
         private CliResult HandleShowVersion(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine($"Extreme Network Device");
@@ -73,7 +74,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
 
         private CliResult HandleShowInterfaces(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -97,7 +98,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
 
         private CliResult HandleShowIparp(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var table = device?.GetArpTableOutput();
             if (string.IsNullOrEmpty(table))
                 return Success("ARP table is empty.\n");
@@ -193,7 +194,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
 
         private CliResult HandleShowConfiguration(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine("# Configuration dump for Extreme device");
@@ -234,7 +235,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
 
         private CliResult HandleShowVlan(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)

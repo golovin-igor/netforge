@@ -18,17 +18,17 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
             {
                 return RequireVendor(context, "Juniper");
             }
-            
+
             // Juniper-specific: Enter configuration mode and initialize candidate config
             SetMode(context, "configuration");
-            
+
             // Clear any existing candidate configuration
-            if (context.Device is NetworkDevice device)
+            if (context.Device is {} device)
             {
                 // Initialize candidate configuration if device supports it
                 device.AddLogEntry("Entering configuration mode - candidate configuration initialized");
             }
-            
+
             return Success("Entering configuration mode\n");
         }
     }
@@ -44,33 +44,33 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
             {
                 return RequireVendor(context, "Juniper");
             }
-            
+
             if (!IsInMode(context, "configuration"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% Error: Must be in configuration mode");
             }
-            
+
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 // Juniper-specific: Commit candidate configuration to running config
                 device.AddLogEntry("Configuration committed successfully - candidate config applied to running config");
-                
+
                 // Trigger protocol updates if network is available
                 // In a real implementation, this would apply candidate config changes
-                
+
                 return Success("commit complete\n");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error committing configuration: {ex.Message}");
             }
         }
@@ -87,36 +87,36 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
             {
                 return RequireVendor(context, "Juniper");
             }
-            
+
             if (!IsInMode(context, "configuration"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% Error: Must be in configuration mode");
             }
-            
+
             var rollbackNumber = "0"; // Default rollback
             if (context.CommandParts.Length > 1)
             {
                 rollbackNumber = context.CommandParts[1];
             }
-            
+
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 // Juniper-specific: Clear candidate configuration
                 device.AddLogEntry($"Configuration rolled back to {rollbackNumber} - candidate config cleared");
-                
+
                 return Success($"load complete\n");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error rolling back configuration: {ex.Message}");
             }
         }
@@ -133,9 +133,9 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
             {
                 return RequireVendor(context, "Juniper");
             }
-            
+
             var currentMode = GetCurrentMode(context);
-            
+
             // Juniper-specific mode transitions
             var newMode = currentMode switch
             {
@@ -143,15 +143,15 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
                 "interface" => "configuration",
                 _ => "operational"
             };
-            
+
             SetMode(context, newMode);
-            
+
             // If exiting configuration mode, warn about uncommitted changes
             if (currentMode == "configuration")
             {
                 return Success("Exiting configuration mode\n");
             }
-            
+
             return Success("");
         }
     }
@@ -167,38 +167,38 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
             {
                 return RequireVendor(context, "Juniper");
             }
-            
+
             if (!IsInMode(context, "configuration"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% Error: Must be in configuration mode");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - specify configuration element to delete");
             }
-            
+
             var elementToDelete = string.Join(" ", context.CommandParts.Skip(1));
-            
+
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
-                    return Error(CliErrorType.ExecutionError, 
+                    return Error(CliErrorType.ExecutionError,
                         "% Device not available");
                 }
-                
+
                 // Juniper-specific: Mark element for deletion in candidate config
                 device.AddLogEntry($"Configuration element marked for deletion: {elementToDelete}");
-                
+
                 return Success($"delete complete\n");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error deleting configuration: {ex.Message}");
             }
         }
@@ -215,22 +215,22 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
             {
                 return RequireVendor(context, "Juniper");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need IP address");
             }
-            
+
             var targetIp = context.CommandParts[1];
-            
+
             // Validate IP address format
             if (!IsValidIpAddress(targetIp))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     $"% Invalid IP address: {targetIp}");
             }
-            
+
             // Simulate ping result (JunOS style)
             var output = new StringBuilder();
             output.AppendLine($"PING {targetIp} ({targetIp}): 56 data bytes");
@@ -243,10 +243,10 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Basic
             output.AppendLine($"--- {targetIp} ping statistics ---");
             output.AppendLine("5 packets transmitted, 5 packets received, 0% packet loss");
             output.AppendLine("round-trip min/avg/max/stddev = 0.089/0.120/0.156/0.025 ms");
-            
+
             return Success(output.ToString());
         }
-        
+
         private bool IsValidIpAddress(string ip)
         {
             return global::System.Net.IPAddress.TryParse(ip, out _);

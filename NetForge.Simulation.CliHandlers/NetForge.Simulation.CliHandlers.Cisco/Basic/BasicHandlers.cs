@@ -67,7 +67,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 if (device == null) return;
 
                 // Find the source interface for ping (use first available interface with IP)
-                var sourceInterface = GetPingSourceInterface(device as NetworkDevice);
+                var sourceInterface = GetPingSourceInterface(device);
                 if (sourceInterface == null) return;
 
                 // Each ping involves:
@@ -86,13 +86,13 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
                 sourceInterface.RxBytes += pingCount * totalPacketSize; // Incoming bytes
 
                 // Log the ping activity
-                var networkDevice = device as NetworkDevice;
+                var networkDevice = device;
                 networkDevice?.AddLogEntry($"Ping to {context.CommandParts[1]}: {pingCount} packets sent/received via {sourceInterface.Name}");
             }
             catch (Exception ex)
             {
                 // Don't fail the ping command if counter update fails
-                var networkDevice = context.Device as NetworkDevice;
+                var networkDevice = context.Device;
                 networkDevice?.AddLogEntry($"Warning: Failed to update ping counters - {ex.Message}");
             }
         }
@@ -100,7 +100,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         /// <summary>
         /// Find the interface to use as the source for ping
         /// </summary>
-        private dynamic GetPingSourceInterface(NetworkDevice device)
+        private dynamic GetPingSourceInterface(INetworkDevice device)
         {
             var interfaces = device.GetAllInterfaces();
 
@@ -213,7 +213,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         {
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,
@@ -239,7 +239,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         {
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,
@@ -261,7 +261,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         {
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,
@@ -303,7 +303,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
 
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,
@@ -410,7 +410,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         {
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,
@@ -432,7 +432,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         {
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,
@@ -454,7 +454,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         {
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,
@@ -485,7 +485,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         {
             try
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 if (device == null)
                 {
                     return Error(CliErrorType.ExecutionError,

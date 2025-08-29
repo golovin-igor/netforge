@@ -16,47 +16,47 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddAlias("conf");
             AddAlias("config");
         }
-        
+
         public override List<string> GetCompletions(ICliContext context)
         {
             var completions = new List<string>();
-            
+
             // If we're at the first level (just "configure"), return available options
             if (context.CommandParts.Length <= 1)
             {
                 completions.Add("terminal");
                 return completions;
             }
-            
+
             return completions;
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             // Check if we have terminal parameter (accept both "terminal" and "t")
-            if (context.CommandParts.Length > 1 && 
+            if (context.CommandParts.Length > 1 &&
                 (context.CommandParts[1] == "terminal" || context.CommandParts[1] == "t"))
             {
                 SetMode(context, "config");
                 return Success("Enter configuration commands, one per line.  End with CNTL/Z.");
             }
-            
+
             // If just "configure" without parameters, show help
             if (context.CommandParts.Length == 1)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command. Use 'configure terminal' to enter configuration mode.");
             }
-            
+
             return Error(CliErrorType.InvalidCommand, GetVendorError(context, "invalid_command"));
         }
     }
-    
+
     /// <summary>
     /// Cisco exit command handler
     /// </summary>
@@ -68,9 +68,9 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             var currentMode = context.Device.GetCurrentMode();
-            
+
             // Handle mode transitions
             switch (currentMode)
             {
@@ -90,11 +90,11 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                     SetMode(context, "user");
                     break;
             }
-            
+
             return Success("");
         }
     }
-    
+
     /// <summary>
     /// Cisco interface command handler
     /// </summary>
@@ -104,27 +104,27 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
         {
             AddAlias("int");
         }
-        
+
         public override List<string> GetCompletions(ICliContext context)
         {
             var completions = new List<string>();
-            
+
             // If we're at the first level (just "interface"), return available interfaces
             if (context.CommandParts.Length <= 1)
             {
                 completions.AddRange(GetAvailableInterfaces(context));
                 return completions;
             }
-            
+
             return completions;
         }
-        
+
         private List<string> GetAvailableInterfaces(ICliContext context)
         {
             var interfaces = new List<string>();
-            
+
             // Common Cisco interface names and aliases
-            interfaces.AddRange(new[] { 
+            interfaces.AddRange(new[] {
                 "ethernet0/0", "ethernet0/1", "ethernet0/2", "ethernet0/3",
                 "e0/0", "e0/1", "e0/2", "e0/3", // Ethernet aliases
                 "fastethernet0/0", "fastethernet0/1", "fastethernet0/2", "fastethernet0/3",
@@ -137,49 +137,49 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                 "lo0", "lo1", "lo2", "lo3", // Loopback aliases
                 "vlan1", "vlan10", "vlan20", "vlan30", "vlan100"
             });
-            
+
             return interfaces;
         }
-        
+
         protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in config mode");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     GetVendorError(context, "incomplete_command"));
             }
-            
+
             var interfaceName = string.Join(" ", context.CommandParts.Skip(1));
-            
+
             // Validate interface name using the comprehensive alias handler
             if (!CiscoInterfaceAliasHandler.IsValidInterfaceName(interfaceName))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     $"% Invalid interface name: {interfaceName}");
             }
-            
+
             // Expand interface alias to canonical name
             var canonicalName = CiscoInterfaceAliasHandler.ExpandInterfaceAlias(interfaceName);
-            
+
             // Set interface mode and store interface context
             SetMode(context, "interface");
             context.Device.SetCurrentInterface(canonicalName);
-            
+
             return Success("");
         }
     }
-    
+
     /// <summary>
     /// Cisco IP command handler
     /// </summary>
@@ -191,124 +191,124 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     GetVendorError(context, "incomplete_command"));
             }
-            
+
             var subCommand = context.CommandParts[1];
-            
+
             return subCommand switch
             {
                 "address" => HandleIpAddress(context),
                 "route" => HandleIpRoute(context),
                 "routing" => HandleIpRouting(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     GetVendorError(context, "invalid_command"))
             };
         }
-        
+
         private CliResult HandleIpAddress(ICliContext context)
         {
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface configuration mode");
             }
-            
+
             if (context.CommandParts.Length < 4)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need IP address and subnet mask");
             }
-            
+
             var ipAddress = context.CommandParts[2];
             var subnetMask = context.CommandParts[3];
-            
+
             // Get current interface from device context
             var interfaceName = context.Device.GetCurrentInterface();
             if (string.IsNullOrEmpty(interfaceName))
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "% Error: No interface context available");
             }
-            
+
             // Configure IP address on the interface
             var vendorContext = GetVendorContext(context);
             var success = vendorContext?.Capabilities.ConfigureInterfaceIp(interfaceName, ipAddress, subnetMask) ?? false;
             if (!success)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error: Failed to configure IP address on {interfaceName}");
             }
-            
+
             return Success("");
         }
-        
+
         private CliResult HandleIpRoute(ICliContext context)
         {
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in config mode");
             }
-            
+
             if (context.CommandParts.Length < 5)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need network, mask, and next hop");
             }
-            
+
             var network = context.CommandParts[2];
             var mask = context.CommandParts[3];
             var nextHop = context.CommandParts[4];
-            
-            try 
+
+            try
             {
-                var device = context.Device as NetworkDevice;
-                
+                var device = context.Device;
+
                 // Add the static route with default metric
                 device?.AddStaticRoute(network, mask, nextHop, 1);
-                
+
                 // Log the route addition
                 device?.AddLogEntry($"Static route added: {network}/{mask} via {nextHop}");
-                
+
                 return Success("");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error adding static route: {ex.Message}");
             }
         }
-        
+
         private CliResult HandleIpRouting(ICliContext context)
         {
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in config mode");
             }
-            
+
             try
             {
-                var device = context.Device as NetworkDevice;
-                
+                var device = context.Device;
+
                 // Log IP routing enable
                 device?.AddLogEntry("IP routing enabled");
-                
+
                 return Success("");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error enabling IP routing: {ex.Message}");
             }
         }
     }
-    
+
     /// <summary>
     /// Cisco no command handler
     /// </summary>
@@ -320,146 +320,146 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     GetVendorError(context, "incomplete_command"));
             }
-            
+
             var subCommand = context.CommandParts[1];
-            
+
             return subCommand switch
             {
                 "ip" => HandleNoIp(context),
                 "shutdown" => HandleNoShutdown(context),
                 "description" => HandleNoDescription(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     GetVendorError(context, "invalid_command"))
             };
         }
-        
+
         private CliResult HandleNoIp(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command");
             }
-            
+
             var ipSubCommand = context.CommandParts[2];
-            
+
             return ipSubCommand switch
             {
                 "address" => HandleNoIpAddress(context),
                 "route" => HandleNoIpRoute(context),
                 "routing" => HandleNoIpRouting(context),
-                _ => Error(CliErrorType.InvalidCommand, 
+                _ => Error(CliErrorType.InvalidCommand,
                     GetVendorError(context, "invalid_command"))
             };
         }
-        
+
         private CliResult HandleNoIpAddress(ICliContext context)
         {
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface configuration mode");
             }
-            
+
             var vendorContext = GetVendorContext(context);
             var interfaceName = vendorContext?.GetCurrentInterface() ?? "";
             if (string.IsNullOrEmpty(interfaceName))
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "% Error: No interface context available");
             }
-            
+
             // Remove IP address from interface
             var success = vendorContext?.Capabilities.RemoveInterfaceIp(interfaceName) ?? false;
             if (!success)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error: Failed to remove IP address from {interfaceName}");
             }
-            
+
             return Success("");
         }
-        
+
         private CliResult HandleNoIpRoute(ICliContext context)
         {
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in config mode");
             }
-            
+
             if (context.CommandParts.Length < 6)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command - need network, mask, and next hop");
             }
-            
+
             var network = context.CommandParts[3];
             var mask = context.CommandParts[4];
             var nextHop = context.CommandParts[5];
-            
+
             try
             {
-                var device = context.Device as NetworkDevice;
-                
+                var device = context.Device;
+
                 // Remove the static route (using correct method signature)
                 device?.RemoveStaticRoute(network, nextHop);
-                
+
                 // Log the route removal
                 device?.AddLogEntry($"Static route removed: {network}/{mask} via {nextHop}");
-                
+
                 return Success("");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error removing static route: {ex.Message}");
             }
         }
-        
+
         private CliResult HandleNoIpRouting(ICliContext context)
         {
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in config mode");
             }
-            
+
             try
             {
-                var device = context.Device as NetworkDevice;
-                
+                var device = context.Device;
+
                 // Log IP routing disable
                 device?.AddLogEntry("IP routing disabled");
-                
+
                 return Success("");
             }
             catch (Exception ex)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error disabling IP routing: {ex.Message}");
             }
         }
-        
+
         private CliResult HandleNoShutdown(ICliContext context)
         {
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface configuration mode");
             }
-            
+
                         var vendorContext = GetVendorContext(context);
             var interfaceName = vendorContext?.GetCurrentInterface() ?? "";
             if (string.IsNullOrEmpty(interfaceName))
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "% Error: No interface context available");
             }
 
@@ -467,26 +467,26 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             var success = vendorContext?.Capabilities.SetInterfaceShutdown(interfaceName, false) ?? false;
             if (!success)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error: Failed to enable interface {interfaceName}");
             }
-            
+
             return Success("");
         }
-        
+
         private CliResult HandleNoDescription(ICliContext context)
         {
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface configuration mode");
             }
-            
+
                         var vendorContext = GetVendorContext(context);
             var interfaceName = vendorContext?.GetCurrentInterface() ?? "";
             if (string.IsNullOrEmpty(interfaceName))
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "% Error: No interface context available");
             }
 
@@ -494,10 +494,10 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             var success = true;
             if (!success)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     $"% Error: Failed to remove description from {interfaceName}");
             }
-            
+
             return Success("");
         }
     }
@@ -516,22 +516,22 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in config mode");
             }
 
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     GetVendorError(context, "incomplete_command"));
             }
 
             var newHostname = context.CommandParts[1];
-            
+
             // Validate hostname (basic validation)
             if (string.IsNullOrWhiteSpace(newHostname))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     "% Invalid hostname");
             }
 
@@ -555,13 +555,13 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in config mode");
             }
 
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command. Usage: vlan <vlan-id>");
             }
 
@@ -576,13 +576,13 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                 }
                 else
                 {
-                    return Error(CliErrorType.InvalidParameter, 
+                    return Error(CliErrorType.InvalidParameter,
                         "% Invalid VLAN ID. Valid range is 1-4094");
                 }
             }
             else
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     "% Invalid VLAN ID");
             }
         }
@@ -610,17 +610,17 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "config"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in config mode");
             }
 
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command. Options: ospf, bgp, rip, eigrp");
             }
 
-            return Error(CliErrorType.InvalidCommand, 
+            return Error(CliErrorType.InvalidCommand,
                 GetVendorError(context, "invalid_command"));
         }
     }
@@ -639,7 +639,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command. Usage: router ospf <process-id>");
             }
 
@@ -652,7 +652,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             }
             else
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     "% Invalid OSPF process ID");
             }
         }
@@ -672,7 +672,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command. Usage: router bgp <as-number>");
             }
 
@@ -685,7 +685,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             }
             else
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     "% Invalid AS number");
             }
         }
@@ -724,7 +724,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command. Usage: router eigrp <as-number>");
             }
 
@@ -737,7 +737,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             }
             else
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     "% Invalid AS number");
             }
         }
@@ -762,13 +762,13 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface mode");
             }
 
             if (context.CommandParts.Length < 3)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command. Usage: ip address <address> <mask>");
             }
 
@@ -778,30 +778,30 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             // Validate IP address
             if (!IsValidIpAddress(ipAddress))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     $"% Invalid IP address: {ipAddress}");
             }
 
             if (!IsValidMask(mask))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     $"% Invalid mask: {mask}");
             }
 
             // Apply configuration using vendor-agnostic method
             var vendorContext = GetVendorContext(context);
             var currentInterface = vendorContext?.GetCurrentInterface();
-            
+
             if (string.IsNullOrEmpty(currentInterface))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% Interface not selected");
             }
 
             var success = vendorContext?.Capabilities.ConfigureInterfaceIp(currentInterface, ipAddress, mask) ?? false;
             if (!success)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "% Error applying configuration");
             }
 
@@ -842,42 +842,42 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface mode");
             }
 
             if (context.CommandParts.Length < 3)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command. Usage: ip access-group <number> [in|out]");
             }
 
             if (!int.TryParse(context.CommandParts[1], out int aclNumber))
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     $"% Invalid access list number: {context.CommandParts[1]}");
             }
 
             var direction = context.CommandParts[2].ToLower();
             if (direction != "in" && direction != "out")
             {
-                return Error(CliErrorType.InvalidParameter, 
+                return Error(CliErrorType.InvalidParameter,
                     "% Direction must be 'in' or 'out'");
             }
 
             var vendorContext = GetVendorContext(context);
             var currentInterface = vendorContext?.GetCurrentInterface();
-            
+
             if (string.IsNullOrEmpty(currentInterface))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% Interface not selected");
             }
 
             var success = vendorContext?.Capabilities.ApplyAccessGroup(currentInterface, aclNumber, direction) ?? false;
             if (!success)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "% Error applying access group");
             }
 
@@ -899,23 +899,23 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface mode");
             }
 
             var vendorContext = GetVendorContext(context);
             var currentInterface = vendorContext?.GetCurrentInterface();
-            
+
             if (string.IsNullOrEmpty(currentInterface))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% Interface not selected");
             }
 
             var success = vendorContext?.Capabilities.SetInterfaceShutdown(currentInterface, true) ?? false;
             if (!success)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "% Error shutting down interface");
             }
 
@@ -937,23 +937,23 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface mode");
             }
 
             var vendorContext = GetVendorContext(context);
             var currentInterface = vendorContext?.GetCurrentInterface();
-            
+
             if (string.IsNullOrEmpty(currentInterface))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% Interface not selected");
             }
 
             var success = vendorContext?.Capabilities.SetInterfaceShutdown(currentInterface, false) ?? false;
             if (!success)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "% Error enabling interface");
             }
 
@@ -981,11 +981,11 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface mode");
             }
 
-            return Error(CliErrorType.IncompleteCommand, 
+            return Error(CliErrorType.IncompleteCommand,
                 "% Incomplete command. Available options: address, access-group");
         }
     }
@@ -1008,7 +1008,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                 return RequireVendor(context, "Cisco");
             }
 
-            return Error(CliErrorType.IncompleteCommand, 
+            return Error(CliErrorType.IncompleteCommand,
                 "% Incomplete command");
         }
     }
@@ -1031,7 +1031,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                 return RequireVendor(context, "Cisco");
             }
 
-            return Error(CliErrorType.IncompleteCommand, 
+            return Error(CliErrorType.IncompleteCommand,
                 "% Incomplete command");
         }
     }
@@ -1050,23 +1050,23 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface mode");
             }
 
             var vendorContext = GetVendorContext(context);
             var currentInterface = vendorContext?.GetCurrentInterface();
-            
+
             if (string.IsNullOrEmpty(currentInterface))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% Interface not selected");
             }
 
             var success = vendorContext?.Capabilities.RemoveInterfaceIp(currentInterface) ?? false;
             if (!success)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "% Error removing IP address");
             }
 
@@ -1088,23 +1088,23 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "interface"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in interface mode");
             }
 
             var vendorContext = GetVendorContext(context);
             var currentInterface = vendorContext?.GetCurrentInterface();
-            
+
             if (string.IsNullOrEmpty(currentInterface))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% Interface not selected");
             }
 
             var success = vendorContext?.Capabilities.RemoveAccessGroup(currentInterface) ?? false;
             if (!success)
             {
-                return Error(CliErrorType.ExecutionError, 
+                return Error(CliErrorType.ExecutionError,
                     "% Error removing IP access group");
             }
 
@@ -1126,18 +1126,18 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             if (!IsInMode(context, "vlan"))
             {
-                return Error(CliErrorType.InvalidMode, 
+                return Error(CliErrorType.InvalidMode,
                     "% This command can only be used in VLAN configuration mode");
             }
 
             if (context.CommandParts.Length < 2)
             {
-                return Error(CliErrorType.IncompleteCommand, 
+                return Error(CliErrorType.IncompleteCommand,
                     "% Incomplete command. Usage: name <vlan-name>");
             }
 
             var vlanName = context.CommandParts[1];
-            
+
             // Get vendor capabilities to set VLAN name
             var vendorCaps = GetVendorContext(context)?.Capabilities;
             if (vendorCaps != null)
@@ -1155,7 +1155,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                 }
             }
 
-            return Error(CliErrorType.InvalidParameter, 
+            return Error(CliErrorType.InvalidParameter,
                 "% Failed to set VLAN name");
         }
     }
@@ -1176,14 +1176,14 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             {
                 return RequireVendor(context, "Cisco");
             }
-            
+
             if (!IsInMode(context, "router"))
             {
                 return Error(CliErrorType.InvalidMode, "% Invalid command at this mode");
             }
 
             var cmd = context.CommandParts[0].ToLower();
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
 
             return cmd switch
             {
@@ -1198,7 +1198,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             };
         }
 
-        private CliResult ProcessRouterIdCommand(ICliContext context, NetworkDevice device)
+        private CliResult ProcessRouterIdCommand(ICliContext context, INetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -1217,7 +1217,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                     {
                         // Get current protocol from device or mode context
                         var currentProtocol = GetCurrentProtocol(context);
-                        
+
                         if (currentProtocol == "ospf")
                         {
                             ciscoDevice.SetOspfRouterId(routerId);
@@ -1226,7 +1226,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                         {
                             ciscoDevice.SetBgpRouterId(routerId);
                         }
-                        
+
                         return Success("");
                     }
                     catch
@@ -1237,11 +1237,11 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                     }
                 }
             }
-            
+
             return Error(CliErrorType.InvalidParameter, "% Invalid router ID");
         }
 
-        private CliResult ProcessNetworkCommand(ICliContext context, NetworkDevice device)
+        private CliResult ProcessNetworkCommand(ICliContext context, INetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -1251,7 +1251,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             var currentProtocol = GetCurrentProtocol(context);
             var network = parts[1];
-            
+
             if (currentProtocol == "ospf" && parts.Length >= 5 && parts[3] == "area")
             {
                 // OSPF: network 10.0.0.0 0.0.0.3 area 0
@@ -1272,11 +1272,11 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                 device?.AddLogEntry($"RIP network {network} configured");
                 return Success("");
             }
-            
+
             return Error(CliErrorType.InvalidParameter, "% Invalid network configuration");
         }
 
-        private CliResult ProcessNeighborCommand(ICliContext context, NetworkDevice device)
+        private CliResult ProcessNeighborCommand(ICliContext context, INetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length < 4)
@@ -1291,11 +1291,11 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                 device?.AddLogEntry($"BGP neighbor {neighborIp} remote-as {remoteAs} configured");
                 return Success("");
             }
-            
+
             return Error(CliErrorType.InvalidParameter, "% Invalid neighbor configuration");
         }
 
-        private CliResult ProcessVersionCommand(ICliContext context, NetworkDevice device)
+        private CliResult ProcessVersionCommand(ICliContext context, INetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -1305,30 +1305,30 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             var version = parts[1];
             var currentProtocol = GetCurrentProtocol(context);
-            
+
             if (currentProtocol == "rip")
             {
                 device?.AddLogEntry($"RIP version {version} configured");
                 return Success("");
             }
-            
+
             return Error(CliErrorType.InvalidParameter, "% Version command not supported for this protocol");
         }
 
-        private CliResult ProcessAutoSummaryCommand(ICliContext context, NetworkDevice device)
+        private CliResult ProcessAutoSummaryCommand(ICliContext context, INetworkDevice device)
         {
             var currentProtocol = GetCurrentProtocol(context);
-            
+
             if (currentProtocol == "rip")
             {
                 device?.AddLogEntry("RIP auto-summary enabled");
                 return Success("");
             }
-            
+
             return Error(CliErrorType.InvalidParameter, "% Auto-summary command not supported for this protocol");
         }
 
-        private CliResult ProcessNoCommand(ICliContext context, NetworkDevice device)
+        private CliResult ProcessNoCommand(ICliContext context, INetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -1338,13 +1338,13 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
             var subCommand = parts[1].ToLower();
             var currentProtocol = GetCurrentProtocol(context);
-            
+
             if (subCommand == "auto-summary" && currentProtocol == "rip")
             {
                 device?.AddLogEntry("RIP auto-summary disabled");
                 return Success("");
             }
-            
+
             return Error(CliErrorType.InvalidParameter, "% Invalid no command");
         }
 
@@ -1365,7 +1365,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
                 var protocol = getCurrentProtocolMethod.Invoke(context.Device, null) as string;
                 return protocol ?? "unknown";
             }
-            
+
             // Fallback - assume based on context or default to ospf
             return "ospf";
         }
@@ -1386,4 +1386,4 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return System.Net.IPAddress.TryParse(ip, out _);
         }
     }
-} 
+}

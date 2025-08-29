@@ -18,120 +18,15 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (context.CommandParts.Length > 1 && context.CommandParts[1] == "terminal")
             {
                 SetMode(context, "config");
                 return Success("");
             }
-            
+
             SetMode(context, "config");
             return Success("");
-        }
-    }
-
-    /// <summary>
-    /// Interface configuration command handler with comprehensive Dell OS10 support
-    /// </summary>
-    public class InterfaceCommandHandler() : VendorAgnosticCliHandler("interface", "Configure interface parameters")
-    {
-        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
-        {
-            if (!IsVendor(context, "Dell"))
-            {
-                return RequireVendor(context, "Dell");
-            }
-            
-            if (!IsInMode(context, "config"))
-            {
-                return Error(CliErrorType.InvalidMode, "% Invalid command at this privilege level");
-            }
-
-            if (context.CommandParts.Length < 2)
-            {
-                return Error(CliErrorType.IncompleteCommand, "% Incomplete command");
-            }
-
-            var interfaceName = string.Join(" ", context.CommandParts.Skip(1));
-            interfaceName = FormatInterfaceName(interfaceName);
-            
-            var device = context.Device as NetworkDevice;
-            var interfaces = device?.GetAllInterfaces();
-
-            // Check for existing interface
-            if (interfaces != null && interfaces.ContainsKey(interfaceName))
-            {
-                SetCurrentInterface(context, interfaceName);
-                SetMode(context, "interface");
-                return Success("");
-            }
-
-            // Handle VLAN interface creation
-            if (interfaceName.StartsWith("vlan"))
-            {
-                if (int.TryParse(interfaceName.Replace("vlan", "").Trim(), out int vlanId))
-                {
-                    var vlans = device?.GetAllVlans();
-                    if (vlans != null && vlans.ContainsKey(vlanId))
-                    {
-                        if (!interfaces.ContainsKey(interfaceName))
-                        {
-                            interfaces[interfaceName] = CreateInterface(interfaceName, vlanId);
-                        }
-                        SetCurrentInterface(context, interfaceName);
-                        SetMode(context, "interface");
-                        return Success("");
-                    }
-                }
-            }
-
-            // Handle port-channel interface creation
-            if (interfaceName.StartsWith("port-channel"))
-            {
-                if (int.TryParse(interfaceName.Replace("port-channel", "").Trim(), out int channelId))
-                {
-                    if (!interfaces.ContainsKey(interfaceName))
-                    {
-                        interfaces[interfaceName] = CreateInterface(interfaceName);
-                    }
-                    SetCurrentInterface(context, interfaceName);
-                    SetMode(context, "interface");
-                    return Success("");
-                }
-            }
-
-            return Error(CliErrorType.ExecutionError, "% Error: Interface not found");
-        }
-        
-        private dynamic CreateInterface(string name, int vlanId = 0)
-        {
-            return new 
-            {
-                Name = name,
-                VlanId = vlanId,
-                IsUp = false,
-                IsShutdown = true,
-                IpAddress = "",
-                SubnetMask = "",
-                Description = "",
-                SwitchportMode = "",
-                MacAddress = "00:01:e8:8b:44:56",
-                RxPackets = 0,
-                TxPackets = 0,
-                RxBytes = 0,
-                TxBytes = 0,
-                Mtu = 1500,
-                Bandwidth = 1000000
-            };
-        }
-        
-        private string FormatInterfaceName(string interfaceName)
-        {
-            if (interfaceName.StartsWith("eth"))
-                return "ethernet" + interfaceName.Substring(3);
-            if (interfaceName.StartsWith("gi"))
-                return "ethernet" + interfaceName.Substring(2);
-            return interfaceName;
         }
     }
 
@@ -151,7 +46,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (!IsInMode(context, "interface"))
             {
                 return Error(CliErrorType.InvalidMode, "% Invalid command at this mode");
@@ -159,7 +54,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
 
             var cmd = context.CommandParts[0].ToLower();
             var currentInterface = GetCurrentInterface(context);
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var interfaces = device?.GetAllInterfaces();
             var iface = interfaces?.ContainsKey(currentInterface) == true ? interfaces[currentInterface] : null;
 
@@ -183,7 +78,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             };
         }
 
-        private CliResult ProcessIpCommand(ICliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessIpCommand(ICliContext context, INetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -196,7 +91,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
                 if (parts.Length >= 3)
                 {
                     string ip, mask;
-                    
+
                     if (parts.Length > 3)
                     {
                         // Traditional format: ip address 10.0.0.1 255.255.255.0
@@ -224,7 +119,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
                             return Error(CliErrorType.InvalidParameter, "% Invalid command at this privilege level");
                         }
                     }
-                    
+
                     if (IsValidIpAddress(ip))
                     {
                         iface.IpAddress = ip;
@@ -239,7 +134,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.InvalidCommand, "% Invalid command at this privilege level");
         }
 
-        private CliResult ProcessSwitchportCommand(ICliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessSwitchportCommand(ICliContext context, INetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -268,7 +163,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
                         {
                             iface.VlanId = vlanId;
                             iface.SwitchportMode = "access";
-                            
+
                             var vlans = device.GetAllVlans();
                             if (vlans.ContainsKey(vlanId))
                             {
@@ -292,7 +187,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             }
         }
 
-        private CliResult ProcessDescriptionCommand(ICliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessDescriptionCommand(ICliContext context, INetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length > 1)
@@ -303,7 +198,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.IncompleteCommand, "% Incomplete command");
         }
 
-        private CliResult ProcessShutdownCommand(ICliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessShutdownCommand(ICliContext context, INetworkDevice device, dynamic iface)
         {
             iface.IsShutdown = true;
             iface.IsUp = false;
@@ -311,7 +206,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Success("");
         }
 
-        private CliResult ProcessNoCommand(ICliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessNoCommand(ICliContext context, INetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -346,7 +241,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             }
         }
 
-        private CliResult ProcessSpeedCommand(ICliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessSpeedCommand(ICliContext context, INetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length > 1)
@@ -358,7 +253,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.IncompleteCommand, "% Incomplete command");
         }
 
-        private CliResult ProcessDuplexCommand(ICliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessDuplexCommand(ICliContext context, INetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length > 1)
@@ -370,7 +265,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.IncompleteCommand, "% Incomplete command");
         }
 
-        private CliResult ProcessChannelGroupCommand(ICliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessChannelGroupCommand(ICliContext context, INetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length > 2 && int.TryParse(parts[1], out int channelId))
@@ -417,7 +312,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (!IsInMode(context, "config"))
             {
                 return Error(CliErrorType.InvalidMode, "% Invalid command at this privilege level");
@@ -425,7 +320,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
 
             if (context.CommandParts.Length > 1)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 device.AddLogEntry($"Hostname changed to {context.CommandParts[1]}");
                 return Success("");
             }
@@ -444,7 +339,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (!IsInMode(context, "config"))
             {
                 return Error(CliErrorType.InvalidMode, "% Invalid command at this privilege level");
@@ -454,7 +349,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             {
                 if (IsValidVlanId(vlanId))
                 {
-                    var device = context.Device as NetworkDevice;
+                    var device = context.Device;
                     var vlans = device?.GetAllVlans();
                     if (vlans != null && !vlans.ContainsKey(vlanId))
                     {
@@ -467,10 +362,10 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             }
             return Error(CliErrorType.InvalidParameter, "% Error: Invalid VLAN ID");
         }
-        
+
         private dynamic CreateVlan(int vlanId)
         {
-            return new 
+            return new
             {
                 Id = vlanId,
                 Name = $"VLAN{vlanId:D4}",
@@ -478,7 +373,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
                 Interfaces = new List<string>()
             };
         }
-        
+
         private bool IsValidVlanId(int vlanId)
         {
             return vlanId >= 1 && vlanId <= 4094;
@@ -496,7 +391,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (!IsInMode(context, "config"))
             {
                 return Error(CliErrorType.InvalidMode, "% Invalid command at this privilege level");
@@ -508,7 +403,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             }
 
             var protocol = context.CommandParts[1].ToLower();
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
 
             switch (protocol)
             {
@@ -572,14 +467,14 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (!IsInMode(context, "router"))
             {
                 return Error(CliErrorType.InvalidMode, "% Invalid command at this mode");
             }
 
             var cmd = context.CommandParts[0].ToLower();
-            var device = context.Device as NetworkDevice;
+            var device = context.Device ;
 
             return cmd switch
             {
@@ -591,7 +486,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             };
         }
 
-        private CliResult ProcessRouterIdCommand(ICliContext context, NetworkDevice device)
+        private CliResult ProcessRouterIdCommand(ICliContext context, INetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length > 1)
@@ -607,14 +502,14 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.InvalidParameter, "% Invalid router ID");
         }
 
-        private CliResult ProcessNetworkCommand(ICliContext context, NetworkDevice device)
+        private CliResult ProcessNetworkCommand(ICliContext context, INetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length > 1)
             {
                 var network = parts[1];
                 var protocol = GetCurrentProtocol(context);
-                
+
                 if (protocol == "ospf" && parts.Length > 3 && parts[2] == "area")
                 {
                     var area = parts[3];
@@ -635,14 +530,14 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.InvalidParameter, "% Invalid network configuration");
         }
 
-        private CliResult ProcessNeighborCommand(ICliContext context, NetworkDevice device)
+        private CliResult ProcessNeighborCommand(ICliContext context, INetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length > 3)
             {
                 var neighborIp = parts[1];
                 var remoteAs = parts[3];
-                
+
                 if (IsValidIpAddress(neighborIp) && parts[2] == "remote-as")
                 {
                     device?.AddLogEntry($"BGP neighbor {neighborIp} remote-as {remoteAs} configured");
@@ -681,7 +576,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             {
                 return RequireVendor(context, "Dell");
             }
-            
+
             if (!IsInMode(context, "config"))
             {
                 return Error(CliErrorType.InvalidMode, "% Invalid command at this privilege level");
@@ -692,15 +587,15 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             {
                 var network = parts[2];
                 var nextHop = parts[3];
-                
+
                 if (IsValidNetwork(network) && IsValidIpAddress(nextHop))
                 {
-                    var device = context.Device as NetworkDevice;
+                    var device = context.Device;
                     device?.AddLogEntry($"Static route {network} via {nextHop} configured");
                     return Success("");
                 }
             }
-            
+
             return Error(CliErrorType.InvalidParameter, "% Invalid route configuration");
         }
 
@@ -714,43 +609,4 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return global::System.Net.IPAddress.TryParse(ip, out _);
         }
     }
-
-    /// <summary>
-    /// Exit command handler for configuration modes
-    /// </summary>
-    public class ExitCommandHandler() : VendorAgnosticCliHandler("exit", "Exit current configuration mode")
-    {
-        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
-        {
-            if (!IsVendor(context, "Dell"))
-            {
-                return RequireVendor(context, "Dell");
-            }
-            
-            var currentMode = GetCurrentMode(context);
-            
-            var newMode = currentMode switch
-            {
-                "interface" => "config",
-                "vlan" => "config", 
-                "router" => "config",
-                "config" => "exec",
-                _ => "exec"
-            };
-            
-            SetMode(context, newMode);
-            
-            // Clear context-specific settings
-            if (currentMode == "interface")
-            {
-                SetCurrentInterface(context, "");
-            }
-            else if (currentMode == "router")
-            {
-                SetCurrentProtocol(context, "");
-            }
-            
-            return Success("");
-        }
-    }
-} 
+}
