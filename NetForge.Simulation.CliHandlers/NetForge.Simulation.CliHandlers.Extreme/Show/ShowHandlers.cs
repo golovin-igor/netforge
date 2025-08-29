@@ -16,7 +16,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             AddAlias("sho");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Extreme"))
             {
@@ -57,7 +57,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             };
         }
 
-        private CliResult HandleShowVersion(CliContext context)
+        private CliResult HandleShowVersion(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -71,7 +71,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowInterfaces(CliContext context)
+        private CliResult HandleShowInterfaces(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -95,7 +95,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIparp(CliContext context)
+        private CliResult HandleShowIparp(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var table = device?.GetArpTableOutput();
@@ -104,7 +104,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(table);
         }
 
-        private CliResult HandleShowMlag(CliContext context)
+        private CliResult HandleShowMlag(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("MLAG Status:");
@@ -116,7 +116,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIgmp(CliContext context)
+        private CliResult HandleShowIgmp(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("IGMP Groups:");
@@ -126,7 +126,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowRip(CliContext context)
+        private CliResult HandleShowRip(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("RIP Interface Status:");
@@ -137,7 +137,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowPim(CliContext context)
+        private CliResult HandleShowPim(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("PIM Neighbors:");
@@ -147,7 +147,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowLog(CliContext context)
+        private CliResult HandleShowLog(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Log Configuration:");
@@ -159,7 +159,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowAccessList(CliContext context)
+        private CliResult HandleShowAccessList(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Access Control Lists:");
@@ -170,7 +170,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowOspf(CliContext context)
+        private CliResult HandleShowOspf(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("OSPF Neighbors:");
@@ -180,7 +180,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowPorts(CliContext context)
+        private CliResult HandleShowPorts(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Port Information:");
@@ -191,7 +191,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowConfiguration(CliContext context)
+        private CliResult HandleShowConfiguration(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -209,7 +209,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowSsh2(CliContext context)
+        private CliResult HandleShowSsh2(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("SSH2 Status:");
@@ -221,7 +221,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowSnmp(CliContext context)
+        private CliResult HandleShowSnmp(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("SNMP Community Strings:");
@@ -232,7 +232,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowVlan(CliContext context)
+        private CliResult HandleShowVlan(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -263,7 +263,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIproute(CliContext context)
+        private CliResult HandleShowIproute(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("IP Route Table:");
@@ -274,7 +274,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIsis(CliContext context)
+        private CliResult HandleShowIsis(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("IS-IS Adjacencies:");
@@ -284,7 +284,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowAccounts(CliContext context)
+        private CliResult HandleShowAccounts(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("User Accounts:");
@@ -295,7 +295,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIpforwarding(CliContext context)
+        private CliResult HandleShowIpforwarding(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("IP Forwarding Status:");
@@ -306,7 +306,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowNtp(CliContext context)
+        private CliResult HandleShowNtp(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("NTP Status:");
@@ -318,7 +318,7 @@ namespace NetForge.Simulation.CliHandlers.Extreme.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowBgp(CliContext context)
+        private CliResult HandleShowBgp(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("BGP Neighbors:");

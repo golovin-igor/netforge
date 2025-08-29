@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 using NetForge.Simulation.Protocols.Common.Interfaces;
@@ -63,7 +65,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             _device.AddLogEntry($"VRRP: Initialized with {vrrpConfig.Groups.Count} groups on router {vrrpState.RouterId}");
         }
 
-        protected override async Task UpdateNeighbors(NetworkDevice device)
+        protected override async Task UpdateNeighbors(INetworkDevice device)
         {
             var vrrpConfig = GetVrrpConfig();
             var vrrpState = (VrrpState)_state;
@@ -86,7 +88,7 @@ namespace NetForge.Simulation.Protocols.VRRP
             await UpdateGroupTimers(device, vrrpState);
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var vrrpState = (VrrpState)_state;
 

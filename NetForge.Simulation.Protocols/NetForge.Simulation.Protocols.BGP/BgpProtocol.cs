@@ -2,6 +2,7 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 
@@ -50,7 +51,7 @@ namespace NetForge.Simulation.Protocols.BGP
             }
         }
 
-        protected override async Task UpdateNeighbors(NetworkDevice device)
+        protected override async Task UpdateNeighbors(INetworkDevice device)
         {
             var bgpState = (BgpState)_state;
             var bgpConfig = GetBgpConfig();
@@ -65,7 +66,7 @@ namespace NetForge.Simulation.Protocols.BGP
             await ProcessBgpPeers(device, bgpConfig, bgpState);
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var bgpState = (BgpState)_state;
             var bgpConfig = GetBgpConfig();
@@ -107,7 +108,7 @@ namespace NetForge.Simulation.Protocols.BGP
             }
         }
 
-        private async Task ProcessBgpPeers(NetworkDevice device, BgpConfig config, BgpState state)
+        private async Task ProcessBgpPeers(INetworkDevice device, BgpConfig config, BgpState state)
         {
             foreach (var neighborConfig in config.Neighbors.Values)
             {
@@ -162,7 +163,7 @@ namespace NetForge.Simulation.Protocols.BGP
             await Task.CompletedTask;
         }
 
-        private async Task UpdatePeerStateMachine(BgpPeer peer, NetworkDevice device,
+        private async Task UpdatePeerStateMachine(BgpPeer peer, INetworkDevice device,
             BgpNeighbor config, BgpState state)
         {
             // Simplified BGP FSM
@@ -211,7 +212,7 @@ namespace NetForge.Simulation.Protocols.BGP
             await Task.CompletedTask;
         }
 
-        private async Task RunBestPathSelection(NetworkDevice device, BgpState state, BgpConfig config)
+        private async Task RunBestPathSelection(INetworkDevice device, BgpState state, BgpConfig config)
         {
             // Collect all received routes from all peers
             var candidateRoutes = new List<(BgpRouteEntry route, BgpPeer peer)>();
@@ -250,7 +251,7 @@ namespace NetForge.Simulation.Protocols.BGP
             await Task.CompletedTask;
         }
 
-        private async Task<List<BgpRouteEntry>> SimulateReceivedRoutes(NetworkDevice device, BgpPeer peer, BgpConfig config)
+        private async Task<List<BgpRouteEntry>> SimulateReceivedRoutes(INetworkDevice device, BgpPeer peer, BgpConfig config)
         {
             var routes = new List<BgpRouteEntry>();
 
@@ -381,7 +382,7 @@ namespace NetForge.Simulation.Protocols.BGP
             };
         }
 
-        private async Task InstallBgpRoutes(NetworkDevice device, BgpState state)
+        private async Task InstallBgpRoutes(INetworkDevice device, BgpState state)
         {
             foreach (var routeEntry in state.BestRoutes.Values)
             {
@@ -418,7 +419,7 @@ namespace NetForge.Simulation.Protocols.BGP
             return _device?.GetBgpConfiguration() as BgpConfig;
         }
 
-        private bool IsPeerReachable(NetworkDevice device, string peerIp)
+        private bool IsPeerReachable(INetworkDevice device, string peerIp)
         {
             // Check if we have a route to the peer
             var routes = device.GetRoutingTable();
@@ -431,7 +432,7 @@ namespace NetForge.Simulation.Protocols.BGP
             return $"{(mask >> 24) & 0xFF}.{(mask >> 16) & 0xFF}.{(mask >> 8) & 0xFF}.{mask & 0xFF}";
         }
 
-        private string GetOutgoingInterface(NetworkDevice device, string nextHop)
+        private string GetOutgoingInterface(INetworkDevice device, string nextHop)
         {
             var routes = device.GetRoutingTable();
             var route = routes.FirstOrDefault(r => IsIpInNetwork(nextHop, r.Network, r.Mask));

@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Interfaces;
 
@@ -13,7 +14,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets formatted help text for any command with question mark
         /// </summary>
-        public static string GetQuestionMarkHelp(this ICliHandler handler, CliContext context)
+        public static string GetQuestionMarkHelp(this ICliHandler handler, ICliContext context)
         {
             var help = new StringBuilder();
 
@@ -58,7 +59,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets vendor-specific help information
         /// </summary>
-        private static string GetVendorSpecificHelp(CliContext context)
+        private static string GetVendorSpecificHelp(ICliContext context)
         {
             var help = new StringBuilder();
             var vendorContext = context.VendorContext;
@@ -84,7 +85,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets contextual information for the current command
         /// </summary>
-        private static string GetContextualInformation(CliContext context)
+        private static string GetContextualInformation(ICliContext context)
         {
             var info = new StringBuilder();
 
@@ -111,7 +112,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets mode-specific help information
         /// </summary>
-        public static string GetModeSpecificHelp(this CliContext context)
+        public static string GetModeSpecificHelp(this ICliContext context)
         {
             var help = new StringBuilder();
             var currentMode = context.CurrentMode.ToLowerInvariant();
@@ -190,7 +191,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets interface-specific help for interface commands
         /// </summary>
-        public static string GetInterfaceHelp(this CliContext context, string interfaceName = "")
+        public static string GetInterfaceHelp(this ICliContext context, string interfaceName = "")
         {
             var help = new StringBuilder();
 
@@ -228,7 +229,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets VLAN-specific help for VLAN commands
         /// </summary>
-        public static string GetVlanHelp(this CliContext context, string vlanId = "")
+        public static string GetVlanHelp(this ICliContext context, string vlanId = "")
         {
             var help = new StringBuilder();
 
@@ -259,7 +260,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets protocol-specific help for routing protocols
         /// </summary>
-        public static string GetProtocolHelp(this CliContext context, string protocol = "")
+        public static string GetProtocolHelp(this ICliContext context, string protocol = "")
         {
             var help = new StringBuilder();
 

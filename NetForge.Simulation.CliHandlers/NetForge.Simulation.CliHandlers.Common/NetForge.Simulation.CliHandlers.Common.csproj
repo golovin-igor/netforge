@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\NetForge.Interfaces\NetForge.Interfaces.csproj" />
     <ProjectReference Include="..\..\NetForge.Simulation.Handlers.Common\NetForge.Simulation.Handlers.Common.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.DataTypes\NetForge.Simulation.DataTypes.csproj" />
   </ItemGroup>
 
 </Project>

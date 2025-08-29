@@ -7,9 +7,9 @@ namespace NetForge.Simulation.CliHandlers.Arista
     /// <summary>
     /// Arista-specific vendor context implementation
     /// </summary>
-    public class AristaVendorContext(NetworkDevice device) : IVendorContext
+    public class AristaVendorContext(INetworkDevice device) : IVendorContext
     {
-        private readonly NetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
         private readonly AristaVendorCapabilities _capabilities = new(device);
 
         public string VendorName => "Arista";

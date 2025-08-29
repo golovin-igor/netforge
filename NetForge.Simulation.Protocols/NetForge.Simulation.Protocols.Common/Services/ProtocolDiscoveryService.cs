@@ -1,6 +1,5 @@
 using System.Reflection;
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.Common.Services
 {

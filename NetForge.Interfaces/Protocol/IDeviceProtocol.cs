@@ -17,12 +17,6 @@ namespace NetForge.Interfaces.Devices
         string Name { get; }
 
         /// <summary>
-        /// Returns the type of the protocol
-        /// </summary>
-        /// <returns></returns>
-        ProtocolType GetType();
-        
-        /// <summary>
         /// Version of the protocol implementation
         /// </summary>
         string Version { get; }

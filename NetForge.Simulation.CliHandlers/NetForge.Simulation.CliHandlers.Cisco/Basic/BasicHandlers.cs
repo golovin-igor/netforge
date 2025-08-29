@@ -1,6 +1,7 @@
 using System.Text;
 using System.Linq;
 using System;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -12,7 +13,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
     /// </summary>
     public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -58,7 +59,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
         /// <summary>
         /// Update interface counters for ping simulation
         /// </summary>
-        private void UpdatePingCounters(CliContext context, int pingCount, int packetSize)
+        private void UpdatePingCounters(ICliContext context, int pingCount, int packetSize)
         {
             try
             {
@@ -126,7 +127,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             AddAlias("trace");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -176,7 +177,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             AddAlias("wr");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -208,7 +209,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             return HandleWriteMemory(context);
         }
 
-        private CliResult HandleWriteMemory(CliContext context)
+        private CliResult HandleWriteMemory(ICliContext context)
         {
             try
             {
@@ -234,7 +235,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             }
         }
 
-        private CliResult HandleWriteTerminal(CliContext context)
+        private CliResult HandleWriteTerminal(ICliContext context)
         {
             try
             {
@@ -256,7 +257,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             }
         }
 
-        private CliResult HandleWriteErase(CliContext context)
+        private CliResult HandleWriteErase(ICliContext context)
         {
             try
             {
@@ -287,7 +288,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
     /// </summary>
     public class ReloadCommandHandler() : VendorAgnosticCliHandler("reload", "Reload the device")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -347,7 +348,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
     /// </summary>
     public class HistoryCommandHandler() : VendorAgnosticCliHandler("history", "Display command history")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -372,7 +373,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
     /// </summary>
     public class CopyCommandHandler() : VendorAgnosticCliHandler("copy", "Copy configuration or files")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -405,7 +406,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             };
         }
 
-        private CliResult HandleCopyRunningToStartup(CliContext context)
+        private CliResult HandleCopyRunningToStartup(ICliContext context)
         {
             try
             {
@@ -427,7 +428,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             }
         }
 
-        private CliResult HandleCopyStartupToRunning(CliContext context)
+        private CliResult HandleCopyStartupToRunning(ICliContext context)
         {
             try
             {
@@ -449,7 +450,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             }
         }
 
-        private CliResult HandleCopyRunningToTftp(CliContext context)
+        private CliResult HandleCopyRunningToTftp(ICliContext context)
         {
             try
             {
@@ -480,7 +481,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             }
         }
 
-        private CliResult HandleCopyTftpToRunning(CliContext context)
+        private CliResult HandleCopyTftpToRunning(ICliContext context)
         {
             try
             {
@@ -516,7 +517,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
     /// </summary>
     public class ClearCommandHandler() : VendorAgnosticCliHandler("clear", "Clear counters and statistics")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -549,19 +550,19 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             };
         }
 
-        private CliResult HandleClearCounters(CliContext context)
+        private CliResult HandleClearCounters(ICliContext context)
         {
             // Simulate clearing interface counters
             return Success("Clear \"show interface\" counters on all interfaces [confirm]y");
         }
 
-        private CliResult HandleClearArp(CliContext context)
+        private CliResult HandleClearArp(ICliContext context)
         {
             // Simulate clearing ARP table
             return Success("");
         }
 
-        private CliResult HandleClearIp(CliContext context)
+        private CliResult HandleClearIp(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -581,25 +582,25 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             };
         }
 
-        private CliResult HandleClearIpRoute(CliContext context)
+        private CliResult HandleClearIpRoute(ICliContext context)
         {
             // Simulate clearing IP routing table
             return Success("");
         }
 
-        private CliResult HandleClearIpBgp(CliContext context)
+        private CliResult HandleClearIpBgp(ICliContext context)
         {
             // Simulate clearing BGP sessions
             return Success("");
         }
 
-        private CliResult HandleClearIpOspf(CliContext context)
+        private CliResult HandleClearIpOspf(ICliContext context)
         {
             // Simulate clearing OSPF process
             return Success("");
         }
 
-        private CliResult HandleClearInterface(CliContext context)
+        private CliResult HandleClearInterface(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -613,7 +614,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             return Success("");
         }
 
-        private CliResult HandleClearCdp(CliContext context)
+        private CliResult HandleClearCdp(ICliContext context)
         {
             // Check for subcommands
             if (context.CommandParts.Length > 2)

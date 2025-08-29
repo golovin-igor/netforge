@@ -2,6 +2,7 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Routing;
 using NetForge.Simulation.Protocols.Common.Base;
@@ -40,7 +41,7 @@ namespace NetForge.Simulation.Protocols.CDP
             }
         }
 
-        protected override async Task UpdateNeighbors(NetworkDevice device)
+        protected override async Task UpdateNeighbors(INetworkDevice device)
         {
             var cdpState = (CdpState)_state;
             var cdpConfig = GetCdpConfig();
@@ -55,7 +56,7 @@ namespace NetForge.Simulation.Protocols.CDP
             await DiscoverCdpNeighbors(device, cdpConfig, cdpState);
         }
 
-        protected override async Task ProcessTimers(NetworkDevice device)
+        protected override async Task ProcessTimers(INetworkDevice device)
         {
             var cdpState = (CdpState)_state;
             var cdpConfig = GetCdpConfig();
@@ -70,7 +71,7 @@ namespace NetForge.Simulation.Protocols.CDP
             }
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var cdpState = (CdpState)_state;
 
@@ -96,7 +97,7 @@ namespace NetForge.Simulation.Protocols.CDP
             await Task.CompletedTask;
         }
 
-        private async Task DiscoverCdpNeighbors(NetworkDevice device, CdpConfig config, CdpState state)
+        private async Task DiscoverCdpNeighbors(INetworkDevice device, CdpConfig config, CdpState state)
         {
             // CDP discovery based on physical connections
             foreach (var interfaceName in device.GetAllInterfaces().Keys)
@@ -130,8 +131,8 @@ namespace NetForge.Simulation.Protocols.CDP
             await Task.CompletedTask;
         }
 
-        private async Task ProcessCdpNeighbor(NetworkDevice device, CdpState state, CdpConfig config,
-            string localInterface, NetworkDevice neighborDevice, string neighborInterface)
+        private async Task ProcessCdpNeighbor(INetworkDevice device, CdpState state, CdpConfig config,
+            string localInterface, INetworkDevice neighborDevice, string neighborInterface)
         {
             var neighborConfig = GetNeighborCdpConfig(neighborDevice);
             if (neighborConfig == null) return;
@@ -164,7 +165,7 @@ namespace NetForge.Simulation.Protocols.CDP
             await Task.CompletedTask;
         }
 
-        private async Task SendCdpAdvertisements(NetworkDevice device, CdpConfig config, CdpState state)
+        private async Task SendCdpAdvertisements(INetworkDevice device, CdpConfig config, CdpState state)
         {
             var sentCount = 0;
 
@@ -212,7 +213,7 @@ namespace NetForge.Simulation.Protocols.CDP
             return _device?.GetCdpConfiguration() as CdpConfig;
         }
 
-        private CdpConfig? GetNeighborCdpConfig(NetworkDevice neighbor)
+        private CdpConfig? GetNeighborCdpConfig(INetworkDevice neighbor)
         {
             return neighbor?.GetCdpConfiguration() as CdpConfig;
         }

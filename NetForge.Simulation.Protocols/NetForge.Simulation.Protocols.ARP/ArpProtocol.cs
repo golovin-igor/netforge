@@ -4,6 +4,7 @@ using NetForge.Simulation.Protocols.Common.Base;
 using System.Net;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Protocols.ARP
 {
@@ -33,7 +34,7 @@ namespace NetForge.Simulation.Protocols.ARP
             LogProtocolEvent("ARP protocol initialized");
         }
 
-        protected override async Task UpdateNeighbors(NetworkDevice device)
+        protected override async Task UpdateNeighbors(INetworkDevice device)
         {
             var arpState = (ArpState)_state;
 
@@ -41,7 +42,7 @@ namespace NetForge.Simulation.Protocols.ARP
             await ProcessArpTableMaintenance(device, arpState);
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var arpState = (ArpState)_state;
 
@@ -71,7 +72,7 @@ namespace NetForge.Simulation.Protocols.ARP
             await Task.CompletedTask;
         }
 
-        private async Task ProcessArpTableMaintenance(NetworkDevice device, ArpState state)
+        private async Task ProcessArpTableMaintenance(INetworkDevice device, ArpState state)
         {
             // Sync with NetworkDevice's ARP table
             var deviceArpTable = device.GetArpTable();
@@ -119,7 +120,7 @@ namespace NetForge.Simulation.Protocols.ARP
             }
         }
 
-        private string FindOutgoingInterface(NetworkDevice device, string destIp)
+        private string FindOutgoingInterface(INetworkDevice device, string destIp)
         {
             // Use the device's existing logic for finding outgoing interface
             try

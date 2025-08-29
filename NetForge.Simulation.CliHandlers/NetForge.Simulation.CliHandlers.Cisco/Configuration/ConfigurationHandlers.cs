@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -16,7 +17,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddAlias("config");
         }
         
-        public override List<string> GetCompletions(CliContext context)
+        public override List<string> GetCompletions(ICliContext context)
         {
             var completions = new List<string>();
             
@@ -30,7 +31,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return completions;
         }
         
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -61,7 +62,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class ExitCommandHandler() : VendorAgnosticCliHandler("exit", "Exit from current mode")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -104,7 +105,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddAlias("int");
         }
         
-        public override List<string> GetCompletions(CliContext context)
+        public override List<string> GetCompletions(ICliContext context)
         {
             var completions = new List<string>();
             
@@ -118,7 +119,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return completions;
         }
         
-        private List<string> GetAvailableInterfaces(CliContext context)
+        private List<string> GetAvailableInterfaces(ICliContext context)
         {
             var interfaces = new List<string>();
             
@@ -140,7 +141,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return interfaces;
         }
         
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -184,7 +185,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class IpCommandHandler() : VendorAgnosticCliHandler("ip", "Configure IP parameters")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -209,7 +210,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             };
         }
         
-        private CliResult HandleIpAddress(CliContext context)
+        private CliResult HandleIpAddress(ICliContext context)
         {
             if (!IsInMode(context, "interface"))
             {
@@ -246,7 +247,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return Success("");
         }
         
-        private CliResult HandleIpRoute(CliContext context)
+        private CliResult HandleIpRoute(ICliContext context)
         {
             if (!IsInMode(context, "config"))
             {
@@ -283,7 +284,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             }
         }
         
-        private CliResult HandleIpRouting(CliContext context)
+        private CliResult HandleIpRouting(ICliContext context)
         {
             if (!IsInMode(context, "config"))
             {
@@ -313,7 +314,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class NoCommandHandler() : VendorAgnosticCliHandler("no", "Remove or disable configuration")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -338,7 +339,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             };
         }
         
-        private CliResult HandleNoIp(CliContext context)
+        private CliResult HandleNoIp(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -358,7 +359,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             };
         }
         
-        private CliResult HandleNoIpAddress(CliContext context)
+        private CliResult HandleNoIpAddress(ICliContext context)
         {
             if (!IsInMode(context, "interface"))
             {
@@ -385,7 +386,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return Success("");
         }
         
-        private CliResult HandleNoIpRoute(CliContext context)
+        private CliResult HandleNoIpRoute(ICliContext context)
         {
             if (!IsInMode(context, "config"))
             {
@@ -422,7 +423,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             }
         }
         
-        private CliResult HandleNoIpRouting(CliContext context)
+        private CliResult HandleNoIpRouting(ICliContext context)
         {
             if (!IsInMode(context, "config"))
             {
@@ -446,7 +447,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             }
         }
         
-        private CliResult HandleNoShutdown(CliContext context)
+        private CliResult HandleNoShutdown(ICliContext context)
         {
             if (!IsInMode(context, "interface"))
             {
@@ -473,7 +474,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return Success("");
         }
         
-        private CliResult HandleNoDescription(CliContext context)
+        private CliResult HandleNoDescription(ICliContext context)
         {
             if (!IsInMode(context, "interface"))
             {
@@ -506,7 +507,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class HostnameCommandHandler() : VendorAgnosticCliHandler("hostname", "Set system's network name")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -545,7 +546,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class VlanCommandHandler() : VendorAgnosticCliHandler("vlan", "Configure VLAN parameters")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -600,7 +601,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("eigrp", new RouterEigrpHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -629,7 +630,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class RouterOspfHandler() : VendorAgnosticCliHandler("ospf", "Open Shortest Path First (OSPF)")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -662,7 +663,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class RouterBgpHandler() : VendorAgnosticCliHandler("bgp", "Border Gateway Protocol (BGP)")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -695,7 +696,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class RouterRipHandler() : VendorAgnosticCliHandler("rip", "Routing Information Protocol (RIP)")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -714,7 +715,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class RouterEigrpHandler() : VendorAgnosticCliHandler("eigrp", "Enhanced Interior Gateway Routing Protocol (EIGRP)")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -752,7 +753,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddAlias("addr");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -832,7 +833,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class IpAccessGroupCommandHandler() : VendorAgnosticCliHandler("access-group", "Apply an access group to interface")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -889,7 +890,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class ShutdownCommandHandler() : VendorAgnosticCliHandler("shutdown", "Shutdown the interface")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -927,7 +928,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class NoShutdownHandler() : VendorAgnosticCliHandler("shutdown", "Enable an interface")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -971,7 +972,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("access-group", new IpAccessGroupCommandHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1000,7 +1001,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("ip", new NoIpHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1023,7 +1024,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("access-group", new NoIpAccessGroupHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1040,7 +1041,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class NoIpAddressHandler() : VendorAgnosticCliHandler("address", "Remove IP address")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1078,7 +1079,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class NoIpAccessGroupHandler() : VendorAgnosticCliHandler("access-group", "Remove IP access group")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1116,7 +1117,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class CiscoVlanNameHandler() : VendorAgnosticCliHandler("name", "Set VLAN name")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1164,12 +1165,12 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class CiscoRouterModeCommandHandler() : VendorAgnosticCliHandler("", "Router mode commands")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return IsInMode(context, "router");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -1197,7 +1198,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             };
         }
 
-        private CliResult ProcessRouterIdCommand(CliContext context, NetworkDevice device)
+        private CliResult ProcessRouterIdCommand(ICliContext context, NetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -1240,7 +1241,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return Error(CliErrorType.InvalidParameter, "% Invalid router ID");
         }
 
-        private CliResult ProcessNetworkCommand(CliContext context, NetworkDevice device)
+        private CliResult ProcessNetworkCommand(ICliContext context, NetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -1275,7 +1276,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return Error(CliErrorType.InvalidParameter, "% Invalid network configuration");
         }
 
-        private CliResult ProcessNeighborCommand(CliContext context, NetworkDevice device)
+        private CliResult ProcessNeighborCommand(ICliContext context, NetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length < 4)
@@ -1294,7 +1295,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return Error(CliErrorType.InvalidParameter, "% Invalid neighbor configuration");
         }
 
-        private CliResult ProcessVersionCommand(CliContext context, NetworkDevice device)
+        private CliResult ProcessVersionCommand(ICliContext context, NetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -1314,7 +1315,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return Error(CliErrorType.InvalidParameter, "% Version command not supported for this protocol");
         }
 
-        private CliResult ProcessAutoSummaryCommand(CliContext context, NetworkDevice device)
+        private CliResult ProcessAutoSummaryCommand(ICliContext context, NetworkDevice device)
         {
             var currentProtocol = GetCurrentProtocol(context);
             
@@ -1327,7 +1328,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return Error(CliErrorType.InvalidParameter, "% Auto-summary command not supported for this protocol");
         }
 
-        private CliResult ProcessNoCommand(CliContext context, NetworkDevice device)
+        private CliResult ProcessNoCommand(ICliContext context, NetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -1347,14 +1348,14 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return Error(CliErrorType.InvalidParameter, "% Invalid no command");
         }
 
-        private CliResult ProcessExitCommand(CliContext context)
+        private CliResult ProcessExitCommand(ICliContext context)
         {
             SetMode(context, "config");
             SetCurrentProtocol(context, "");
             return Success("");
         }
 
-        private string GetCurrentProtocol(CliContext context)
+        private string GetCurrentProtocol(ICliContext context)
         {
             // Try to get current protocol from device context
             var deviceType = context.Device.GetType();
@@ -1369,7 +1370,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return "ospf";
         }
 
-        private void SetCurrentProtocol(CliContext context, string protocol)
+        private void SetCurrentProtocol(ICliContext context, string protocol)
         {
             // Try to set current protocol on device context
             var deviceType = context.Device.GetType();

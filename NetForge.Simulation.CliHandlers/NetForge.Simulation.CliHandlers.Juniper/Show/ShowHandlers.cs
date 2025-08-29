@@ -17,7 +17,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
             AddAlias("sho");
         }
         
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Juniper"))
             {
@@ -43,7 +43,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
             };
         }
         
-        private CliResult HandleShowVersion(CliContext context)
+        private CliResult HandleShowVersion(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -63,7 +63,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowConfiguration(CliContext context)
+        private CliResult HandleShowConfiguration(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -118,7 +118,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowInterfaces(CliContext context)
+        private CliResult HandleShowInterfaces(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -164,7 +164,7 @@ namespace NetForge.Simulation.CliHandlers.Juniper.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowRoute(CliContext context)
+        private CliResult HandleShowRoute(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();

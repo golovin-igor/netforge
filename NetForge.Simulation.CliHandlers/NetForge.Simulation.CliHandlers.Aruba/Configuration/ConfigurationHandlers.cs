@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -12,13 +13,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaConfigureHandler() : VendorAgnosticCliHandler("configure", "Enter configuration mode")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "configure", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -40,13 +41,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaExitHandler() : VendorAgnosticCliHandler("exit", "Exit current mode")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "exit", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -80,13 +81,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaInterfaceHandler() : VendorAgnosticCliHandler("interface", "Configure interface")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "interface", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -99,15 +100,15 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                     return Error(CliErrorType.InvalidParameter, "Usage: interface <interface-name>");
 
                 var interfaceName = args[1];
-                var device = context.Device as NetworkDevice;
-                
+                var device = context.Device;
+
                 // Support Aruba interface aliasing: "1" -> "1/1/1", "2" -> "1/1/2", etc.
                 var actualInterfaceName = interfaceName;
                 if (int.TryParse(interfaceName, out int portNum) && portNum >= 1 && portNum <= 28)
                 {
                     actualInterfaceName = $"1/1/{portNum}";
                 }
-                
+
                 var iface = device?.GetInterface(actualInterfaceName);
                 if (iface == null)
                     return Error(CliErrorType.InvalidParameter, $"Interface {interfaceName} not found");
@@ -115,10 +116,10 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                 // Set current interface and enter interface mode
                 var vendorCaps = GetVendorCapabilities(context) as ArubaVendorCapabilities;
                 vendorCaps?.SetCurrentInterface(actualInterfaceName);
-                
+
                 // Also set the current interface on the device itself for prompt display
                 device?.SetCurrentInterface(actualInterfaceName);
-                
+
                 try
                 {
                     SetMode(context, "interface");
@@ -136,13 +137,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaVlanHandler() : VendorAgnosticCliHandler("vlan", "Configure VLAN")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "vlan", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -160,7 +161,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                 // Set current VLAN context for subsequent commands
                 var vendorCaps = GetVendorCapabilities(context) as ArubaVendorCapabilities;
                 vendorCaps?.SetCurrentVlan(vlanId);
-                
+
                 // Create VLAN if it doesn't exist
                 vendorCaps?.CreateOrSelectVlan(vlanId);
 
@@ -182,13 +183,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaIpHandler() : VendorAgnosticCliHandler("ip", "Configure IP settings")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "ip", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -198,7 +199,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                     return Error(CliErrorType.InvalidParameter, "Usage: ip <subcommand>");
 
                 var subcommand = args[1].ToLower();
-                
+
                 return subcommand switch
                 {
                     "address" => HandleIpAddress(context, args),
@@ -206,7 +207,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                 };
             }
 
-            private CliResult HandleIpAddress(CliContext context, string[] args)
+            private CliResult HandleIpAddress(ICliContext context, string[] args)
             {
                 if (!IsInMode(context, "interface"))
                     return Error(CliErrorType.InvalidMode, "IP address can only be configured in interface mode");
@@ -218,10 +219,10 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                 var subnetMask = args[3];
 
                 // Get current interface from context
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaces = device?.GetAllInterfaces().Values;
                 var currentInterface = interfaces?.FirstOrDefault(i => i.IsUp); // Simplified interface detection
-                
+
                 if (currentInterface == null)
                     return Error(CliErrorType.InvalidParameter, "No current interface found");
 
@@ -240,13 +241,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaSwitchportHandler() : VendorAgnosticCliHandler("switchport", "Configure switchport settings")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "switchport", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -259,7 +260,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                     return Error(CliErrorType.InvalidParameter, "Usage: switchport <subcommand>");
 
                 var subcommand = args[1].ToLower();
-                
+
                 return subcommand switch
                 {
                     "mode" => HandleSwitchportMode(context, args),
@@ -268,7 +269,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                 };
             }
 
-            private CliResult HandleSwitchportMode(CliContext context, string[] args)
+            private CliResult HandleSwitchportMode(ICliContext context, string[] args)
             {
                 if (args.Length < 3)
                     return Error(CliErrorType.InvalidParameter, "Usage: switchport mode <access|trunk>");
@@ -281,7 +282,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                 return Success("");
             }
 
-            private CliResult HandleSwitchportAccess(CliContext context, string[] args)
+            private CliResult HandleSwitchportAccess(ICliContext context, string[] args)
             {
                 if (args.Length < 4 || args[2].ToLower() != "vlan")
                     return Error(CliErrorType.InvalidParameter, "Usage: switchport access vlan <vlan-id>");
@@ -290,10 +291,10 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                     return Error(CliErrorType.InvalidParameter, "Invalid VLAN ID (1-4094)");
 
                 // Get current interface and set VLAN
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaces = device?.GetAllInterfaces().Values;
                 var currentInterface = interfaces?.FirstOrDefault(i => i.IsUp);
-                
+
                 if (currentInterface != null)
                 {
                     var vendorCaps = GetVendorCapabilities(context);
@@ -309,13 +310,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaShutdownHandler() : VendorAgnosticCliHandler("shutdown", "Shutdown interface")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "shutdown", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -323,10 +324,10 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                 if (!IsInMode(context, "interface"))
                     return Error(CliErrorType.InvalidMode, "Command only available in interface mode");
 
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaces = device?.GetAllInterfaces().Values;
                 var currentInterface = interfaces?.FirstOrDefault(i => i.IsUp);
-                
+
                 if (currentInterface != null)
                 {
                     var vendorCaps = GetVendorCapabilities(context);
@@ -342,13 +343,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaNoHandler() : VendorAgnosticCliHandler("no", "Negate a command")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "no", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -358,7 +359,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                     return Error(CliErrorType.InvalidParameter, "Usage: no <command>");
 
                 var command = args[1].ToLower();
-                
+
                 return command switch
                 {
                     "shutdown" => HandleNoShutdown(context),
@@ -366,15 +367,15 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                 };
             }
 
-            private CliResult HandleNoShutdown(CliContext context)
+            private CliResult HandleNoShutdown(ICliContext context)
             {
                 if (!IsInMode(context, "interface"))
                     return Error(CliErrorType.InvalidMode, "Command only available in interface mode");
 
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var vendorCaps = GetVendorCapabilities(context) as ArubaVendorCapabilities;
                 var currentInterface = vendorCaps?.GetCurrentInterface();
-                
+
                 if (!string.IsNullOrEmpty(currentInterface))
                 {
                     vendorCaps?.SetInterfaceShutdown(currentInterface, false);
@@ -389,13 +390,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaVlanNameHandler() : VendorAgnosticCliHandler("name", "Set VLAN name")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "name", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -425,13 +426,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaVlanTaggedHandler() : VendorAgnosticCliHandler("tagged", "Add tagged ports to VLAN")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "tagged", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -444,9 +445,9 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                     return Error(CliErrorType.InvalidParameter, "Usage: tagged <interface-name>");
 
                 var interfaceName = args[1];
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaces = device?.GetAllInterfaces();
-                
+
                 if (interfaces == null || !interfaces.ContainsKey(interfaceName))
                     return Error(CliErrorType.InvalidParameter, "Interface not found");
 
@@ -467,13 +468,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaVlanUntaggedHandler() : VendorAgnosticCliHandler("untagged", "Add untagged ports to VLAN")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "untagged", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -486,9 +487,9 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                     return Error(CliErrorType.InvalidParameter, "Usage: untagged <interface-name>");
 
                 var interfaceName = args[1];
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaces = device?.GetAllInterfaces();
-                
+
                 if (interfaces == null || !interfaces.ContainsKey(interfaceName))
                     return Error(CliErrorType.InvalidParameter, "Interface not found");
 
@@ -509,14 +510,14 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaIpRouteHandler() : VendorAgnosticCliHandler("route", "Configure static routes")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 2 &&
                        string.Equals(context.CommandParts[0], "ip", StringComparison.OrdinalIgnoreCase) &&
                        string.Equals(context.CommandParts[1], "route", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -529,7 +530,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                     return Error(CliErrorType.InvalidParameter, "Usage: ip route <network> <mask> <next-hop>");
 
                 var network = args[2];
-                var mask = args[3]; 
+                var mask = args[3];
                 var nextHop = args[4];
                 var metric = 1;
 
@@ -550,17 +551,17 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         }
 
         /// <summary>
-        /// Aruba clear command handler 
+        /// Aruba clear command handler
         /// </summary>
         public class ArubaClearHandler() : VendorAgnosticCliHandler("clear", "Clear counters and statistics")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "clear", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -570,7 +571,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                     return Error(CliErrorType.InvalidParameter, "Usage: clear <counters>");
 
                 var subCommand = args[1].ToLower();
-                
+
                 return subCommand switch
                 {
                     "counters" => HandleClearCounters(context, args),
@@ -578,10 +579,10 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                 };
             }
 
-            private CliResult HandleClearCounters(CliContext context, string[] args)
+            private CliResult HandleClearCounters(ICliContext context, string[] args)
             {
                 var vendorCaps = GetVendorCapabilities(context) as ArubaVendorCapabilities;
-                
+
                 if (args.Length > 2)
                 {
                     // Clear specific interface counters
@@ -609,13 +610,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaDisableHandler() : VendorAgnosticCliHandler("disable", "Disable interface")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "disable", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -625,7 +626,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
 
                 var vendorCaps = GetVendorCapabilities(context) as ArubaVendorCapabilities;
                 var currentInterface = vendorCaps?.GetCurrentInterface();
-                
+
                 if (!string.IsNullOrEmpty(currentInterface))
                 {
                     vendorCaps?.SetInterfaceShutdown(currentInterface, true);
@@ -640,14 +641,14 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaInterfaceNameHandler() : VendorAgnosticCliHandler("name", "Set interface description")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "name", StringComparison.OrdinalIgnoreCase) &&
                        IsInMode(context, "interface");
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -662,7 +663,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
                 var description = string.Join(" ", args.Skip(1)).Trim('"');
                 var vendorCaps = GetVendorCapabilities(context) as ArubaVendorCapabilities;
                 var currentInterface = vendorCaps?.GetCurrentInterface();
-                
+
                 if (!string.IsNullOrEmpty(currentInterface))
                 {
                     vendorCaps?.SetInterfaceDescription(currentInterface, description);
@@ -677,13 +678,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaSpeedHandler() : VendorAgnosticCliHandler("speed", "Set interface speed")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "speed", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -706,13 +707,13 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
         /// </summary>
         public class ArubaDuplexHandler() : VendorAgnosticCliHandler("duplex", "Set interface duplex")
         {
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "duplex", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -730,4 +731,4 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Configuration
             }
         }
     }
-} 
+}

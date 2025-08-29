@@ -17,7 +17,7 @@ namespace NetForge.Simulation.CliHandlers.Linux.Show
             AddAlias("sho");
         }
         
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Linux"))
             {
@@ -39,7 +39,7 @@ namespace NetForge.Simulation.CliHandlers.Linux.Show
             };
         }
         
-        private CliResult HandleShowVersion(CliContext context)
+        private CliResult HandleShowVersion(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -53,7 +53,7 @@ namespace NetForge.Simulation.CliHandlers.Linux.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowInterfaces(CliContext context)
+        private CliResult HandleShowInterfaces(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();

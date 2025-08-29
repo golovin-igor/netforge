@@ -1,12 +1,11 @@
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Protocols.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common.Metrics;
 using NetForge.Simulation.Protocols.Common.Dependencies;
 using NetForge.Simulation.Protocols.Common.Configuration;
-using BasicDeviceProtocol = NetForge.Simulation.Common.Interfaces.IDeviceProtocol;
-using OldNetworkProtocol = NetForge.Simulation.Common.Interfaces.INetworkProtocol;
 using CommonProtocolService = NetForge.Simulation.Common.Interfaces.IProtocolService;
 
 namespace NetForge.Simulation.Protocols.Common.Services
@@ -15,9 +14,9 @@ namespace NetForge.Simulation.Protocols.Common.Services
     /// Implementation of IProtocolService for NetworkDevice
     /// This provides the bridge between CLI handlers and protocols via IoC/DI
     /// </summary>
-    public class NetworkDeviceProtocolService(NetworkDevice device) : CommonProtocolService
+    public class NetworkDeviceProtocolService(INetworkDevice device) : CommonProtocolService
     {
-        private readonly NetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
+        private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
         private readonly ProtocolDependencyManager _dependencyManager = new();
         private readonly ProtocolConfigurationManager _configurationManager = new();
         private readonly Dictionary<ProtocolType, IProtocolMetrics> _metricsCache = new();
@@ -345,7 +344,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         {
             var conflicts1 = GetProtocolConflicts(type1);
             var conflicts2 = GetProtocolConflicts(type2);
-            
+
             return !conflicts1.Contains(type2) && !conflicts2.Contains(type1);
         }
 
@@ -407,7 +406,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
             var protocols = GetAllProtocols().ToList();
             var activeCount = protocols.Count(p => p.GetState()?.IsActive ?? false);
             var configuredCount = protocols.Count(p => p.GetState()?.IsConfigured ?? false);
-            
+
             var health = new Dictionary<string, object>
             {
                 ["ServiceName"] = "NetworkDeviceProtocolService",

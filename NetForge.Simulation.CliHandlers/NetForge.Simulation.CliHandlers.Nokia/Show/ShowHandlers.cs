@@ -16,7 +16,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             AddAlias("sho");
         }
         
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -48,7 +48,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             };
         }
         
-        private CliResult HandleShowVersion(CliContext context)
+        private CliResult HandleShowVersion(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -62,7 +62,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowInterfaces(CliContext context)
+        private CliResult HandleShowInterfaces(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -86,7 +86,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowRouter(CliContext context)
+        private CliResult HandleShowRouter(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -108,7 +108,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             };
         }
         
-        private CliResult HandleShowRouterBgp(CliContext context)
+        private CliResult HandleShowRouterBgp(ICliContext context)
         {
             if (context.CommandParts.Length > 3 && context.CommandParts[3] == "summary")
             {
@@ -122,7 +122,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid BGP option");
         }
         
-        private CliResult HandleShowRouterOspf(CliContext context)
+        private CliResult HandleShowRouterOspf(ICliContext context)
         {
             if (context.CommandParts.Length > 3 && context.CommandParts[3] == "neighbor")
             {
@@ -136,7 +136,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid OSPF option");
         }
         
-        private CliResult HandleShowRouterLdp(CliContext context)
+        private CliResult HandleShowRouterLdp(ICliContext context)
         {
             if (context.CommandParts.Length > 3 && context.CommandParts[3] == "session")
             {
@@ -149,7 +149,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid LDP option");
         }
         
-        private CliResult HandleShowRouterMpls(CliContext context)
+        private CliResult HandleShowRouterMpls(ICliContext context)
         {
             if (context.CommandParts.Length > 3 && context.CommandParts[3] == "lsp")
             {
@@ -162,7 +162,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid MPLS option");
         }
         
-        private CliResult HandleShowRouterRsvp(CliContext context)
+        private CliResult HandleShowRouterRsvp(ICliContext context)
         {
             if (context.CommandParts.Length > 3 && context.CommandParts[3] == "session")
             {
@@ -175,7 +175,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid RSVP option");
         }
         
-        private CliResult HandleShowRouterInterface(CliContext context)
+        private CliResult HandleShowRouterInterface(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -202,7 +202,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowRouterRouteTable(CliContext context)
+        private CliResult HandleShowRouterRouteTable(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Route Table:");
@@ -214,7 +214,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowSystem(CliContext context)
+        private CliResult HandleShowSystem(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -233,7 +233,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             };
         }
         
-        private CliResult HandleShowSystemInformation(CliContext context)
+        private CliResult HandleShowSystemInformation(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -251,7 +251,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowSystemCpu(CliContext context)
+        private CliResult HandleShowSystemCpu(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("CPU Usage:");
@@ -263,7 +263,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowSystemMemory(CliContext context)
+        private CliResult HandleShowSystemMemory(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Memory Usage Summary:");
@@ -274,7 +274,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowSystemUptime(CliContext context)
+        private CliResult HandleShowSystemUptime(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine($"System Up Time: {GetSystemUptime()}");
@@ -283,7 +283,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowService(CliContext context)
+        private CliResult HandleShowService(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -300,7 +300,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             };
         }
         
-        private CliResult HandleShowServiceServiceUsing(CliContext context)
+        private CliResult HandleShowServiceServiceUsing(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Services Using Summary:");
@@ -311,7 +311,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowServiceSdp(CliContext context)
+        private CliResult HandleShowServiceSdp(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Service Distribution Points:");
@@ -322,7 +322,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowFilter(CliContext context)
+        private CliResult HandleShowFilter(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -345,7 +345,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Error(CliErrorType.InvalidCommand, $"% Invalid filter option: {filterOption}");
         }
         
-        private CliResult HandleShowPort(CliContext context)
+        private CliResult HandleShowPort(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -366,7 +366,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowQos(CliContext context)
+        private CliResult HandleShowQos(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -389,7 +389,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Error(CliErrorType.InvalidCommand, $"% Invalid QoS option: {qosOption}");
         }
         
-        private CliResult HandleShowLog(CliContext context)
+        private CliResult HandleShowLog(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -412,7 +412,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Error(CliErrorType.InvalidCommand, $"% Invalid log option: {logOption}");
         }
         
-        private CliResult HandleShowChassis(CliContext context)
+        private CliResult HandleShowChassis(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Chassis Information:");
@@ -428,7 +428,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowCard(CliContext context)
+        private CliResult HandleShowCard(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -453,7 +453,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Show
             return Error(CliErrorType.InvalidCommand, $"% Invalid card option: {cardOption}");
         }
         
-        private CliResult HandleShowMda(CliContext context)
+        private CliResult HandleShowMda(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("MDA Information:");

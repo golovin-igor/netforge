@@ -16,7 +16,7 @@ namespace NetForge.Simulation.CliHandlers.MikroTik.Show
             AddAlias("sho");
         }
         
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "MikroTik"))
             {
@@ -38,7 +38,7 @@ namespace NetForge.Simulation.CliHandlers.MikroTik.Show
             };
         }
         
-        private CliResult HandleShowVersion(CliContext context)
+        private CliResult HandleShowVersion(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -52,7 +52,7 @@ namespace NetForge.Simulation.CliHandlers.MikroTik.Show
             return Success(output.ToString());
         }
         
-        private CliResult HandleShowInterfaces(CliContext context)
+        private CliResult HandleShowInterfaces(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();

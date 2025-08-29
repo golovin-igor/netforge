@@ -1,6 +1,5 @@
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.DataTypes;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.Common.Dependencies
 {

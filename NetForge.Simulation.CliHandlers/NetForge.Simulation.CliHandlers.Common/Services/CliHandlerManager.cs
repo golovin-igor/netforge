@@ -401,7 +401,7 @@ namespace NetForge.Simulation.Common.CLI.Base
         /// <summary>
         /// Check if a handler could potentially handle a command
         /// </summary>
-        private bool CouldHandle(ICliHandler handler, CliContext context)
+        private bool CouldHandle(ICliHandler handler, ICliContext context)
         {
             var info = handler.GetCommandInfo();
             if (!info.HasValue || context.CommandParts.Length == 0)

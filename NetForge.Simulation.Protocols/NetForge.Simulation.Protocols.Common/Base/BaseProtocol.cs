@@ -5,6 +5,7 @@ using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Protocols.Common.Metrics;
 using NetForge.Simulation.Protocols.Common.Base;
 using System.Diagnostics;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Protocols.Common

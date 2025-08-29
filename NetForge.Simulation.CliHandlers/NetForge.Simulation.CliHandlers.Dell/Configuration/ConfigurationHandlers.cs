@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common.CLI.Base;
@@ -11,7 +12,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// </summary>
     public class ConfigureCommandHandler() : VendorAgnosticCliHandler("configure", "Enter configuration mode")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -34,7 +35,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// </summary>
     public class InterfaceCommandHandler() : VendorAgnosticCliHandler("interface", "Configure interface parameters")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -139,12 +140,12 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// </summary>
     public class InterfaceModeCommandHandler() : VendorAgnosticCliHandler("", "Interface mode commands")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return IsInMode(context, "interface");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -182,7 +183,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             };
         }
 
-        private CliResult ProcessIpCommand(CliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessIpCommand(ICliContext context, NetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -238,7 +239,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.InvalidCommand, "% Invalid command at this privilege level");
         }
 
-        private CliResult ProcessSwitchportCommand(CliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessSwitchportCommand(ICliContext context, NetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -291,7 +292,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             }
         }
 
-        private CliResult ProcessDescriptionCommand(CliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessDescriptionCommand(ICliContext context, NetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length > 1)
@@ -302,7 +303,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.IncompleteCommand, "% Incomplete command");
         }
 
-        private CliResult ProcessShutdownCommand(CliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessShutdownCommand(ICliContext context, NetworkDevice device, dynamic iface)
         {
             iface.IsShutdown = true;
             iface.IsUp = false;
@@ -310,7 +311,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Success("");
         }
 
-        private CliResult ProcessNoCommand(CliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessNoCommand(ICliContext context, NetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length < 2)
@@ -345,7 +346,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             }
         }
 
-        private CliResult ProcessSpeedCommand(CliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessSpeedCommand(ICliContext context, NetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length > 1)
@@ -357,7 +358,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.IncompleteCommand, "% Incomplete command");
         }
 
-        private CliResult ProcessDuplexCommand(CliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessDuplexCommand(ICliContext context, NetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length > 1)
@@ -369,7 +370,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.IncompleteCommand, "% Incomplete command");
         }
 
-        private CliResult ProcessChannelGroupCommand(CliContext context, NetworkDevice device, dynamic iface)
+        private CliResult ProcessChannelGroupCommand(ICliContext context, NetworkDevice device, dynamic iface)
         {
             var parts = context.CommandParts;
             if (parts.Length > 2 && int.TryParse(parts[1], out int channelId))
@@ -381,7 +382,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.InvalidParameter, "% Invalid command at this privilege level");
         }
 
-        private CliResult ProcessExitCommand(CliContext context)
+        private CliResult ProcessExitCommand(ICliContext context)
         {
             SetMode(context, "config");
             SetCurrentInterface(context, "");
@@ -410,7 +411,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// </summary>
     public class HostnameCommandHandler() : VendorAgnosticCliHandler("hostname", "Set system hostname")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -437,7 +438,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// </summary>
     public class VlanCommandHandler() : VendorAgnosticCliHandler("vlan", "Configure VLAN parameters")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -489,7 +490,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// </summary>
     public class RouterCommandHandler() : VendorAgnosticCliHandler("router", "Configure routing protocols")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -560,12 +561,12 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// </summary>
     public class RouterModeCommandHandler() : VendorAgnosticCliHandler("", "Router mode commands")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return IsInMode(context, "router");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -590,7 +591,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             };
         }
 
-        private CliResult ProcessRouterIdCommand(CliContext context, NetworkDevice device)
+        private CliResult ProcessRouterIdCommand(ICliContext context, NetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length > 1)
@@ -606,7 +607,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.InvalidParameter, "% Invalid router ID");
         }
 
-        private CliResult ProcessNetworkCommand(CliContext context, NetworkDevice device)
+        private CliResult ProcessNetworkCommand(ICliContext context, NetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length > 1)
@@ -634,7 +635,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.InvalidParameter, "% Invalid network configuration");
         }
 
-        private CliResult ProcessNeighborCommand(CliContext context, NetworkDevice device)
+        private CliResult ProcessNeighborCommand(ICliContext context, NetworkDevice device)
         {
             var parts = context.CommandParts;
             if (parts.Length > 3)
@@ -651,7 +652,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
             return Error(CliErrorType.InvalidParameter, "% Invalid neighbor configuration");
         }
 
-        private CliResult ProcessExitCommand(CliContext context)
+        private CliResult ProcessExitCommand(ICliContext context)
         {
             SetMode(context, "config");
             SetCurrentProtocol(context, "");
@@ -669,12 +670,12 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// </summary>
     public class IpRouteCommandHandler() : VendorAgnosticCliHandler("ip", "Configure IP parameters")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return context.CommandParts.Length > 1 && context.CommandParts[1] == "route";
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -719,7 +720,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Configuration
     /// </summary>
     public class ExitCommandHandler() : VendorAgnosticCliHandler("exit", "Exit current configuration mode")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {

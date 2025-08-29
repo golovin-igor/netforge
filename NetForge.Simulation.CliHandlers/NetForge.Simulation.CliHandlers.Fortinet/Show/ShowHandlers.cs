@@ -16,7 +16,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
             AddAlias("sho");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
             {
@@ -38,7 +38,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
             };
         }
 
-        private CliResult HandleShowVersion(CliContext context)
+        private CliResult HandleShowVersion(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -52,7 +52,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowInterfaces(CliContext context)
+        private CliResult HandleShowInterfaces(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -82,7 +82,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
     /// </summary>
     public class GetCommandHandler() : VendorAgnosticCliHandler("get", "Get specific device information")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Fortinet"))
             {
@@ -109,7 +109,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
             return Error(CliErrorType.InvalidCommand, $"% Invalid get option: {option}");
         }
 
-        private CliResult HandleGetRouter(CliContext context)
+        private CliResult HandleGetRouter(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -136,7 +136,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid router command");
         }
 
-        private CliResult HandleGetRouterInfoOspf(CliContext context)
+        private CliResult HandleGetRouterInfoOspf(ICliContext context)
         {
             if (context.CommandParts.Length < 5)
             {
@@ -162,7 +162,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid OSPF info option");
         }
 
-        private CliResult HandleGetSystem(CliContext context)
+        private CliResult HandleGetSystem(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -179,7 +179,7 @@ namespace NetForge.Simulation.CliHandlers.Fortinet.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid system option");
         }
 
-        private CliResult HandleGetSystemInterface(CliContext context)
+        private CliResult HandleGetSystemInterface(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();

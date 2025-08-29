@@ -1,5 +1,5 @@
 using NetForge.Simulation.Common.Events;
-using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Protocols.Common.Events
 {

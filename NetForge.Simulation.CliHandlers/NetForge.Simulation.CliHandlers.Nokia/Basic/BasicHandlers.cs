@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 
@@ -15,7 +16,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Basic
             AddAlias("ena");
         }
         
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -37,7 +38,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Basic
     /// </summary>
     public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -78,7 +79,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Basic
             AddAlias("tracert");
         }
         
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -119,7 +120,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Basic
             AddAlias("save");
         }
         
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -145,7 +146,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Basic
             AddAlias("reboot");
         }
         
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -161,7 +162,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Basic
     /// </summary>
     public class HistoryCommandHandler() : VendorAgnosticCliHandler("history", "Show command history")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {
@@ -184,7 +185,7 @@ namespace NetForge.Simulation.CliHandlers.Nokia.Basic
     /// </summary>
     public class CopyCommandHandler() : VendorAgnosticCliHandler("copy", "Copy files or configuration")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Nokia"))
             {

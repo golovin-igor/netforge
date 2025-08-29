@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -17,7 +18,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("voice", new SwitchportVoiceHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -81,7 +82,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("dynamic", new SwitchportModeDynamicHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: access, trunk, dynamic");
@@ -90,7 +91,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class SwitchportModeAccessHandler() : VendorAgnosticCliHandler("access", "Set switchport to access mode")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -139,7 +140,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class SwitchportModeTrunkHandler() : VendorAgnosticCliHandler("trunk", "Set switchport to trunk mode")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -194,7 +195,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("desirable", new SwitchportModeDynamicDesirableHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: auto, desirable");
@@ -203,7 +204,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class SwitchportModeDynamicAutoHandler() : VendorAgnosticCliHandler("auto", "Set to dynamic auto mode")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -244,7 +245,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class SwitchportModeDynamicDesirableHandler() : VendorAgnosticCliHandler("desirable", "Set to dynamic desirable mode")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -293,7 +294,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("vlan", new SwitchportAccessVlanHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: vlan");
@@ -302,7 +303,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class SwitchportAccessVlanHandler() : VendorAgnosticCliHandler("vlan", "Set access VLAN")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -434,7 +435,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("native", new SwitchportTrunkNativeHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: encapsulation, allowed, native");
@@ -449,7 +450,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("isl", new SwitchportTrunkEncapsulationIslHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: dot1q, isl");
@@ -458,7 +459,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class SwitchportTrunkEncapsulationDot1qHandler() : VendorAgnosticCliHandler("dot1q", "Set 802.1Q encapsulation")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -492,7 +493,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class SwitchportTrunkEncapsulationIslHandler() : VendorAgnosticCliHandler("isl", "Set ISL encapsulation")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -531,7 +532,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("vlan", new SwitchportTrunkAllowedVlanHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: vlan");
@@ -540,7 +541,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class SwitchportTrunkAllowedVlanHandler() : VendorAgnosticCliHandler("vlan", "Set allowed VLANs")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -626,7 +627,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("vlan", new SwitchportTrunkNativeVlanHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: vlan");
@@ -635,7 +636,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class SwitchportTrunkNativeVlanHandler() : VendorAgnosticCliHandler("vlan", "Set native VLAN")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -694,7 +695,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("vlan", new SwitchportVoiceVlanHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Error(CliErrorType.IncompleteCommand, 
                 "% Incomplete command. Available options: vlan");
@@ -703,7 +704,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class SwitchportVoiceVlanHandler() : VendorAgnosticCliHandler("vlan", "Set voice VLAN")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
             {

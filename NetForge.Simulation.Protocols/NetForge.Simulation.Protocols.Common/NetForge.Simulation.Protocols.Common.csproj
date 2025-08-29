@@ -16,4 +16,8 @@
     <ProjectReference Include="..\..\NetForge.Interfaces\NetForge.Interfaces.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="State\" />
+  </ItemGroup>
+
 </Project>

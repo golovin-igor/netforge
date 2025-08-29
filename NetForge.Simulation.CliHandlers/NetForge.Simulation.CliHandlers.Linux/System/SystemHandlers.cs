@@ -10,7 +10,7 @@ public static class SystemHandlers
 {
     public class IpLinkSetHandler() : VendorAgnosticCliHandler("ip", "IP configuration commands")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             var args = context.CommandParts;
             
@@ -31,7 +31,7 @@ public static class SystemHandlers
             };
         }
 
-        private CliResult HandleIpLink(CliContext context, string[] args)
+        private CliResult HandleIpLink(ICliContext context, string[] args)
         {
             if (args.Length < 3)
                 return Error(CliErrorType.InvalidParameter, "Usage: ip link <show|set>");
@@ -46,7 +46,7 @@ public static class SystemHandlers
             };
         }
 
-        private CliResult ShowInterfaces(CliContext context, string[] args)
+        private CliResult ShowInterfaces(ICliContext context, string[] args)
         {
             var output = new StringBuilder();
 
@@ -61,7 +61,7 @@ public static class SystemHandlers
             return Success(output.ToString());
         }
 
-        private CliResult SetInterface(CliContext context, string[] args)
+        private CliResult SetInterface(ICliContext context, string[] args)
         {
             if (args.Length < 5)
                 return Error(CliErrorType.InvalidParameter, "Usage: ip link set <interface> <up|down>");
@@ -72,7 +72,7 @@ public static class SystemHandlers
             return Success($"Interface {interfaceName} set {state}");
         }
 
-        private CliResult HandleIpAddress(CliContext context, string[] args)
+        private CliResult HandleIpAddress(ICliContext context, string[] args)
         {
             if (args.Length < 3)
                 return Error(CliErrorType.InvalidParameter, "Usage: ip addr <add|del|show>");
@@ -88,7 +88,7 @@ public static class SystemHandlers
             };
         }
 
-        private CliResult AddIpAddress(CliContext context, string[] args)
+        private CliResult AddIpAddress(ICliContext context, string[] args)
         {
             if (args.Length < 6)
                 return Error(CliErrorType.InvalidParameter, "Usage: ip addr add <ip/mask> dev <interface>");
@@ -103,7 +103,7 @@ public static class SystemHandlers
             return Success($"IP address {ipWithMask} added to {interfaceName}");
         }
 
-        private CliResult DelIpAddress(CliContext context, string[] args)
+        private CliResult DelIpAddress(ICliContext context, string[] args)
         {
             if (args.Length < 6)
                 return Error(CliErrorType.InvalidParameter, "Usage: ip addr del <ip/mask> dev <interface>");
@@ -114,12 +114,12 @@ public static class SystemHandlers
             return Success($"IP address {ipWithMask} removed from {interfaceName}");
         }
 
-        private CliResult ShowIpAddresses(CliContext context, string[] args)
+        private CliResult ShowIpAddresses(ICliContext context, string[] args)
         {
             return ShowInterfaces(context, args);
         }
 
-        private CliResult HandleIpRoute(CliContext context, string[] args)
+        private CliResult HandleIpRoute(ICliContext context, string[] args)
         {
             if (args.Length < 3)
                 return Error(CliErrorType.InvalidParameter, "Usage: ip route <add|del|show>");
@@ -135,7 +135,7 @@ public static class SystemHandlers
             };
         }
 
-        private CliResult AddRoute(CliContext context, string[] args)
+        private CliResult AddRoute(ICliContext context, string[] args)
         {
             if (args.Length < 5)
                 return Error(CliErrorType.InvalidParameter, "Usage: ip route add <network> via <gateway>");
@@ -146,7 +146,7 @@ public static class SystemHandlers
             return Success($"Route {network} via {gateway} added");
         }
 
-        private CliResult DelRoute(CliContext context, string[] args)
+        private CliResult DelRoute(ICliContext context, string[] args)
         {
             if (args.Length < 4)
                 return Error(CliErrorType.InvalidParameter, "Usage: ip route del <network>");
@@ -156,7 +156,7 @@ public static class SystemHandlers
             return Success($"Route {network} deleted");
         }
 
-        private CliResult ShowRoutes(CliContext context, string[] args)
+        private CliResult ShowRoutes(ICliContext context, string[] args)
         {
             var output = "default via 192.168.1.1 dev eth0\n" +
                         "192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.100\n";
@@ -167,7 +167,7 @@ public static class SystemHandlers
 
     public class IpAddressHandler() : VendorAgnosticCliHandler("ip address", "Configure interface IP addresses")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return context.CommandParts.Length >= 5 &&
                    string.Equals(context.CommandParts[0], "ip", StringComparison.OrdinalIgnoreCase) &&
@@ -175,7 +175,7 @@ public static class SystemHandlers
                     string.Equals(context.CommandParts[1], "address", StringComparison.OrdinalIgnoreCase));
         }
 
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 6)
                 return Error(CliErrorType.IncompleteCommand, "Usage: ip addr <add|del> <ip>/<cidr> dev <iface>");
@@ -224,14 +224,14 @@ public static class SystemHandlers
 
     public class IpRouteHandler() : VendorAgnosticCliHandler("ip route", "Manage static routes")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return context.CommandParts.Length >= 2 &&
                    string.Equals(context.CommandParts[0], "ip", StringComparison.OrdinalIgnoreCase) &&
                    string.Equals(context.CommandParts[1], "route", StringComparison.OrdinalIgnoreCase);
         }
 
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
                 return Error(CliErrorType.IncompleteCommand, "Usage: ip route <show|add|del>");
@@ -250,7 +250,7 @@ public static class SystemHandlers
             }
         }
 
-        private CliResult HandleRouteCommand(CliContext context, string action)
+        private CliResult HandleRouteCommand(ICliContext context, string action)
         {
             if (context.CommandParts.Length < 6)
                 return Error(CliErrorType.IncompleteCommand, "Usage: ip route <add|del> <network>/<cidr> via <next-hop>");
@@ -279,7 +279,7 @@ public static class SystemHandlers
             }
         }
 
-        private string ShowRoutes(CliContext context)
+        private string ShowRoutes(ICliContext context)
         {
             var sb = new StringBuilder();
             sb.AppendLine("Destination     Gateway         Mask            Interface");
@@ -299,18 +299,18 @@ public static class SystemHandlers
 
     public class IfconfigHandler() : VendorAgnosticCliHandler("ifconfig", "Display interface configuration")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return context.CommandParts.Length >= 1 &&
                    string.Equals(context.CommandParts[0], "ifconfig", StringComparison.OrdinalIgnoreCase);
         }
 
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Success(ShowInterfaces(context));
         }
 
-        private string ShowInterfaces(CliContext context)
+        private string ShowInterfaces(ICliContext context)
         {
             var sb = new StringBuilder();
             foreach (var iface in context.Device.GetAllInterfaces().Values)
@@ -326,18 +326,18 @@ public static class SystemHandlers
 
     public class RouteHandler() : VendorAgnosticCliHandler("route", "Display routing table")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return context.CommandParts.Length >= 1 &&
                    string.Equals(context.CommandParts[0], "route", StringComparison.OrdinalIgnoreCase);
         }
 
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Success(ShowRoutes(context));
         }
 
-        private string ShowRoutes(CliContext context)
+        private string ShowRoutes(ICliContext context)
         {
             var sb = new StringBuilder();
             sb.AppendLine("Kernel IP routing table");
@@ -352,7 +352,7 @@ public static class SystemHandlers
 
     public class ArpHandler() : VendorAgnosticCliHandler("arp", "Display ARP table")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             if (context.CommandParts.Length == 0)
                 return false;
@@ -366,12 +366,12 @@ public static class SystemHandlers
             return false;
         }
 
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Success(BuildArpOutput(context));
         }
 
-        private string BuildArpOutput(CliContext context)
+        private string BuildArpOutput(ICliContext context)
         {
             var sb = new StringBuilder();
             sb.AppendLine("Address                  HWtype  HWaddress           Flags Mask            Iface");
@@ -385,13 +385,13 @@ public static class SystemHandlers
 
     public class OspfHandler() : VendorAgnosticCliHandler("ospf", "OSPF routing protocol")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return context.CommandParts.Length >= 1 &&
                    string.Equals(context.CommandParts[0], "ospf", StringComparison.OrdinalIgnoreCase);
         }
 
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
                 return Error(CliErrorType.IncompleteCommand, "Usage: ospf <enable|disable>");
@@ -423,13 +423,13 @@ public static class SystemHandlers
 
     public class BgpHandler() : VendorAgnosticCliHandler("bgp", "BGP routing protocol")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return context.CommandParts.Length >= 1 &&
                    string.Equals(context.CommandParts[0], "bgp", StringComparison.OrdinalIgnoreCase);
         }
 
-    protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+    protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
                 return Error(CliErrorType.IncompleteCommand, "Usage: bgp <enable|disable>");
@@ -461,13 +461,13 @@ public static class SystemHandlers
 
     public class RipHandler() : VendorAgnosticCliHandler("rip", "RIP routing protocol")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return context.CommandParts.Length >= 1 &&
                    string.Equals(context.CommandParts[0], "rip", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
                 return Error(CliErrorType.IncompleteCommand, "Usage: rip <enable|disable>");
@@ -499,13 +499,13 @@ public static class SystemHandlers
 
     public class LsmodHandler() : VendorAgnosticCliHandler("lsmod", "Show loaded kernel modules")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return context.CommandParts.Length >= 1 &&
                    string.Equals(context.CommandParts[0], "lsmod", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             return Success("Module                  Size  Used by\nip_tables              32768  0\nxt_conntrack           16384  0\nnf_conntrack          131072  1 xt_conntrack\n");
         }
@@ -513,14 +513,14 @@ public static class SystemHandlers
 
     public class IpLinkHandler() : VendorAgnosticCliHandler("ip link", "Configure interface link state")
     {
-        public override bool CanHandle(CliContext context)
+        public override bool CanHandle(ICliContext context)
         {
             return context.CommandParts.Length >= 2 &&
                    string.Equals(context.CommandParts[0], "ip", StringComparison.OrdinalIgnoreCase) &&
                    string.Equals(context.CommandParts[1], "link", StringComparison.OrdinalIgnoreCase);
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
                 return Error(CliErrorType.IncompleteCommand, "Usage: ip link <show|set>");
@@ -538,7 +538,7 @@ public static class SystemHandlers
             }
         }
 
-        private CliResult HandleSetCommand(CliContext context)
+        private CliResult HandleSetCommand(ICliContext context)
         {
             if (context.CommandParts.Length < 5)
                 return Error(CliErrorType.IncompleteCommand, "Usage: ip link set <iface> <up|down>");
@@ -565,7 +565,7 @@ public static class SystemHandlers
             }
         }
 
-        private string ShowInterfaces(CliContext context)
+        private string ShowInterfaces(ICliContext context)
         {
             var sb = new StringBuilder();
             foreach (var iface in context.Device.GetAllInterfaces().Values)

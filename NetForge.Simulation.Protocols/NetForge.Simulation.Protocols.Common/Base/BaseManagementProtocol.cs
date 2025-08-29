@@ -82,13 +82,13 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// Initialize the management protocol
         /// </summary>
         /// <param name="device">Network device</param>
-        public override void Initialize(NetworkDevice device)
+        public override void Initialize(INetworkDevice device)
         {
             base.Initialize(device);
-            
+
             // Set default listening port
             ListeningPort = DefaultPort;
-            
+
             // Start listening if enabled
             if (_state.IsConfigured)
             {
@@ -101,7 +101,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// Implements common session management while allowing protocol-specific customization
         /// </summary>
         /// <param name="device">Network device</param>
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             try
             {
@@ -164,21 +164,21 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// Override to implement protocol-specific connection handling
         /// </summary>
         /// <param name="device">Network device</param>
-        protected abstract Task ProcessConnectionRequests(NetworkDevice device);
+        protected abstract Task ProcessConnectionRequests(INetworkDevice device);
 
         /// <summary>
         /// Manage active sessions (heartbeat, data processing, etc.)
         /// Override to implement protocol-specific session management
         /// </summary>
         /// <param name="device">Network device</param>
-        protected abstract Task ManageActiveSessions(NetworkDevice device);
+        protected abstract Task ManageActiveSessions(INetworkDevice device);
 
         /// <summary>
         /// Process protocol-specific management tasks
         /// Override to implement additional management functionality
         /// </summary>
         /// <param name="device">Network device</param>
-        protected virtual async Task ProcessManagementTasks(NetworkDevice device)
+        protected virtual async Task ProcessManagementTasks(INetworkDevice device)
         {
             await Task.CompletedTask;
         }
@@ -224,7 +224,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
                 // Create session
                 var sessionId = Guid.NewGuid().ToString();
                 var session = CreateSessionObject(sessionId, clientId, credentials);
-                
+
                 _activeSessions[sessionId] = session;
                 _sessionStartTimes[sessionId] = DateTime.Now;
 
@@ -286,7 +286,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         protected virtual async Task UpdateSecurityMonitoring()
         {
             var now = DateTime.Now;
-            
+
             // Remove expired blocks
             var expiredBlocks = _lastConnectionAttempt
                 .Where(kvp => (now - kvp.Value).TotalMinutes > BlockDurationMinutes)
@@ -414,7 +414,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         protected override void OnDispose()
         {
             StopListening();
-            
+
             // Terminate all active sessions
             foreach (var sessionId in _activeSessions.Keys.ToList())
             {
@@ -425,7 +425,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
             _sessionStartTimes.Clear();
             _connectionAttempts.Clear();
             _lastConnectionAttempt.Clear();
-            
+
             base.OnDispose();
         }
     }

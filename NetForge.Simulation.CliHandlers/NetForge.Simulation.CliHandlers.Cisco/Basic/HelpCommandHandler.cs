@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 
@@ -14,7 +15,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Basic
             AddAlias("?");
         }
         
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             var output = new StringBuilder();
             

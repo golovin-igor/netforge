@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 
@@ -15,7 +16,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Basic
             AddAlias("ena");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -37,7 +38,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Basic
     /// </summary>
     public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -78,7 +79,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Basic
             AddAlias("traceroute");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -119,7 +120,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Basic
             AddAlias("wr");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -140,7 +141,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Basic
             AddAlias("reload");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -156,7 +157,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Basic
     /// </summary>
     public class HistoryCommandHandler() : VendorAgnosticCliHandler("history", "Show command history")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -179,7 +180,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Basic
     /// </summary>
     public class CopyCommandHandler() : VendorAgnosticCliHandler("copy", "Copy files or configuration")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {

@@ -10,7 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\NetForge.Interfaces\NetForge.Interfaces.csproj" />
     <ProjectReference Include="..\NetForge.Simulation.CliHandlers.Common\NetForge.Simulation.CliHandlers.Common.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.DataTypes\NetForge.Simulation.DataTypes.csproj" />
   </ItemGroup>
 
   <ItemGroup>

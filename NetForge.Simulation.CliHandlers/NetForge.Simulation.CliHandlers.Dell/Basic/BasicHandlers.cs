@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 
@@ -15,7 +16,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
             AddAlias("ena");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -37,7 +38,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
     /// </summary>
     public class PingCommandHandler() : VendorAgnosticCliHandler("ping", "Send ping packets")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -78,7 +79,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
             AddAlias("dis");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -106,7 +107,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
             AddAlias("trace");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -144,7 +145,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
             AddAlias("wr");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -160,7 +161,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
     /// </summary>
     public class ReloadCommandHandler() : VendorAgnosticCliHandler("reload", "Restart the system")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -181,7 +182,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
             AddAlias("hist");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -202,7 +203,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
             AddAlias("?");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -218,7 +219,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
     /// </summary>
     public class CopyCommandHandler() : VendorAgnosticCliHandler("copy", "Copy files")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {
@@ -234,7 +235,7 @@ namespace NetForge.Simulation.CliHandlers.Dell.Basic
     /// </summary>
     public class ClearCommandHandler() : VendorAgnosticCliHandler("clear", "Clear screen or counters")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Dell"))
             {

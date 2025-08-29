@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -17,7 +18,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("holdtime", new CdpHoldtimeHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -37,7 +38,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class CdpRunHandler() : VendorAgnosticCliHandler("run", "Enable CDP globally")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -65,7 +66,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class CdpEnableHandler() : VendorAgnosticCliHandler("enable", "Enable CDP on interface")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -105,7 +106,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class CdpTimerHandler() : VendorAgnosticCliHandler("timer", "Set CDP update timer")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -150,7 +151,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class CdpHoldtimeHandler() : VendorAgnosticCliHandler("holdtime", "Set CDP holdtime")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -204,7 +205,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("enable", new NoCdpEnableHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -218,7 +219,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class NoCdpRunHandler() : VendorAgnosticCliHandler("run", "Disable CDP globally")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -246,7 +247,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class NoCdpEnableHandler() : VendorAgnosticCliHandler("enable", "Disable CDP on interface")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {

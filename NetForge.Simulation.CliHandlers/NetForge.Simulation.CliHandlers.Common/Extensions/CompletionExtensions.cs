@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.CLI.Interfaces;
 
@@ -11,7 +12,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets context-aware completions for a command
         /// </summary>
-        public static List<string> GetContextualCompletions(this ICliHandler handler, CliContext context, string partialCommand)
+        public static List<string> GetContextualCompletions(this ICliHandler handler, ICliContext context, string partialCommand)
         {
             var completions = new List<string>();
 
@@ -45,7 +46,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets interface names for completion
         /// </summary>
-        public static List<string> GetInterfaceCompletions(this CliContext context, string partialName = "")
+        public static List<string> GetInterfaceCompletions(this ICliContext context, string partialName = "")
         {
             var interfaces = new List<string>();
 
@@ -82,7 +83,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets VLAN IDs for completion
         /// </summary>
-        public static List<string> GetVlanCompletions(this CliContext context, string partialId = "")
+        public static List<string> GetVlanCompletions(this ICliContext context, string partialId = "")
         {
             var vlans = new List<string>();
 
@@ -119,7 +120,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets protocol completions based on context
         /// </summary>
-        public static List<string> GetProtocolCompletions(this CliContext context, string partialProtocol = "")
+        public static List<string> GetProtocolCompletions(this ICliContext context, string partialProtocol = "")
         {
             var protocols = new List<string> { "ospf", "bgp", "eigrp", "rip", "isis", "static" };
 
@@ -143,7 +144,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets IP address completions for common configurations
         /// </summary>
-        public static List<string> GetIpAddressCompletions(this CliContext context, string partialIp = "")
+        public static List<string> GetIpAddressCompletions(this ICliContext context, string partialIp = "")
         {
             var addresses = new List<string>
             {
@@ -170,7 +171,7 @@ namespace NetForge.Simulation.Common.CLI.Extensions
         /// <summary>
         /// Gets mode-specific completions based on current device mode
         /// </summary>
-        public static List<string> GetModeSpecificCompletions(this CliContext context)
+        public static List<string> GetModeSpecificCompletions(this ICliContext context)
         {
             var currentMode = context.CurrentMode.ToLowerInvariant();
 

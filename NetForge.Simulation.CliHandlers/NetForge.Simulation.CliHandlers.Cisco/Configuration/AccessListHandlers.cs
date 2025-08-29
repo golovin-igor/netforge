@@ -1,4 +1,5 @@
 using System.Linq;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -10,7 +11,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class AccessListCommandHandler() : VendorAgnosticCliHandler("access-list", "Configure access control lists")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -59,7 +60,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return Success("");
         }
 
-        private CliResult ProcessAclEntry(string[] commandParts, CliContext context, NetworkDevice device, int aclNumber)
+        private CliResult ProcessAclEntry(string[] commandParts, ICliContext context, NetworkDevice device, int aclNumber)
         {
             try
             {
@@ -254,7 +255,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             AddSubHandler("extended", new IpAccessListExtendedHandler());
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -274,7 +275,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class IpAccessListStandardHandler() : VendorAgnosticCliHandler("standard", "Standard IP access list")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -332,7 +333,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
 
     public class IpAccessListExtendedHandler() : VendorAgnosticCliHandler("extended", "Extended IP access list")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (context.CommandParts.Length < 2)
             {
@@ -393,7 +394,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class PermitCommandHandler() : VendorAgnosticCliHandler("permit", "Permit packets")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -426,7 +427,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return ProcessAclModeEntry(fullParts, context, device, aclNumber);
         }
 
-        private CliResult ProcessAclModeEntry(string[] commandParts, CliContext context, NetworkDevice device, int aclNumber)
+        private CliResult ProcessAclModeEntry(string[] commandParts, ICliContext context, NetworkDevice device, int aclNumber)
         {
             try
             {
@@ -553,7 +554,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
     /// </summary>
     public class DenyCommandHandler() : VendorAgnosticCliHandler("deny", "Deny packets")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Cisco"))
             {
@@ -586,7 +587,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Configuration
             return ProcessAclModeEntry(fullParts, context, device, aclNumber);
         }
 
-        private CliResult ProcessAclModeEntry(string[] commandParts, CliContext context, NetworkDevice device, int aclNumber)
+        private CliResult ProcessAclModeEntry(string[] commandParts, ICliContext context, NetworkDevice device, int aclNumber)
         {
             try
             {

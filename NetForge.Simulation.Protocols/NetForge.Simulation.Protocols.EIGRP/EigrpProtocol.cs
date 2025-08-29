@@ -40,7 +40,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             _device.AddLogEntry($"EIGRP: AS {eigrpState.AsNumber} initialized with Router ID {eigrpState.RouterId}");
         }
 
-        protected override async Task UpdateNeighbors(NetworkDevice device)
+        protected override async Task UpdateNeighbors(INetworkDevice device)
         {
             var eigrpConfig = GetEigrpConfig();
             var eigrpState = (EigrpState)_state;
@@ -66,7 +66,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             await HandleNeighborTimeouts(device, eigrpState);
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var eigrpState = (EigrpState)_state;
 

@@ -77,9 +77,9 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Basic
                 return IPAddress.TryParse(ip, out _);
             }
 
-            private string GetSourceInterface(CliContext context)
+            private string GetSourceInterface(ICliContext context)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaces = device?.GetAllInterfaces();
                 var activeInterface = interfaces?.Values
                     .FirstOrDefault(i => !string.IsNullOrEmpty(i.IpAddress) && i.IsUp && !i.IsShutdown);
@@ -218,7 +218,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Basic
                        string.Equals(context.CommandParts[0], "reload", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");

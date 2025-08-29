@@ -103,7 +103,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// </summary>
         /// <param name="device">Network device</param>
         /// <returns>Device information for advertisement</returns>
-        protected abstract Task<Dictionary<string, object>> CollectDeviceInformation(NetworkDevice device);
+        protected abstract Task<Dictionary<string, object>> CollectDeviceInformation(INetworkDevice device);
 
         /// <summary>
         /// Send discovery advertisements on active interfaces
@@ -111,21 +111,21 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// </summary>
         /// <param name="device">Network device</param>
         /// <param name="deviceInfo">Device information to advertise</param>
-        protected abstract Task SendDiscoveryAdvertisements(NetworkDevice device, Dictionary<string, object> deviceInfo);
+        protected abstract Task SendDiscoveryAdvertisements(INetworkDevice device, Dictionary<string, object> deviceInfo);
 
         /// <summary>
         /// Process received discovery information from neighbors
         /// Override to implement protocol-specific discovery packet processing
         /// </summary>
         /// <param name="device">Network device</param>
-        protected abstract Task ProcessDiscoveryInformation(NetworkDevice device);
+        protected abstract Task ProcessDiscoveryInformation(INetworkDevice device);
 
         /// <summary>
         /// Update the discovered devices database
         /// Implements common device database management
         /// </summary>
         /// <param name="device">Network device</param>
-        protected virtual async Task UpdateDiscoveredDevices(NetworkDevice device)
+        protected virtual async Task UpdateDiscoveredDevices(INetworkDevice device)
         {
             // This would be called by ProcessDiscoveryInformation to update the database
             // Base implementation does nothing - derived classes handle actual updates
@@ -238,7 +238,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// Implements common timer functionality for advertisements and cleanup
         /// </summary>
         /// <param name="device">Network device</param>
-        protected override async Task ProcessTimers(NetworkDevice device)
+        protected override async Task ProcessTimers(INetworkDevice device)
         {
             var now = DateTime.Now;
 
@@ -260,7 +260,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// Override to implement additional timer-based functionality
         /// </summary>
         /// <param name="device">Network device</param>
-        protected virtual async Task ProcessDiscoveryTimers(NetworkDevice device)
+        protected virtual async Task ProcessDiscoveryTimers(INetworkDevice device)
         {
             await Task.CompletedTask;
         }

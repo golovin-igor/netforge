@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.CliHandlers;
 using NetForge.Simulation.Common.CLI.Base;
@@ -16,7 +17,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
             AddAlias("conf");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -46,7 +47,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
     /// </summary>
     public class ExitCommandHandler() : VendorAgnosticCliHandler("exit", "Exit current mode")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -80,7 +81,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
             AddAlias("int");
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -128,7 +129,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
     /// </summary>
     public class HostnameCommandHandler() : VendorAgnosticCliHandler("hostname", "Set device hostname")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -157,7 +158,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
             }
 
             // Set hostname
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             if (device != null)
             {
                 device.SetHostname(hostname);
@@ -182,7 +183,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
     /// </summary>
     public class VlanCommandHandler() : VendorAgnosticCliHandler("vlan", "Configure VLAN")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -217,9 +218,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
             return Success("");
         }
 
-        private void SetCurrentVlan(CliContext context, int vlanId)
+        private void SetCurrentVlan(ICliContext context, int vlanId)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             if (device != null)
             {
                 // Create or select VLAN using vendor capabilities
@@ -235,7 +236,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
     /// </summary>
     public class NoCommandHandler() : VendorAgnosticCliHandler("no", "Negate a command")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -260,7 +261,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
             };
         }
 
-        private CliResult HandleNoShutdown(CliContext context)
+        private CliResult HandleNoShutdown(ICliContext context)
         {
             if (!IsInMode(context, "interface"))
             {
@@ -268,7 +269,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
                     "% This command requires interface mode");
             }
 
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var interfaceName = device?.GetCurrentInterface();
 
             if (device != null && !string.IsNullOrEmpty(interfaceName))
@@ -284,7 +285,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
             return Success("");
         }
 
-        private CliResult HandleNoIp(CliContext context)
+        private CliResult HandleNoIp(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -295,7 +296,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
 
             if (ipCommand == "address" && IsInMode(context, "interface"))
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaceName = device?.GetCurrentInterface();
 
                 if (device != null && !string.IsNullOrEmpty(interfaceName))
@@ -313,7 +314,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
             return Success("");
         }
 
-        private CliResult HandleNoHostname(CliContext context)
+        private CliResult HandleNoHostname(ICliContext context)
         {
             if (!IsInMode(context, "config"))
             {
@@ -321,7 +322,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
                     "% This command requires configuration mode");
             }
 
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             if (device != null)
             {
                 device.SetHostname("Switch"); // Default name
@@ -337,7 +338,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
     /// </summary>
     public class IpCommandHandler() : VendorAgnosticCliHandler("ip", "IP configuration commands")
     {
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Arista"))
             {
@@ -372,7 +373,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
                 "% Invalid IP command");
         }
 
-        private CliResult HandleAccessList(CliContext context)
+        private CliResult HandleAccessList(ICliContext context)
         {
             if (context.CommandParts.Length < 4)
             {
@@ -394,7 +395,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
             SetMode(context, "acl");
 
             // Store ACL context
-            if (context.Device is NetworkDevice device)
+            if (context.Device is {} device)
             {
                 device.AddLogEntry($"Entered {aclType} access list {aclName}");
             }
@@ -402,7 +403,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
             return Success("");
         }
 
-        private CliResult HandleStaticRoute(CliContext context)
+        private CliResult HandleStaticRoute(ICliContext context)
         {
             if (context.CommandParts.Length < 5)
             {
@@ -414,7 +415,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Configuration
             var mask = context.CommandParts[3];
             var nextHop = context.CommandParts[4];
 
-            if (context.Device is NetworkDevice device)
+            if (context.Device is {} device)
             {
                 device.AddLogEntry($"Static route added: {network}/{mask} via {nextHop}");
             }

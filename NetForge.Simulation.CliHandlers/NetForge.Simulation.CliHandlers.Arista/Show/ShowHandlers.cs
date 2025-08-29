@@ -59,9 +59,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             };
         }
 
-        private CliResult HandleShowVersion(CliContext context)
+        private CliResult HandleShowVersion(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine("Arista DCS-7050TX-64");
@@ -81,9 +81,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowRunningConfig(CliContext context)
+        private CliResult HandleShowRunningConfig(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine("! Command: show running-config");
@@ -134,9 +134,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowStartupConfig(CliContext context)
+        private CliResult HandleShowStartupConfig(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine("! Command: show startup-config");
@@ -178,9 +178,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowInterfaces(CliContext context)
+        private CliResult HandleShowInterfaces(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -212,9 +212,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowInterfacesStatus(CliContext context)
+        private CliResult HandleShowInterfacesStatus(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -236,9 +236,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowInterfacesDescription(CliContext context)
+        private CliResult HandleShowInterfacesDescription(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -260,9 +260,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowSpecificInterface(CliContext context, string interfaceName)
+        private CliResult HandleShowSpecificInterface(ICliContext context, string interfaceName)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -291,9 +291,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowVlan(CliContext context)
+        private CliResult HandleShowVlan(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -325,9 +325,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowVlanBrief(CliContext context)
+        private CliResult HandleShowVlanBrief(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -360,7 +360,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIp(CliContext context)
+        private CliResult HandleShowIp(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -382,9 +382,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             };
         }
 
-        private CliResult HandleShowIpRoute(CliContext context)
+        private CliResult HandleShowIpRoute(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -436,9 +436,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIpInterface(CliContext context)
+        private CliResult HandleShowIpInterface(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -496,9 +496,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIpArp(CliContext context)
+        private CliResult HandleShowIpArp(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -521,7 +521,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowLldp(CliContext context)
+        private CliResult HandleShowLldp(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -539,9 +539,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             };
         }
 
-        private CliResult HandleShowLldpNeighbors(CliContext context)
+        private CliResult HandleShowLldpNeighbors(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -561,9 +561,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowSpanningTree(CliContext context)
+        private CliResult HandleShowSpanningTree(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             if (device == null)
@@ -596,7 +596,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
         }
 
         // Helper methods
-        private string GetUptime(NetworkDevice device)
+        private string GetUptime(INetworkDevice device)
         {
             // Simulate uptime
             var uptime = DateTime.Now.Subtract(DateTime.Today.AddHours(8));
@@ -643,13 +643,13 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return cidr;
         }
 
-        private CliResult HandleShowArp(CliContext context)
+        private CliResult HandleShowArp(ICliContext context)
         {
             // This is just an alias for "show ip arp"
             return HandleShowIpArp(context);
         }
 
-        private CliResult HandleShowEnvironment(CliContext context)
+        private CliResult HandleShowEnvironment(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("System Environment:");
@@ -670,7 +670,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowInventory(CliContext context)
+        private CliResult HandleShowInventory(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("NAME: \"Chassis\", DESCR: \"Arista DCS-7050TX-64\"");
@@ -688,7 +688,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowVxlan(CliContext context)
+        private CliResult HandleShowVxlan(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("VXLAN Information:");
@@ -704,7 +704,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowClock(CliContext context)
+        private CliResult HandleShowClock(ICliContext context)
         {
             var output = new StringBuilder();
             var now = DateTime.Now;
@@ -714,7 +714,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowMlag(CliContext context)
+        private CliResult HandleShowMlag(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("MLAG Configuration:");
@@ -733,9 +733,9 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowSystem(CliContext context)
+        private CliResult HandleShowSystem(ICliContext context)
         {
-            var device = context.Device as NetworkDevice;
+            var device = context.Device;
             var output = new StringBuilder();
 
             output.AppendLine("System Information:");
@@ -750,7 +750,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowPortChannel(CliContext context)
+        private CliResult HandleShowPortChannel(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Port-Channel Summary:");
@@ -766,7 +766,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowBgp(CliContext context)
+        private CliResult HandleShowBgp(ICliContext context)
         {
             // Check for sub-commands
             if (context.CommandParts.Length > 2)
@@ -784,7 +784,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return HandleShowBgpSummary(context);
         }
 
-        private CliResult HandleShowBgpEvpn(CliContext context)
+        private CliResult HandleShowBgpEvpn(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("BGP EVPN Table:");
@@ -799,7 +799,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowBgpSummary(CliContext context)
+        private CliResult HandleShowBgpSummary(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("BGP router identifier 192.168.1.1, local AS number 65001");
@@ -814,7 +814,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowMac(CliContext context)
+        private CliResult HandleShowMac(ICliContext context)
         {
             // Check for sub-commands
             if (context.CommandParts.Length > 2 && context.CommandParts[2] == "address-table")
@@ -825,7 +825,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return HandleShowMacAddressTable(context);
         }
 
-        private CliResult HandleShowMacAddressTable(CliContext context)
+        private CliResult HandleShowMacAddressTable(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("          Mac Address Table");
@@ -843,7 +843,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIpBgp(CliContext context)
+        private CliResult HandleShowIpBgp(ICliContext context)
         {
             // Check for sub-commands
             if (context.CommandParts.Length > 3)
@@ -871,7 +871,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIpOspf(CliContext context)
+        private CliResult HandleShowIpOspf(ICliContext context)
         {
             // Check for sub-commands
             if (context.CommandParts.Length > 3)
@@ -899,7 +899,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIpOspfNeighbor(CliContext context)
+        private CliResult HandleShowIpOspfNeighbor(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Neighbor ID     Pri   State           Dead Time   Address         Interface");
@@ -909,7 +909,7 @@ namespace NetForge.Simulation.CliHandlers.Arista.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIpOspfDatabase(CliContext context)
+        private CliResult HandleShowIpOspfDatabase(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("            OSPF Router with ID (192.168.1.1) (Process ID 1)");

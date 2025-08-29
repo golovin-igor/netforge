@@ -54,7 +54,7 @@ namespace NetForge.Simulation.Protocols.Examples
             }
         }
 
-        protected override async Task<Dictionary<string, object>> CollectRoutingInformation(NetworkDevice device)
+        protected override async Task<Dictionary<string, object>> CollectRoutingInformation(INetworkDevice device)
         {
             var routingInfo = new Dictionary<string, object>();
 
@@ -75,7 +75,7 @@ namespace NetForge.Simulation.Protocols.Examples
             return routingInfo;
         }
 
-        protected override async Task<List<object>> ComputeRoutes(NetworkDevice device, Dictionary<string, object> routingInformation)
+        protected override async Task<List<object>> ComputeRoutes(INetworkDevice device, Dictionary<string, object> routingInformation)
         {
             var routes = new List<object>();
 
@@ -97,7 +97,7 @@ namespace NetForge.Simulation.Protocols.Examples
             return routes;
         }
 
-        protected override async Task AdvertiseRoutes(NetworkDevice device, List<object> routes)
+        protected override async Task AdvertiseRoutes(INetworkDevice device, List<object> routes)
         {
             // Send LSAs to neighbors
             // Note: GetNeighborIds method commented out - not implemented in base class
@@ -125,7 +125,7 @@ namespace NetForge.Simulation.Protocols.Examples
             return route.ToString();
         }
 
-        protected override async Task ProcessRoutingTimers(NetworkDevice device)
+        protected override async Task ProcessRoutingTimers(INetworkDevice device)
         {
             // OSPF Hello timer (10 seconds)
             // OSPF Dead interval (40 seconds)

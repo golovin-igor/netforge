@@ -52,7 +52,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// Implements common routing logic while allowing protocol-specific customization
         /// </summary>
         /// <param name="device">Network device</param>
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// </summary>
         /// <param name="device">Network device</param>
         /// <returns>Routing information from neighbors</returns>
-        protected abstract Task<Dictionary<string, object>> CollectRoutingInformation(NetworkDevice device);
+        protected abstract Task<Dictionary<string, object>> CollectRoutingInformation(INetworkDevice device);
 
         /// <summary>
         /// Compute optimal routes using protocol-specific algorithm
@@ -105,7 +105,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// <param name="device">Network device</param>
         /// <param name="routingInformation">Information from neighbors</param>
         /// <returns>Computed routes</returns>
-        protected abstract Task<List<object>> ComputeRoutes(NetworkDevice device, Dictionary<string, object> routingInformation);
+        protected abstract Task<List<object>> ComputeRoutes(INetworkDevice device, Dictionary<string, object> routingInformation);
 
         /// <summary>
         /// Apply routing policy and filters to computed routes
@@ -114,7 +114,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// <param name="device">Network device</param>
         /// <param name="routes">Computed routes</param>
         /// <returns>Filtered routes</returns>
-        protected virtual async Task<List<object>> ApplyRoutingPolicy(NetworkDevice device, List<object> routes)
+        protected virtual async Task<List<object>> ApplyRoutingPolicy(INetworkDevice device, List<object> routes)
         {
             // Default implementation applies no filtering
             await Task.CompletedTask;
@@ -127,7 +127,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// </summary>
         /// <param name="device">Network device</param>
         /// <param name="routes">Routes to install</param>
-        protected virtual async Task InstallRoutes(NetworkDevice device, List<object> routes)
+        protected virtual async Task InstallRoutes(INetworkDevice device, List<object> routes)
         {
             var installedCount = 0;
             var updatedCount = 0;
@@ -158,7 +158,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// </summary>
         /// <param name="device">Network device</param>
         /// <param name="routes">Routes to advertise</param>
-        protected abstract Task AdvertiseRoutes(NetworkDevice device, List<object> routes);
+        protected abstract Task AdvertiseRoutes(INetworkDevice device, List<object> routes);
 
         /// <summary>
         /// Get a unique key for a route for routing table management
@@ -226,7 +226,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// Implements common timer functionality for route aging and advertisements
         /// </summary>
         /// <param name="device">Network device</param>
-        protected override async Task ProcessTimers(NetworkDevice device)
+        protected override async Task ProcessTimers(INetworkDevice device)
         {
             // Remove stale routes
             RemoveStaleRoutes();
@@ -240,7 +240,7 @@ namespace NetForge.Simulation.Protocols.Common.Base
         /// Override to implement hello timers, update timers, etc.
         /// </summary>
         /// <param name="device">Network device</param>
-        protected virtual async Task ProcessRoutingTimers(NetworkDevice device)
+        protected virtual async Task ProcessRoutingTimers(INetworkDevice device)
         {
             await Task.CompletedTask;
         }

@@ -17,7 +17,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             AddAlias("display"); // Huawei uses display instead of show
         }
 
-        protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+        protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
         {
             if (!IsVendor(context, "Huawei"))
             {
@@ -57,7 +57,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             };
         }
 
-        private CliResult HandleShowVersion(CliContext context)
+        private CliResult HandleShowVersion(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -71,7 +71,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowInterfaces(CliContext context)
+        private CliResult HandleShowInterfaces(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -95,7 +95,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowArp(CliContext context)
+        private CliResult HandleShowArp(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var table = device?.GetArpTableOutput();
@@ -104,7 +104,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(table);
         }
 
-        private CliResult HandleShowInterface(CliContext context)
+        private CliResult HandleShowInterface(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -119,7 +119,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             };
         }
 
-        private CliResult HandleShowInterfaceBrief(CliContext context)
+        private CliResult HandleShowInterfaceBrief(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -145,7 +145,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowVlan(CliContext context)
+        private CliResult HandleShowVlan(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -175,7 +175,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowCurrentConfiguration(CliContext context)
+        private CliResult HandleShowCurrentConfiguration(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -197,7 +197,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowDevice(CliContext context)
+        private CliResult HandleShowDevice(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -213,7 +213,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowCpuUsage(CliContext context)
+        private CliResult HandleShowCpuUsage(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("CPU usage statistics:");
@@ -224,7 +224,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowAlarm(CliContext context)
+        private CliResult HandleShowAlarm(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Current alarms:");
@@ -236,7 +236,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIp(CliContext context)
+        private CliResult HandleShowIp(ICliContext context)
         {
             if (context.CommandParts.Length < 3)
             {
@@ -252,7 +252,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             };
         }
 
-        private CliResult HandleShowIpInterface(CliContext context)
+        private CliResult HandleShowIpInterface(ICliContext context)
         {
             if (context.CommandParts.Length > 3 && context.CommandParts[3] == "brief")
             {
@@ -282,7 +282,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIpInterfaceBrief(CliContext context)
+        private CliResult HandleShowIpInterfaceBrief(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -308,7 +308,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIpRoutingTable(CliContext context)
+        private CliResult HandleShowIpRoutingTable(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Routing Table:");
@@ -320,7 +320,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowMacAddress(CliContext context)
+        private CliResult HandleShowMacAddress(ICliContext context)
         {
             var device = context.Device as NetworkDevice;
             var output = new StringBuilder();
@@ -334,7 +334,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowIsis(CliContext context)
+        private CliResult HandleShowIsis(ICliContext context)
         {
             if (context.CommandParts.Length > 2 && context.CommandParts[2] == "peer")
             {
@@ -348,7 +348,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid ISIS option");
         }
 
-        private CliResult HandleShowBgp(CliContext context)
+        private CliResult HandleShowBgp(ICliContext context)
         {
             if (context.CommandParts.Length > 2 && context.CommandParts[2] == "peer")
             {
@@ -362,7 +362,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid BGP option");
         }
 
-        private CliResult HandleShowStp(CliContext context)
+        private CliResult HandleShowStp(ICliContext context)
         {
             if (context.CommandParts.Length > 2 && context.CommandParts[2] == "brief")
             {
@@ -377,7 +377,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid STP option");
         }
 
-        private CliResult HandleShowRip(CliContext context)
+        private CliResult HandleShowRip(ICliContext context)
         {
             if (context.CommandParts.Length > 3 && context.CommandParts[2] == "1" && context.CommandParts[3] == "neighbor")
             {
@@ -391,7 +391,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid RIP option");
         }
 
-        private CliResult HandleShowOspf(CliContext context)
+        private CliResult HandleShowOspf(ICliContext context)
         {
             if (context.CommandParts.Length > 2 && context.CommandParts[2] == "peer")
             {
@@ -405,7 +405,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Error(CliErrorType.InvalidCommand, "% Invalid OSPF option");
         }
 
-        private CliResult HandleShowMemoryUsage(CliContext context)
+        private CliResult HandleShowMemoryUsage(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Memory usage statistics:");
@@ -416,7 +416,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowPower(CliContext context)
+        private CliResult HandleShowPower(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Power supply information:");
@@ -428,7 +428,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowFan(CliContext context)
+        private CliResult HandleShowFan(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Fan information:");
@@ -442,7 +442,7 @@ namespace NetForge.Simulation.CliHandlers.Huawei.Show
             return Success(output.ToString());
         }
 
-        private CliResult HandleShowTemperature(CliContext context)
+        private CliResult HandleShowTemperature(ICliContext context)
         {
             var output = new StringBuilder();
             output.AppendLine("Temperature information:");

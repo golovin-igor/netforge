@@ -1,4 +1,5 @@
 using System.Text;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
@@ -12,19 +13,19 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
         /// </summary>
         public class ArubaShowHandler : VendorAgnosticCliHandler
         {
-            public ArubaShowHandler() : base("show", "Display system information") 
-            { 
+            public ArubaShowHandler() : base("show", "Display system information")
+            {
                 AddAlias("sh");
                 AddAlias("sho");
             }
 
-            public override bool CanHandle(CliContext context)
+            public override bool CanHandle(ICliContext context)
             {
                 return context.CommandParts.Length >= 1 &&
                        string.Equals(context.CommandParts[0], "show", StringComparison.OrdinalIgnoreCase);
             }
 
-            protected override async Task<CliResult> ExecuteCommandAsync(CliContext context)
+            protected override async Task<CliResult> ExecuteCommandAsync(ICliContext context)
             {
                 if (!IsVendor(context, "Aruba"))
                     return RequireVendor(context, "Aruba");
@@ -34,7 +35,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                     return Error(CliErrorType.InvalidParameter, "Usage: show <subcommand>");
 
                 var subcommand = string.Join(" ", args.Skip(1)).ToLower();
-                
+
                 return subcommand switch
                 {
                     "running-config" => ShowRunningConfig(context),
@@ -68,7 +69,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 };
             }
 
-            private CliResult ShowRunningConfig(CliContext context)
+            private CliResult ShowRunningConfig(ICliContext context)
             {
                 var vendorCaps = GetVendorCapabilities(context);
                 if (vendorCaps != null)
@@ -79,7 +80,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Error(CliErrorType.InvalidCommand, "Failed to retrieve running configuration");
             }
 
-            private CliResult ShowStartupConfig(CliContext context)
+            private CliResult ShowStartupConfig(ICliContext context)
             {
                 var vendorCaps = GetVendorCapabilities(context);
                 if (vendorCaps != null)
@@ -90,7 +91,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Error(CliErrorType.InvalidCommand, "Failed to retrieve startup configuration");
             }
 
-            private CliResult ShowVersion(CliContext context)
+            private CliResult ShowVersion(ICliContext context)
             {
                 var output = new StringBuilder();
                 output.AppendLine("Aruba Switch");
@@ -107,11 +108,11 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Success(output.ToString());
             }
 
-            private CliResult ShowInterfaces(CliContext context)
+            private CliResult ShowInterfaces(ICliContext context)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaces = device?.GetAllInterfaces();
-                
+
                 if (interfaces == null)
                     return Error(CliErrorType.InvalidCommand, "No interfaces found");
 
@@ -123,17 +124,17 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                     output.AppendLine($"  Enabled: {(!iface.IsShutdown ? "Yes" : "No")}");
                     output.AppendLine($"  Status: {(iface.IsUp ? "Up" : "Down")}");
                     output.AppendLine($"  Mode: {(string.IsNullOrEmpty(iface.IpAddress) ? "Switched" : "Routed")}");
-                    
+
                     if (!string.IsNullOrEmpty(iface.IpAddress))
                     {
                         output.AppendLine($"  IP Address: {iface.IpAddress}/{iface.SubnetMask}");
                     }
-                    
+
                     if (!string.IsNullOrEmpty(iface.Description))
                     {
                         output.AppendLine($"  Description: {iface.Description}");
                     }
-                    
+
                     output.AppendLine($"  MTU: {iface.Mtu}");
                     output.AppendLine($"  MAC Address: {iface.MacAddress}");
                     output.AppendLine();
@@ -142,32 +143,32 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Success(output.ToString());
             }
 
-            private CliResult ShowInterfaceBrief(CliContext context)
+            private CliResult ShowInterfaceBrief(ICliContext context)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaces = device?.GetAllInterfaces();
-                
+
                 if (interfaces == null)
                     return Error(CliErrorType.InvalidCommand, "No interfaces found");
 
                 var output = new StringBuilder();
                 output.AppendLine("Port     Name   Status   VLAN    Type      Mode");
                 output.AppendLine("-------- ------ -------- ------- --------- --------");
-                
+
                 foreach (var iface in interfaces.Values)
                 {
                     var status = iface.IsUp ? "Up" : "Down";
                     var vlan = iface.VlanId > 0 ? iface.VlanId.ToString() : "1";
                     var type = "1000T";
                     var mode = string.IsNullOrEmpty(iface.IpAddress) ? "Access" : "Routed";
-                    
+
                     output.AppendLine($"{iface.Name,-8} {(iface.Description?.Length > 6 ? iface.Description.Substring(0, 6) : iface.Description ?? ""),-6} {status,-8} {vlan,-7} {type,-9} {mode}");
                 }
 
                 return Success(output.ToString());
             }
 
-            private CliResult ShowVlan(CliContext context)
+            private CliResult ShowVlan(ICliContext context)
             {
                 var output = new StringBuilder();
                 output.AppendLine("VLAN ID  Name                 Status   Ports");
@@ -178,7 +179,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Success(output.ToString());
             }
 
-            private CliResult ShowVlanBrief(CliContext context)
+            private CliResult ShowVlanBrief(ICliContext context)
             {
                 var output = new StringBuilder();
                 output.AppendLine("VLAN  Name      Status");
@@ -189,11 +190,11 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Success(output.ToString());
             }
 
-            private CliResult ShowIpRoute(CliContext context)
+            private CliResult ShowIpRoute(ICliContext context)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var routes = device?.GetRoutingTable();
-                
+
                 if (routes == null)
                     return Error(CliErrorType.InvalidCommand, "No routing table found");
 
@@ -201,7 +202,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 output.AppendLine("IP Route Table");
                 output.AppendLine("Destination        Gateway         Distance  Type   Interface");
                 output.AppendLine("------------------ --------------- --------- ------ ---------");
-                
+
                 foreach (var route in routes)
                 {
                     output.AppendLine($"{route.Network,-18} {route.NextHop,-15} {route.AdminDistance,-9} {"Static",-6} {route.Interface}");
@@ -210,11 +211,11 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Success(output.ToString());
             }
 
-            private CliResult ShowArp(CliContext context)
+            private CliResult ShowArp(ICliContext context)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var arpTable = device?.GetArpTable();
-                
+
                 if (arpTable == null)
                     return Error(CliErrorType.InvalidCommand, "No ARP table found");
 
@@ -222,7 +223,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 output.AppendLine("IP ARP table");
                 output.AppendLine("IP Address      MAC Address       Type   Port");
                 output.AppendLine("--------------- ----------------- ------ ----");
-                
+
                 foreach (var entry in arpTable)
                 {
                     output.AppendLine($"{entry.Key,-15} {entry.Value,-17} {"Dynamic",-6} {"1"}");
@@ -231,7 +232,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Success(output.ToString());
             }
 
-            private CliResult ShowMacAddressTable(CliContext context)
+            private CliResult ShowMacAddressTable(ICliContext context)
             {
                 var output = new StringBuilder();
                 output.AppendLine("Status and Counters - Port Address Table");
@@ -245,9 +246,9 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Success(output.ToString());
             }
 
-            private CliResult ShowSystem(CliContext context)
+            private CliResult ShowSystem(ICliContext context)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var output = new StringBuilder();
                 output.AppendLine("System Information");
                 output.AppendLine("==================");
@@ -263,48 +264,48 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Success(output.ToString());
             }
 
-            private CliResult ShowSpecificInterface(CliContext context, string[] args)
+            private CliResult ShowSpecificInterface(ICliContext context, string[] args)
             {
                 if (args.Length < 3)
                     return Error(CliErrorType.InvalidParameter, "Usage: show interface <interface-name>");
 
                 var interfaceName = args[2];
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaces = device?.GetAllInterfaces();
-                
+
                 if (interfaces == null || !interfaces.ContainsKey(interfaceName))
                     return Error(CliErrorType.InvalidParameter, "Interface does not exist");
 
                 var iface = interfaces[interfaceName];
                 var output = new StringBuilder();
-                
+
                 output.AppendLine();
                 output.AppendLine($" Interface {iface.Name} is {(iface.IsUp ? "up" : "down")}, line protocol is {(iface.IsUp ? "up" : "down")}");
                 output.AppendLine($"  Hardware is 10/100/1000T, address is {iface.MacAddress}");
-                
+
                 if (!string.IsNullOrEmpty(iface.Description))
                 {
                     output.AppendLine($"  Description \"{iface.Description}\"");
                 }
-                
+
                 if (!string.IsNullOrEmpty(iface.IpAddress))
                 {
                     output.AppendLine($"  Internet address is {iface.IpAddress}/{MaskToCidr(iface.SubnetMask)}");
                 }
-                
+
                 output.AppendLine($"  MTU 1500 bytes, encapsulation ethernet");
                 output.AppendLine($"  Flow control is off, input flow-control is off");
                 output.AppendLine($"     {iface.RxPackets} packets input, {iface.RxBytes} bytes");
                 output.AppendLine($"     {iface.TxPackets} packets output, {iface.TxBytes} bytes");
-                
+
                 return Success(output.ToString());
             }
 
-            private CliResult ShowSpanningTree(CliContext context)
+            private CliResult ShowSpanningTree(ICliContext context)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var output = new StringBuilder();
-                
+
                 output.AppendLine();
                 output.AppendLine(" Multiple Spanning Trees");
                 output.AppendLine();
@@ -319,15 +320,15 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 output.AppendLine("   Root ID       : 4096 " + (device?.Name ?? "SW1"));
                 output.AppendLine("   Priority      : 4096");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
 
-            private CliResult ShowTech(CliContext context)
+            private CliResult ShowTech(ICliContext context)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var output = new StringBuilder();
-                
+
                 output.AppendLine("Technical support information:");
                 output.AppendLine("Product Model: J9019A");
                 output.AppendLine("Software Version: K.15.16.0012");
@@ -339,21 +340,21 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 output.AppendLine("Flash Utilization: 38%");
                 output.AppendLine("Temperature: Normal");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
 
-            private CliResult ShowTime(CliContext context)
+            private CliResult ShowTime(ICliContext context)
             {
                 var currentTime = DateTime.Now.ToString("ddd MMM  d HH:mm:ss yyyy");
                 return Success($"{currentTime}\n");
             }
 
-            private CliResult ShowLog(CliContext context)
+            private CliResult ShowLog(ICliContext context)
             {
                 var output = new StringBuilder();
                 var currentTime = DateTime.Now.ToString("MMM  d HH:mm:ss");
-                
+
                 output.AppendLine();
                 output.AppendLine(" Event Log");
                 output.AppendLine();
@@ -364,14 +365,14 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 output.AppendLine($"{currentTime} STM: port 2-Forwarding");
                 output.AppendLine($"{currentTime} ports: port 2 is now on-line");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
 
             private int MaskToCidr(string mask)
             {
                 if (string.IsNullOrEmpty(mask)) return 24;
-                
+
                 // Convert subnet mask to CIDR notation
                 return mask switch
                 {
@@ -388,11 +389,11 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 };
             }
 
-            private CliResult ShowIpInterfaceBrief(CliContext context)
+            private CliResult ShowIpInterfaceBrief(ICliContext context)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var interfaces = device?.GetAllInterfaces();
-                
+
                 if (interfaces == null)
                     return Error(CliErrorType.InvalidCommand, "No interfaces found");
 
@@ -401,7 +402,7 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 output.AppendLine();
                 output.AppendLine("Interface   IP Address      OK?  Method Status                Protocol");
                 output.AppendLine("----------- --------------- ---- ------ ---------------------- --------");
-                
+
                 foreach (var iface in interfaces.Values)
                 {
                     if (!string.IsNullOrEmpty(iface.IpAddress))
@@ -415,11 +416,11 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 return Success(output.ToString());
             }
 
-            private CliResult ShowLogging(CliContext context)
+            private CliResult ShowLogging(ICliContext context)
             {
                 var output = new StringBuilder();
                 var currentTime = DateTime.Now.ToString("MMM  d HH:mm:ss");
-                
+
                 output.AppendLine();
                 output.AppendLine(" Event Log");
                 output.AppendLine();
@@ -428,15 +429,15 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 output.AppendLine($"{currentTime} ports: port 1 is now on-line");
                 output.AppendLine($"{currentTime} System coldstart");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
 
-            private CliResult ShowTrunk(CliContext context)
+            private CliResult ShowTrunk(ICliContext context)
             {
-                var device = context.Device as NetworkDevice;
+                var device = context.Device;
                 var output = new StringBuilder();
-                
+
                 output.AppendLine("Load Balancing Method");
                 output.AppendLine();
                 output.AppendLine("Port | Name  | Type | Group | Status     | Speed  | Duplex | Flow Ctrl");
@@ -444,11 +445,11 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 output.AppendLine("1    |       | lacp | Trk1  | Up         | 1000   | Full   | No");
                 output.AppendLine("2    |       | lacp | Trk1  | Up         | 1000   | Full   | No");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
 
-            private CliResult ShowBgpSummary(CliContext context)
+            private CliResult ShowBgpSummary(ICliContext context)
             {
                 var output = new StringBuilder();
                 output.AppendLine("BGP Peer Information");
@@ -460,11 +461,11 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 output.AppendLine("----------- ----- -------- ------- -----");
                 output.AppendLine("172.16.0.2  65002 Estab    00:05:30    0");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
 
-            private CliResult ShowOspfNeighbor(CliContext context)
+            private CliResult ShowOspfNeighbor(ICliContext context)
             {
                 var output = new StringBuilder();
                 output.AppendLine("OSPF Neighbor Information");
@@ -473,27 +474,27 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                 output.AppendLine("--------------- ----- --------------- ----------- --------------- ---------");
                 output.AppendLine("2.2.2.2         1     Full/DR         00:00:35    10.0.0.2        vlan 1");
                 output.AppendLine();
-                
+
                 return Success(output.ToString());
             }
 
-            private CliResult HandleDynamicInterfaceCommand(CliContext context, string subcommand)
+            private CliResult HandleDynamicInterfaceCommand(ICliContext context, string subcommand)
             {
                 // Handle specific interface commands like "interfaces 1", "interfaces vlan 10", etc.
                 var parts = subcommand.Split(' ');
-                
+
                 if (parts.Length >= 2 && parts[0] == "interfaces")
                 {
                     var interfaceName = parts[1];
-                    var device = context.Device as NetworkDevice;
+                    var device = context.Device;
                     var interfaces = device?.GetAllInterfaces();
-                    
+
                     if (interfaces == null || !interfaces.ContainsKey(interfaceName))
                         return Error(CliErrorType.InvalidParameter, "Interface does not exist");
 
                     var iface = interfaces[interfaceName];
                     var output = new StringBuilder();
-                    
+
                     output.AppendLine();
                     output.AppendLine(" Status and Counters - General System Information");
                     output.AppendLine();
@@ -506,27 +507,27 @@ namespace NetForge.Simulation.CliHandlers.Aruba.Show
                     output.AppendLine($"  Link Status        : {(iface.IsUp ? "Up" : "Down")}");
                     output.AppendLine($"  Port Type          : 1000T");
                     output.AppendLine($"  Port Mode          : {(string.IsNullOrEmpty(iface.IpAddress) ? "Access" : "Routed")}");
-                    
+
                     if (!string.IsNullOrEmpty(iface.Description))
                     {
                         output.AppendLine($"  Name               : {iface.Description}");
                     }
-                    
+
                     if (!string.IsNullOrEmpty(iface.IpAddress))
                     {
                         output.AppendLine($"  IP Address         : {iface.IpAddress}");
                         output.AppendLine($"  Subnet Mask        : {iface.SubnetMask}");
                     }
-                    
+
                     output.AppendLine($"  MAC Address        : {iface.MacAddress}");
                     output.AppendLine($"  Enabled            : {(!iface.IsShutdown ? "Yes" : "No")}");
                     output.AppendLine();
-                    
+
                     return Success(output.ToString());
                 }
-                
+
                 return Error(CliErrorType.InvalidParameter, $"Unknown show command: {subcommand}");
             }
         }
     }
-} 
+}
