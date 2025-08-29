@@ -306,7 +306,7 @@ namespace NetForge.Simulation.Common.Common
             return $"{Device1Name}:{Interface1Name} <-> {Device2Name}:{Interface2Name} ({State})";
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is PhysicalConnection other)
             {

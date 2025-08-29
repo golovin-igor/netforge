@@ -58,7 +58,7 @@ namespace NetForge.Simulation.DataTypes.Cli
         /// Gets the last executed command
         /// </summary>
         /// <returns>The last command or null if history is empty</returns>
-        public string GetLastCommand()
+        public string? GetLastCommand()
         {
             return _history.LastOrDefault()?.Command;
         }
@@ -68,7 +68,7 @@ namespace NetForge.Simulation.DataTypes.Cli
         /// </summary>
         /// <param name="commandNumber">The command number</param>
         /// <returns>The command or null if not found</returns>
-        public string GetCommandByNumber(int commandNumber)
+        public string? GetCommandByNumber(int commandNumber)
         {
             var entry = _history.FirstOrDefault(h => h.CommandNumber == commandNumber);
             return entry?.Command;
@@ -79,7 +79,7 @@ namespace NetForge.Simulation.DataTypes.Cli
         /// </summary>
         /// <param name="prefix">The prefix to search for</param>
         /// <returns>The command or null if not found</returns>
-        public string GetCommandByPrefix(string prefix)
+        public string? GetCommandByPrefix(string prefix)
         {
             if (string.IsNullOrEmpty(prefix))
                 return null;
@@ -93,7 +93,7 @@ namespace NetForge.Simulation.DataTypes.Cli
         /// </summary>
         /// <param name="relativePosition">Position relative to current (-1 = last, -2 = second to last, etc.)</param>
         /// <returns>The command or null if not found</returns>
-        public string GetCommandByRelativePosition(int relativePosition)
+        public string? GetCommandByRelativePosition(int relativePosition)
         {
             if (relativePosition >= 0 || _history.Count == 0)
                 return null;

@@ -42,7 +42,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{868FD21A
 		Tests\COMPREHENSIVE_TESTING_DOCUMENTATION.md = Tests\COMPREHENSIVE_TESTING_DOCUMENTATION.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetForge.Simulation.Protocols", "NetForge.Simulation.Protocols", "{897E0406-546D-4094-BFAA-3A4CD4F7F311}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protocols", "Protocols", "{897E0406-546D-4094-BFAA-3A4CD4F7F311}"
 	ProjectSection(SolutionItems) = preProject
 		NetForge.Simulation.Protocols\COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md = NetForge.Simulation.Protocols\COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
 	EndProjectSection

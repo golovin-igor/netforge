@@ -5,12 +5,12 @@ namespace NetForge.Simulation.Common.Security
     /// </summary>
     public class AclEntry
     {
-        public string Action { get; set; } // permit or deny
-        public string Protocol { get; set; } // ip, tcp, udp, icmp
-        public string SourceAddress { get; set; }
-        public string SourceWildcard { get; set; }
-        public string DestAddress { get; set; }
-        public string DestWildcard { get; set; }
+        public required string Action { get; set; } // permit or deny
+        public required string Protocol { get; set; } // ip, tcp, udp, icmp
+        public required string SourceAddress { get; set; }
+        public required string SourceWildcard { get; set; }
+        public required string DestAddress { get; set; }
+        public required string DestWildcard { get; set; }
         public int? SourcePort { get; set; }
         public int? DestPort { get; set; }
 

@@ -17,7 +17,7 @@ namespace NetForge.Simulation.Common.Events
         public PhysicalConnectionState PreviousState { get; } = previousState;
         public PhysicalConnectionState NewState { get; } = newState;
         public string Reason { get; } = reason;
-        public DateTime Timestamp { get; } = DateTime.UtcNow;
+        public new DateTime Timestamp { get; } = DateTime.UtcNow;
 
         public override string ToString()
         {

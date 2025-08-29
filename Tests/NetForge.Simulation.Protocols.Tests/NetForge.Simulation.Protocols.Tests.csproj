@@ -44,7 +44,8 @@
         <ProjectReference Include="..\..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.STP\NetForge.Simulation.Protocols.STP.csproj" />
         <ProjectReference Include="..\..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.Telnet\NetForge.Simulation.Protocols.Telnet.csproj" />
         <ProjectReference Include="..\..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.VRRP\NetForge.Simulation.Protocols.VRRP.csproj" />
-     
+        <ProjectReference Include="..\..\NetForge.Simulation.Topology\NetForge.Simulation.Topology.csproj" />
+        <ProjectReference Include="..\..\NetForge.Simulation.DataTypes\NetForge.Simulation.DataTypes.csproj" />
     </ItemGroup>
 
 </Project>

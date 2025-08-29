@@ -6,7 +6,7 @@ namespace NetForge.Simulation.Common.Security
     public class AccessList
     {
         public int Number { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public List<AclEntry> Entries { get; set; } = new List<AclEntry>();
 
         public AccessList(int number)

@@ -2,6 +2,8 @@ using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Devices;
+using NetForge.Simulation.Topology.Common;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.ARP;
 
 namespace NetForge.Simulation.Protocols.Tests
@@ -55,7 +57,7 @@ namespace NetForge.Simulation.Protocols.Tests
             var protocol = new ArpProtocol();
 
             // Assert
-            Assert.Equal(ProtocolType.ARP, protocol.Type);
+            Assert.Equal(NetworkProtocolType.ARP, protocol.Type);
             Assert.Equal("Address Resolution Protocol", protocol.Name);
             Assert.NotNull(protocol.GetState());
         }
