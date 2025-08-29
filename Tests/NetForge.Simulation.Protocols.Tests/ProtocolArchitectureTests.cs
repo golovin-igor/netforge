@@ -87,9 +87,9 @@ namespace NetForge.Simulation.Protocols.Tests
             if (protocolService != null)
             {
                 // Act
-                var ospfDependencies = protocolService.GetProtocolDependencies(ProtocolType.OSPF);
-                var bgpConflicts = protocolService.GetProtocolConflicts(ProtocolType.BGP);
-                var canCoexist = protocolService.CanProtocolsCoexist(ProtocolType.OSPF, ProtocolType.BGP);
+                var ospfDependencies = protocolService.GetProtocolDependencies(NetworkProtocolType.OSPF);
+                var bgpConflicts = protocolService.GetProtocolConflicts(NetworkProtocolType.BGP);
+                var canCoexist = protocolService.CanProtocolsCoexist(NetworkProtocolType.OSPF, NetworkProtocolType.BGP);
 
                 // Assert
                 Assert.NotNull(ospfDependencies);
@@ -116,7 +116,7 @@ namespace NetForge.Simulation.Protocols.Tests
             if (protocolService != null)
             {
                 // Act
-                var isValidConfig = protocolService.ValidateProtocolConfiguration(ProtocolType.OSPF, testConfig);
+                var isValidConfig = protocolService.ValidateProtocolConfiguration(NetworkProtocolType.OSPF, testConfig);
 
                 // Assert
                 // Configuration validation should work
@@ -208,19 +208,19 @@ namespace NetForge.Simulation.Protocols.Tests
             var protocolService = GetProtocolService(device);
 
             // Act & Assert - Test with non-existent protocol types
-            var nonExistentProtocol = basicProtocolService.GetProtocol((ProtocolType)9999);
+            var nonExistentProtocol = basicProtocolService.GetProtocol((NetworkProtocolType)9999);
             Assert.Null(nonExistentProtocol);
 
-            var nonExistentState = basicProtocolService.GetProtocolState<IProtocolState>((ProtocolType)9999);
+            var nonExistentState = basicProtocolService.GetProtocolState<IProtocolState>((NetworkProtocolType)9999);
             Assert.Null(nonExistentState);
 
             if (protocolService != null)
             {
-                var nonExistentMetrics = protocolService.GetProtocolMetrics((ProtocolType)9999);
+                var nonExistentMetrics = protocolService.GetProtocolMetrics((NetworkProtocolType)9999);
                 Assert.Null(nonExistentMetrics);
 
                 // Reset metrics for non-existent protocol should not throw
-                protocolService.ResetProtocolMetrics((ProtocolType)9999);
+                protocolService.ResetProtocolMetrics((NetworkProtocolType)9999);
             }
         }
 
@@ -237,8 +237,8 @@ namespace NetForge.Simulation.Protocols.Tests
             if (protocolService != null)
             {
                 // Act
-                var ospfDependenciesValid = protocolService.ValidateProtocolDependencies(ProtocolType.OSPF);
-                var hsrpVrrpCanCoexist = protocolService.CanProtocolsCoexist(ProtocolType.HSRP, ProtocolType.VRRP);
+                var ospfDependenciesValid = protocolService.ValidateProtocolDependencies(NetworkProtocolType.OSPF);
+                var hsrpVrrpCanCoexist = protocolService.CanProtocolsCoexist(NetworkProtocolType.HSRP, NetworkProtocolType.VRRP);
 
                 // Assert
                 Assert.True(ospfDependenciesValid || !ospfDependenciesValid); // Either result is acceptable

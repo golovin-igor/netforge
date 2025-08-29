@@ -1,6 +1,9 @@
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Devices;
+using NetForge.Simulation.Topology.Common;
+using NetForge.Simulation.Topology.Devices;
 using Xunit;
 
 // Added for xUnit

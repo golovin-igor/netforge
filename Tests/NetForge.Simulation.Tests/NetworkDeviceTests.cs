@@ -1,8 +1,13 @@
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Devices;
+using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Topology.Common;
+using NetForge.Simulation.Topology.Devices;
 using Xunit;
 // For ProtocolType
 // Added for OspfConfig, BgpConfig
@@ -30,7 +35,7 @@ namespace NetForge.Simulation.Tests
             ProtocolConfigChangedEventArgs? receivedArgs = null;
             _eventBus.Subscribe<ProtocolConfigChangedEventArgs>(args =>
             {
-                if (args.DeviceName == _testDevice.Name && args.ProtocolType == ProtocolType.OSPF)
+                if (args.DeviceName == _testDevice.Name && args.ProtocolType == NetworkProtocolType.OSPF)
                 {
                     receivedArgs = args;
                 }
@@ -47,7 +52,7 @@ namespace NetForge.Simulation.Tests
             // Assert
             Assert.NotNull(receivedArgs);
             Assert.Equal(_testDevice.Name, receivedArgs.DeviceName);
-            Assert.Equal(ProtocolType.OSPF, receivedArgs.ProtocolType);
+            Assert.Equal(NetworkProtocolType.OSPF, receivedArgs.ProtocolType);
             Assert.Contains("OSPF configuration", receivedArgs.ChangeDetails);
         }
 
@@ -58,7 +63,7 @@ namespace NetForge.Simulation.Tests
             ProtocolConfigChangedEventArgs? receivedArgs = null;
             _eventBus.Subscribe<ProtocolConfigChangedEventArgs>(args =>
             {
-                if (args.DeviceName == _testDevice.Name && args.ProtocolType == ProtocolType.BGP)
+                if (args.DeviceName == _testDevice.Name && args.ProtocolType == NetworkProtocolType.BGP)
                 {
                     receivedArgs = args;
                 }
@@ -75,7 +80,7 @@ namespace NetForge.Simulation.Tests
             // Assert
             Assert.NotNull(receivedArgs);
             Assert.Equal(_testDevice.Name, receivedArgs.DeviceName);
-            Assert.Equal(ProtocolType.BGP, receivedArgs.ProtocolType);
+            Assert.Equal(NetworkProtocolType.BGP, receivedArgs.ProtocolType);
             Assert.Contains("BGP configuration", receivedArgs.ChangeDetails);
         }
 
@@ -99,25 +104,35 @@ namespace NetForge.Simulation.Tests
     }
 
     // Helper protocol class for testing RegisterProtocol subscription call
-    public class TestEventSubscribingProtocol : INetworkProtocol
+    public class TestEventSubscribingProtocol : IDeviceProtocol
     {
-        public ProtocolType Type => (ProtocolType)999; // Dummy type
+        public NetworkProtocolType Type { get; set; } = (NetworkProtocolType)999;
+        public string Name => "TestEventSubscribingProtocol";
+        public string Version => "1.0";
+        public IEnumerable<string> SupportedVendors => new[] { "Test" };
+        
         public bool InitializeCalled { get; private set; } = false;
         public bool UpdateStateCalled { get; private set; } = false;
         public bool SubscribeToEventsCalled { get; private set; } = false;
-    public NetworkEventBus? SubscribedEventBus { get; private set; }
-    public NetworkDevice? SubscribedDevice { get; private set; }
+        public NetworkEventBus? SubscribedEventBus { get; private set; }
+        public NetworkDevice? SubscribedDevice { get; private set; }
 
-        public void Initialize(NetworkDevice device)
-        {
-            InitializeCalled = true;
-        }
-
-        public Task UpdateState(NetworkDevice device)
-        {
-            UpdateStateCalled = true;
-            return Task.CompletedTask;
-        }
+        public void Initialize(INetworkDevice device) => InitializeCalled = true;
+        public Task UpdateState(INetworkDevice device) { UpdateStateCalled = true; return Task.CompletedTask; }
+        public Task<bool> Start() => Task.FromResult(true);
+        public Task<bool> Stop() => Task.FromResult(true);
+        public Task<bool> Configure(object config) => Task.FromResult(true);
+        public object GetConfiguration() => new object();
+        public void ApplyConfiguration(object config) { }
+        public IProtocolState GetState() => throw new NotImplementedException();
+        public T GetTypedState<T>() where T : class => throw new NotImplementedException();
+        public IEnumerable<string> GetSupportedVendors() => SupportedVendors;
+        public bool SupportsVendor(string vendor) => vendor == "Test";
+        public IEnumerable<NetworkProtocolType> GetDependencies() => Enumerable.Empty<NetworkProtocolType>();
+        public IEnumerable<NetworkProtocolType> GetConflicts() => Enumerable.Empty<NetworkProtocolType>();
+        public bool CanCoexistWith(NetworkProtocolType protocolType) => true;
+        public object GetMetrics() => new object();
+        public void SubscribeToEvents(INetworkEventBus eventBus, INetworkDevice device) { SubscribeToEventsCalled = true; }
 
         public void SubscribeToEvents(NetworkEventBus eventBus, NetworkDevice self)
         {

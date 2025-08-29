@@ -1,19 +1,21 @@
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.Topology.Devices;
 
 namespace NetForge.Simulation.Tests.TestUtilities
 {
     public static class NetworkDeviceTestExtensions
     {
-        public static IEnumerable<INetworkProtocol> GetProtocolsForTesting(this NetworkDevice device)
+        public static IEnumerable<IDeviceProtocol> GetProtocolsForTesting(this NetworkDevice device)
         {
             var fieldInfo = typeof(NetworkDevice).GetField("_protocols",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             if (fieldInfo != null)
             {
-                return (IEnumerable<INetworkProtocol>)fieldInfo.GetValue(device);
+                return (IEnumerable<IDeviceProtocol>)fieldInfo.GetValue(device);
             }
-            return new List<INetworkProtocol>();
+            return new List<IDeviceProtocol>();
         }
     }
 }

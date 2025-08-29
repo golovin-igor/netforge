@@ -24,7 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\NetForge.Simulation.DataTypes\NetForge.Simulation.DataTypes.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.Topology\NetForge.Simulation.Topology.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.EventBus\NetForge.Simulation.EventBus.csproj" />
+    <ProjectReference Include="..\..\NetForge.Interfaces\NetForge.Interfaces.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Common\NetForge.Simulation.CliHandlers.Common.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Cisco\NetForge.Simulation.CliHandlers.Cisco.csproj" />
     <ProjectReference Include="..\..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Arista\NetForge.Simulation.CliHandlers.Arista.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Juniper\NetForge.Simulation.CliHandlers.Juniper.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Dell\NetForge.Simulation.CliHandlers.Dell.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.CliHandlers\NetForge.Simulation.CliHandlers.Huawei\NetForge.Simulation.CliHandlers.Huawei.csproj" />
   </ItemGroup>
 
 

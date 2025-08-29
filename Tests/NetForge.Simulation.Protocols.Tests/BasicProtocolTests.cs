@@ -32,7 +32,7 @@ namespace NetForge.Simulation.Protocols.Tests
             var protocol = new SshProtocol();
 
             // Assert
-            Assert.Equal(ProtocolType.SSH, protocol.Type);
+            Assert.Equal(NetworkProtocolType.SSH, protocol.Type);
             Assert.Equal("SSH Protocol", protocol.Name);
             Assert.NotNull(protocol.GetState());
         }
@@ -44,7 +44,7 @@ namespace NetForge.Simulation.Protocols.Tests
             var protocol = new ArpProtocol();
 
             // Assert
-            Assert.Equal(ProtocolType.ARP, protocol.Type);
+            Assert.Equal(NetworkProtocolType.ARP, protocol.Type);
             Assert.Equal("Address Resolution Protocol", protocol.Name);
             Assert.NotNull(protocol.GetState());
         }

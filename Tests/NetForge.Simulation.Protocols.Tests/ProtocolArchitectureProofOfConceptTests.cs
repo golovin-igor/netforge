@@ -1,3 +1,4 @@
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Devices;
@@ -57,9 +58,9 @@ namespace NetForge.Simulation.Protocols.Tests
 
             // Act & Assert - These should not throw exceptions
             var ospfProtocol = basicProtocolService.GetProtocol<IDeviceProtocol>();
-            var bgpProtocol = basicProtocolService.GetProtocol(ProtocolType.BGP);
-            var isOspfActive = basicProtocolService.IsProtocolActive(ProtocolType.OSPF);
-            var isOspfRegistered = protocolService?.IsProtocolRegistered(ProtocolType.OSPF) ?? false;
+            var bgpProtocol = basicProtocolService.GetProtocol(NetworkProtocolType.BGP);
+            var isOspfActive = basicProtocolService.IsProtocolActive(NetworkProtocolType.OSPF);
+            var isOspfRegistered = protocolService?.IsProtocolRegistered(NetworkProtocolType.OSPF) ?? false;
 
             // All operations should complete without exceptions
             Assert.True(true); // If we reach here, the operations succeeded
@@ -95,15 +96,15 @@ namespace NetForge.Simulation.Protocols.Tests
             Assert.Contains("DeviceId", protocolSummary.Keys);
 
             // Dependency management
-            var ospfDependencies = protocolService.GetProtocolDependencies(ProtocolType.OSPF);
+            var ospfDependencies = protocolService.GetProtocolDependencies(NetworkProtocolType.OSPF);
             Assert.NotNull(ospfDependencies);
 
             // Conflict checking
-            var ospfConflicts = protocolService.GetProtocolConflicts(ProtocolType.OSPF);
+            var ospfConflicts = protocolService.GetProtocolConflicts(NetworkProtocolType.OSPF);
             Assert.NotNull(ospfConflicts);
 
             // Coexistence checking
-            var canCoexist = protocolService.CanProtocolsCoexist(ProtocolType.OSPF, ProtocolType.BGP);
+            var canCoexist = protocolService.CanProtocolsCoexist(NetworkProtocolType.OSPF, NetworkProtocolType.BGP);
             Assert.True(canCoexist); // OSPF and BGP should coexist
 
             // Vendor support
@@ -133,9 +134,9 @@ namespace NetForge.Simulation.Protocols.Tests
             }
 
             // Act & Assert - Lifecycle operations should not throw
-            var startResult = await protocolService.StartProtocol(ProtocolType.OSPF);
-            var stopResult = await protocolService.StopProtocol(ProtocolType.OSPF);
-            var restartResult = await protocolService.RestartProtocol(ProtocolType.OSPF);
+            var startResult = await protocolService.StartProtocol(NetworkProtocolType.OSPF);
+            var stopResult = await protocolService.StopProtocol(NetworkProtocolType.OSPF);
+            var restartResult = await protocolService.RestartProtocol(NetworkProtocolType.OSPF);
 
             // Operations should complete (may return false if protocol not available, but should not throw)
             Assert.True(true); // If we reach here, operations completed successfully
@@ -161,8 +162,8 @@ namespace NetForge.Simulation.Protocols.Tests
             }
 
             // Act & Assert - Configuration operations should not throw
-            var isValid = protocolService.ValidateProtocolConfiguration(ProtocolType.OSPF, testConfig);
-            var applyResult = await protocolService.ApplyProtocolConfiguration(ProtocolType.OSPF, testConfig);
+            var isValid = protocolService.ValidateProtocolConfiguration(NetworkProtocolType.OSPF, testConfig);
+            var applyResult = await protocolService.ApplyProtocolConfiguration(NetworkProtocolType.OSPF, testConfig);
 
             // Operations should complete without exceptions
             Assert.True(true);
@@ -203,19 +204,19 @@ namespace NetForge.Simulation.Protocols.Tests
             var protocolService = basicProtocolService as IProtocolService;
 
             // Act & Assert - Operations with invalid data should not throw
-            var invalidProtocol = basicProtocolService.GetProtocol((ProtocolType)9999);
-            var invalidState = basicProtocolService.GetProtocolState<IProtocolState>((ProtocolType)9999);
+            var invalidProtocol = basicProtocolService.GetProtocol((NetworkProtocolType)9999);
+            var invalidState = basicProtocolService.GetProtocolState<IProtocolState>((NetworkProtocolType)9999);
 
             Assert.Null(invalidProtocol);
             Assert.Null(invalidState);
 
             if (protocolService != null)
             {
-                var invalidMetrics = protocolService.GetProtocolMetrics((ProtocolType)9999);
+                var invalidMetrics = protocolService.GetProtocolMetrics((NetworkProtocolType)9999);
                 Assert.Null(invalidMetrics);
 
                 // Reset operations should not throw for invalid protocols
-                protocolService.ResetProtocolMetrics((ProtocolType)9999);
+                protocolService.ResetProtocolMetrics((NetworkProtocolType)9999);
                 protocolService.ResetAllMetrics();
             }
         }

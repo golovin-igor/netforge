@@ -1,4 +1,5 @@
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Services;
 
@@ -50,7 +51,7 @@ namespace NetForge.Simulation.Protocols.Tests
             Assert.True(pluginList.Count > 0, "Should find at least one protocol plugin");
 
             // Should find plugins for some expected protocol types (test what actually exists)
-            var foundProtocolTypes = pluginList.Select(p => p.NetworkProtocolType).Distinct().ToList();
+            var foundProtocolTypes = pluginList.Select(p => p.ProtocolType).Distinct().ToList();
 
             // Log what we found for debugging
             Console.WriteLine($"Found {pluginList.Count} plugins for {foundProtocolTypes.Count} protocol types");
@@ -127,7 +128,7 @@ namespace NetForge.Simulation.Protocols.Tests
                 for (int j = 0; j < firstResult.Count; j++)
                 {
                     Assert.Equal(firstResult[j].PluginName, result[j].PluginName);
-                    Assert.Equal(firstResult[j].NetworkProtocolType, result[j].NetworkProtocolType);
+                    Assert.Equal(firstResult[j].ProtocolType, result[j].ProtocolType);
                 }
             }
         }
@@ -153,7 +154,7 @@ namespace NetForge.Simulation.Protocols.Tests
         public void IsProtocolAvailable_ShouldHandleAllProtocolTypes()
         {
             // Arrange - Test all protocol types in the enum
-            var allProtocolTypes = Enum.GetValues<ProtocolType>();
+            var allProtocolTypes = Enum.GetValues<NetworkProtocolType>();
 
             foreach (var protocolType in allProtocolTypes)
             {
@@ -181,7 +182,7 @@ namespace NetForge.Simulation.Protocols.Tests
                 Assert.True(plugin.IsValid());
                 Assert.NotNull(plugin.GetSupportedVendors());
 
-                Console.WriteLine($"Plugin: {plugin.PluginName} (Type: {plugin.NetworkProtocolType}, Version: {plugin.Version ?? "N/A"})");
+                Console.WriteLine($"Plugin: {plugin.PluginName} (Type: {plugin.ProtocolType}, Version: {plugin.Version ?? "N/A"})");
             }
         }
     }

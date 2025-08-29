@@ -55,7 +55,7 @@ namespace NetForge.Simulation.Protocols.Tests
             var protocol = new CdpProtocol();
 
             // Assert
-            Assert.Equal(ProtocolType.CDP, protocol.Type);
+            Assert.Equal(NetworkProtocolType.CDP, protocol.Type);
             Assert.Equal("Cisco Discovery Protocol", protocol.Name);
             Assert.NotNull(protocol.GetState());
         }
