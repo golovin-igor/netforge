@@ -23,7 +23,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// <summary>
         /// The type of protocol this plugin provides
         /// </summary>
-        public abstract ProtocolType ProtocolType { get; }
+        public abstract NetworkProtocolType ProtocolType { get; }
 
         /// <summary>
         /// Priority for this plugin (higher values loaded first)
@@ -67,7 +67,7 @@ namespace NetForge.Simulation.Protocols.Common
             try
             {
                 var protocol = CreateProtocol();
-                return protocol != null && protocol.Type == ProtocolType;
+                return protocol.Type == ProtocolType;
             }
             catch
             {

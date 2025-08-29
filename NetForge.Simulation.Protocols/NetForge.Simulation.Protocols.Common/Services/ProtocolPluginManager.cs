@@ -1,5 +1,5 @@
 using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Protocols.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Protocols.Common.Services
 {
@@ -40,9 +40,9 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <summary>
         /// Get plugins for a specific protocol type
         /// </summary>
-        /// <param name="protocolType">Protocol type</param>
+        /// <param name="networkProtocolType">Protocol type</param>
         /// <returns>Enumerable of plugins supporting the protocol type</returns>
-        IEnumerable<IProtocolPlugin> GetPluginsForProtocol(ProtocolType protocolType);
+        IEnumerable<IProtocolPlugin> GetPluginsForProtocol(NetworkProtocolType networkProtocolType);
 
         /// <summary>
         /// Get plugins that support a specific vendor
@@ -228,14 +228,14 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <summary>
         /// Get plugins for a specific protocol type
         /// </summary>
-        /// <param name="protocolType">Protocol type</param>
+        /// <param name="networkProtocolType">Protocol type</param>
         /// <returns>Enumerable of plugins supporting the protocol type</returns>
-        public IEnumerable<IProtocolPlugin> GetPluginsForProtocol(ProtocolType protocolType)
+        public IEnumerable<IProtocolPlugin> GetPluginsForProtocol(NetworkProtocolType networkProtocolType)
         {
             lock (_lockObject)
             {
                 return _plugins.Values
-                    .Where(p => p.ProtocolType == protocolType && IsPluginEnabled(p.PluginName))
+                    .Where(p => p.NetworkProtocolType == networkProtocolType && IsPluginEnabled(p.PluginName))
                     .OrderByDescending(p => p.Priority)
                     .ToList();
             }
@@ -342,7 +342,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
             {
                 ["PluginName"] = plugin.PluginName,
                 ["Version"] = plugin.Version,
-                ["ProtocolType"] = plugin.ProtocolType.ToString(),
+                ["ProtocolType"] = plugin.NetworkProtocolType.ToString(),
                 ["Priority"] = plugin.Priority,
                 ["SupportedVendors"] = plugin.GetSupportedVendors().ToList(),
                 ["IsEnabled"] = IsPluginEnabled(pluginName),
@@ -433,7 +433,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 var disabledCount = _plugins.Count - enabledCount;
 
                 var protocolTypes = _plugins.Values
-                    .Select(p => p.ProtocolType)
+                    .Select(p => p.NetworkProtocolType)
                     .Distinct()
                     .Count();
 
@@ -450,7 +450,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                     ["ProtocolTypes"] = protocolTypes,
                     ["SupportedVendors"] = vendors,
                     ["PluginsByProtocol"] = _plugins.Values
-                        .GroupBy(p => p.ProtocolType)
+                        .GroupBy(p => p.NetworkProtocolType)
                         .ToDictionary(g => g.Key.ToString(), g => g.Count())
                 };
             }
@@ -475,7 +475,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                         invalidPlugins++;
                 }
 
-                var healthStatus = invalidPlugins == 0 ? "Healthy" : 
+                var healthStatus = invalidPlugins == 0 ? "Healthy" :
                                   validPlugins > invalidPlugins ? "Warning" : "Critical";
 
                 return new Dictionary<string, object>

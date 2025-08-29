@@ -1,9 +1,11 @@
+using System.Net.Sockets;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.HTTP
 {
@@ -16,7 +18,7 @@ namespace NetForge.Simulation.Protocols.HTTP
         private HttpServer? _httpServer;
         private readonly HttpSessionManager _sessionManager = new();
 
-        public override ProtocolType Type => ProtocolType.HTTP;
+        public override NetworkProtocolType Type => NetworkProtocolType.HTTP;
         public override string Name => "HTTP Protocol";
         public override string Version => "1.1.0";
         public override int DefaultPort => 80;
@@ -35,7 +37,7 @@ namespace NetForge.Simulation.Protocols.HTTP
             }
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var httpState = (HttpState)_state;
             var httpConfig = GetHttpConfig();
@@ -49,7 +51,7 @@ namespace NetForge.Simulation.Protocols.HTTP
 
             // Update active sessions and statistics
             await _sessionManager.UpdateSessions();
-            
+
             httpState.ActiveSessions = _sessionManager.GetActiveSessions().Count;
             httpState.TotalRequests = _sessionManager.GetTotalRequestCount();
             httpState.LastActivity = _sessionManager.GetLastActivity();
@@ -161,7 +163,7 @@ namespace NetForge.Simulation.Protocols.HTTP
         <h1>{_device.Name} - Network Device Management</h1>
         <p>Vendor: {_device.Vendor}</p>
     </div>
-    
+
     <div class='section'>
         <h2>Quick Links</h2>
         <ul>
@@ -171,7 +173,7 @@ namespace NetForge.Simulation.Protocols.HTTP
             <li><a href='/api/device/info'>Device Info (JSON)</a></li>
         </ul>
     </div>
-    
+
     <div class='section'>
         <h2>Device Status</h2>
         <p>Management Interface: HTTP on port {GetHttpConfig().Port}</p>
@@ -216,10 +218,10 @@ namespace NetForge.Simulation.Protocols.HTTP
         private async Task<HttpResponseContent> GenerateProtocolsPage()
         {
             var html = "<h1>Protocol Status</h1><table><tr><th>Protocol</th><th>Status</th><th>Last Update</th></tr>";
-            
+
             // Add basic protocol status information
             html += $"<tr><td>HTTP</td><td>Active</td><td>{DateTime.Now:yyyy-MM-dd HH:mm:ss}</td></tr>";
-            
+
             html += "</table>";
             return new HttpResponseContent(200, "OK", html, "text/html");
         }
@@ -297,14 +299,14 @@ namespace NetForge.Simulation.Protocols.HTTP
             return false;
         }
 
-        protected override async Task ManageActiveSessions(NetworkDevice device)
+        protected override async Task ManageActiveSessions(INetworkDevice device)
         {
             await _sessionManager.UpdateSessions();
             var httpState = (HttpState)_state;
             httpState.ActiveSessions = _sessionManager.GetActiveSessions().Count;
         }
 
-        protected override async Task ProcessConnectionRequests(NetworkDevice device)
+        protected override async Task ProcessConnectionRequests(INetworkDevice device)
         {
             // Connection processing is handled by the HttpServer
             var httpState = (HttpState)_state;
@@ -330,7 +332,7 @@ namespace NetForge.Simulation.Protocols.HTTP
     public class HttpProtocolPlugin : ProtocolPluginBase
     {
         public override string PluginName => "HTTP Protocol Plugin";
-        public override ProtocolType ProtocolType => ProtocolType.HTTP;
+        public override NetworkProtocolType ProtocolType => NetworkProtocolType.HTTP;
         public override int Priority => 900; // Lower priority than core management protocols
 
         public override IDeviceProtocol CreateProtocol() => new HttpProtocol();

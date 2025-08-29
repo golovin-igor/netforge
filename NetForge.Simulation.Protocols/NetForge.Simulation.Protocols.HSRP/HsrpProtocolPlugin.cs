@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.HSRP
 {
@@ -13,7 +14,7 @@ namespace NetForge.Simulation.Protocols.HSRP
     public class HsrpProtocolPlugin : ProtocolPluginBase
     {
         public override string PluginName => "HSRP Protocol Plugin";
-        public override ProtocolType ProtocolType => ProtocolType.HSRP;
+        public override NetworkProtocolType ProtocolType => NetworkProtocolType.HSRP;
         public override int Priority => 150; // Medium-high priority for redundancy protocol
 
         public override IDeviceProtocol CreateProtocol()

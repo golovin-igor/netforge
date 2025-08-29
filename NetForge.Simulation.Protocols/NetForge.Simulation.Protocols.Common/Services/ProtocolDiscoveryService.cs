@@ -1,5 +1,7 @@
 using System.Reflection;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Interfaces;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Protocols.Common.Services
 {
@@ -44,7 +46,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
 
             // Always include Telnet for management (when available)
             var telnetPlugin = DiscoverProtocolPlugins()
-                .FirstOrDefault(p => p.ProtocolType == ProtocolType.TELNET);
+                .FirstOrDefault(p => p.NetworkProtocolType == NetworkProtocolType.TELNET);
             if (telnetPlugin != null)
             {
                 try
@@ -60,7 +62,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
             // Add vendor-specific protocols (excluding Telnet which is already added)
             foreach (var plugin in DiscoverProtocolPlugins())
             {
-                if (plugin.ProtocolType != ProtocolType.TELNET && plugin.SupportsVendor(vendorName))
+                if (plugin.NetworkProtocolType != NetworkProtocolType.TELNET && plugin.SupportsVendor(vendorName))
                 {
                     try
                     {
@@ -80,13 +82,13 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <summary>
         /// Get a specific protocol instance by type and vendor
         /// </summary>
-        /// <param name="protocolType">Protocol type to create</param>
+        /// <param name="networkProtocolType">Protocol type to create</param>
         /// <param name="vendorName">Vendor name (default: Generic)</param>
         /// <returns>Protocol instance or null if not available</returns>
-        public IDeviceProtocol GetProtocol(ProtocolType protocolType, string vendorName = "Generic")
+        public IDeviceProtocol GetProtocol(NetworkProtocolType networkProtocolType, string vendorName = "Generic")
         {
             var plugin = DiscoverProtocolPlugins()
-                .Where(p => p.ProtocolType == protocolType && p.SupportsVendor(vendorName))
+                .Where(p => p.NetworkProtocolType == networkProtocolType && p.SupportsVendor(vendorName))
                 .OrderByDescending(p => p.Priority)
                 .FirstOrDefault();
 
@@ -96,12 +98,12 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <summary>
         /// Get all plugins for a specific protocol type
         /// </summary>
-        /// <param name="protocolType">Protocol type</param>
+        /// <param name="networkProtocolType">Protocol type</param>
         /// <returns>Enumerable of plugins</returns>
-        public IEnumerable<IProtocolPlugin> GetPluginsForProtocol(ProtocolType protocolType)
+        public IEnumerable<IProtocolPlugin> GetPluginsForProtocol(NetworkProtocolType networkProtocolType)
         {
             return DiscoverProtocolPlugins()
-                .Where(p => p.ProtocolType == protocolType)
+                .Where(p => p.NetworkProtocolType == networkProtocolType)
                 .OrderByDescending(p => p.Priority);
         }
 
@@ -120,11 +122,11 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <summary>
         /// Check if a specific protocol type is available
         /// </summary>
-        /// <param name="protocolType">Protocol type to check</param>
+        /// <param name="networkProtocolType">Protocol type to check</param>
         /// <returns>True if available, false otherwise</returns>
-        public bool IsProtocolAvailable(ProtocolType protocolType)
+        public bool IsProtocolAvailable(NetworkProtocolType networkProtocolType)
         {
-            return DiscoverProtocolPlugins().Any(p => p.ProtocolType == protocolType);
+            return DiscoverProtocolPlugins().Any(p => p.NetworkProtocolType == networkProtocolType);
         }
 
         /// <summary>
@@ -150,9 +152,9 @@ namespace NetForge.Simulation.Protocols.Common.Services
             return new Dictionary<string, object>
             {
                 ["TotalPlugins"] = plugins.Count,
-                ["ProtocolTypes"] = plugins.Select(p => p.ProtocolType).Distinct().Count(),
+                ["ProtocolTypes"] = plugins.Select(p => p.NetworkProtocolType).Distinct().Count(),
                 ["SupportedVendors"] = GetSupportedVendors().Count(),
-                ["PluginsByType"] = plugins.GroupBy(p => p.ProtocolType)
+                ["PluginsByType"] = plugins.GroupBy(p => p.NetworkProtocolType)
                     .ToDictionary(g => g.Key.ToString(), g => g.Count()),
                 ["PluginsByVendor"] = plugins.SelectMany(p => p.GetSupportedVendors())
                     .GroupBy(v => v)

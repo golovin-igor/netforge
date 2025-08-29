@@ -1025,7 +1025,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("SSH server status:");
 
             // Get SSH protocol and state
-            IDeviceProtocol sshProtocol = protocolService.GetProtocol(ProtocolType.SSH);
+            IDeviceProtocol sshProtocol = protocolService.GetProtocol(NetworkProtocolType.SSH);
             if (sshProtocol == null)
             {
                 output.AppendLine("SSH server: Not configured");
@@ -1091,7 +1091,7 @@ namespace NetForge.Simulation.CliHandlers.Cisco.Show
             output.AppendLine("Telnet server status:");
 
             // Get Telnet protocol and state
-            IDeviceProtocol telnetProtocol = protocolService.GetProtocol(ProtocolType.TELNET);
+            IDeviceProtocol telnetProtocol = protocolService.GetProtocol(NetworkProtocolType.TELNET);
             if (telnetProtocol == null)
             {
                 output.AppendLine("Telnet server: Not configured");

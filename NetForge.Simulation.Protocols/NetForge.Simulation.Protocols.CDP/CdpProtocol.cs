@@ -15,7 +15,7 @@ namespace NetForge.Simulation.Protocols.CDP
     /// </summary>
     public class CdpProtocol : BaseProtocol
     {
-        public override ProtocolType Type => ProtocolType.CDP;
+        public override NetworkProtocolType Type => NetworkProtocolType.CDP;
         public override string Name => "Cisco Discovery Protocol";
         public override string Version => "2.0.0";
 

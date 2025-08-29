@@ -9,6 +9,7 @@ using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Common.Security;
 using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.DataTypes.Cli;
+using NetForge.Simulation.Protocols.Common.Events;
 
 namespace NetForge.Simulation.Topology.Devices
 {
@@ -300,7 +301,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = OspfConfig == null;
             OspfConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.OSPF,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.OSPF,
                 wasNull ? "OSPF configuration initialized" : "OSPF configuration updated"));
         }
 
@@ -308,7 +309,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = BgpConfig == null;
             BgpConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.BGP,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.BGP,
                 wasNull ? "BGP configuration initialized" : "BGP configuration updated"));
         }
 
@@ -316,7 +317,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = RipConfig == null;
             RipConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.RIP,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.RIP,
                 wasNull ? "RIP configuration initialized" : "RIP configuration updated"));
         }
 
@@ -324,7 +325,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = EigrpConfig == null;
             EigrpConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.EIGRP,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.EIGRP,
                 wasNull ? "EIGRP configuration initialized" : "EIGRP configuration updated"));
         }
 
@@ -332,7 +333,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             // StpConfig is rarely null due to default initialization, but check for substantive changes if needed.
             StpConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.STP, "STP configuration updated"));
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.STP, "STP configuration updated"));
         }
 
 
@@ -341,7 +342,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = IgrpConfig == null;
             IgrpConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.IGRP,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.IGRP,
                 wasNull ? "IGRP configuration initialized" : "IGRP configuration updated"));
         }
 
@@ -349,7 +350,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = VrrpConfig == null;
             VrrpConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.VRRP,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.VRRP,
                 wasNull ? "VRRP configuration initialized" : "VRRP configuration updated"));
         }
 
@@ -357,7 +358,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = HsrpConfig == null;
             HsrpConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.HSRP,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.HSRP,
                 wasNull ? "HSRP configuration initialized" : "HSRP configuration updated"));
         }
 
@@ -365,7 +366,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = CdpConfig == null;
             CdpConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.CDP,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.CDP,
                 wasNull ? "CDP configuration initialized" : "CDP configuration updated"));
         }
 
@@ -373,7 +374,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = LldpConfig == null;
             LldpConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.LLDP,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.LLDP,
                 wasNull ? "LLDP configuration initialized" : "LLDP configuration updated"));
         }
 
@@ -382,7 +383,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = TelnetConfig == null;
             TelnetConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.TELNET,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.TELNET,
                 wasNull ? "Telnet configuration initialized" : "Telnet configuration updated"));
         }
 
@@ -391,7 +392,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = SshConfig == null;
             SshConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.SSH,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.SSH,
                 wasNull ? "SSH configuration initialized" : "SSH configuration updated"));
         }
 
@@ -400,7 +401,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = SnmpConfig == null;
             SnmpConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.SNMP,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.SNMP,
                 wasNull ? "SNMP configuration initialized" : "SNMP configuration updated"));
         }
 
@@ -409,7 +410,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             bool wasNull = HttpConfig == null;
             HttpConfig = config;
-            ParentNetwork?.EventBus?.PublishAsync(new Simulation.Common.Events.ProtocolConfigChangedEventArgs(Name, ProtocolType.HTTP,
+            ParentNetwork?.EventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(Name, NetworkProtocolType.HTTP,
                 wasNull ? "HTTP configuration initialized" : "HTTP configuration updated"));
         }
 

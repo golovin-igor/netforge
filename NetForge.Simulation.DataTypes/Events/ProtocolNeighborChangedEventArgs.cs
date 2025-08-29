@@ -16,7 +16,7 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// <summary>
         /// The type of protocol reporting the neighbor change
         /// </summary>
-        public ProtocolType ProtocolType { get; }
+        public NetworkProtocolType NetworkProtocolType { get; }
 
         /// <summary>
         /// The name of the protocol reporting the neighbor change
@@ -67,21 +67,21 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// Create protocol neighbor changed event
         /// </summary>
         /// <param name="deviceName">Name of the local device</param>
-        /// <param name="protocolType">Type of protocol</param>
+        /// <param name="networkProtocolType">Type of protocol</param>
         /// <param name="protocolName">Name of protocol</param>
         /// <param name="neighborId">Neighbor identifier</param>
         /// <param name="changeType">Type of change</param>
         /// <param name="interfaceName">Interface name</param>
         public ProtocolNeighborChangedEventArgs(
             string deviceName,
-            ProtocolType protocolType,
+            NetworkProtocolType networkProtocolType,
             string protocolName,
             string neighborId,
             NeighborChangeType changeType,
             string interfaceName)
         {
             DeviceName = deviceName;
-            ProtocolType = protocolType;
+            NetworkProtocolType = networkProtocolType;
             ProtocolName = protocolName;
             NeighborId = neighborId;
             ChangeType = changeType;

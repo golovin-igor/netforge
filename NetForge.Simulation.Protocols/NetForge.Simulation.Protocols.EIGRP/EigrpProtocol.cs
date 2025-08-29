@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.EIGRP
 {
@@ -20,7 +22,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
     /// </summary>
     public class EigrpProtocol : BaseProtocol, IDeviceProtocol
     {
-        public override ProtocolType Type => ProtocolType.EIGRP;
+        public override NetworkProtocolType Type => NetworkProtocolType.EIGRP;
         public override string Name => "Enhanced Interior Gateway Routing Protocol";
 
         protected override BaseProtocolState CreateInitialState()
@@ -87,7 +89,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             device.AddLogEntry("EIGRP: DUAL algorithm completed");
         }
 
-        private async Task SendHelloPackets(NetworkDevice device, EigrpConfig config, EigrpState state)
+        private async Task SendHelloPackets(INetworkDevice device, EigrpConfig config, EigrpState state)
         {
             var now = DateTime.Now;
 
@@ -111,7 +113,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             }
         }
 
-        private async Task SendHelloPacket(NetworkDevice device, string interfaceName, EigrpConfig config, EigrpState state)
+        private async Task SendHelloPacket(INetworkDevice device, string interfaceName, EigrpConfig config, EigrpState state)
         {
             var helloPacket = new EigrpPacket
             {
@@ -132,7 +134,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             await SimulatePacketTransmission(device, interfaceName, helloPacket);
         }
 
-        private async Task DiscoverEigrpNeighbors(NetworkDevice device, EigrpConfig config, EigrpState state)
+        private async Task DiscoverEigrpNeighbors(INetworkDevice device, EigrpConfig config, EigrpState state)
         {
             foreach (var interfaceName in device.GetAllInterfaces().Keys)
             {
@@ -178,7 +180,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             }
         }
 
-        private async Task UpdateNeighborStateMachine(EigrpNeighbor neighbor, NetworkDevice device, NetworkDevice neighborDevice, EigrpState state)
+        private async Task UpdateNeighborStateMachine(EigrpNeighbor neighbor, INetworkDevice device, INetworkDevice neighborDevice, EigrpState state)
         {
             var previousState = neighbor.State;
 
@@ -208,7 +210,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             }
         }
 
-        private async Task ExchangeTopologyWithNeighbor(NetworkDevice device, EigrpNeighbor neighbor, EigrpState state)
+        private async Task ExchangeTopologyWithNeighbor(INetworkDevice device, EigrpNeighbor neighbor, EigrpState state)
         {
             device.AddLogEntry($"EIGRP: Exchanging topology with neighbor {neighbor.RouterId}");
 
@@ -241,7 +243,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             await SimulatePacketTransmission(device, neighbor.InterfaceName, updatePacket);
         }
 
-        private async Task ProcessReceivedPackets(NetworkDevice device, EigrpState state)
+        private async Task ProcessReceivedPackets(INetworkDevice device, EigrpState state)
         {
             // Simulate processing received EIGRP packets
             // In a real implementation, this would process incoming network packets
@@ -250,7 +252,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             await ProcessTopologyUpdates(device, state);
         }
 
-        private async Task ProcessTopologyUpdates(NetworkDevice device, EigrpState state)
+        private async Task ProcessTopologyUpdates(INetworkDevice device, EigrpState state)
         {
             var config = GetEigrpConfig();
 
@@ -302,13 +304,13 @@ namespace NetForge.Simulation.Protocols.EIGRP
             await ProcessLearnedRoutes(device, state);
         }
 
-        private async Task ProcessLearnedRoutes(NetworkDevice device, EigrpState state)
+        private async Task ProcessLearnedRoutes(INetworkDevice device, EigrpState state)
         {
             // Simulate learning routes from EIGRP neighbors
             foreach (var neighbor in state.Neighbors.Values.Where(n => n.State == EigrpNeighborState.Up))
             {
                 // Find connected device by checking all interfaces
-                NetworkDevice connectedDevice = null;
+                INetworkDevice connectedDevice = null;
                 foreach (var interfaceName in device.GetAllInterfaces().Keys)
                 {
                     var connected = device.GetConnectedDevice(interfaceName);
@@ -352,7 +354,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             }
         }
 
-        private async Task RunDualAlgorithm(NetworkDevice device, EigrpState state)
+        private async Task RunDualAlgorithm(INetworkDevice device, EigrpState state)
         {
             // DUAL (Diffusing Update Algorithm) implementation
             device.AddLogEntry("EIGRP: Running DUAL algorithm...");
@@ -414,7 +416,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             }
         }
 
-        private async Task InstallEigrpRoutes(NetworkDevice device, EigrpState state)
+        private async Task InstallEigrpRoutes(INetworkDevice device, EigrpState state)
         {
             foreach (var route in state.CalculatedRoutes)
             {
@@ -431,7 +433,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             device.AddLogEntry($"EIGRP: Installed {state.CalculatedRoutes.Count} routes");
         }
 
-        private async Task HandleNeighborTimeouts(NetworkDevice device, EigrpState state)
+        private async Task HandleNeighborTimeouts(INetworkDevice device, EigrpState state)
         {
             var staleNeighbors = state.GetStaleNeighbors(state.AsNumber == 1 ? 15 : 180); // Use hold time
 
@@ -490,7 +492,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             return true;
         }
 
-        private new bool IsNeighborReachable(NetworkDevice device, string interfaceName, NetworkDevice neighbor)
+        private new bool IsNeighborReachable(INetworkDevice device, string interfaceName, INetworkDevice neighbor)
         {
             var connection = device.GetPhysicalConnectionMetrics(interfaceName);
             return connection?.IsSuitableForRouting ?? false;
@@ -514,7 +516,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             return string.Join(".", networkParts);
         }
 
-        private long CalculateInterfaceMetric(InterfaceConfig interfaceConfig, EigrpConfig config)
+        private long CalculateInterfaceMetric(IInterfaceConfig interfaceConfig, EigrpConfig config)
         {
             var metric = new EigrpMetric
             {
@@ -574,7 +576,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
                 return 20000; // Default delay
         }
 
-        private List<EigrpRoute> GetNeighborRoutes(NetworkDevice neighbor)
+        private List<EigrpRoute> GetNeighborRoutes(INetworkDevice neighbor)
         {
             var routes = new List<EigrpRoute>();
 
@@ -612,7 +614,7 @@ namespace NetForge.Simulation.Protocols.EIGRP
             return routes;
         }
 
-        private async Task SimulatePacketTransmission(NetworkDevice device, string interfaceName, EigrpPacket packet)
+        private async Task SimulatePacketTransmission(INetworkDevice device, string interfaceName, EigrpPacket packet)
         {
             // Simulate packet transmission - in real implementation this would send actual network packets
             await Task.Delay(1); // Simulate network delay

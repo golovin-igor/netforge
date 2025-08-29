@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
-using NetForge.Simulation.Protocols.Common.Interfaces;
 
 namespace NetForge.Simulation.Protocols.HSRP
 {
@@ -20,7 +22,7 @@ namespace NetForge.Simulation.Protocols.HSRP
     /// </summary>
     public class HsrpProtocol : BaseProtocol, IDeviceProtocol
     {
-        public override ProtocolType Type => ProtocolType.HSRP;
+        public override NetworkProtocolType Type => NetworkProtocolType.HSRP;
         public override string Name => "Hot Standby Router Protocol";
 
         protected override BaseProtocolState CreateInitialState()
@@ -63,7 +65,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             _device.AddLogEntry($"HSRP: Initialized with {hsrpConfig.Groups.Count} groups on router {hsrpState.RouterId}");
         }
 
-        protected override async Task UpdateNeighbors(NetworkDevice device)
+        protected override async Task UpdateNeighbors(INetworkDevice device)
         {
             var hsrpConfig = GetHsrpConfig();
             var hsrpState = (HsrpState)_state;
@@ -86,7 +88,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             await UpdateGroupTimers(device, hsrpState);
         }
 
-        protected override async Task RunProtocolCalculation(NetworkDevice device)
+        protected override async Task RunProtocolCalculation(INetworkDevice device)
         {
             var hsrpState = (HsrpState)_state;
 
@@ -103,7 +105,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             device.AddLogEntry("HSRP: State machine calculation completed");
         }
 
-        private async Task SendHelloPackets(NetworkDevice device, HsrpConfig config, HsrpState state)
+        private async Task SendHelloPackets(INetworkDevice device, HsrpConfig config, HsrpState state)
         {
             var now = DateTime.Now;
 
@@ -126,7 +128,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             }
         }
 
-        private async Task SendHelloPacket(NetworkDevice device, HsrpGroupState groupState, HsrpState state)
+        private async Task SendHelloPacket(INetworkDevice device, HsrpGroupState groupState, HsrpState state)
         {
             var helloPacket = new HsrpHelloPacket
             {
@@ -158,7 +160,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             groupState.Statistics.HellosSent++;
         }
 
-        private async Task ProcessReceivedHellos(NetworkDevice device, HsrpState state)
+        private async Task ProcessReceivedHellos(INetworkDevice device, HsrpState state)
         {
             // Simulate receiving HSRP Hello packets from connected routers
             foreach (var groupId in state.Groups.Keys)
@@ -185,8 +187,8 @@ namespace NetForge.Simulation.Protocols.HSRP
             }
         }
 
-        private async Task ProcessNeighborHello(NetworkDevice device, HsrpGroupState groupState,
-            NetworkDevice neighborDevice, string neighborInterface, HsrpState state)
+        private async Task ProcessNeighborHello(INetworkDevice device, HsrpGroupState groupState,
+            INetworkDevice neighborDevice, string neighborInterface, HsrpState state)
         {
             var neighborHsrpConfig = neighborDevice.GetHsrpConfiguration();
             var neighborGroup = neighborHsrpConfig.Groups[groupState.GroupId];
@@ -210,7 +212,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             await ProcessHelloPacket(device, receivedHello, groupState, state);
         }
 
-        private async Task ProcessHelloPacket(NetworkDevice device, HsrpHelloPacket packet, HsrpGroupState groupState, HsrpState state)
+        private async Task ProcessHelloPacket(INetworkDevice device, HsrpHelloPacket packet, HsrpGroupState groupState, HsrpState state)
         {
             groupState.LastHelloReceived = DateTime.Now;
             groupState.Statistics.HellosReceived++;
@@ -259,7 +261,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             device.AddLogEntry($"HSRP: Processed Hello from {packet.SourceRouter} for group {packet.GroupId} (priority: {packet.Priority}, state: {packet.State})");
         }
 
-        private async Task UpdateGroupTimers(NetworkDevice device, HsrpState state)
+        private async Task UpdateGroupTimers(INetworkDevice device, HsrpState state)
         {
             foreach (var kvp in state.Groups)
             {
@@ -288,7 +290,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             }
         }
 
-        private async Task ProcessGroupStateMachine(NetworkDevice device, HsrpGroupState groupState)
+        private async Task ProcessGroupStateMachine(INetworkDevice device, HsrpGroupState groupState)
         {
             var stateMachine = new HsrpStateMachine(groupState);
 
@@ -354,7 +356,7 @@ namespace NetForge.Simulation.Protocols.HSRP
             };
         }
 
-        private async Task SimulatePacketTransmission(NetworkDevice device, string interfaceName, HsrpHelloPacket packet)
+        private async Task SimulatePacketTransmission(INetworkDevice device, string interfaceName, HsrpHelloPacket packet)
         {
             // Simulate packet transmission - in real implementation this would send actual HSRP packets
             await Task.Delay(1); // Simulate network delay

@@ -19,7 +19,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         private readonly INetworkDevice _device = device ?? throw new ArgumentNullException(nameof(device));
         private readonly ProtocolDependencyManager _dependencyManager = new();
         private readonly ProtocolConfigurationManager _configurationManager = new();
-        private readonly Dictionary<ProtocolType, IProtocolMetrics> _metricsCache = new();
+        private readonly Dictionary<NetworkProtocolType, IProtocolMetrics> _metricsCache = new();
 
         /// <summary>
         /// Get a protocol instance by its type
@@ -36,7 +36,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to retrieve</param>
         /// <returns>Protocol instance or null if not available</returns>
-        public IDeviceProtocol GetProtocol(ProtocolType type)
+        public IDeviceProtocol GetProtocol(NetworkProtocolType type)
         {
             return GetAllProtocols().FirstOrDefault(p => p.Type == type);
         }
@@ -47,7 +47,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <typeparam name="TState">The specific state type</typeparam>
         /// <param name="type">Protocol type</param>
         /// <returns>Typed protocol state or null if not available</returns>
-        public TState GetProtocolState<TState>(ProtocolType type) where TState : class
+        public TState GetProtocolState<TState>(NetworkProtocolType type) where TState : class
         {
             var protocol = GetProtocol(type);
             return protocol?.GetState() as TState;
@@ -70,7 +70,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to check</param>
         /// <returns>True if active, false otherwise</returns>
-        public bool IsProtocolActive(ProtocolType type)
+        public bool IsProtocolActive(NetworkProtocolType type)
         {
             var protocol = GetProtocol(type);
             return protocol?.GetState()?.IsActive ?? false;
@@ -81,7 +81,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>Protocol configuration or null if not available</returns>
-        public object GetProtocolConfiguration(ProtocolType type)
+        public object GetProtocolConfiguration(NetworkProtocolType type)
         {
             var protocol = GetProtocol(type);
             return protocol?.GetConfiguration();
@@ -91,7 +91,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// Get all active protocol types on this device
         /// </summary>
         /// <returns>Enumerable of active protocol types</returns>
-        public IEnumerable<ProtocolType> GetActiveProtocolTypes()
+        public IEnumerable<NetworkProtocolType> GetActiveProtocolTypes()
         {
             return GetAllProtocols()
                 .Where(p => p.GetState()?.IsActive ?? false)
@@ -124,7 +124,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to check</param>
         /// <returns>True if registered, false otherwise</returns>
-        public bool IsProtocolRegistered(ProtocolType type)
+        public bool IsProtocolRegistered(NetworkProtocolType type)
         {
             return GetProtocol(type) != null;
         }
@@ -144,7 +144,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>Protocol state or null if not available</returns>
-        public IProtocolState GetProtocolState(ProtocolType type)
+        public IProtocolState GetProtocolState(NetworkProtocolType type)
         {
             var protocol = GetProtocol(type);
             return protocol?.GetState();
@@ -154,7 +154,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// Get states of all active protocols
         /// </summary>
         /// <returns>Dictionary mapping protocol type to state</returns>
-        public Dictionary<ProtocolType, object> GetAllProtocolStates()
+        public Dictionary<NetworkProtocolType, object> GetAllProtocolStates()
         {
             return GetAllProtocols()
                 .Where(p => p.GetState() != null)
@@ -166,7 +166,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to start</param>
         /// <returns>True if successfully started, false otherwise</returns>
-        public async Task<bool> StartProtocol(ProtocolType type)
+        public async Task<bool> StartProtocol(NetworkProtocolType type)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to stop</param>
         /// <returns>True if successfully stopped, false otherwise</returns>
-        public async Task<bool> StopProtocol(ProtocolType type)
+        public async Task<bool> StopProtocol(NetworkProtocolType type)
         {
             try
             {
@@ -210,7 +210,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
                 var dependents = _dependencyManager.GetDependents(type);
                 var activeProtocols = GetActiveProtocolTypes();
                 var conflictingDependents = dependents
-                    .Where(dep => dep.Type == DependencyType.Required && activeProtocols.Contains(dep.RequiredProtocol))
+                    .Where(dep => dep.Type == DependencyType.Required && activeProtocols.Contains(dep.RequiredNetworkProtocol))
                     .ToList();
 
                 if (conflictingDependents.Any())
@@ -233,7 +233,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to restart</param>
         /// <returns>True if successfully restarted, false otherwise</returns>
-        public async Task<bool> RestartProtocol(ProtocolType type)
+        public async Task<bool> RestartProtocol(NetworkProtocolType type)
         {
             var stopResult = await StopProtocol(type);
             if (!stopResult)
@@ -253,7 +253,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <typeparam name="T">Configuration type</typeparam>
         /// <param name="type">Protocol type</param>
         /// <returns>Typed configuration or null if not available</returns>
-        public T GetProtocolConfiguration<T>(ProtocolType type) where T : class
+        public T GetProtocolConfiguration<T>(NetworkProtocolType type) where T : class
         {
             return _configurationManager.GetConfiguration<T>(type);
         }
@@ -264,7 +264,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <param name="type">Protocol type</param>
         /// <param name="configuration">Configuration to apply</param>
         /// <returns>True if successfully applied, false otherwise</returns>
-        public async Task<bool> ApplyProtocolConfiguration(ProtocolType type, object configuration)
+        public async Task<bool> ApplyProtocolConfiguration(NetworkProtocolType type, object configuration)
         {
             try
             {
@@ -296,7 +296,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <param name="type">Protocol type</param>
         /// <param name="configuration">Configuration to validate</param>
         /// <returns>True if valid, false otherwise</returns>
-        public bool ValidateProtocolConfiguration(ProtocolType type, object configuration)
+        public bool ValidateProtocolConfiguration(NetworkProtocolType type, object configuration)
         {
             return _configurationManager.ValidateConfiguration(configuration);
         }
@@ -306,7 +306,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>Enumerable of dependency protocol types</returns>
-        public IEnumerable<ProtocolType> GetProtocolDependencies(ProtocolType type)
+        public IEnumerable<NetworkProtocolType> GetProtocolDependencies(NetworkProtocolType type)
         {
             return _dependencyManager.GetRequiredProtocols(type)
                 .Concat(_dependencyManager.GetOptionalProtocols(type));
@@ -317,7 +317,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>Enumerable of conflicting protocol types</returns>
-        public IEnumerable<ProtocolType> GetProtocolConflicts(ProtocolType type)
+        public IEnumerable<NetworkProtocolType> GetProtocolConflicts(NetworkProtocolType type)
         {
             return _dependencyManager.GetConflictingProtocols(type);
         }
@@ -327,7 +327,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type to validate</param>
         /// <returns>True if all dependencies are satisfied, false otherwise</returns>
-        public bool ValidateProtocolDependencies(ProtocolType type)
+        public bool ValidateProtocolDependencies(NetworkProtocolType type)
         {
             var activeProtocols = GetActiveProtocolTypes();
             var result = _dependencyManager.ValidateProtocolAddition(activeProtocols, type);
@@ -340,7 +340,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// <param name="type1">First protocol type</param>
         /// <param name="type2">Second protocol type</param>
         /// <returns>True if protocols can coexist, false otherwise</returns>
-        public bool CanProtocolsCoexist(ProtocolType type1, ProtocolType type2)
+        public bool CanProtocolsCoexist(NetworkProtocolType type1, NetworkProtocolType type2)
         {
             var conflicts1 = GetProtocolConflicts(type1);
             var conflicts2 = GetProtocolConflicts(type2);
@@ -353,7 +353,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>Protocol metrics or null if not available</returns>
-        public object GetProtocolMetrics(ProtocolType type)
+        public object GetProtocolMetrics(NetworkProtocolType type)
         {
             var protocol = GetProtocol(type);
             return protocol?.GetMetrics();
@@ -363,7 +363,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// Get performance metrics for all protocols
         /// </summary>
         /// <returns>Dictionary mapping protocol type to metrics</returns>
-        public Dictionary<ProtocolType, object> GetAllProtocolMetrics()
+        public Dictionary<NetworkProtocolType, object> GetAllProtocolMetrics()
         {
             return GetAllProtocols()
                 .Where(p => p.GetMetrics() != null)
@@ -374,7 +374,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// Reset metrics for a specific protocol
         /// </summary>
         /// <param name="type">Protocol type</param>
-        public void ResetProtocolMetrics(ProtocolType type)
+        public void ResetProtocolMetrics(NetworkProtocolType type)
         {
             var protocol = GetProtocol(type);
             if (protocol?.GetMetrics() is IProtocolMetrics metrics)
@@ -459,7 +459,7 @@ namespace NetForge.Simulation.Protocols.Common.Services
         /// Get the device this service is associated with
         /// </summary>
         /// <returns>Network device</returns>
-        public NetworkDevice GetDevice()
+        public INetworkDevice GetDevice()
         {
             return _device;
         }

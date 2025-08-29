@@ -22,7 +22,7 @@ namespace NetForge.Simulation.Protocols.VRRP
     /// </summary>
     public class VrrpProtocol : BaseProtocol, IDeviceProtocol
     {
-        public override ProtocolType Type => ProtocolType.VRRP;
+        public override NetworkProtocolType Type => NetworkProtocolType.VRRP;
         public override string Name => "Virtual Router Redundancy Protocol";
 
         protected override BaseProtocolState CreateInitialState()

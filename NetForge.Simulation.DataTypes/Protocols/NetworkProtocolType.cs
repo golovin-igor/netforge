@@ -3,7 +3,7 @@ namespace NetForge.Simulation.DataTypes
     /// <summary>
     /// Enumeration of all supported protocol types in NetForge
     /// </summary>
-    public enum ProtocolType
+    public enum NetworkProtocolType
     {
         OSPF,
         BGP,

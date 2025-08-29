@@ -322,7 +322,7 @@ namespace NetForge.Simulation.Protocols.Common
         /// </summary>
         public virtual IEnumerable<string> SupportedVendors => GetSupportedVendors();
 
-        public virtual ProtocolType Type { get; set; }
+        public virtual NetworkProtocolType Type { get; set; }
 
         /// <summary>
         /// Get the list of vendor names this protocol supports
@@ -369,9 +369,9 @@ namespace NetForge.Simulation.Protocols.Common
         /// Override to specify protocol dependencies
         /// </summary>
         /// <returns>Enumerable of required protocol types</returns>
-        public virtual IEnumerable<ProtocolType> GetDependencies()
+        public virtual IEnumerable<NetworkProtocolType> GetDependencies()
         {
-            return Enumerable.Empty<ProtocolType>();
+            return Enumerable.Empty<NetworkProtocolType>();
         }
 
         /// <summary>
@@ -379,20 +379,20 @@ namespace NetForge.Simulation.Protocols.Common
         /// Override to specify protocol conflicts
         /// </summary>
         /// <returns>Enumerable of conflicting protocol types</returns>
-        public virtual IEnumerable<ProtocolType> GetConflicts()
+        public virtual IEnumerable<NetworkProtocolType> GetConflicts()
         {
-            return Enumerable.Empty<ProtocolType>();
+            return Enumerable.Empty<NetworkProtocolType>();
         }
 
         /// <summary>
         /// Check if this protocol can coexist with another protocol
         /// Default implementation checks conflict list
         /// </summary>
-        /// <param name="otherProtocol">Other protocol type to check</param>
+        /// <param name="otherNetworkProtocol">Other protocol type to check</param>
         /// <returns>True if protocols can coexist, false otherwise</returns>
-        public virtual bool CanCoexistWith(ProtocolType otherProtocol)
+        public virtual bool CanCoexistWith(NetworkProtocolType otherNetworkProtocol)
         {
-            return !GetConflicts().Contains(otherProtocol);
+            return !GetConflicts().Contains(otherNetworkProtocol);
         }
 
         // Performance monitoring

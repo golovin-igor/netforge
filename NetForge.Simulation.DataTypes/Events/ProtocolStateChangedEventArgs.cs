@@ -17,7 +17,7 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// <summary>
         /// The type of protocol that changed state
         /// </summary>
-        public ProtocolType ProtocolType { get; }
+        public NetworkProtocolType NetworkProtocolType { get; }
 
         /// <summary>
         /// The name of the protocol that changed state
@@ -48,17 +48,17 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// Create protocol state changed event
         /// </summary>
         /// <param name="deviceName">Name of the device</param>
-        /// <param name="protocolType">Type of protocol</param>
+        /// <param name="networkProtocolType">Type of protocol</param>
         /// <param name="protocolName">Name of protocol</param>
         /// <param name="changeDetails">Details of the change</param>
         public ProtocolStateChangedEventArgs(
             string deviceName,
-            ProtocolType protocolType,
+            NetworkProtocolType networkProtocolType,
             string protocolName,
             string changeDetails)
         {
             DeviceName = deviceName;
-            ProtocolType = protocolType;
+            NetworkProtocolType = networkProtocolType;
             ProtocolName = protocolName;
             ChangeDetails = changeDetails;
         }
@@ -67,18 +67,18 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// Create protocol state changed event with state data
         /// </summary>
         /// <param name="deviceName">Name of the device</param>
-        /// <param name="protocolType">Type of protocol</param>
+        /// <param name="networkProtocolType">Type of protocol</param>
         /// <param name="protocolName">Name of protocol</param>
         /// <param name="changeDetails">Details of the change</param>
         /// <param name="newStateData">New state data</param>
         /// <param name="previousStateData">Previous state data</param>
         public ProtocolStateChangedEventArgs(
             string deviceName,
-            ProtocolType protocolType,
+            NetworkProtocolType networkProtocolType,
             string protocolName,
             string changeDetails,
             Dictionary<string, object>? newStateData,
-            Dictionary<string, object>? previousStateData = null) : this(deviceName, protocolType, protocolName, changeDetails)
+            Dictionary<string, object>? previousStateData = null) : this(deviceName, networkProtocolType, protocolName, changeDetails)
         {
             NewStateData = newStateData;
             PreviousStateData = previousStateData;
@@ -91,7 +91,7 @@ namespace NetForge.Simulation.Protocols.Common.Events
         public override string ToString()
         {
             var critical = IsCritical ? " [CRITICAL]" : "";
-            return $"{DeviceName}: {ProtocolName} ({ProtocolType}) - {ChangeDetails}{critical}";
+            return $"{DeviceName}: {ProtocolName} ({NetworkProtocolType}) - {ChangeDetails}{critical}";
         }
     }
 }

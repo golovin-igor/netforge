@@ -14,7 +14,7 @@ namespace NetForge.Simulation.Protocols.BGP
     /// </summary>
     public class BgpProtocol : BaseProtocol
     {
-        public override ProtocolType Type => ProtocolType.BGP;
+        public override NetworkProtocolType Type => NetworkProtocolType.BGP;
         public override string Name => "Border Gateway Protocol";
         public override string Version => "4.0.0";
 

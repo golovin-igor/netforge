@@ -12,7 +12,7 @@ namespace NetForge.Simulation.Protocols.BGP
     {
         public override string PluginName => "BGP Protocol Plugin";
         public override string Version => "4.0.0";
-        public override ProtocolType ProtocolType => ProtocolType.BGP;
+        public override NetworkProtocolType NetworkProtocolType => NetworkProtocolType.BGP;
         public override int Priority => 200; // IBGP administrative distance
 
         public override IDeviceProtocol CreateProtocol()
@@ -33,7 +33,7 @@ namespace NetForge.Simulation.Protocols.BGP
                 // Test that we can create a protocol instance
                 var protocol = CreateProtocol();
                 return protocol != null &&
-                       protocol.Type == ProtocolType.BGP &&
+                       protocol.Type == NetworkProtocolType.BGP &&
                        !string.IsNullOrEmpty(protocol.Name) &&
                        protocol.Version.StartsWith("4."); // BGP-4
             }

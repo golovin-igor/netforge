@@ -14,7 +14,7 @@ namespace NetForge.Simulation.Protocols.ARP
     /// </summary>
     public class ArpProtocol : BaseProtocol
     {
-        public override ProtocolType Type => ProtocolType.ARP;
+        public override NetworkProtocolType Type => NetworkProtocolType.ARP;
         public override string Name => "Address Resolution Protocol";
         public override string Version => "1.0.0";
 

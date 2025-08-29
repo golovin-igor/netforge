@@ -150,18 +150,18 @@ namespace NetForge.Simulation.Protocols.HTTP
         public async Task WriteResponse(HttpResponseContent content)
         {
             var response = $"HTTP/1.1 {content.StatusCode} {content.StatusText}\r\n";
-            
+
             // Add content headers
             Headers["Content-Type"] = content.ContentType;
             Headers["Content-Length"] = content.Content.Length.ToString();
-            
+
             foreach (var header in Headers)
             {
                 response += $"{header.Key}: {header.Value}\r\n";
             }
-            
+
             response += "\r\n" + content.Content;
-            
+
             var bytes = System.Text.Encoding.UTF8.GetBytes(response);
             await _outputStream.WriteAsync(bytes, 0, bytes.Length);
             await _outputStream.FlushAsync();
@@ -169,8 +169,8 @@ namespace NetForge.Simulation.Protocols.HTTP
 
         public async Task WriteErrorResponse(int statusCode, string statusText, string message)
         {
-            var content = new HttpResponseContent(statusCode, statusText, 
-                $"<html><body><h1>{statusCode} {statusText}</h1><p>{message}</p></body></html>", 
+            var content = new HttpResponseContent(statusCode, statusText,
+                $"<html><body><h1>{statusCode} {statusText}</h1><p>{message}</p></body></html>",
                 "text/html");
             await WriteResponse(content);
         }
@@ -199,10 +199,10 @@ namespace NetForge.Simulation.Protocols.HTTP
     /// <summary>
     /// Simple HTTP server implementation
     /// </summary>
-    public class HttpServer(NetworkDevice device, HttpConfig config, HttpSessionManager sessionManager)
+    public class HttpServer(INetworkDevice device, HttpConfig config, HttpSessionManager sessionManager)
         : IDisposable
     {
-        private readonly NetworkDevice _device = device;
+        private readonly INetworkDevice _device = device;
         private readonly HttpSessionManager _sessionManager = sessionManager;
         private TcpListener? _listener;
         private CancellationTokenSource? _cancellationTokenSource;
@@ -230,7 +230,7 @@ namespace NetForge.Simulation.Protocols.HTTP
             _isRunning = false;
             _cancellationTokenSource?.Cancel();
             _listener?.Stop();
-            
+
             await Task.Delay(100); // Give time for cleanup
         }
 

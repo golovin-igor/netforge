@@ -17,12 +17,12 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
     /// <summary>
     /// Represents a dependency relationship between protocols
     /// </summary>
-    public class ProtocolDependency(ProtocolType requiredProtocol, DependencyType type, string reason)
+    public class ProtocolDependency(NetworkProtocolType requiredNetworkProtocol, DependencyType type, string reason)
     {
         /// <summary>
         /// The protocol type that is depended upon
         /// </summary>
-        public ProtocolType RequiredProtocol { get; set; } = requiredProtocol;
+        public NetworkProtocolType RequiredNetworkProtocol { get; set; } = requiredNetworkProtocol;
 
         /// <summary>
         /// Type of dependency relationship
@@ -58,10 +58,10 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
         public bool IsValid { get; set; }
         public List<string> Errors { get; set; } = new();
         public List<string> Warnings { get; set; } = new();
-        public List<ProtocolType> MissingRequired { get; set; } = new();
-        public List<ProtocolType> MissingOptional { get; set; } = new();
-        public List<ProtocolType> Conflicts { get; set; } = new();
-        public List<ProtocolType> SuggestedAdditions { get; set; } = new();
+        public List<NetworkProtocolType> MissingRequired { get; set; } = new();
+        public List<NetworkProtocolType> MissingOptional { get; set; } = new();
+        public List<NetworkProtocolType> Conflicts { get; set; } = new();
+        public List<NetworkProtocolType> SuggestedAdditions { get; set; } = new();
     }
 
     /// <summary>
@@ -70,31 +70,31 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
     public interface IProtocolDependencyManager
     {
         // Dependency registration
-        void RegisterDependency(ProtocolType protocol, ProtocolDependency dependency);
-        void RegisterDependencies(ProtocolType protocol, IEnumerable<ProtocolDependency> dependencies);
-        void RemoveDependency(ProtocolType protocol, ProtocolType dependency);
+        void RegisterDependency(NetworkProtocolType networkProtocol, ProtocolDependency dependency);
+        void RegisterDependencies(NetworkProtocolType networkProtocol, IEnumerable<ProtocolDependency> dependencies);
+        void RemoveDependency(NetworkProtocolType networkProtocol, NetworkProtocolType dependency);
 
         // Dependency query
-        IEnumerable<ProtocolDependency> GetDependencies(ProtocolType protocol);
-        IEnumerable<ProtocolDependency> GetDependents(ProtocolType protocol);
-        IEnumerable<ProtocolType> GetRequiredProtocols(ProtocolType protocol);
-        IEnumerable<ProtocolType> GetOptionalProtocols(ProtocolType protocol);
-        IEnumerable<ProtocolType> GetConflictingProtocols(ProtocolType protocol);
+        IEnumerable<ProtocolDependency> GetDependencies(NetworkProtocolType networkProtocol);
+        IEnumerable<ProtocolDependency> GetDependents(NetworkProtocolType networkProtocol);
+        IEnumerable<NetworkProtocolType> GetRequiredProtocols(NetworkProtocolType networkProtocol);
+        IEnumerable<NetworkProtocolType> GetOptionalProtocols(NetworkProtocolType networkProtocol);
+        IEnumerable<NetworkProtocolType> GetConflictingProtocols(NetworkProtocolType networkProtocol);
 
         // Dependency validation
-        DependencyValidationResult ValidateDependencies(IEnumerable<ProtocolType> activeProtocols);
-        DependencyValidationResult ValidateProtocolAddition(IEnumerable<ProtocolType> activeProtocols, ProtocolType newProtocol);
-        DependencyValidationResult ValidateProtocolRemoval(IEnumerable<ProtocolType> activeProtocols, ProtocolType protocolToRemove);
+        DependencyValidationResult ValidateDependencies(IEnumerable<NetworkProtocolType> activeProtocols);
+        DependencyValidationResult ValidateProtocolAddition(IEnumerable<NetworkProtocolType> activeProtocols, NetworkProtocolType newNetworkProtocol);
+        DependencyValidationResult ValidateProtocolRemoval(IEnumerable<NetworkProtocolType> activeProtocols, NetworkProtocolType networkProtocolToRemove);
 
         // Dependency resolution
-        IEnumerable<ProtocolType> ResolveDependencies(ProtocolType protocol);
-        IEnumerable<ProtocolType> GetOptimalProtocolSet(IEnumerable<ProtocolType> requestedProtocols);
-        IEnumerable<ProtocolType> GetMinimalProtocolSet(IEnumerable<ProtocolType> requestedProtocols);
+        IEnumerable<NetworkProtocolType> ResolveDependencies(NetworkProtocolType networkProtocol);
+        IEnumerable<NetworkProtocolType> GetOptimalProtocolSet(IEnumerable<NetworkProtocolType> requestedProtocols);
+        IEnumerable<NetworkProtocolType> GetMinimalProtocolSet(IEnumerable<NetworkProtocolType> requestedProtocols);
 
         // Dependency graph analysis
         bool HasCircularDependency();
-        IEnumerable<List<ProtocolType>> GetDependencyChains(ProtocolType protocol);
-        Dictionary<ProtocolType, int> GetProtocolDependencyLevels();
+        IEnumerable<List<NetworkProtocolType>> GetDependencyChains(NetworkProtocolType networkProtocol);
+        Dictionary<NetworkProtocolType, int> GetProtocolDependencyLevels();
 
         // Configuration and utilities
         void LoadDependencyConfiguration(string configurationPath);
@@ -107,8 +107,8 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
     /// </summary>
     public class ProtocolDependencyManager : IProtocolDependencyManager
     {
-        private readonly Dictionary<ProtocolType, List<ProtocolDependency>> _dependencies = new();
-        private readonly Dictionary<ProtocolType, List<ProtocolType>> _dependents = new();
+        private readonly Dictionary<NetworkProtocolType, List<ProtocolDependency>> _dependencies = new();
+        private readonly Dictionary<NetworkProtocolType, List<NetworkProtocolType>> _dependents = new();
 
         public ProtocolDependencyManager()
         {
@@ -121,111 +121,111 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
         private void InitializeDefaultDependencies()
         {
             // OSPF typically requires ARP for neighbor discovery
-            RegisterDependency(ProtocolType.OSPF, new ProtocolDependency(
-                ProtocolType.ARP, DependencyType.Required, "Required for neighbor MAC address resolution"));
+            RegisterDependency(NetworkProtocolType.OSPF, new ProtocolDependency(
+                NetworkProtocolType.ARP, DependencyType.Required, "Required for neighbor MAC address resolution"));
 
             // BGP often benefits from OSPF or other IGP for next-hop resolution
-            RegisterDependency(ProtocolType.BGP, new ProtocolDependency(
-                ProtocolType.OSPF, DependencyType.Optional, "Provides IGP routes for next-hop resolution"));
+            RegisterDependency(NetworkProtocolType.BGP, new ProtocolDependency(
+                NetworkProtocolType.OSPF, DependencyType.Optional, "Provides IGP routes for next-hop resolution"));
 
             // Management protocols are generally independent but may conflict with each other on ports
             // SSH and Telnet can coexist but may compete for management access
-            RegisterDependency(ProtocolType.SSH, new ProtocolDependency(
-                ProtocolType.TELNET, DependencyType.Enhancement, "SSH is more secure than Telnet for management"));
+            RegisterDependency(NetworkProtocolType.SSH, new ProtocolDependency(
+                NetworkProtocolType.TELNET, DependencyType.Enhancement, "SSH is more secure than Telnet for management"));
 
             // CDP is Cisco-specific and conflicts with LLDP in some scenarios
             // Note: In reality they can coexist, but for demonstration purposes
-            RegisterDependency(ProtocolType.CDP, new ProtocolDependency(
-                ProtocolType.LLDP, DependencyType.Optional, "LLDP provides similar discovery with broader vendor support"));
+            RegisterDependency(NetworkProtocolType.CDP, new ProtocolDependency(
+                NetworkProtocolType.LLDP, DependencyType.Optional, "LLDP provides similar discovery with broader vendor support"));
 
             // HSRP and VRRP are competing redundancy protocols
-            RegisterDependency(ProtocolType.HSRP, new ProtocolDependency(
-                ProtocolType.VRRP, DependencyType.Conflict, "HSRP and VRRP provide competing redundancy mechanisms"));
+            RegisterDependency(NetworkProtocolType.HSRP, new ProtocolDependency(
+                NetworkProtocolType.VRRP, DependencyType.Conflict, "HSRP and VRRP provide competing redundancy mechanisms"));
 
-            RegisterDependency(ProtocolType.VRRP, new ProtocolDependency(
-                ProtocolType.HSRP, DependencyType.Conflict, "VRRP and HSRP provide competing redundancy mechanisms"));
+            RegisterDependency(NetworkProtocolType.VRRP, new ProtocolDependency(
+                NetworkProtocolType.HSRP, DependencyType.Conflict, "VRRP and HSRP provide competing redundancy mechanisms"));
 
             // EIGRP is Cisco-specific and may conflict with other routing protocols
-            RegisterDependency(ProtocolType.EIGRP, new ProtocolDependency(
-                ProtocolType.RIP, DependencyType.Conflict, "EIGRP and RIP may cause routing loops if both active"));
+            RegisterDependency(NetworkProtocolType.EIGRP, new ProtocolDependency(
+                NetworkProtocolType.RIP, DependencyType.Conflict, "EIGRP and RIP may cause routing loops if both active"));
 
             // STP requires a Layer 2 environment
-            RegisterDependency(ProtocolType.STP, new ProtocolDependency(
-                ProtocolType.LLDP, DependencyType.Optional, "LLDP helps with topology discovery for STP"));
+            RegisterDependency(NetworkProtocolType.STP, new ProtocolDependency(
+                NetworkProtocolType.LLDP, DependencyType.Optional, "LLDP helps with topology discovery for STP"));
         }
 
         /// <summary>
         /// Register a dependency for a protocol
         /// </summary>
-        public void RegisterDependency(ProtocolType protocol, ProtocolDependency dependency)
+        public void RegisterDependency(NetworkProtocolType networkProtocol, ProtocolDependency dependency)
         {
-            if (!_dependencies.ContainsKey(protocol))
+            if (!_dependencies.ContainsKey(networkProtocol))
             {
-                _dependencies[protocol] = new List<ProtocolDependency>();
+                _dependencies[networkProtocol] = new List<ProtocolDependency>();
             }
 
             // Remove existing dependency of same type to same protocol
-            _dependencies[protocol].RemoveAll(d => d.RequiredProtocol == dependency.RequiredProtocol);
-            _dependencies[protocol].Add(dependency);
+            _dependencies[networkProtocol].RemoveAll(d => d.RequiredNetworkProtocol == dependency.RequiredNetworkProtocol);
+            _dependencies[networkProtocol].Add(dependency);
 
             // Update dependents mapping
-            if (!_dependents.ContainsKey(dependency.RequiredProtocol))
+            if (!_dependents.ContainsKey(dependency.RequiredNetworkProtocol))
             {
-                _dependents[dependency.RequiredProtocol] = new List<ProtocolType>();
+                _dependents[dependency.RequiredNetworkProtocol] = new List<NetworkProtocolType>();
             }
 
-            if (!_dependents[dependency.RequiredProtocol].Contains(protocol))
+            if (!_dependents[dependency.RequiredNetworkProtocol].Contains(networkProtocol))
             {
-                _dependents[dependency.RequiredProtocol].Add(protocol);
+                _dependents[dependency.RequiredNetworkProtocol].Add(networkProtocol);
             }
         }
 
         /// <summary>
         /// Register multiple dependencies for a protocol
         /// </summary>
-        public void RegisterDependencies(ProtocolType protocol, IEnumerable<ProtocolDependency> dependencies)
+        public void RegisterDependencies(NetworkProtocolType networkProtocol, IEnumerable<ProtocolDependency> dependencies)
         {
             foreach (var dependency in dependencies)
             {
-                RegisterDependency(protocol, dependency);
+                RegisterDependency(networkProtocol, dependency);
             }
         }
 
         /// <summary>
         /// Remove a dependency relationship
         /// </summary>
-        public void RemoveDependency(ProtocolType protocol, ProtocolType dependency)
+        public void RemoveDependency(NetworkProtocolType networkProtocol, NetworkProtocolType dependency)
         {
-            if (_dependencies.TryGetValue(protocol, out var deps))
+            if (_dependencies.TryGetValue(networkProtocol, out var deps))
             {
-                deps.RemoveAll(d => d.RequiredProtocol == dependency);
+                deps.RemoveAll(d => d.RequiredNetworkProtocol == dependency);
             }
 
             if (_dependents.TryGetValue(dependency, out var dependents))
             {
-                dependents.Remove(protocol);
+                dependents.Remove(networkProtocol);
             }
         }
 
         /// <summary>
         /// Get all dependencies for a protocol
         /// </summary>
-        public IEnumerable<ProtocolDependency> GetDependencies(ProtocolType protocol)
+        public IEnumerable<ProtocolDependency> GetDependencies(NetworkProtocolType networkProtocol)
         {
-            return _dependencies.GetValueOrDefault(protocol, new List<ProtocolDependency>());
+            return _dependencies.GetValueOrDefault(networkProtocol, new List<ProtocolDependency>());
         }
 
         /// <summary>
         /// Get all protocols that depend on the given protocol
         /// </summary>
-        public IEnumerable<ProtocolDependency> GetDependents(ProtocolType protocol)
+        public IEnumerable<ProtocolDependency> GetDependents(NetworkProtocolType networkProtocol)
         {
             var result = new List<ProtocolDependency>();
 
-            foreach (var dependent in _dependents.GetValueOrDefault(protocol, new List<ProtocolType>()))
+            foreach (var dependent in _dependents.GetValueOrDefault(networkProtocol, new List<NetworkProtocolType>()))
             {
                 var deps = GetDependencies(dependent);
-                result.AddRange(deps.Where(d => d.RequiredProtocol == protocol));
+                result.AddRange(deps.Where(d => d.RequiredNetworkProtocol == networkProtocol));
             }
 
             return result;
@@ -234,40 +234,40 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
         /// <summary>
         /// Get required protocols for a given protocol
         /// </summary>
-        public IEnumerable<ProtocolType> GetRequiredProtocols(ProtocolType protocol)
+        public IEnumerable<NetworkProtocolType> GetRequiredProtocols(NetworkProtocolType networkProtocol)
         {
-            return GetDependencies(protocol)
+            return GetDependencies(networkProtocol)
                 .Where(d => d.Type == DependencyType.Required)
-                .Select(d => d.RequiredProtocol);
+                .Select(d => d.RequiredNetworkProtocol);
         }
 
         /// <summary>
         /// Get optional protocols for a given protocol
         /// </summary>
-        public IEnumerable<ProtocolType> GetOptionalProtocols(ProtocolType protocol)
+        public IEnumerable<NetworkProtocolType> GetOptionalProtocols(NetworkProtocolType networkProtocol)
         {
-            return GetDependencies(protocol)
+            return GetDependencies(networkProtocol)
                 .Where(d => d.Type == DependencyType.Optional || d.Type == DependencyType.Enhancement)
-                .Select(d => d.RequiredProtocol);
+                .Select(d => d.RequiredNetworkProtocol);
         }
 
         /// <summary>
         /// Get conflicting protocols for a given protocol
         /// </summary>
-        public IEnumerable<ProtocolType> GetConflictingProtocols(ProtocolType protocol)
+        public IEnumerable<NetworkProtocolType> GetConflictingProtocols(NetworkProtocolType networkProtocol)
         {
-            return GetDependencies(protocol)
+            return GetDependencies(networkProtocol)
                 .Where(d => d.Type == DependencyType.Conflict)
-                .Select(d => d.RequiredProtocol);
+                .Select(d => d.RequiredNetworkProtocol);
         }
 
         /// <summary>
         /// Validate dependencies for a set of active protocols
         /// </summary>
-        public DependencyValidationResult ValidateDependencies(IEnumerable<ProtocolType> activeProtocols)
+        public DependencyValidationResult ValidateDependencies(IEnumerable<NetworkProtocolType> activeProtocols)
         {
             var result = new DependencyValidationResult { IsValid = true };
-            var activeSet = new HashSet<ProtocolType>(activeProtocols);
+            var activeSet = new HashSet<NetworkProtocolType>(activeProtocols);
 
             foreach (var protocol in activeProtocols)
             {
@@ -278,29 +278,29 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
                     switch (dep.Type)
                     {
                         case DependencyType.Required:
-                            if (!activeSet.Contains(dep.RequiredProtocol))
+                            if (!activeSet.Contains(dep.RequiredNetworkProtocol))
                             {
                                 result.IsValid = false;
-                                result.Errors.Add($"{protocol} requires {dep.RequiredProtocol}: {dep.Reason}");
-                                result.MissingRequired.Add(dep.RequiredProtocol);
+                                result.Errors.Add($"{protocol} requires {dep.RequiredNetworkProtocol}: {dep.Reason}");
+                                result.MissingRequired.Add(dep.RequiredNetworkProtocol);
                             }
                             break;
 
                         case DependencyType.Optional:
                         case DependencyType.Enhancement:
-                            if (!activeSet.Contains(dep.RequiredProtocol))
+                            if (!activeSet.Contains(dep.RequiredNetworkProtocol))
                             {
-                                result.Warnings.Add($"{protocol} would benefit from {dep.RequiredProtocol}: {dep.Reason}");
-                                result.MissingOptional.Add(dep.RequiredProtocol);
+                                result.Warnings.Add($"{protocol} would benefit from {dep.RequiredNetworkProtocol}: {dep.Reason}");
+                                result.MissingOptional.Add(dep.RequiredNetworkProtocol);
                             }
                             break;
 
                         case DependencyType.Conflict:
-                            if (activeSet.Contains(dep.RequiredProtocol))
+                            if (activeSet.Contains(dep.RequiredNetworkProtocol))
                             {
                                 result.IsValid = false;
-                                result.Errors.Add($"{protocol} conflicts with {dep.RequiredProtocol}: {dep.Reason}");
-                                result.Conflicts.Add(dep.RequiredProtocol);
+                                result.Errors.Add($"{protocol} conflicts with {dep.RequiredNetworkProtocol}: {dep.Reason}");
+                                result.Conflicts.Add(dep.RequiredNetworkProtocol);
                             }
                             break;
                     }
@@ -313,28 +313,28 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
         /// <summary>
         /// Validate adding a new protocol to existing set
         /// </summary>
-        public DependencyValidationResult ValidateProtocolAddition(IEnumerable<ProtocolType> activeProtocols, ProtocolType newProtocol)
+        public DependencyValidationResult ValidateProtocolAddition(IEnumerable<NetworkProtocolType> activeProtocols, NetworkProtocolType newNetworkProtocol)
         {
-            var newSet = new List<ProtocolType>(activeProtocols) { newProtocol };
+            var newSet = new List<NetworkProtocolType>(activeProtocols) { newNetworkProtocol };
             return ValidateDependencies(newSet);
         }
 
         /// <summary>
         /// Validate removing a protocol from existing set
         /// </summary>
-        public DependencyValidationResult ValidateProtocolRemoval(IEnumerable<ProtocolType> activeProtocols, ProtocolType protocolToRemove)
+        public DependencyValidationResult ValidateProtocolRemoval(IEnumerable<NetworkProtocolType> activeProtocols, NetworkProtocolType networkProtocolToRemove)
         {
             var result = new DependencyValidationResult { IsValid = true };
-            var activeSet = new HashSet<ProtocolType>(activeProtocols);
+            var activeSet = new HashSet<NetworkProtocolType>(activeProtocols);
 
             // Check if any remaining protocols depend on the one being removed
-            foreach (var protocol in activeProtocols.Where(p => p != protocolToRemove))
+            foreach (var protocol in activeProtocols.Where(p => p != networkProtocolToRemove))
             {
                 var requiredProtocols = GetRequiredProtocols(protocol);
-                if (requiredProtocols.Contains(protocolToRemove))
+                if (requiredProtocols.Contains(networkProtocolToRemove))
                 {
                     result.IsValid = false;
-                    result.Errors.Add($"Cannot remove {protocolToRemove}: {protocol} depends on it");
+                    result.Errors.Add($"Cannot remove {networkProtocolToRemove}: {protocol} depends on it");
                 }
             }
 
@@ -344,41 +344,41 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
         /// <summary>
         /// Resolve all dependencies for a protocol recursively
         /// </summary>
-        public IEnumerable<ProtocolType> ResolveDependencies(ProtocolType protocol)
+        public IEnumerable<NetworkProtocolType> ResolveDependencies(NetworkProtocolType networkProtocol)
         {
-            var resolved = new HashSet<ProtocolType>();
-            var visiting = new HashSet<ProtocolType>();
+            var resolved = new HashSet<NetworkProtocolType>();
+            var visiting = new HashSet<NetworkProtocolType>();
 
-            ResolveDependenciesRecursive(protocol, resolved, visiting);
+            ResolveDependenciesRecursive(networkProtocol, resolved, visiting);
             return resolved;
         }
 
-        private void ResolveDependenciesRecursive(ProtocolType protocol, HashSet<ProtocolType> resolved, HashSet<ProtocolType> visiting)
+        private void ResolveDependenciesRecursive(NetworkProtocolType networkProtocol, HashSet<NetworkProtocolType> resolved, HashSet<NetworkProtocolType> visiting)
         {
-            if (resolved.Contains(protocol))
+            if (resolved.Contains(networkProtocol))
                 return;
 
-            if (visiting.Contains(protocol))
-                throw new InvalidOperationException($"Circular dependency detected involving {protocol}");
+            if (visiting.Contains(networkProtocol))
+                throw new InvalidOperationException($"Circular dependency detected involving {networkProtocol}");
 
-            visiting.Add(protocol);
+            visiting.Add(networkProtocol);
 
-            var requiredDeps = GetRequiredProtocols(protocol);
+            var requiredDeps = GetRequiredProtocols(networkProtocol);
             foreach (var dep in requiredDeps)
             {
                 ResolveDependenciesRecursive(dep, resolved, visiting);
             }
 
-            visiting.Remove(protocol);
-            resolved.Add(protocol);
+            visiting.Remove(networkProtocol);
+            resolved.Add(networkProtocol);
         }
 
         /// <summary>
         /// Get optimal protocol set including optional enhancements
         /// </summary>
-        public IEnumerable<ProtocolType> GetOptimalProtocolSet(IEnumerable<ProtocolType> requestedProtocols)
+        public IEnumerable<NetworkProtocolType> GetOptimalProtocolSet(IEnumerable<NetworkProtocolType> requestedProtocols)
         {
-            var result = new HashSet<ProtocolType>();
+            var result = new HashSet<NetworkProtocolType>();
 
             // Add all requested protocols and their required dependencies
             foreach (var protocol in requestedProtocols)
@@ -410,9 +410,9 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
         /// <summary>
         /// Get minimal protocol set with only required dependencies
         /// </summary>
-        public IEnumerable<ProtocolType> GetMinimalProtocolSet(IEnumerable<ProtocolType> requestedProtocols)
+        public IEnumerable<NetworkProtocolType> GetMinimalProtocolSet(IEnumerable<NetworkProtocolType> requestedProtocols)
         {
-            var result = new HashSet<ProtocolType>();
+            var result = new HashSet<NetworkProtocolType>();
 
             foreach (var protocol in requestedProtocols)
             {
@@ -431,8 +431,8 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
         /// </summary>
         public bool HasCircularDependency()
         {
-            var visited = new HashSet<ProtocolType>();
-            var visiting = new HashSet<ProtocolType>();
+            var visited = new HashSet<NetworkProtocolType>();
+            var visiting = new HashSet<NetworkProtocolType>();
 
             foreach (var protocol in _dependencies.Keys)
             {
@@ -448,17 +448,17 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
             return false;
         }
 
-        private bool HasCircularDependencyRecursive(ProtocolType protocol, HashSet<ProtocolType> visited, HashSet<ProtocolType> visiting)
+        private bool HasCircularDependencyRecursive(NetworkProtocolType networkProtocol, HashSet<NetworkProtocolType> visited, HashSet<NetworkProtocolType> visiting)
         {
-            if (visiting.Contains(protocol))
+            if (visiting.Contains(networkProtocol))
                 return true;
 
-            if (visited.Contains(protocol))
+            if (visited.Contains(networkProtocol))
                 return false;
 
-            visiting.Add(protocol);
+            visiting.Add(networkProtocol);
 
-            var requiredDeps = GetRequiredProtocols(protocol);
+            var requiredDeps = GetRequiredProtocols(networkProtocol);
             foreach (var dep in requiredDeps)
             {
                 if (HasCircularDependencyRecursive(dep, visited, visiting))
@@ -467,56 +467,56 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
                 }
             }
 
-            visiting.Remove(protocol);
-            visited.Add(protocol);
+            visiting.Remove(networkProtocol);
+            visited.Add(networkProtocol);
             return false;
         }
 
         /// <summary>
         /// Get dependency chains for a protocol
         /// </summary>
-        public IEnumerable<List<ProtocolType>> GetDependencyChains(ProtocolType protocol)
+        public IEnumerable<List<NetworkProtocolType>> GetDependencyChains(NetworkProtocolType networkProtocol)
         {
-            var chains = new List<List<ProtocolType>>();
-            var currentChain = new List<ProtocolType>();
+            var chains = new List<List<NetworkProtocolType>>();
+            var currentChain = new List<NetworkProtocolType>();
 
-            GetDependencyChainsRecursive(protocol, currentChain, chains, new HashSet<ProtocolType>());
+            GetDependencyChainsRecursive(networkProtocol, currentChain, chains, new HashSet<NetworkProtocolType>());
             return chains;
         }
 
-        private void GetDependencyChainsRecursive(ProtocolType protocol, List<ProtocolType> currentChain,
-            List<List<ProtocolType>> chains, HashSet<ProtocolType> visited)
+        private void GetDependencyChainsRecursive(NetworkProtocolType networkProtocol, List<NetworkProtocolType> currentChain,
+            List<List<NetworkProtocolType>> chains, HashSet<NetworkProtocolType> visited)
         {
-            if (visited.Contains(protocol))
+            if (visited.Contains(networkProtocol))
                 return;
 
-            visited.Add(protocol);
-            currentChain.Add(protocol);
+            visited.Add(networkProtocol);
+            currentChain.Add(networkProtocol);
 
-            var requiredDeps = GetRequiredProtocols(protocol);
+            var requiredDeps = GetRequiredProtocols(networkProtocol);
             if (!requiredDeps.Any())
             {
                 // End of chain
-                chains.Add(new List<ProtocolType>(currentChain));
+                chains.Add(new List<NetworkProtocolType>(currentChain));
             }
             else
             {
                 foreach (var dep in requiredDeps)
                 {
-                    GetDependencyChainsRecursive(dep, currentChain, chains, new HashSet<ProtocolType>(visited));
+                    GetDependencyChainsRecursive(dep, currentChain, chains, new HashSet<NetworkProtocolType>(visited));
                 }
             }
 
-            currentChain.Remove(protocol);
+            currentChain.Remove(networkProtocol);
         }
 
         /// <summary>
         /// Get protocol dependency levels (0 = no dependencies, higher = more dependent)
         /// </summary>
-        public Dictionary<ProtocolType, int> GetProtocolDependencyLevels()
+        public Dictionary<NetworkProtocolType, int> GetProtocolDependencyLevels()
         {
-            var levels = new Dictionary<ProtocolType, int>();
-            var processed = new HashSet<ProtocolType>();
+            var levels = new Dictionary<NetworkProtocolType, int>();
+            var processed = new HashSet<NetworkProtocolType>();
 
             foreach (var protocol in _dependencies.Keys)
             {
@@ -526,29 +526,29 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
             return levels;
         }
 
-        private int CalculateDependencyLevel(ProtocolType protocol, Dictionary<ProtocolType, int> levels, HashSet<ProtocolType> processed)
+        private int CalculateDependencyLevel(NetworkProtocolType networkProtocol, Dictionary<NetworkProtocolType, int> levels, HashSet<NetworkProtocolType> processed)
         {
-            if (levels.ContainsKey(protocol))
-                return levels[protocol];
+            if (levels.ContainsKey(networkProtocol))
+                return levels[networkProtocol];
 
-            if (processed.Contains(protocol))
+            if (processed.Contains(networkProtocol))
                 return 0; // Circular dependency - return safe value
 
-            processed.Add(protocol);
+            processed.Add(networkProtocol);
 
-            var requiredDeps = GetRequiredProtocols(protocol);
+            var requiredDeps = GetRequiredProtocols(networkProtocol);
             if (!requiredDeps.Any())
             {
-                levels[protocol] = 0;
+                levels[networkProtocol] = 0;
             }
             else
             {
                 var maxDepLevel = requiredDeps.Max(dep => CalculateDependencyLevel(dep, levels, processed));
-                levels[protocol] = maxDepLevel + 1;
+                levels[networkProtocol] = maxDepLevel + 1;
             }
 
-            processed.Remove(protocol);
-            return levels[protocol];
+            processed.Remove(networkProtocol);
+            return levels[networkProtocol];
         }
 
         /// <summary>
@@ -585,7 +585,7 @@ namespace NetForge.Simulation.Protocols.Common.Dependencies
 
             return new Dictionary<string, object>
             {
-                ["TotalProtocols"] = Enum.GetValues<ProtocolType>().Length,
+                ["TotalProtocols"] = Enum.GetValues<NetworkProtocolType>().Length,
                 ["ProtocolsWithDependencies"] = protocolsWithDependencies,
                 ["TotalDependencies"] = totalDependencies,
                 ["HasCircularDependencies"] = circularDependencies,

@@ -17,7 +17,7 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// <summary>
         /// The type of protocol that had its configuration changed
         /// </summary>
-        public ProtocolType ProtocolType { get; }
+        public NetworkProtocolType NetworkProtocolType { get; }
 
         /// <summary>
         /// The name of the protocol that had its configuration changed
@@ -73,19 +73,19 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// Create protocol configuration changed event
         /// </summary>
         /// <param name="deviceName">Name of the device</param>
-        /// <param name="protocolType">Type of protocol</param>
+        /// <param name="networkProtocolType">Type of protocol</param>
         /// <param name="protocolName">Name of protocol</param>
         /// <param name="changeDetails">Details of the change</param>
         /// <param name="changeType">Type of configuration change</param>
         public ProtocolConfigChangedEventArgs(
             string deviceName,
-            ProtocolType protocolType,
+            NetworkProtocolType networkProtocolType,
             string protocolName,
             string changeDetails,
             ConfigChangeType changeType = ConfigChangeType.Modified)
         {
             DeviceName = deviceName;
-            ProtocolType = protocolType;
+            NetworkProtocolType = networkProtocolType;
             ProtocolName = protocolName;
             ChangeDetails = changeDetails;
             ChangeType = changeType;
@@ -95,7 +95,7 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// Create protocol configuration changed event with configuration data
         /// </summary>
         /// <param name="deviceName">Name of the device</param>
-        /// <param name="protocolType">Type of protocol</param>
+        /// <param name="networkProtocolType">Type of protocol</param>
         /// <param name="protocolName">Name of protocol</param>
         /// <param name="changeDetails">Details of the change</param>
         /// <param name="changeType">Type of configuration change</param>
@@ -103,15 +103,22 @@ namespace NetForge.Simulation.Protocols.Common.Events
         /// <param name="previousConfigData">Previous configuration data</param>
         public ProtocolConfigChangedEventArgs(
             string deviceName,
-            ProtocolType protocolType,
+            NetworkProtocolType networkProtocolType,
             string protocolName,
             string changeDetails,
             ConfigChangeType changeType,
             Dictionary<string, object>? newConfigData,
-            Dictionary<string, object>? previousConfigData = null) : this(deviceName, protocolType, protocolName, changeDetails, changeType)
+            Dictionary<string, object>? previousConfigData = null) : this(deviceName, networkProtocolType, protocolName, changeDetails, changeType)
         {
             NewConfigurationData = newConfigData;
             PreviousConfigurationData = previousConfigData;
+        }
+
+        public ProtocolConfigChangedEventArgs(string deviceName, NetworkProtocolType networkProtocolType, string changes)
+            : this(deviceName, networkProtocolType, networkProtocolType.ToString(), changes)
+        {
+
+
         }
 
         /// <summary>
@@ -124,7 +131,7 @@ namespace NetForge.Simulation.Protocols.Common.Events
             var restart = RequiresRestart ? " [RESTART REQUIRED]" : "";
             var section = !string.IsNullOrEmpty(ConfigurationSection) ? $" ({ConfigurationSection})" : "";
 
-            return $"{DeviceName}: {ProtocolName} ({ProtocolType}) configuration {ChangeType}{section} - {ChangeDetails}{critical}{restart}";
+            return $"{DeviceName}: {ProtocolName} ({NetworkProtocolType}) configuration {ChangeType}{section} - {ChangeDetails}{critical}{restart}";
         }
     }
 

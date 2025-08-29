@@ -64,22 +64,22 @@ namespace NetForge.Simulation.Devices
 
             foreach (var protocol in discoveredProtocols)
             {
-                ProtocolType protocolType = protocol.GetType();
+                NetworkProtocolType networkProtocolType = protocol.Type;
                 try
                 {
                     // Convert IDeviceProtocol to INetworkProtocol if needed
-                    if (protocol is IDeviceProtocol networkProtocol)
+                    if (protocol != null)
                     {
-                        RegisterProtocol(networkProtocol);
+                        RegisterProtocol(protocol);
                     }
                     else
                     {
-                        AddLogEntry($"Warning: Protocol {protocolType} is not compatible with INetworkProtocol interface");
+                        AddLogEntry($"Warning: Protocol {networkProtocolType} is not compatible with INetworkProtocol interface");
                     }
                 }
                 catch (Exception ex)
                 {
-                    AddLogEntry($"Error registering protocol {protocolType}: {ex.Message}");
+                    AddLogEntry($"Error registering protocol {networkProtocolType}: {ex.Message}");
                 }
             }
 

@@ -94,7 +94,7 @@ namespace NetForge.Interfaces.Devices
         /// </summary>
         IEnumerable<string> SupportedVendors { get; }
 
-        ProtocolType Type { get; set; }
+        NetworkProtocolType Type { get; set; }
 
         /// <summary>
         /// Get all vendors supported by this protocol implementation
@@ -114,20 +114,20 @@ namespace NetForge.Interfaces.Devices
         /// Get protocols that this protocol depends on
         /// </summary>
         /// <returns>Enumerable of required protocol types</returns>
-        IEnumerable<ProtocolType> GetDependencies();
+        IEnumerable<NetworkProtocolType> GetDependencies();
 
         /// <summary>
         /// Get protocols that conflict with this protocol
         /// </summary>
         /// <returns>Enumerable of conflicting protocol types</returns>
-        IEnumerable<ProtocolType> GetConflicts();
+        IEnumerable<NetworkProtocolType> GetConflicts();
 
         /// <summary>
         /// Check if this protocol can coexist with another protocol
         /// </summary>
-        /// <param name="otherProtocol">Other protocol type to check</param>
+        /// <param name="otherNetworkProtocol">Other protocol type to check</param>
         /// <returns>True if protocols can coexist, false otherwise</returns>
-        bool CanCoexistWith(ProtocolType otherProtocol);
+        bool CanCoexistWith(NetworkProtocolType otherNetworkProtocol);
 
         // Performance and monitoring (optional implementation - can return null for basic protocols)
         /// <summary>

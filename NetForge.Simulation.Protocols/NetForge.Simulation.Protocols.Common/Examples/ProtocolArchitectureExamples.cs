@@ -17,7 +17,7 @@ namespace NetForge.Simulation.Protocols.Examples
     /// </summary>
     public class EnhancedOspfProtocol : BaseRoutingProtocol
     {
-        public override ProtocolType Type => ProtocolType.OSPF;
+        public override NetworkProtocolType Type => NetworkProtocolType.OSPF;
         public override string Name => "Enhanced OSPF";
         public override string Version => "2.1.0";
         public override int AdministrativeDistance => 110;
@@ -25,11 +25,11 @@ namespace NetForge.Simulation.Protocols.Examples
         public override int MaxECMPPaths => 4;
 
         // Protocol-specific dependencies
-        public override IEnumerable<ProtocolType> GetDependencies()
+        public override IEnumerable<NetworkProtocolType> GetDependencies()
         {
             return new[]
             {
-                ProtocolType.ARP  // Required for neighbor MAC resolution
+                NetworkProtocolType.ARP  // Required for neighbor MAC resolution
             };
         }
 
@@ -295,7 +295,7 @@ namespace NetForge.Simulation.Protocols.Examples
                 Console.WriteLine("✓ OSPF configuration is valid");
 
                 // Apply configuration
-                var success = await _configManager.ApplyConfiguration(ProtocolType.OSPF, ospfConfig);
+                var success = await _configManager.ApplyConfiguration(NetworkProtocolType.OSPF, ospfConfig);
                 if (success)
                 {
                     Console.WriteLine("✓ OSPF configuration applied successfully");
@@ -313,10 +313,10 @@ namespace NetForge.Simulation.Protocols.Examples
 
             // Create and save template
             await _configManager.SaveConfigurationTemplate(
-                ProtocolType.OSPF, "BasicBackboneArea", ospfConfig);
+                NetworkProtocolType.OSPF, "BasicBackboneArea", ospfConfig);
 
             // Backup configuration
-            var backup = await _configManager.BackupConfiguration(ProtocolType.OSPF);
+            var backup = await _configManager.BackupConfiguration(NetworkProtocolType.OSPF);
             Console.WriteLine($"Configuration backed up: {backup?.Length} characters");
         }
 
@@ -326,16 +326,16 @@ namespace NetForge.Simulation.Protocols.Examples
         public void DemonstrateDependencyManagement()
         {
             // Check dependencies for OSPF
-            var ospfDependencies = _dependencyManager.GetDependencies(ProtocolType.OSPF);
+            var ospfDependencies = _dependencyManager.GetDependencies(NetworkProtocolType.OSPF);
             Console.WriteLine("OSPF Dependencies:");
             foreach (var dep in ospfDependencies)
             {
-                Console.WriteLine($"  {dep.Type}: {dep.RequiredProtocol} - {dep.Reason}");
+                Console.WriteLine($"  {dep.Type}: {dep.RequiredNetworkProtocol} - {dep.Reason}");
             }
 
             // Validate adding BGP to a network with OSPF and ARP
-            var activeProtocols = new[] { ProtocolType.OSPF, ProtocolType.ARP };
-            var validationResult = _dependencyManager.ValidateProtocolAddition(activeProtocols, ProtocolType.BGP);
+            var activeProtocols = new[] { NetworkProtocolType.OSPF, NetworkProtocolType.ARP };
+            var validationResult = _dependencyManager.ValidateProtocolAddition(activeProtocols, NetworkProtocolType.BGP);
 
             Console.WriteLine($"Adding BGP: {(validationResult.IsValid ? "✓ Valid" : "✗ Invalid")}");
             foreach (var error in validationResult.Errors)
@@ -348,7 +348,7 @@ namespace NetForge.Simulation.Protocols.Examples
             }
 
             // Get optimal protocol set for a routing scenario
-            var requestedProtocols = new[] { ProtocolType.OSPF, ProtocolType.BGP };
+            var requestedProtocols = new[] { NetworkProtocolType.OSPF, NetworkProtocolType.BGP };
             var optimalSet = _dependencyManager.GetOptimalProtocolSet(requestedProtocols);
             Console.WriteLine($"Optimal protocol set: {string.Join(", ", optimalSet)}");
 

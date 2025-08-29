@@ -11,29 +11,29 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
     public interface IProtocolConfigurationManager
     {
         // Configuration access
-        T GetConfiguration<T>(ProtocolType type) where T : class;
-        Task<bool> ApplyConfiguration<T>(ProtocolType type, T configuration) where T : class;
+        T GetConfiguration<T>(NetworkProtocolType type) where T : class;
+        Task<bool> ApplyConfiguration<T>(NetworkProtocolType type, T configuration) where T : class;
         bool ValidateConfiguration<T>(T configuration) where T : class;
         IEnumerable<string> GetConfigurationErrors<T>(T configuration) where T : class;
 
         // Configuration templates and defaults
-        T GetDefaultConfiguration<T>(ProtocolType type) where T : class;
-        IEnumerable<T> GetConfigurationTemplates<T>(ProtocolType type) where T : class;
-        Task<bool> SaveConfigurationTemplate<T>(ProtocolType type, string templateName, T configuration) where T : class;
-        Task<bool> DeleteConfigurationTemplate(ProtocolType type, string templateName);
+        T GetDefaultConfiguration<T>(NetworkProtocolType type) where T : class;
+        IEnumerable<T> GetConfigurationTemplates<T>(NetworkProtocolType type) where T : class;
+        Task<bool> SaveConfigurationTemplate<T>(NetworkProtocolType type, string templateName, T configuration) where T : class;
+        Task<bool> DeleteConfigurationTemplate(NetworkProtocolType type, string templateName);
 
         // Configuration comparison and merging
         Dictionary<string, object> CompareConfigurations<T>(T config1, T config2) where T : class;
         T MergeConfigurations<T>(T baseConfig, T overrideConfig) where T : class;
 
         // Configuration backup and restore
-        Task<string> BackupConfiguration(ProtocolType type);
-        Task<bool> RestoreConfiguration(ProtocolType type, string backupData);
-        IEnumerable<string> GetConfigurationBackups(ProtocolType type);
+        Task<string> BackupConfiguration(NetworkProtocolType type);
+        Task<bool> RestoreConfiguration(NetworkProtocolType type, string backupData);
+        IEnumerable<string> GetConfigurationBackups(NetworkProtocolType type);
 
         // Configuration validation rules
         void RegisterValidationRule<T>(Func<T, bool> rule, string errorMessage) where T : class;
-        void RegisterValidationRule<T>(ProtocolType type, Func<T, bool> rule, string errorMessage) where T : class;
+        void RegisterValidationRule<T>(NetworkProtocolType type, Func<T, bool> rule, string errorMessage) where T : class;
     }
 
     /// <summary>
@@ -212,11 +212,11 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
     /// </summary>
     public class ProtocolConfigurationManager : IProtocolConfigurationManager
     {
-        private readonly Dictionary<ProtocolType, Dictionary<string, object>> _configurations = new();
-        private readonly Dictionary<ProtocolType, Dictionary<string, object>> _templates = new();
-        private readonly Dictionary<ProtocolType, List<string>> _backups = new();
+        private readonly Dictionary<NetworkProtocolType, Dictionary<string, object>> _configurations = new();
+        private readonly Dictionary<NetworkProtocolType, Dictionary<string, object>> _templates = new();
+        private readonly Dictionary<NetworkProtocolType, List<string>> _backups = new();
         private readonly Dictionary<Type, List<(Func<object, bool> rule, string error)>> _globalValidationRules = new();
-        private readonly Dictionary<ProtocolType, Dictionary<Type, List<(Func<object, bool> rule, string error)>>> _protocolValidationRules = new();
+        private readonly Dictionary<NetworkProtocolType, Dictionary<Type, List<(Func<object, bool> rule, string error)>>> _protocolValidationRules = new();
 
         /// <summary>
         /// Get configuration for a specific protocol
@@ -224,7 +224,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         /// <typeparam name="T">Configuration type</typeparam>
         /// <param name="type">Protocol type</param>
         /// <returns>Configuration instance or null if not found</returns>
-        public T GetConfiguration<T>(ProtocolType type) where T : class
+        public T GetConfiguration<T>(NetworkProtocolType type) where T : class
         {
             if (_configurations.TryGetValue(type, out var configs) &&
                 configs.TryGetValue(typeof(T).Name, out var config))
@@ -242,7 +242,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         /// <param name="type">Protocol type</param>
         /// <param name="configuration">Configuration to apply</param>
         /// <returns>True if successfully applied, false otherwise</returns>
-        public async Task<bool> ApplyConfiguration<T>(ProtocolType type, T configuration) where T : class
+        public async Task<bool> ApplyConfiguration<T>(NetworkProtocolType type, T configuration) where T : class
         {
             try
             {
@@ -341,7 +341,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         /// <typeparam name="T">Configuration type</typeparam>
         /// <param name="type">Protocol type</param>
         /// <returns>Default configuration instance</returns>
-        public T GetDefaultConfiguration<T>(ProtocolType type) where T : class
+        public T GetDefaultConfiguration<T>(NetworkProtocolType type) where T : class
         {
             // In a real implementation, this would load from a configuration file or database
             // For now, create a default instance using reflection
@@ -361,7 +361,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         /// <typeparam name="T">Configuration type</typeparam>
         /// <param name="type">Protocol type</param>
         /// <returns>Enumerable of template configurations</returns>
-        public IEnumerable<T> GetConfigurationTemplates<T>(ProtocolType type) where T : class
+        public IEnumerable<T> GetConfigurationTemplates<T>(NetworkProtocolType type) where T : class
         {
             if (_templates.TryGetValue(type, out var templates))
             {
@@ -379,7 +379,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         /// <param name="templateName">Template name</param>
         /// <param name="configuration">Configuration to save as template</param>
         /// <returns>True if successfully saved, false otherwise</returns>
-        public async Task<bool> SaveConfigurationTemplate<T>(ProtocolType type, string templateName, T configuration) where T : class
+        public async Task<bool> SaveConfigurationTemplate<T>(NetworkProtocolType type, string templateName, T configuration) where T : class
         {
             try
             {
@@ -403,7 +403,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         /// <param name="type">Protocol type</param>
         /// <param name="templateName">Template name</param>
         /// <returns>True if successfully deleted, false otherwise</returns>
-        public async Task<bool> DeleteConfigurationTemplate(ProtocolType type, string templateName)
+        public async Task<bool> DeleteConfigurationTemplate(NetworkProtocolType type, string templateName)
         {
             if (_templates.TryGetValue(type, out var templates))
             {
@@ -472,7 +472,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>Backup data as JSON string</returns>
-        public async Task<string> BackupConfiguration(ProtocolType type)
+        public async Task<string> BackupConfiguration(NetworkProtocolType type)
         {
             try
             {
@@ -506,7 +506,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         /// <param name="type">Protocol type</param>
         /// <param name="backupData">Backup data as JSON string</param>
         /// <returns>True if successfully restored, false otherwise</returns>
-        public async Task<bool> RestoreConfiguration(ProtocolType type, string backupData)
+        public async Task<bool> RestoreConfiguration(NetworkProtocolType type, string backupData)
         {
             try
             {
@@ -525,7 +525,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         /// </summary>
         /// <param name="type">Protocol type</param>
         /// <returns>List of backup identifiers</returns>
-        public IEnumerable<string> GetConfigurationBackups(ProtocolType type)
+        public IEnumerable<string> GetConfigurationBackups(NetworkProtocolType type)
         {
             return _backups.GetValueOrDefault(type, new List<string>());
         }
@@ -554,7 +554,7 @@ namespace NetForge.Simulation.Protocols.Common.Configuration
         /// <param name="type">Protocol type</param>
         /// <param name="rule">Validation rule function</param>
         /// <param name="errorMessage">Error message if rule fails</param>
-        public void RegisterValidationRule<T>(ProtocolType type, Func<T, bool> rule, string errorMessage) where T : class
+        public void RegisterValidationRule<T>(NetworkProtocolType type, Func<T, bool> rule, string errorMessage) where T : class
         {
             if (!_protocolValidationRules.ContainsKey(type))
             {
