@@ -1,4 +1,3 @@
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Topology.Devices;
 
 namespace NetForge.Simulation.Common.Configuration

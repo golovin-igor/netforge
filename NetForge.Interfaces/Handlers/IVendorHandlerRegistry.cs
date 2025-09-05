@@ -1,13 +1,14 @@
-using NetForge.Interfaces.Cli;
-using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Interfaces.CLI;
+using NetForge.Interfaces.Vendors;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Common.Interfaces;
 
-namespace NetForge.Simulation.Common.CLI.Interfaces
+namespace NetForge.Interfaces.Handlers
 {
     /// <summary>
-    /// Interface for registering vendor-specific CLI handlers
+    /// DEPRECATED: Use IVendorDescriptor and vendor system instead.
+    /// Legacy interface for registering vendor-specific CLI handlers
     /// </summary>
+    [Obsolete("Use IVendorDescriptor and vendor system instead")]
     public interface IVendorHandlerRegistry
     {
         /// <summary>
@@ -50,6 +51,4 @@ namespace NetForge.Simulation.Common.CLI.Interfaces
         /// </summary>
         void Cleanup();
     }
-
-
 }

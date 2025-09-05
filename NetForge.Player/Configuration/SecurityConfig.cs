@@ -1,9 +1,6 @@
 // TODO: Phase 1.3 - Implement Configuration Management
 // This class manages security configuration settings
 
-using System;
-using System.Collections.Generic;
-
 namespace NetForge.Player.Configuration;
 
 /// <summary>

@@ -5,7 +5,7 @@ using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Devices;
-using NetForge.Simulation.Protocols.Common;
+using NetForge.Simulation.Protocols.Common.Events;
 using NetForge.Simulation.Topology.Common;
 using NetForge.Simulation.Topology.Devices;
 using Xunit;

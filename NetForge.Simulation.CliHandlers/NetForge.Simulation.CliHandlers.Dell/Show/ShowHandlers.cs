@@ -1,8 +1,6 @@
 using System.Text;
-using NetForge.Interfaces.Cli;
-using NetForge.Simulation.Common;
+using NetForge.Interfaces.CLI;
 using NetForge.Simulation.Common.CLI.Base;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 
 namespace NetForge.Simulation.CliHandlers.Dell.Show

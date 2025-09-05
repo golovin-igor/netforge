@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using NetForge.Simulation.Common;
 
 namespace NetForge.Simulation.Protocols.Telnet
 {

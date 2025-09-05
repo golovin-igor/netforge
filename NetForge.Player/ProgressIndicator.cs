@@ -8,10 +8,6 @@
 // - Add operation completion statistics
 // - Support for nested progress indicators
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace NetForge.Player;
 
 public class ProgressIndicator : IDisposable

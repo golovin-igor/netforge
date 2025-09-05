@@ -1,7 +1,6 @@
 ﻿using NetForge.Simulation.Common.CLI.Base;
-using NetForge.Simulation.Common.CLI.Interfaces;
 
-namespace NetForge.Interfaces.Cli;
+namespace NetForge.Interfaces.CLI;
 
 public interface ICliHandlerManager
 {

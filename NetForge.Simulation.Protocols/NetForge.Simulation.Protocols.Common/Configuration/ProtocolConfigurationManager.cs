@@ -1,4 +1,3 @@
-using NetForge.Simulation.Common.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using NetForge.Simulation.DataTypes;

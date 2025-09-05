@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Common.CLI.Interfaces
+namespace NetForge.Interfaces.CLI
 {
     /// <summary>
     /// Interface for devices that support candidate configuration (e.g., Juniper set/commit)

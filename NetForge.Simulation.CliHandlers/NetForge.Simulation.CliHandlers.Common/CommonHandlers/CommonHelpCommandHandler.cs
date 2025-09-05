@@ -1,5 +1,5 @@
 using System.Text;
-using NetForge.Interfaces.Cli;
+using NetForge.Interfaces.CLI;
 using NetForge.Simulation.Common.CLI.Base;
 
 namespace NetForge.Simulation.Common.CLI.CommonHandlers

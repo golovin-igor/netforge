@@ -1,5 +1,4 @@
 using System.Text;
-using NetForge.Interfaces.Devices;
 using NetForge.Simulation.CliHandlers.Cisco;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;

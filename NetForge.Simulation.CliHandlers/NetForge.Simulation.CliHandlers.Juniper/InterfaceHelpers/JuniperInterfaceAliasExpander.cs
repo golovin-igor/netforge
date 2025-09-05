@@ -1,5 +1,3 @@
-using System;
-
 namespace NetForge.Simulation.CliHandlers.Juniper
 {
     /// <summary>

@@ -1,6 +1,5 @@
-using NetForge.Simulation.Common;
 using System.Text;
-using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Interfaces.Vendors;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;

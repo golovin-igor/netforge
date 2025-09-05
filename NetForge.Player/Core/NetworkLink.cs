@@ -1,8 +1,6 @@
 // TODO: Phase 1.2 - Implement Network Management System
 // This class represents network link information
 
-using System;
-
 namespace NetForge.Player.Core;
 
 /// <summary>

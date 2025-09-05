@@ -1,6 +1,6 @@
-using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Interfaces.CLI;
+using NetForge.Interfaces.Vendors;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Common.Interfaces;
 
 namespace NetForge.Simulation.CliHandlers.Anira
 {

@@ -1,11 +1,7 @@
 using System.Text;
-using System.Linq;
-using System.Collections.Generic;
-using NetForge.Interfaces.Cli;
+using NetForge.Interfaces.CLI;
 using NetForge.Interfaces.Devices;
-using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.CLI.Base;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.DataTypes;
 

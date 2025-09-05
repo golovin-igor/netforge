@@ -1,6 +1,5 @@
 using System.Text;
 using NetForge.Simulation.CliHandlers.MikroTik;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Topology.Devices;

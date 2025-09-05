@@ -1,7 +1,6 @@
 // TODO: Phase 2.1 - Implement Session Management Commands
 // This command handles device connection and terminal session management
 
-using System.Threading.Tasks;
 using NetForge.Player.Core;
 
 namespace NetForge.Player.Commands.Session;

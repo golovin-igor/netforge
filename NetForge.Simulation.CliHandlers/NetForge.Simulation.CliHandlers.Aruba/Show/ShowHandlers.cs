@@ -1,8 +1,6 @@
 using System.Text;
-using NetForge.Interfaces.Cli;
-using NetForge.Simulation.Common;
+using NetForge.Interfaces.CLI;
 using NetForge.Simulation.Common.CLI.Base;
-using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.CliHandlers.Aruba.Show
 {

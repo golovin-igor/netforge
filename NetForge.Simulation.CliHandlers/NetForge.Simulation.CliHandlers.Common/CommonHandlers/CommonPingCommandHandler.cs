@@ -1,5 +1,5 @@
 using System.Net;
-using NetForge.Interfaces.Cli;
+using NetForge.Interfaces.CLI;
 using NetForge.Simulation.Common.CLI.Base;
 using NetForge.Simulation.Common.Common;
 

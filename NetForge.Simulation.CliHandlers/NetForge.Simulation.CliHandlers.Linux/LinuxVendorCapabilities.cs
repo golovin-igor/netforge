@@ -1,4 +1,4 @@
-using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Interfaces.Vendors;
 
 namespace NetForge.Simulation.CliHandlers.Linux;
 

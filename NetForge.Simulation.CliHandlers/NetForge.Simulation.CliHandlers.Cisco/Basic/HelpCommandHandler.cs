@@ -1,6 +1,5 @@
 using System.Text;
-using NetForge.Interfaces.Cli;
-using NetForge.Simulation.Common;
+using NetForge.Interfaces.CLI;
 using NetForge.Simulation.Common.CLI.Base;
 
 namespace NetForge.Simulation.CliHandlers.Cisco.Basic

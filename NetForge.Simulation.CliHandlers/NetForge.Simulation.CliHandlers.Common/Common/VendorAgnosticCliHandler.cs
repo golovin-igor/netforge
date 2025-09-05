@@ -1,5 +1,5 @@
-using NetForge.Interfaces.Cli;
-using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Interfaces.CLI;
+using NetForge.Interfaces.Vendors;
 using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.Common.CLI.Base

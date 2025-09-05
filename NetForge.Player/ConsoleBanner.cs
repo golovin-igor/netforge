@@ -9,7 +9,6 @@
 // - Include build information and update notifications
 
 using System.Text;
-using System.Linq;
 
 namespace NetForge.Player;
 

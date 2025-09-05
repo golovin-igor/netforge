@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Sockets;
-using NetForge.Simulation.Common;
 using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.Protocols.SSH

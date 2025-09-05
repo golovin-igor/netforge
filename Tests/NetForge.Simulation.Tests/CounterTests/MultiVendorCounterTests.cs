@@ -1,5 +1,5 @@
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Devices;
+using NetForge.Simulation.Topology.Common;
 using NetForge.Simulation.Topology.Devices;
 using Xunit;
 

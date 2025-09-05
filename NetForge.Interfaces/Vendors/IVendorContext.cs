@@ -1,4 +1,6 @@
-namespace NetForge.Simulation.Common.CLI.Interfaces
+using NetForge.Interfaces.CLI;
+
+namespace NetForge.Interfaces.Vendors
 {
     /// <summary>
     /// Provides vendor-specific context and capabilities to CLI handlers

@@ -1,12 +1,13 @@
-using NetForge.Simulation.Common.CLI.Interfaces;
+using NetForge.Interfaces.Handlers;
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Common.Interfaces;
 
-namespace NetForge.Simulation.Common.CLI.Services
+namespace NetForge.Interfaces.Handlers
 {
     /// <summary>
-    /// Service for discovering and managing vendor-specific CLI handler registries
+    /// DEPRECATED: Use VendorBasedHandlerService instead.
+    /// Legacy service for discovering and managing vendor-specific CLI handler registries
     /// </summary>
+    [Obsolete("Use VendorBasedHandlerService instead")]
     public interface IVendorHandlerDiscoveryService
     {
         /// <summary>

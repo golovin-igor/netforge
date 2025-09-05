@@ -1,4 +1,3 @@
-using NetForge.Simulation.Common;
 using System.Text.RegularExpressions;
 
 namespace NetForge.Simulation.CliHandlers.Huawei

@@ -1,8 +1,6 @@
 // TODO: Enhance dummy device for testing and capability scanning
 // This class provides a minimal network device implementation for utility purposes
 
-using NetForge.Simulation.Common;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Topology.Devices;
 
 namespace NetForge.Player;

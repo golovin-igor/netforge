@@ -1,6 +1,4 @@
 using NetForge.Simulation.Common.Common;
-using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Protocols.Common.Base;
 using NetForge.Simulation.Protocols.Common.State;
 
 namespace NetForge.Simulation.Protocols.Common.Base

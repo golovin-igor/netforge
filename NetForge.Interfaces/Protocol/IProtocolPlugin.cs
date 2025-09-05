@@ -1,14 +1,13 @@
 using NetForge.Interfaces.Devices;
-using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.DataTypes;
-using NetForge.Simulation.Protocols.Common;
 
-namespace NetForge.Simulation.Protocols.Common
+namespace NetForge.Interfaces.Protocols
 {
     /// <summary>
-    /// Interface for protocol plugins that enable auto-discovery of protocols
-    /// Similar to the CLI handler plugin pattern
+    /// DEPRECATED: Use IVendorDescriptor and vendor system instead.
+    /// Legacy interface for protocol plugins that enable auto-discovery of protocols
     /// </summary>
+    [Obsolete("Use IVendorDescriptor and vendor system instead")]
     public interface IProtocolPlugin
     {
         /// <summary>

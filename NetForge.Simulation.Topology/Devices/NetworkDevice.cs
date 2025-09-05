@@ -1,6 +1,6 @@
 using System.Globalization;
 using System.Text;
-using NetForge.Interfaces.Cli;
+using NetForge.Interfaces.CLI;
 using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
@@ -16,7 +16,7 @@ namespace NetForge.Simulation.Topology.Devices
     /// <summary>
     /// Base class for all network device implementations
     /// </summary>
-    public abstract class NetworkDevice : ICommandProcessor, INetworkDevice
+    public abstract class NetworkDevice : INetworkDevice
     {
         public string Name { get; protected set; }
         public string Vendor { get; protected init; }

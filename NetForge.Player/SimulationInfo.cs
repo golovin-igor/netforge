@@ -1,4 +1,4 @@
-﻿﻿// TODO: Enhance SimulationInfo for comprehensive capability reporting
+﻿// TODO: Enhance SimulationInfo for comprehensive capability reporting
 // - Add version information display
 // - Include build timestamp and commit hash
 // - Show loaded plugin versions
@@ -10,10 +10,7 @@
 
 using System.Reflection;
 using NetForge.Interfaces.Devices;
-using NetForge.Simulation.Common;
-using NetForge.Simulation.Common.CLI.Interfaces;
-using NetForge.Simulation.Common.Interfaces;
-using NetForge.Simulation.Protocols.Common;
+using NetForge.Interfaces.Vendors;
 
 namespace NetForge.Player;
 
