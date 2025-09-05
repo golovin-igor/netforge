@@ -39,13 +39,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{868FD21A-97B3-4991-8411-FB9763469FC4}"
 	ProjectSection(SolutionItems) = preProject
 		Tests\NetForge.Simulation.Protocols.Tests\obj\Debug\net9.0\.NETCoreApp,Version = v9.0.AssemblyAttributes.cs = Tests\NetForge.Simulation.Protocols.Tests\obj\Debug\net9.0\.NETCoreApp,Version=v9.0.AssemblyAttributes.cs
-		Tests\COMPREHENSIVE_TESTING_DOCUMENTATION.md = Tests\COMPREHENSIVE_TESTING_DOCUMENTATION.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Protocols", "Protocols", "{897E0406-546D-4094-BFAA-3A4CD4F7F311}"
-	ProjectSection(SolutionItems) = preProject
-		NetForge.Simulation.Protocols\COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md = NetForge.Simulation.Protocols\COMPREHENSIVE_PROTOCOL_DOCUMENTATION.md
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Protocols.Common", "NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.Common\NetForge.Simulation.Protocols.Common.csproj", "{B62C41DE-6834-4312-A9ED-A2FDF2468EDC}"
 EndProject
