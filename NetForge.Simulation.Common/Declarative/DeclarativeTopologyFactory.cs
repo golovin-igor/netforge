@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using NetForge.Simulation.Common.Configuration;
-using NetForge.Simulation.DataTypes.NetworkPrimitives;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Topology.Devices;
 
 namespace NetForge.Simulation.Common.Declarative

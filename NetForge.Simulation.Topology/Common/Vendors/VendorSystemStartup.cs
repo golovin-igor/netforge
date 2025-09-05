@@ -31,12 +31,13 @@ namespace NetForge.Simulation.Common.Vendors
             services.AddSingleton<VendorBasedProtocolService>();
             services.AddSingleton<VendorBasedHandlerService>();
 
-            // Register the new protocol manager that replaces the old plugin-based one
-            services.AddSingleton<VendorAwareProtocolManager>();
+            // Vendor-based protocol management is now handled directly by VendorBasedProtocolService
 
             // Register factory for creating vendor-aware handler managers
-            services.AddTransient<Func<INetworkDevice, VendorAwareCliHandlerManager>>(provider =>
-                device => new VendorAwareCliHandlerManager(device, provider.GetRequiredService<VendorBasedHandlerService>()));
+            services.AddTransient<Func<INetworkDevice, VendorAwareHandlerManager>>(provider =>
+                device => new VendorAwareHandlerManager(device, 
+                    provider.GetRequiredService<IVendorService>(), 
+                    provider.GetRequiredService<IVendorRegistry>()));
 
             return services;
         }

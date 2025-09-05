@@ -1,5 +1,6 @@
+using Microsoft.Extensions.DependencyInjection;
 using NetForge.Simulation.DataTypes;
-using NetForge.Simulation.DataTypes.NetworkPrimitives;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.Common.Declarative
 {
@@ -115,17 +116,27 @@ namespace NetForge.Simulation.Common.Declarative
                 .Build();
 
             // Access layer devices
-            var access01 = CommonDeviceSpecs.CiscoSwitch("Access01", portCount: 24).Build();
-            var access02 = CommonDeviceSpecs.CiscoSwitch("Access02", portCount: 24).Build();
-            var access03 = CommonDeviceSpecs.CiscoSwitch("Access03", portCount: 48).Build();
-            var access04 = CommonDeviceSpecs.CiscoSwitch("Access04", portCount: 48).Build();
+            var access01 = CreateCiscoSwitch("Access01", 24);
+            var access02 = CreateCiscoSwitch("Access02", 24);
+            var access03 = CreateCiscoSwitch("Access03", 48);
+            var access04 = CreateCiscoSwitch("Access04", 48);
 
-            // Build topology using common topology pattern
-            return CommonTopologies.ThreeTier("Enterprise Network",
-                coreDevice: coreSwitch,
-                distributionDevices: [dist01, dist02],
-                accessDevices: [[access01, access02], [access03, access04]]
-            ).Build();
+            // Build topology using builder pattern
+            return TopologyBuilder.Create("Enterprise Network")
+                .AddDevice(coreSwitch)
+                .AddDevice(dist01)
+                .AddDevice(dist02)
+                .AddDevice(access01)
+                .AddDevice(access02)
+                .AddDevice(access03)
+                .AddDevice(access04)
+                .Connect("Core01", "TenGigabitEthernet1/0/1", "Dist01", "TenGigabitEthernet1/0/1")
+                .Connect("Core01", "TenGigabitEthernet1/0/2", "Dist02", "TenGigabitEthernet1/0/1")
+                .Connect("Dist01", "GigabitEthernet1/0/1", "Access01", "GigabitEthernet1/0/1")
+                .Connect("Dist01", "GigabitEthernet1/0/2", "Access02", "GigabitEthernet1/0/1")
+                .Connect("Dist02", "GigabitEthernet1/0/1", "Access03", "GigabitEthernet1/0/1")
+                .Connect("Dist02", "GigabitEthernet1/0/2", "Access04", "GigabitEthernet1/0/1")
+                .Build();
         }
 
         /// <summary>
@@ -146,9 +157,15 @@ namespace NetForge.Simulation.Common.Declarative
                 .Build();
 
             // Juniper OSPF router
-            var juniperOspf = CommonDeviceSpecs.JuniperRouter("Juniper-OSPF", "MX204")
-                .AddOspf(processId: 100)
+            var juniperOspf = DeviceBuilder.Create("Juniper-OSPF")
+                .WithVendor("Juniper", "MX204", "20.4R3")
+                .WithPhysicalSpecs(memoryMB: 8192, storageMB: 16384)
+                .AddInterface("ge-0/0/0", InterfaceType.GigabitEthernet, 1000)
+                .AddInterface("ge-0/0/1", InterfaceType.GigabitEthernet, 1000)
                 .AddInterface("ge-0/0/2", InterfaceType.GigabitEthernet, 1000)
+                .AddOspf(processId: 100)
+                .AddSsh()
+                .WithSnmp(version: SnmpVersion.V3, communities: ["public"])
                 .Build();
 
             // Arista switch with EIGRP
@@ -184,14 +201,34 @@ namespace NetForge.Simulation.Common.Declarative
             var routers = new List<DeviceSpec>();
             for (int i = 1; i <= 5; i++)
             {
-                var router = CommonDeviceSpecs.CiscoRouter($"Ring-Router{i:D2}")
-                    .AddInterface("GigabitEthernet0/2", InterfaceType.GigabitEthernet, 1000, "Ring Interface 2")
+                var router = DeviceBuilder.Create($"Ring-Router{i:D2}")
+                    .WithVendor("Cisco", "ISR4451", "15.7")
+                    .WithPhysicalSpecs(memoryMB: 4096, storageMB: 8192)
+                    .AddInterface("GigabitEthernet0/0", InterfaceType.GigabitEthernet, 1000, "Ring Interface 1")
+                    .AddInterface("GigabitEthernet0/1", InterfaceType.GigabitEthernet, 1000, "Ring Interface 2")
+                    .AddInterface("GigabitEthernet0/2", InterfaceType.GigabitEthernet, 1000, "Ring Interface 3")
                     .AddOspf(processId: 1)
+                    .AddSsh()
+                    .WithSnmp(communities: ["public"])
                     .Build();
                 routers.Add(router);
             }
 
-            return CommonTopologies.Ring("Ring Network", routers.ToArray()).Build();
+            var builder = TopologyBuilder.Create("Ring Network");
+            foreach (var router in routers)
+            {
+                builder.AddDevice(router);
+            }
+
+            // Connect devices in a ring
+            for (int i = 0; i < routers.Count; i++)
+            {
+                var current = routers[i];
+                var next = routers[(i + 1) % routers.Count];
+                builder.Connect(current.Name, "GigabitEthernet0/1", next.Name, "GigabitEthernet0/0");
+            }
+
+            return builder.Build();
         }
 
         /// <summary>
@@ -217,22 +254,35 @@ namespace NetForge.Simulation.Common.Declarative
                 .Build();
 
             // Spoke devices with limited resources
-            var spoke1 = CommonDeviceSpecs.CiscoRouter("Branch-East", "ISR921")
+            var spoke1 = DeviceBuilder.Create("Branch-East")
+                .WithVendor("Cisco", "ISR921", "15.5")
                 .WithPhysicalSpecs(memoryMB: 512, storageMB: 256)
+                .AddInterface("GigabitEthernet0/0", InterfaceType.GigabitEthernet, 1000)
                 .AddOspf(processId: 1)
+                .AddSsh()
                 .Build();
 
-            var spoke2 = CommonDeviceSpecs.CiscoRouter("Branch-West", "ISR921")
+            var spoke2 = DeviceBuilder.Create("Branch-West")
+                .WithVendor("Cisco", "ISR921", "15.5")
                 .WithPhysicalSpecs(memoryMB: 512, storageMB: 256)
+                .AddInterface("GigabitEthernet0/0", InterfaceType.GigabitEthernet, 1000)
                 .AddOspf(processId: 1)
+                .AddSsh()
                 .Build();
 
-            var spoke3 = CommonDeviceSpecs.CiscoRouter("Branch-South", "ISR921")
+            var spoke3 = DeviceBuilder.Create("Branch-South")
+                .WithVendor("Cisco", "ISR921", "15.5")
                 .WithPhysicalSpecs(memoryMB: 512, storageMB: 256)
+                .AddInterface("GigabitEthernet0/0", InterfaceType.GigabitEthernet, 1000)
                 .AddOspf(processId: 1)
+                .AddSsh()
                 .Build();
 
-            return CommonTopologies.HubAndSpoke("Hub-Spoke Network", hub, spoke1, spoke2, spoke3)
+            return TopologyBuilder.Create("Hub-Spoke Network")
+                .AddDevice(hub)
+                .AddDevice(spoke1)
+                .AddDevice(spoke2)
+                .AddDevice(spoke3)
                 .ConnectWithQuality("HQ-Hub", "GigabitEthernet0/0", "Branch-East", "GigabitEthernet0/0",
                     packetLossPercent: 0.05, latencyMs: 10.0) // Simulate WAN conditions
                 .ConnectWithQuality("HQ-Hub", "GigabitEthernet0/1", "Branch-West", "GigabitEthernet0/0",
@@ -256,6 +306,30 @@ namespace NetForge.Simulation.Common.Declarative
 
             // The topology is now ready for simulation
             return topology;
+        }
+
+        /// <summary>
+        /// Helper method to create a Cisco switch with specified port count
+        /// </summary>
+        private static DeviceSpec CreateCiscoSwitch(string name, int portCount)
+        {
+            var builder = DeviceBuilder.Create(name)
+                .WithVendor("Cisco", "Catalyst9300", "16.12")
+                .WithPhysicalSpecs(memoryMB: 2048, storageMB: 4096)
+                .AddSsh()
+                .WithSnmp(communities: ["public"]);
+
+            // Add uplink interfaces
+            builder.AddInterface("GigabitEthernet1/0/1", InterfaceType.GigabitEthernet, 1000, "Uplink");
+
+            // Add access ports
+            for (int i = 1; i <= portCount; i++)
+            {
+                builder.AddInterface($"GigabitEthernet1/0/{i + 1}", InterfaceType.GigabitEthernet, 1000,
+                    vlanConfig: new VlanInterfaceSpec { Mode = SwitchportMode.Access, AccessVlan = 1 });
+            }
+
+            return builder.Build();
         }
     }
 }
