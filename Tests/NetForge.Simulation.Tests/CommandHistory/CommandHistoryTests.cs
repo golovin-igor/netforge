@@ -1,6 +1,7 @@
 using Xunit;
+using NetForge.Simulation.DataTypes.Cli;
 
-namespace NetForge.Simulation.Tests.CommandHistory
+namespace NetForge.Simulation.Tests.CommandHistoryTests
 {
     public class CommandHistoryTests
     {
@@ -8,7 +9,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void CommandHistory_DefaultConstructor_ShouldInitializeWithEmptyHistory()
         {
             // Act
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
 
             // Assert
             Assert.Empty(history.GetHistory());
@@ -19,7 +20,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void AddCommand_SingleCommand_ShouldAddToHistory()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             var command = "show version";
 
             // Act
@@ -35,7 +36,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void AddCommand_MultipleCommands_ShouldAddInOrder()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             var command1 = "show version";
             var command2 = "show interfaces";
             var command3 = "show ip route";
@@ -58,7 +59,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void AddCommand_WithNullCommand_ShouldNotAddToHistory()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
 
             // Act
             history.AddCommand(null);
@@ -72,7 +73,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void AddCommand_WithEmptyCommand_ShouldNotAddToHistory()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
 
             // Act
             history.AddCommand("");
@@ -87,7 +88,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void AddCommand_WithWhitespaceCommand_ShouldTrimAndAdd()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             var command = "  show version  ";
 
             // Act
@@ -102,7 +103,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void AddCommand_DuplicateCommands_ShouldAddBothInstances()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             var command = "show version";
 
             // Act
@@ -119,7 +120,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void AddCommand_ShouldSetTimestamp()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             var command = "show version";
             var beforeTime = DateTime.UtcNow;
 
@@ -136,7 +137,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void AddCommand_ShouldSetCommandNumber()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
 
             // Act
             history.AddCommand("command1");
@@ -154,7 +155,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void GetCommandByNumber_ValidNumber_ShouldReturnCorrectCommand()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("command1");
             history.AddCommand("command2");
             history.AddCommand("command3");
@@ -169,7 +170,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void GetCommandByNumber_InvalidNumber_ShouldReturnNull()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("command1");
 
             // Act & Assert
@@ -182,7 +183,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void GetCommandByNumber_EmptyHistory_ShouldReturnNull()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
 
             // Act & Assert
             Assert.Null(history.GetCommandByNumber(1));
@@ -192,7 +193,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void GetLastCommand_WithHistory_ShouldReturnLastCommand()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("command1");
             history.AddCommand("command2");
             history.AddCommand("command3");
@@ -208,7 +209,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void GetLastCommand_EmptyHistory_ShouldReturnNull()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
 
             // Act
             var lastCommand = history.GetLastCommand();
@@ -221,7 +222,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void Clear_ShouldRemoveAllCommands()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("command1");
             history.AddCommand("command2");
             history.AddCommand("command3");
@@ -239,7 +240,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void GetHistory_ValidCount_ShouldReturnCorrectCommands()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("command1");
             history.AddCommand("command2");
             history.AddCommand("command3");
@@ -260,7 +261,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void GetHistory_CountGreaterThanHistory_ShouldReturnAllCommands()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("command1");
             history.AddCommand("command2");
 
@@ -277,7 +278,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void GetHistory_ZeroCount_ShouldReturnAllCommands()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("command1");
             history.AddCommand("command2");
 
@@ -294,7 +295,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void GetHistory_NegativeCount_ShouldReturnAllCommands()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("command1");
 
             // Act
@@ -309,7 +310,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void SearchHistory_ValidPattern_ShouldReturnMatchingCommands()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("show version");
             history.AddCommand("show interfaces");
             history.AddCommand("configure terminal");
@@ -330,7 +331,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void SearchHistory_CaseInsensitive_ShouldReturnMatchingCommands()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("Show Version");
             history.AddCommand("SHOW INTERFACES");
             history.AddCommand("configure terminal");
@@ -348,7 +349,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void SearchHistory_CaseSensitive_ShouldReturnExactMatches()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("show version");
             history.AddCommand("Show Version");
             history.AddCommand("SHOW INTERFACES");
@@ -365,7 +366,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void SearchHistory_NoMatches_ShouldReturnEmptyList()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("configure terminal");
             history.AddCommand("exit");
 
@@ -380,7 +381,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void SearchHistory_NullPattern_ShouldReturnEmptyList()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("show version");
 
             // Act
@@ -394,7 +395,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void SearchHistory_EmptyPattern_ShouldReturnEmptyList()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand("show version");
 
             // Act
@@ -408,7 +409,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void CommandHistoryEntry_Properties_ShouldBeSetCorrectly()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             var command = "show version";
             var beforeTime = DateTime.UtcNow;
 
@@ -427,7 +428,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void CommandHistory_MaxSize_ShouldLimitHistorySize()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory(maxSize: 3);
+            var history = new CommandHistory(maxSize: 3);
 
             // Act
             history.AddCommand("command1");
@@ -448,7 +449,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void CommandHistory_WithMaxSize_CommandNumbersShouldContinue()
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory(maxSize: 2);
+            var history = new CommandHistory(maxSize: 2);
 
             // Act
             history.AddCommand("command1");
@@ -471,7 +472,7 @@ namespace NetForge.Simulation.Tests.CommandHistory
         public void SearchHistory_VariousPatterns_ShouldReturnCorrectResults(string command, string pattern, bool shouldMatch)
         {
             // Arrange
-            var history = new DataTypes.Cli.CommandHistory.CommandHistory();
+            var history = new CommandHistory();
             history.AddCommand(command);
 
             // Act

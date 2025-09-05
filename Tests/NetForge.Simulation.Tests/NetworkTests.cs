@@ -10,7 +10,7 @@ namespace NetForge.Simulation.Tests
     public class RootNetworkTests
     {
         private readonly Network _network;
-        private readonly NetworkEventBus _eventBus;
+        private readonly INetworkEventBus _eventBus;
 
         public RootNetworkTests() // Constructor acts as TestInitialize / Setup
         {

@@ -17,7 +17,7 @@ namespace NetForge.Simulation.Tests
     public class NetworkDeviceTests
     {
         private readonly Network _network;
-        private readonly NetworkEventBus _eventBus;
+        private readonly INetworkEventBus _eventBus;
         private readonly CiscoDevice _testDevice; // Using a concrete device type
 
         public NetworkDeviceTests()
@@ -35,7 +35,7 @@ namespace NetForge.Simulation.Tests
             ProtocolConfigChangedEventArgs? receivedArgs = null;
             _eventBus.Subscribe<ProtocolConfigChangedEventArgs>(args =>
             {
-                if (args.DeviceName == _testDevice.Name && args.ProtocolType == NetworkProtocolType.OSPF)
+                if (args.DeviceName == _testDevice.Name && args.NetworkProtocolType == NetworkProtocolType.OSPF)
                 {
                     receivedArgs = args;
                 }
@@ -52,7 +52,7 @@ namespace NetForge.Simulation.Tests
             // Assert
             Assert.NotNull(receivedArgs);
             Assert.Equal(_testDevice.Name, receivedArgs.DeviceName);
-            Assert.Equal(NetworkProtocolType.OSPF, receivedArgs.ProtocolType);
+            Assert.Equal(NetworkProtocolType.OSPF, receivedArgs.NetworkProtocolType);
             Assert.Contains("OSPF configuration", receivedArgs.ChangeDetails);
         }
 
@@ -63,7 +63,7 @@ namespace NetForge.Simulation.Tests
             ProtocolConfigChangedEventArgs? receivedArgs = null;
             _eventBus.Subscribe<ProtocolConfigChangedEventArgs>(args =>
             {
-                if (args.DeviceName == _testDevice.Name && args.ProtocolType == NetworkProtocolType.BGP)
+                if (args.DeviceName == _testDevice.Name && args.NetworkProtocolType == NetworkProtocolType.BGP)
                 {
                     receivedArgs = args;
                 }
@@ -80,7 +80,7 @@ namespace NetForge.Simulation.Tests
             // Assert
             Assert.NotNull(receivedArgs);
             Assert.Equal(_testDevice.Name, receivedArgs.DeviceName);
-            Assert.Equal(NetworkProtocolType.BGP, receivedArgs.ProtocolType);
+            Assert.Equal(NetworkProtocolType.BGP, receivedArgs.NetworkProtocolType);
             Assert.Contains("BGP configuration", receivedArgs.ChangeDetails);
         }
 
