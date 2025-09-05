@@ -346,4 +346,20 @@ public class LinuxVendorCapabilities : IVendorCapabilities
         // Linux system reload/reboot
         return true;
     }
+
+    // ICommandFormatter interface implementation
+    public string PreprocessCommand(string command)
+    {
+        return command; // No preprocessing by default
+    }
+
+    public string PostprocessOutput(string output)
+    {
+        return output; // No postprocessing by default
+    }
+
+    public string RenderConfiguration(object configData)
+    {
+        return configData?.ToString() ?? "";
+    }
 } 
