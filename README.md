@@ -143,7 +143,193 @@ NetForge now features a **declarative vendor-based system** that replaces the ol
 - **Memory Optimized**: Efficient neighbor aging and automatic cleanup of stale state
 - **Performance Validated**: Sub-30-second convergence times for complex routing protocols with full state machines
 
-## 🆕 NEW: Vendor-Based System
+## 🆕 NEW: Declarative Device & Topology Creation
+
+### Revolutionary Declarative Architecture
+NetForge now features a **comprehensive declarative system** for creating network devices and topologies with full vendor support:
+
+**Benefits of the New Declarative System:**
+- **🎯 Declarative Design**: Define "what" you want, not "how" to build it
+- **🏗️ Builder Pattern**: Fluent APIs with method chaining for readable configuration
+- **🔧 Vendor Agnostic**: Works with any vendor (Cisco, Juniper, Arista, etc.)
+- **📋 Type Safety**: Compile-time validation prevents configuration errors
+- **🚀 IoC Integration**: Full dependency injection with service registration
+
+### 9-Step Declarative Device Creation
+
+The new system follows a structured approach:
+1. **Create Device** → Set unique device name
+2. **Vendor & Model** → Specify vendor, model, software version
+3. **Physical Characteristics** → Memory, storage, CPU specifications
+4. **Interfaces** → Declare physical interfaces (minimum 1 required)
+5. **Protocols** → Add routing/network protocols (OSPF, BGP, etc.)
+6. **CLI Handlers** → Configure Telnet/SSH management access
+7. **SNMP Handlers** → Set up SNMP monitoring capabilities
+8. **HTTP Handlers** → Configure web management interface
+9. **NVRAM Config** → Load initial device configuration
+
+**Important Architectural Constraint**: Handlers can access protocols, but protocols remain independent of handlers.
+
+### Basic Device Creation Examples
+
+```csharp
+using NetForge.Simulation.Common.Declarative;
+
+// Example 1: Cisco Router with OSPF
+var ciscoRouter = DeviceBuilder.Create("Router1")
+    .WithVendor("Cisco", "ISR4451", "15.7")
+    .WithPhysicalSpecs(memoryMB: 4096, storageMB: 8192, 
+        cpu: new CpuSpec { Architecture = "ARM", FrequencyMHz = 1800, Cores = 4 })
+    .AddInterface("GigabitEthernet0/0", InterfaceType.GigabitEthernet, 1000, "WAN Interface")
+    .AddInterface("GigabitEthernet0/1", InterfaceType.GigabitEthernet, 1000, "LAN Interface")
+    .AddOspf(processId: 1)  // Convenient OSPF configuration
+    .AddSsh()               // Enable SSH management
+    .WithSnmp(communities: ["public", "private"])
+    .WithInitialConfig("ios", """
+        hostname Router1
+        interface GigabitEthernet0/0
+         ip address 192.168.1.1 255.255.255.252
+         no shutdown
+        router ospf 1
+         network 192.168.1.0 0.0.0.3 area 0
+        """)
+    .Build();
+
+// Example 2: Juniper Router with BGP
+var juniperRouter = DeviceBuilder.Create("Router2")
+    .WithVendor("Juniper", "MX204", "20.4R3")
+    .WithPhysicalSpecs(memoryMB: 8192, storageMB: 16384)
+    .AddInterface("ge-0/0/0", InterfaceType.GigabitEthernet, 1000)
+    .AddInterface("ge-0/0/1", InterfaceType.GigabitEthernet, 1000)
+    .AddBgp(asNumber: 65001)  // Convenient BGP configuration
+    .AddSsh()
+    .WithSnmp(version: SnmpVersion.V3, communities: ["snmp-ro"])
+    .Build();
+
+// Example 3: Using Pre-built Common Device Specs
+var enterpriseSwitch = CommonDeviceSpecs.CiscoSwitch("Access01", portCount: 48)
+    .AddOspf(processId: 1)
+    .WithInitialConfig("ios", "hostname Access01")
+    .Build();
+```
+
+### Declarative Topology Creation
+
+Create complete network topologies with physical connections:
+
+```csharp
+// Example 1: Point-to-Point Network
+var topology = TopologyBuilder.Create("Point-to-Point Network")
+    .AddDevice(ciscoRouter)
+    .AddDevice(juniperRouter)
+    .Connect("Router1", "GigabitEthernet0/0", "Router2", "ge-0/0/0", "Cat6", 5.0)
+    .WithSimulation(timeScale: 1.0, realTimeMode: false, logLevel: "Info")
+    .Build();
+
+// Example 2: Hub-and-Spoke with Quality Settings
+var hubSpokeNetwork = TopologyBuilder.Create("Branch Network")
+    .AddDevice(hubDevice)
+    .AddDevice(spoke1)
+    .AddDevice(spoke2)
+    .ConnectWithQuality("HQ-Hub", "GigabitEthernet0/0", "Branch-East", "GigabitEthernet0/0",
+        packetLossPercent: 0.1, latencyMs: 10.0, jitterMs: 2.0)
+    .ConnectWithQuality("HQ-Hub", "GigabitEthernet0/1", "Branch-West", "GigabitEthernet0/0",
+        packetLossPercent: 0.2, latencyMs: 15.0, jitterMs: 3.0)
+    .Build();
+
+// Example 3: Using Common Topology Patterns
+var ringNetwork = CommonTopologies.Ring("Ring Network", router1, router2, router3, router4)
+    .Build();
+
+var threeTierNetwork = CommonTopologies.ThreeTier("Enterprise Network",
+    coreDevice: coreSwitch,
+    distributionDevices: [dist01, dist02],
+    accessDevices: [[access01, access02], [access03, access04]]
+).Build();
+```
+
+### Complete Workflow: Specification to Running Network
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using NetForge.Simulation.Common.Declarative;
+
+public async Task<INetworkTopology> CreateAndDeployNetworkAsync()
+{
+    // Step 1: Build topology specification declaratively
+    var topologySpec = TopologyBuilder.Create("Multi-Vendor Network")
+        .AddDevice(builder => builder
+            .Create("Cisco-R1")
+            .WithVendor("Cisco", "ISR4451", "15.7")
+            .WithPhysicalSpecs(4096, 8192)
+            .AddInterface("GigabitEthernet0/0", InterfaceType.GigabitEthernet, 1000)
+            .AddInterface("GigabitEthernet0/1", InterfaceType.GigabitEthernet, 1000)
+            .AddOspf(processId: 1)
+            .AddBgp(asNumber: 65001)
+            .AddSsh())
+        .AddDevice(builder => builder
+            .Create("Juniper-R2")
+            .WithVendor("Juniper", "MX204", "20.4R3")
+            .WithPhysicalSpecs(8192, 16384)
+            .AddInterface("ge-0/0/0", InterfaceType.GigabitEthernet, 1000)
+            .AddInterface("ge-0/0/1", InterfaceType.GigabitEthernet, 1000)
+            .AddOspf(processId: 100)
+            .AddBgp(asNumber: 65002)
+            .AddSsh())
+        .Connect("Cisco-R1", "GigabitEthernet0/0", "Juniper-R2", "ge-0/0/0")
+        .WithSimulation(timeScale: 1.0, realTimeMode: true)
+        .Build();
+
+    // Step 2: Create actual network topology from specification
+    var serviceProvider = ConfigureServices();  // IoC container setup
+    var factory = new DeclarativeTopologyFactory(serviceProvider);
+    var network = await factory.CreateTopologyAsync(topologySpec);
+
+    // Step 3: Network is ready - devices created, protocols running, connections established
+    return network;
+}
+```
+
+### Advanced Multi-Vendor Example
+
+```csharp
+public static TopologySpec CreateEnterpriseNetwork()
+{
+    // Core layer with high-end Cisco device
+    var coreSwitch = DeviceBuilder.Create("Core01")
+        .WithVendor("Cisco", "Catalyst9600", "16.12")
+        .WithPhysicalSpecs(memoryMB: 8192, storageMB: 16384)
+        .AddInterface("TenGigabitEthernet1/0/1", InterfaceType.TenGigabitEthernet, 10000)
+        .AddInterface("TenGigabitEthernet1/0/2", InterfaceType.TenGigabitEthernet, 10000)
+        .AddOspf(processId: 1)
+        .AddSsh()
+        .WithSnmp(version: SnmpVersion.V3)
+        .Build();
+
+    // Distribution with Arista switches
+    var dist01 = DeviceBuilder.Create("Dist01")
+        .WithVendor("Arista", "DCS-7050SX3", "4.27.3F")
+        .WithPhysicalSpecs(memoryMB: 4096, storageMB: 8192)
+        .AddInterface("Ethernet49", InterfaceType.TenGigabitEthernet, 10000)
+        .AddInterface("Ethernet1", InterfaceType.GigabitEthernet, 1000)
+        .AddInterface("Ethernet2", InterfaceType.GigabitEthernet, 1000)
+        .AddOspf(processId: 1)
+        .AddSsh()
+        .WithHttp(httpsEnabled: true)
+        .Build();
+
+    // Access layer with standard Cisco switches
+    var access01 = CommonDeviceSpecs.CiscoSwitch("Access01", portCount: 48).Build();
+    var access02 = CommonDeviceSpecs.CiscoSwitch("Access02", portCount: 48).Build();
+
+    // Build three-tier topology with mixed vendors
+    return CommonTopologies.ThreeTier("Mixed-Vendor Enterprise",
+        coreDevice: coreSwitch,
+        distributionDevices: [dist01],
+        accessDevices: [[access01, access02]]
+    ).Build();
+}
+```
 
 ### Migration from Plugin Architecture
 NetForge has **migrated from a plugin-based discovery system to a declarative vendor-based architecture**:
@@ -155,115 +341,144 @@ NetForge has **migrated from a plugin-based discovery system to a declarative ve
 - **🔧 IoC Integration**: Full dependency injection support with service registration
 - **📚 Self-Documenting**: Vendor capabilities clearly defined in code
 
-### New Vendor System Usage
+## 🚀 Quick Start Guide
+
+### Basic Network Simulation (NEW Declarative API)
+Create a multi-vendor network with OSPF routing using the revolutionary declarative approach:
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
-using NetForge.Simulation.Common.Vendors;
+using NetForge.Simulation.Common.Declarative;
 
-// Configure vendor system at startup
-var services = new ServiceCollection();
-services.ConfigureVendorSystem();  // Registers all vendor services
-
-var serviceProvider = services.BuildServiceProvider();
-
-// Initialize the migration from plugin system
-VendorSystemStartup.MigrateFromPluginSystem(serviceProvider);
-
-// Use vendor-based services
-var protocolService = serviceProvider.GetRequiredService<VendorBasedProtocolService>();
-var handlerService = serviceProvider.GetRequiredService<VendorBasedHandlerService>();
-
-// Create protocols and handlers for specific vendors
-var ciscoOspf = protocolService.GetProtocol(NetworkProtocolType.OSPF, "Cisco");
-var juniperBgp = protocolService.GetProtocol(NetworkProtocolType.BGP, "Juniper");
-
-// Initialize device with vendor system
-var device = new { Vendor = "Cisco", DeviceType = "Router", Hostname = "R1" };
-VendorSystemStartup.InitializeDeviceWithVendorSystem(device, serviceProvider);
-```
-
-### Creating Custom Vendor Descriptors
-
-```csharp
-public class MyVendorDescriptor : VendorDescriptorBase
+public async Task CreateNetworkExample()
 {
-    public override string VendorName => "MyVendor";
-    public override string DisplayName => "My Vendor Inc.";
-    public override int Priority => 50;
-
-    protected override void InitializeVendor()
-    {
-        // Configure prompts
-        ConfigurePrompts(">", "#", "(config)#");
-
-        // Add device models
-        AddModel(new DeviceModelDescriptor
-        {
-            ModelName = "MV1000",
-            DeviceType = DeviceType.Router,
-            Features = { "OSPF", "BGP" }
-        });
-
-        // Add supported protocols
-        AddProtocol(NetworkProtocolType.OSPF, "MyVendor.Protocols.OspfProtocol");
+    // Step 1: Build topology specification declaratively
+    var topologySpec = TopologyBuilder.Create("Multi-Vendor OSPF Network")
         
-        // Add CLI handlers
-        AddHandler("ShowVersion", "show version", 
-            "MyVendor.Handlers.ShowVersionHandler", HandlerType.Show);
-    }
+        // Cisco Router with pre-configured OSPF
+        .AddDevice(DeviceBuilder.Create("Router1")
+            .WithVendor("Cisco", "ISR4451", "15.7")
+            .WithPhysicalSpecs(memoryMB: 4096, storageMB: 8192)
+            .AddInterface("GigabitEthernet0/0", InterfaceType.GigabitEthernet, 1000)
+            .AddInterface("GigabitEthernet0/1", InterfaceType.GigabitEthernet, 1000)
+            .AddOspf(processId: 1)  // Automatically configures OSPF
+            .AddSsh()
+            .WithInitialConfig("ios", """
+                hostname Router1
+                interface GigabitEthernet0/0
+                 ip address 10.0.0.1 255.255.255.0
+                 no shutdown
+                router ospf 1
+                 network 10.0.0.0 0.0.0.255 area 0
+                 network 10.1.0.0 0.0.0.255 area 0
+                """))
+        
+        // Juniper Router with pre-configured OSPF
+        .AddDevice(DeviceBuilder.Create("Router2")
+            .WithVendor("Juniper", "MX204", "20.4R3")
+            .WithPhysicalSpecs(memoryMB: 8192, storageMB: 16384)
+            .AddInterface("ge-0/0/0", InterfaceType.GigabitEthernet, 1000)
+            .AddInterface("ge-0/0/1", InterfaceType.GigabitEthernet, 1000)
+            .AddOspf(processId: 100)
+            .AddSsh()
+            .WithInitialConfig("junos", """
+                set system host-name Router2
+                set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/24
+                set interfaces ge-0/0/1 unit 0 family inet address 10.2.0.1/24
+                set protocols ospf area 0.0.0.0 interface ge-0/0/0
+                set protocols ospf area 0.0.0.0 interface ge-0/0/1
+                """))
+        
+        // Arista Switch using common device specs
+        .AddDevice(CommonDeviceSpecs.AristaSwitch("Switch1", "DCS-7050SX3")
+            .AddInterface("Ethernet49", InterfaceType.TenGigabitEthernet, 10000)
+            .AddOspf(processId: 1))
+        
+        // Create physical connections with cable specifications
+        .Connect("Router1", "GigabitEthernet0/0", "Router2", "ge-0/0/0", "Cat6", 2.0)
+        .Connect("Router2", "ge-0/0/1", "Switch1", "Ethernet1", "Cat6", 1.0)
+        .Connect("Router1", "GigabitEthernet0/1", "Switch1", "Ethernet49", "Fiber", 0.5)
+        
+        // Set simulation parameters
+        .WithSimulation(timeScale: 1.0, realTimeMode: false, logLevel: "Info")
+        .Build();
+
+    // Step 2: Create actual network from specification
+    var serviceProvider = ConfigureServices();
+    var factory = new DeclarativeTopologyFactory(serviceProvider);
+    var network = await factory.CreateTopologyAsync(topologySpec);
+
+    // Step 3: Network is automatically configured and running
+    // - All devices are created with specified configurations
+    // - OSPF is running and neighbors are being discovered
+    // - Physical connections are established
+    // - Management interfaces (SSH) are active
+
+    // Test the network (devices support their native CLI)
+    var ciscoDevice = network.GetDevices().First(d => d.Name == "Router1");
+    var juniperDevice = network.GetDevices().First(d => d.Name == "Router2");
+
+    // Test Cisco CLI
+    var ciscoRoutes = await ciscoDevice.ProcessCommandAsync("show ip route ospf");
+    var ciscoPing = await ciscoDevice.ProcessCommandAsync("ping 10.0.0.2");
+
+    // Test Juniper CLI  
+    var juniperRoutes = await juniperDevice.ProcessCommandAsync("show route protocol ospf");
+    var juniperPing = await juniperDevice.ProcessCommandAsync("ping 10.0.0.1");
+
+    Console.WriteLine($"Network '{network.Name}' created successfully!");
+    Console.WriteLine($"Devices: {network.GetDevices().Count()}");
+    Console.WriteLine($"Connections: {network.GetConnections().Count()}");
 }
 
-// Register the vendor
-services.AddVendor<MyVendorDescriptor>();
+// Configure IoC container
+private IServiceProvider ConfigureServices()
+{
+    var services = new ServiceCollection();
+    services.ConfigureVendorSystem();  // Register vendor-based architecture
+    return services.BuildServiceProvider();
+}
 ```
 
-## 🚀 Quick Start Guide
-
-### Basic Network Simulation
-Create a multi-vendor network with OSPF routing between Cisco and Juniper devices:
+### Even Simpler: Pre-built Topology Patterns
 
 ```csharp
-using NetForge.Simulation.Common;
-using NetForge.Simulation.Core;
+// Create common topologies with minimal code
+public async Task CreateCommonTopologies()
+{
+    // Point-to-Point between different vendors
+    var p2p = CommonTopologies.PointToPoint("P2P Network",
+        CommonDeviceSpecs.CiscoRouter("R1").AddOspf(1).Build(),
+        CommonDeviceSpecs.JuniperRouter("R2").AddOspf(100).Build()
+    ).Build();
 
-// Create devices using factory pattern
-var cisco = DeviceFactory.CreateDevice("cisco", "Router1");
-var juniper = DeviceFactory.CreateDevice("juniper", "Router2");
-var arista = DeviceFactory.CreateDevice("arista", "Switch1");
+    // Hub-and-spoke with 4 branches
+    var hubSpoke = CommonTopologies.HubAndSpoke("Branch Network",
+        hubDevice: CommonDeviceSpecs.CiscoRouter("HQ-Router").AddBgp(65001).Build(),
+        CommonDeviceSpecs.CiscoRouter("Branch1").AddBgp(65001).Build(),
+        CommonDeviceSpecs.CiscoRouter("Branch2").AddBgp(65001).Build(),
+        CommonDeviceSpecs.CiscoRouter("Branch3").AddBgp(65001).Build()
+    ).Build();
 
-// Build network topology
-var network = new Network();
-await network.AddDeviceAsync(cisco);
-await network.AddDeviceAsync(juniper);
-await network.AddDeviceAsync(arista);
+    // Three-tier enterprise network
+    var enterprise = CommonTopologies.ThreeTier("Enterprise Network",
+        coreDevice: CommonDeviceSpecs.CiscoSwitch("Core01", "Catalyst9600").Build(),
+        distributionDevices: [
+            CommonDeviceSpecs.CiscoSwitch("Dist01").Build(),
+            CommonDeviceSpecs.CiscoSwitch("Dist02").Build()
+        ],
+        accessDevices: [
+            [CommonDeviceSpecs.CiscoSwitch("Access01").Build()],
+            [CommonDeviceSpecs.CiscoSwitch("Access02").Build()]
+        ]
+    ).Build();
 
-// Create physical connections
-await network.AddLinkAsync("Router1", "GigabitEthernet0/0", "Router2", "ge-0/0/0");
-await network.AddLinkAsync("Router2", "ge-0/0/1", "Switch1", "Ethernet1");
-
-// Configure Cisco router with OSPF
-await cisco.ProcessCommandAsync("enable");
-await cisco.ProcessCommandAsync("configure terminal");
-await cisco.ProcessCommandAsync("interface GigabitEthernet0/0");
-await cisco.ProcessCommandAsync("ip address 10.0.0.1 255.255.255.0");
-await cisco.ProcessCommandAsync("no shutdown");
-await cisco.ProcessCommandAsync("router ospf 1");
-await cisco.ProcessCommandAsync("network 10.0.0.0 0.0.0.255 area 0");
-await cisco.ProcessCommandAsync("exit");
-
-// Configure Juniper router with OSPF
-await juniper.ProcessCommandAsync("configure");
-await juniper.ProcessCommandAsync("set interfaces ge-0/0/0 unit 0 family inet address 10.0.0.2/24");
-await juniper.ProcessCommandAsync("set protocols ospf area 0.0.0.0 interface ge-0/0/0");
-await juniper.ProcessCommandAsync("commit");
-
-// Protocols automatically discover neighbors and converge
-await network.UpdateProtocolsAsync();
-
-// Test connectivity and routing
-var routeResult = await cisco.ProcessCommandAsync("show ip route ospf");
-var pingResult = await cisco.ProcessCommandAsync("ping 10.0.0.2");
+    // Deploy any topology
+    var factory = new DeclarativeTopologyFactory(ConfigureServices());
+    var network1 = await factory.CreateTopologyAsync(p2p);
+    var network2 = await factory.CreateTopologyAsync(hubSpoke); 
+    var network3 = await factory.CreateTopologyAsync(enterprise);
+}
 ```
 
 ### Protocol-Based Remote Access
