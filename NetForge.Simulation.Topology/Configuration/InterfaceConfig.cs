@@ -9,7 +9,7 @@ namespace NetForge.Simulation.Common.Configuration
     /// </summary>
     public class InterfaceConfig : IInterfaceConfig
     {
-        private INetworkDevice _parentDevice;
+        private INetworkDevice? _parentDevice;
 
         public string Name { get; set; }
         public string? IpAddress { get; set; }

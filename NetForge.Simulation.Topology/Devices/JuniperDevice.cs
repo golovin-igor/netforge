@@ -468,7 +468,7 @@ namespace NetForge.Simulation.Devices
             ParentNetwork?.UpdateProtocols();
         }
 
-        public void ClearInterfaceCounters(string interfaceName = null)
+        public void ClearInterfaceCounters(string? interfaceName = null)
         {
             if (string.IsNullOrEmpty(interfaceName))
             {

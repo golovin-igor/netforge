@@ -19,14 +19,14 @@ namespace NetForge.Simulation.Topology.Devices
     public abstract class NetworkDevice : INetworkDevice
     {
         public string Name { get; protected set; }
-        public string Vendor { get; protected init; }
+        public string Vendor { get; protected init; } = string.Empty;
 
         public INetwork? ParentNetwork { get; set; }
 
         /// <summary>
         /// Contains the unique identifier for this device in the network, that we import from the generated network.
         /// </summary>
-        public string DeviceId { get; set; }
+        public string DeviceId { get; set; } = string.Empty;
 
         public bool IsNvramLoaded { get; set; }
 
@@ -40,21 +40,21 @@ namespace NetForge.Simulation.Topology.Devices
         protected readonly Dictionary<string, string> SystemSettings = new();
         protected readonly List<string> LogEntries = [];
 
-        // Protocol configurations
-        protected OspfConfig OspfConfig;
-        protected BgpConfig BgpConfig;
-        protected RipConfig RipConfig;
-        protected EigrpConfig EigrpConfig;
+        // Protocol configurations (initialized with default values)
+        protected OspfConfig OspfConfig = new(1);
+        protected BgpConfig BgpConfig = new(65000);
+        protected RipConfig RipConfig = new();
+        protected EigrpConfig EigrpConfig = new(1);
         protected StpConfig StpConfig = new();
-        protected IgrpConfig IgrpConfig;
-        protected VrrpConfig VrrpConfig;
-        protected HsrpConfig HsrpConfig;
-        protected CdpConfig CdpConfig;
-        protected LldpConfig LldpConfig;
-        protected object TelnetConfig;
-        protected object SshConfig;
-        protected object SnmpConfig;
-        protected object HttpConfig;
+        protected IgrpConfig IgrpConfig = new(1);
+        protected VrrpConfig VrrpConfig = new();
+        protected HsrpConfig HsrpConfig = new();
+        protected CdpConfig CdpConfig = new();
+        protected LldpConfig LldpConfig = new();
+        protected object TelnetConfig = new();
+        protected object SshConfig = new();
+        protected object SnmpConfig = new();
+        protected object HttpConfig = new();
         protected readonly Dictionary<string, RoutingPolicy> RoutingPolicies = new();
         protected readonly Dictionary<string, PrefixList> PrefixLists = new();
         protected readonly Dictionary<string, BgpCommunity> BgpCommunities = new();
@@ -66,18 +66,18 @@ namespace NetForge.Simulation.Topology.Devices
         private readonly List<IDeviceProtocol> _protocols = [];
 
         // Enhanced protocol service (lazily initialized)
-        private IProtocolService _protocolService;
+        private IProtocolService _protocolService = null!;
 
         // CLI state
         protected DeviceMode CurrentMode = DeviceMode.User;
         protected string CurrentInterface = "";
-        protected string Hostname;
+        protected string Hostname = string.Empty;
 
-        protected readonly ICliHandlerManager CommandManager;
+        protected readonly ICliHandlerManager CommandManager = null!;
         protected readonly CommandHistory CommandHistory;
 
         // Event for log entry additions, useful for testing and real-time log monitoring
-        public event Action<string> LogEntryAdded;
+        public event Action<string> LogEntryAdded = delegate { };
 
         protected NetworkDevice(string name)
         {
