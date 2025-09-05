@@ -4,6 +4,8 @@ using NetForge.Simulation.Common.Vendors;
 using NetForge.Simulation.Common.CLI.Services;
 using NetForge.Simulation.Protocols.Common.Services;
 using NetForge.Simulation.DataTypes;
+using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Interfaces;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Vendors
@@ -81,7 +83,7 @@ namespace NetForge.Simulation.Tests.Vendors
             var serviceProvider = CreateMigratedServiceProvider();
             var protocolManager = serviceProvider.GetRequiredService<VendorAwareProtocolManager>();
             
-            // Create a mock device
+            // Create a mock device using anonymous object (still works with reflection fallback)
             var mockDevice = new { Vendor = "Cisco", DeviceType = "Router", Hostname = "R1" };
             
             // Act
@@ -100,7 +102,9 @@ namespace NetForge.Simulation.Tests.Vendors
         {
             // Arrange
             var serviceProvider = CreateMigratedServiceProvider();
-            var mockDevice = new { Vendor = "Cisco", DeviceType = "Switch", Hostname = "SW1" };
+            
+            // Create a proper mock device that implements INetworkDevice
+            var mockDevice = new MockNetworkDevice { Vendor = "Cisco", Name = "SW1" };
             
             // Act
             var handlerManager = VendorSystemStartup.CreateVendorAwareHandlerManager(mockDevice, serviceProvider);
@@ -209,5 +213,105 @@ namespace NetForge.Simulation.Tests.Vendors
             Assert.NotNull(serviceProvider.GetRequiredService<VendorBasedHandlerService>());
             Assert.NotNull(serviceProvider.GetRequiredService<VendorAwareProtocolManager>());
         }
+    }
+
+    /// <summary>
+    /// Mock implementation of INetworkDevice for testing
+    /// </summary>
+    public class MockNetworkDevice : INetworkDevice
+    {
+        public string Name { get; set; } = "";
+        public string Vendor { get; set; } = "";
+        public string DeviceName => Name;
+        public string DeviceType { get; set; } = "Router";
+        public string DeviceId { get; set; } = "";
+        public INetwork? ParentNetwork { get; set; }
+        public bool IsNvramLoaded { get; set; }
+
+        public event Action<string> LogEntryAdded = delegate { };
+
+        public Task<string> ProcessCommandAsync(string command) => Task.FromResult("");
+        public CommandHistory GetCommandHistory() => new CommandHistory();
+        public string GetPrompt() => "Router>";
+        public string GetCurrentPrompt() => "Router>";
+        public Dictionary<string, IInterfaceConfig> GetAllInterfaces() => new Dictionary<string, IInterfaceConfig>();
+        public Dictionary<int, VlanConfig> GetAllVlans() => new Dictionary<int, VlanConfig>();
+        public List<Route> GetRoutingTable() => new List<Route>();
+        public Dictionary<int, AccessList> GetAccessLists() => new Dictionary<int, AccessList>();
+        public Dictionary<int, PortChannel> GetPortChannels() => new Dictionary<int, PortChannel>();
+        public Dictionary<string, string> GetSystemSettings() => new Dictionary<string, string>();
+        public List<string> GetLogEntries() => new List<string>();
+        public Dictionary<string, string> GetArpTable() => new Dictionary<string, string>();
+        public string GetArpTableOutput() => "";
+        public OspfConfig? GetOspfConfiguration() => null;
+        public BgpConfig? GetBgpConfiguration() => null;
+        public RipConfig? GetRipConfiguration() => null;
+        public EigrpConfig? GetEigrpConfiguration() => null;
+        public StpConfig GetStpConfiguration() => new StpConfig();
+        public IgrpConfig? GetIgrpConfiguration() => null;
+        public VrrpConfig? GetVrrpConfiguration() => null;
+        public HsrpConfig? GetHsrpConfiguration() => null;
+        public CdpConfig? GetCdpConfiguration() => null;
+        public LldpConfig? GetLldpConfiguration() => null;
+        public void SetOspfConfiguration(OspfConfig config) { }
+        public void SetBgpConfiguration(BgpConfig config) { }
+        public void SetRipConfiguration(RipConfig config) { }
+        public void SetEigrpConfiguration(EigrpConfig config) { }
+        public void SetStpConfiguration(StpConfig config) { }
+        public void SetIgrpConfiguration(IgrpConfig config) { }
+        public void SetVrrpConfiguration(VrrpConfig config) { }
+        public void SetHsrpConfiguration(HsrpConfig config) { }
+        public void SetCdpConfiguration(CdpConfig config) { }
+        public void SetLldpConfiguration(LldpConfig config) { }
+        public object GetTelnetConfiguration() => new object();
+        public void SetTelnetConfiguration(object config) { }
+        public object GetSshConfiguration() => new object();
+        public void SetSshConfiguration(object config) { }
+        public object GetSnmpConfiguration() => new object();
+        public void SetSnmpConfiguration(object config) { }
+        public object GetHttpConfiguration() => new object();
+        public void SetHttpConfiguration(object config) { }
+        public string GetHostname() => Name;
+        public void SetHostname(string name) => Name = name;
+        public string GetCurrentMode() => "exec";
+        public void SetCurrentMode(string mode) { }
+        public DeviceMode GetCurrentModeEnum() => DeviceMode.Exec;
+        public void SetCurrentModeEnum(DeviceMode mode) { }
+        public string GetCurrentInterface() => "";
+        public void SetCurrentInterface(string iface) { }
+        public void SetMode(string mode) { }
+        public void SetModeEnum(DeviceMode mode) { }
+        public string GetNetworkAddress(string ip, string mask) => "";
+        public void ForceUpdateConnectedRoutes() { }
+        public string ExecutePing(string destination) => "";
+        public bool CheckIpInNetwork(string ip, string network, string mask) => false;
+        public void AddRoute(Route route) { }
+        public void RemoveRoute(Route route) { }
+        public void ClearRoutesByProtocol(string protocol) { }
+        public int MaskToCidr(string mask) => 24;
+        public IInterfaceConfig? GetInterface(string name) => null;
+        public VlanConfig? GetVlan(int id) => null;
+        public AccessList? GetAccessList(int number) => null;
+        public PortChannel? GetPortChannel(int number) => null;
+        public string? GetSystemSetting(string name) => null;
+        public void SetSystemSetting(string name, string value) { }
+        public void AddLogEntry(string entry) { }
+        public void ClearLog() { }
+        public void AddStaticRoute(string network, string mask, string nextHop, int metric) { }
+        public void RemoveStaticRoute(string network, string mask) { }
+        public void RegisterProtocol(IDeviceProtocol protocol) { }
+        public Task UpdateAllProtocolStates() => Task.CompletedTask;
+        public List<PhysicalConnection> GetPhysicalConnectionsForInterface(string interfaceName) => new List<PhysicalConnection>();
+        public List<PhysicalConnection> GetOperationalPhysicalConnections() => new List<PhysicalConnection>();
+        public bool IsInterfacePhysicallyConnected(string interfaceName) => false;
+        public PhysicalConnectionMetrics? GetPhysicalConnectionMetrics(string interfaceName) => null;
+        public PhysicalTransmissionResult TestPhysicalConnectivity(string interfaceName, int packetSize = 1500) => new PhysicalTransmissionResult();
+        public (INetworkDevice device, string interfaceName)? GetConnectedDevice(string localInterfaceName) => null;
+        public bool ShouldInterfaceParticipateInProtocols(string interfaceName) => false;
+        public void SetRunningConfig(string config) { }
+        public void SubscribeProtocolsToEvents() { }
+        public IReadOnlyList<IDeviceProtocol> GetRegisteredProtocols() => new List<IDeviceProtocol>();
+        public void ClearCommandHistory() { }
+        public IProtocolService GetProtocolService() => null!;
     }
 }

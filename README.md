@@ -44,8 +44,18 @@ NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterp
 ## 🏗️ Solution Architecture
 
 ### Core Framework Libraries
-- **NetForge.Simulation.Common**: Core protocols, device models, event system, and shared infrastructure ([details](NetForge.Simulation.Common/README.md))
+- **NetForge.Simulation.Common**: Core protocols, device models, event system, and vendor-based architecture ([details](NetForge.Simulation.Common/README.md))
 - **NetForge.Simulation.Core** (Assembly: NetForge.Simulation): Device implementations, factories, and simulation engine ([details](NetForge.Simulation.Core/README.md))
+
+### 🆕 Vendor System Architecture (NEW)
+NetForge now features a **declarative vendor-based system** that replaces the old plugin discovery architecture:
+
+- **NetForge.Interfaces.Vendors**: Core vendor system interfaces and descriptors
+- **NetForge.Simulation.Common.Vendors**: Vendor registry, services, and IoC integration
+- **NetForge.Simulation.Vendors**: Vendor descriptor implementations (Cisco, Juniper, Arista)
+- **Declarative Registration**: All vendor capabilities defined in single descriptor classes
+- **IoC Integration**: Full dependency injection support with service registration
+- **Performance Optimized**: Eliminates runtime assembly scanning for faster startup
 
 ### CLI Handler System (15 Vendor Implementations)
 - **NetForge.Simulation.CliHandlers.Common**: Shared CLI logic, base handlers, and common functionality
@@ -61,7 +71,7 @@ NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterp
   - **And 7 additional vendors**: F5, Aruba, MikroTik, Broadcom, Alcatel, Anira, Linux
 
 ### Advanced Protocol Architecture
-- **NetForge.Simulation.Protocols.Common**: Plugin-based protocol framework with auto-discovery
+- **NetForge.Simulation.Protocols.Common**: Vendor-based protocol framework with declarative registration
 - **Implemented Protocol Modules**:
   - **SSH**: Secure terminal access with encryption and authentication
   - **Telnet**: Multi-session terminal server with device integration
@@ -111,11 +121,11 @@ NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterp
 
 ### ✅ Fully Operational Components
 - **All 15 Vendor CLI Implementations**: Complete command sets with vendor-specific behaviors
-- **Core Protocol Framework**: Plugin-based architecture with auto-discovery
+- **🆕 Vendor-Based Architecture**: Declarative vendor system with IoC integration replacing plugin discovery
 - **Terminal Server Infrastructure**: Telnet, SSH, and WebSocket access with multi-session support
 - **Advanced Protocol Implementations**: SSH, Telnet, OSPF, BGP, CDP, LLDP, ARP all fully operational
 - **Comprehensive Test Coverage**: 2,000+ unit and integration tests across all components
-- **Build Status**: Solution builds successfully with 0 errors (minor nullable warnings only)
+- **Migration Framework**: Complete migration system from plugin-based to vendor-based architecture
 
 ### ✅ Protocol Implementation Progress - COMPLETE (100%)
 - **Management Protocols**: ✅ SSH, ✅ Telnet, ✅ SNMP, ✅ HTTP/HTTPS (All management protocols complete)
@@ -132,6 +142,81 @@ NetForge is a comprehensive, modular C# .NET 9.0 framework for simulating enterp
 - **Event-Driven Design**: Real-time topology updates and protocol convergence with proper timer management
 - **Memory Optimized**: Efficient neighbor aging and automatic cleanup of stale state
 - **Performance Validated**: Sub-30-second convergence times for complex routing protocols with full state machines
+
+## 🆕 NEW: Vendor-Based System
+
+### Migration from Plugin Architecture
+NetForge has **migrated from a plugin-based discovery system to a declarative vendor-based architecture**:
+
+**Benefits of the New System:**
+- **🚀 Performance**: Eliminates runtime assembly scanning for faster startup
+- **🛡️ Type Safety**: Compile-time vendor registration prevents runtime failures  
+- **📋 Maintainability**: All vendor information centralized in single descriptor classes
+- **🔧 IoC Integration**: Full dependency injection support with service registration
+- **📚 Self-Documenting**: Vendor capabilities clearly defined in code
+
+### New Vendor System Usage
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using NetForge.Simulation.Common.Vendors;
+
+// Configure vendor system at startup
+var services = new ServiceCollection();
+services.ConfigureVendorSystem();  // Registers all vendor services
+
+var serviceProvider = services.BuildServiceProvider();
+
+// Initialize the migration from plugin system
+VendorSystemStartup.MigrateFromPluginSystem(serviceProvider);
+
+// Use vendor-based services
+var protocolService = serviceProvider.GetRequiredService<VendorBasedProtocolService>();
+var handlerService = serviceProvider.GetRequiredService<VendorBasedHandlerService>();
+
+// Create protocols and handlers for specific vendors
+var ciscoOspf = protocolService.GetProtocol(NetworkProtocolType.OSPF, "Cisco");
+var juniperBgp = protocolService.GetProtocol(NetworkProtocolType.BGP, "Juniper");
+
+// Initialize device with vendor system
+var device = new { Vendor = "Cisco", DeviceType = "Router", Hostname = "R1" };
+VendorSystemStartup.InitializeDeviceWithVendorSystem(device, serviceProvider);
+```
+
+### Creating Custom Vendor Descriptors
+
+```csharp
+public class MyVendorDescriptor : VendorDescriptorBase
+{
+    public override string VendorName => "MyVendor";
+    public override string DisplayName => "My Vendor Inc.";
+    public override int Priority => 50;
+
+    protected override void InitializeVendor()
+    {
+        // Configure prompts
+        ConfigurePrompts(">", "#", "(config)#");
+
+        // Add device models
+        AddModel(new DeviceModelDescriptor
+        {
+            ModelName = "MV1000",
+            DeviceType = DeviceType.Router,
+            Features = { "OSPF", "BGP" }
+        });
+
+        // Add supported protocols
+        AddProtocol(NetworkProtocolType.OSPF, "MyVendor.Protocols.OspfProtocol");
+        
+        // Add CLI handlers
+        AddHandler("ShowVersion", "show version", 
+            "MyVendor.Handlers.ShowVersionHandler", HandlerType.Show);
+    }
+}
+
+// Register the vendor
+services.AddVendor<MyVendorDescriptor>();
+```
 
 ## 🚀 Quick Start Guide
 
@@ -219,9 +304,10 @@ await network.UpdateProtocolsAsync();
 - **[Comprehensive CLI Documentation](NetForge.Simulation.CliHandlers/README.md)**: Detailed vendor capabilities and command reference
 
 ### Protocol Architecture  
-- **NetForge.Simulation.Protocols.Common**: Plugin framework with auto-discovery and state management
+- **NetForge.Simulation.Protocols.Common**: Vendor-based framework with declarative registration and state management
 - **Individual Protocol Projects**: SSH, Telnet, OSPF, BGP, RIP, EIGRP, CDP, LLDP, ARP, VRRP, HSRP, STP with dedicated implementations
 - **SNMP Protocol**: Complete SNMP agent implementation with MIB management
+- **🆕 VendorBasedProtocolService**: Replaces old ProtocolDiscoveryService with vendor-aware protocol creation
 
 ### Testing Framework
 - **NetForge.Simulation.Tests**: Core simulation testing with network topology validation
@@ -302,11 +388,12 @@ dotnet test NetForge.Simulation.Protocols.Tests/
 ## 🛣️ Future Roadmap
 
 ### ✅ FULLY ACHIEVED (2025) - ALL OBJECTIVES COMPLETE
-- ✅ **Complete Protocol Foundation**: All 17 protocols implemented with unified plugin architecture
+- ✅ **Complete Protocol Foundation**: All 17 protocols implemented with unified vendor-based architecture
 - ✅ **Advanced State Management**: Sophisticated protocol state tracking operational with performance optimization
 - ✅ **All Protocol Implementations**: OSPF, BGP, EIGRP, HSRP, VRRP, STP, RIP, ISIS, IGRP, SSH, Telnet, SNMP, CDP, LLDP, ARP, HTTP/HTTPS
 - ✅ **Interface Unification**: Successfully merged dual interfaces into single comprehensive IDeviceProtocol
 - ✅ **Performance Optimizations**: Memory usage reduction and convergence time improvements achieved
+- ✅ **🆕 Architecture Migration**: Successfully migrated from plugin discovery to declarative vendor-based system
 
 ### Future Enhancement Opportunities (Optional)
 - ⏳ **Cloud Integration**: AWS/Azure deployment scenarios and cloud-native networking
@@ -337,6 +424,7 @@ We welcome contributions from the networking and development community:
 
 ### Support Resources
 - **Documentation**: Comprehensive README files in each project directory
+- **🆕 Migration Guide**: Complete migration guide from plugin to vendor system ([VENDOR_SYSTEM_MIGRATION_GUIDE.md](VENDOR_SYSTEM_MIGRATION_GUIDE.md))
 - **Code Examples**: Reference implementations in the Examples/ directory
 - **Test Scenarios**: Real-world network scenarios in the test projects
 - **Protocol Documentation**: Detailed protocol implementation notes and state management guides

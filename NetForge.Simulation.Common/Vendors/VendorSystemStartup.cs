@@ -5,6 +5,7 @@ using NetForge.Simulation.Protocols.Common.Services;
 using NetForge.Simulation.Vendors.Cisco;
 using NetForge.Simulation.Vendors.Juniper;
 using NetForge.Simulation.Vendors.Arista;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.Common.Vendors
 {
@@ -34,7 +35,7 @@ namespace NetForge.Simulation.Common.Vendors
             services.AddSingleton<VendorAwareProtocolManager>();
 
             // Register factory for creating vendor-aware handler managers
-            services.AddTransient<Func<object, VendorAwareCliHandlerManager>>(provider =>
+            services.AddTransient<Func<INetworkDevice, VendorAwareCliHandlerManager>>(provider =>
                 device => new VendorAwareCliHandlerManager(device, provider.GetRequiredService<VendorBasedHandlerService>()));
 
             return services;
@@ -63,7 +64,7 @@ namespace NetForge.Simulation.Common.Vendors
         /// <summary>
         /// Create a CLI handler manager for a device using the vendor system
         /// </summary>
-        public static object CreateVendorAwareHandlerManager(object device, IServiceProvider serviceProvider)
+        public static object CreateVendorAwareHandlerManager(INetworkDevice device, IServiceProvider serviceProvider)
         {
             try
             {

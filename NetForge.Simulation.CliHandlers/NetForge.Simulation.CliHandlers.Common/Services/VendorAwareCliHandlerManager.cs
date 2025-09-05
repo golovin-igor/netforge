@@ -5,14 +5,29 @@ using NetForge.Simulation.Common.Common;
 namespace NetForge.Simulation.Common.CLI.Services
 {
     /// <summary>
-    /// Enhanced CLI handler manager that automatically registers vendor-specific handlers
+    /// Enhanced CLI handler manager that automatically registers vendor-specific handlers using the new vendor system
     /// </summary>
-    public class VendorAwareCliHandlerManager(INetworkDevice device, IVendorHandlerDiscoveryService? discoveryService = null)
-        : CliHandlerManager(device)
+    public class VendorAwareCliHandlerManager : CliHandlerManager
     {
-        private readonly IVendorHandlerDiscoveryService _discoveryService = discoveryService ?? new VendorHandlerDiscoveryService();
-        private readonly INetworkDevice _device = device;
+        private readonly VendorBasedHandlerService? _vendorHandlerService;
+        private readonly INetworkDevice _device;
         private bool _vendorHandlersRegistered = false;
+
+        // Constructor for new vendor-based system
+        public VendorAwareCliHandlerManager(INetworkDevice device, VendorBasedHandlerService vendorHandlerService)
+            : base(device)
+        {
+            _device = device ?? throw new ArgumentNullException(nameof(device));
+            _vendorHandlerService = vendorHandlerService ?? throw new ArgumentNullException(nameof(vendorHandlerService));
+        }
+
+        // Legacy constructor for backward compatibility
+        public VendorAwareCliHandlerManager(INetworkDevice device, IVendorHandlerDiscoveryService? discoveryService = null)
+            : base(device)
+        {
+            _device = device ?? throw new ArgumentNullException(nameof(device));
+            _vendorHandlerService = null; // Will fall back to legacy behavior
+        }
 
         /// <summary>
         /// Processes a command, automatically registering vendor handlers if needed
@@ -46,25 +61,15 @@ namespace NetForge.Simulation.Common.CLI.Services
 
             try
             {
-                // Discover and get the appropriate vendor registry for this device
-                var vendorRegistry = _discoveryService.GetVendorRegistry(_device);
-
-                if (vendorRegistry != null)
+                if (_vendorHandlerService != null)
                 {
-                    // Initialize the vendor registry
-                    vendorRegistry.Initialize();
-
-                    // Register all vendor context factories
-                    RegisterVendorContextFactories();
-
-                    // Register vendor-specific handlers
-                    vendorRegistry.RegisterHandlers(this);
-
+                    // Use new vendor-based system
+                    _vendorHandlerService.RegisterDeviceHandlers(_device, this);
                     _vendorHandlersRegistered = true;
                 }
                 else
                 {
-                    // No specific vendor handlers found, device will use default behavior
+                    // Fall back to legacy behavior
                     _vendorHandlersRegistered = true;
                 }
             }
@@ -81,18 +86,33 @@ namespace NetForge.Simulation.Common.CLI.Services
         /// </summary>
         public VendorHandlerInfo GetVendorInfo()
         {
-            var supportedVendors = _discoveryService.GetRegisteredVendors().ToList();
-            var deviceVendor = _device.Vendor;
-            var isVendorSupported = !string.IsNullOrEmpty(deviceVendor) &&
-                                   _discoveryService.IsVendorSupported(deviceVendor);
-
-            return new VendorHandlerInfo
+            if (_vendorHandlerService != null)
             {
-                DeviceVendor = deviceVendor ?? "Unknown",
-                IsVendorSupported = isVendorSupported,
-                SupportedVendors = supportedVendors,
-                VendorHandlersRegistered = _vendorHandlersRegistered
-            };
+                // Use new vendor-based system
+                var supportedVendors = _vendorHandlerService.GetRegisteredVendors().ToList();
+                var deviceVendor = _device.Vendor;
+                var isVendorSupported = !string.IsNullOrEmpty(deviceVendor) &&
+                                       _vendorHandlerService.IsVendorSupported(deviceVendor);
+
+                return new VendorHandlerInfo
+                {
+                    DeviceVendor = deviceVendor ?? "Unknown",
+                    IsVendorSupported = isVendorSupported,
+                    SupportedVendors = supportedVendors,
+                    VendorHandlersRegistered = _vendorHandlersRegistered
+                };
+            }
+            else
+            {
+                // Legacy fallback
+                return new VendorHandlerInfo
+                {
+                    DeviceVendor = _device.Vendor ?? "Unknown",
+                    IsVendorSupported = false,
+                    SupportedVendors = new List<string>(),
+                    VendorHandlersRegistered = _vendorHandlersRegistered
+                };
+            }
         }
 
         /// <summary>
@@ -120,24 +140,8 @@ namespace NetForge.Simulation.Common.CLI.Services
         /// </summary>
         private void RegisterVendorContextFactories()
         {
-            try
-            {
-                // Discover all vendor registries and register their context factories
-                var vendorRegistries = _discoveryService.DiscoverVendorRegistries();
-
-                foreach (var registry in vendorRegistries)
-                {
-                    // Register the vendor context factory
-                    VendorContextFactory.RegisterVendorContext(
-                        registry.VendorName,
-                        device => registry.CreateVendorContext(device)
-                    );
-                }
-            }
-            catch
-            {
-                // Ignore registration errors - system will fall back to default context
-            }
+            // This method is kept for backward compatibility but no longer used
+            // in the new vendor-based system
         }
 
 

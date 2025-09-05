@@ -1,6 +1,7 @@
 using System.Reflection;
 using NetForge.Interfaces.Vendors;
 using NetForge.Simulation.DataTypes;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.Common.Vendors
 {
@@ -93,9 +94,19 @@ namespace NetForge.Simulation.Common.Vendors
             if (device == null || handlerManager == null)
                 return;
 
-            // Get vendor name via reflection
-            var vendorProperty = device.GetType().GetProperty("Vendor");
-            var vendorName = vendorProperty?.GetValue(device) as string;
+            // Get vendor name - try INetworkDevice interface first, then reflection
+            string? vendorName = null;
+            if (device is INetworkDevice networkDevice)
+            {
+                vendorName = networkDevice.Vendor;
+            }
+            else
+            {
+                // Fall back to reflection for other device types
+                var vendorProperty = device.GetType().GetProperty("Vendor");
+                vendorName = vendorProperty?.GetValue(device) as string;
+            }
+            
             if (string.IsNullOrEmpty(vendorName))
                 return;
 
@@ -130,9 +141,19 @@ namespace NetForge.Simulation.Common.Vendors
             if (device == null)
                 return;
 
-            // Get vendor name via reflection
-            var vendorProperty = device.GetType().GetProperty("Vendor");
-            var vendorName = vendorProperty?.GetValue(device) as string;
+            // Get vendor name - try INetworkDevice interface first, then reflection
+            string? vendorName = null;
+            if (device is INetworkDevice networkDevice)
+            {
+                vendorName = networkDevice.Vendor;
+            }
+            else
+            {
+                // Fall back to reflection for other device types
+                var vendorProperty = device.GetType().GetProperty("Vendor");
+                vendorName = vendorProperty?.GetValue(device) as string;
+            }
+            
             if (string.IsNullOrEmpty(vendorName))
                 return;
 
