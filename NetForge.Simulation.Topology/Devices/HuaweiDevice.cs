@@ -4,36 +4,34 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// Huawei VRP device implementation
     /// </summary>
     public sealed class HuaweiDevice : NetworkDevice
     {
+        public override string DeviceType => "Router";
         private int _currentVlanId = 0;
         private int _currentAclNumber = 0;
 
-        public HuaweiDevice(string name) : base(name)
+        public HuaweiDevice(string name) : base(name, "Huawei")
         {
-            Vendor = "Huawei";
             // VRP uses default VLAN 1 as well
-            Vlans[1] = new VlanConfig(1, "default");
+            AddVlan(1, new VlanConfig(1, "default"));
             // InitializeDefaultInterfaces(); // Called by base constructor
             // RegisterDeviceSpecificHandlers(); // Called by base constructor
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Huawei" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()
         {
             // Basic interfaces for demonstration
-            Interfaces["GigabitEthernet0/0/0"] = new InterfaceConfig("GigabitEthernet0/0/0", this);
-            Interfaces["GigabitEthernet0/0/1"] = new InterfaceConfig("GigabitEthernet0/0/1", this);
-            Interfaces["GigabitEthernet0/0/2"] = new InterfaceConfig("GigabitEthernet0/0/2", this);
-            Interfaces["GigabitEthernet0/0/3"] = new InterfaceConfig("GigabitEthernet0/0/3", this);
+            AddInterface("GigabitEthernet0/0/0", new InterfaceConfig("GigabitEthernet0/0/0", this));
+            AddInterface("GigabitEthernet0/0/1", new InterfaceConfig("GigabitEthernet0/0/1", this));
+            AddInterface("GigabitEthernet0/0/2", new InterfaceConfig("GigabitEthernet0/0/2", this));
+            AddInterface("GigabitEthernet0/0/3", new InterfaceConfig("GigabitEthernet0/0/3", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -103,25 +101,25 @@ namespace NetForge.Simulation.Devices
 
         public void InitializeOspf(int processId)
         {
-            if (OspfConfig == null)
+            if (GetOspfConfiguration() == null)
             {
-                OspfConfig = new OspfConfig(processId);
+                SetOspfConfiguration(new OspfConfig(processId));
             }
         }
 
         public void InitializeBgp(int asNumber)
         {
-            if (BgpConfig == null)
+            if (GetBgpConfiguration() == null)
             {
-                BgpConfig = new BgpConfig(asNumber);
+                SetBgpConfiguration(new BgpConfig(asNumber));
             }
         }
 
         public void InitializeRip()
         {
-            if (RipConfig == null)
+            if (GetRipConfiguration() == null)
             {
-                RipConfig = new RipConfig();
+                SetRipConfiguration(new RipConfig());
             }
         }
 

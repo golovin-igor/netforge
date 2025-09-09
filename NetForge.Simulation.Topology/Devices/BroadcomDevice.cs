@@ -3,28 +3,26 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// Basic Broadcom-based switch implementation
     /// </summary>
     public sealed class BroadcomDevice : NetworkDevice
     {
-        public BroadcomDevice(string name) : base(name)
+        public override string DeviceType => "Switch";
+        public BroadcomDevice(string name) : base(name, "Broadcom")
         {
-            Vendor = "Broadcom";
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Broadcom" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()
         {
-            Interfaces["ethernet1/1"] = new InterfaceConfig("ethernet1/1", this);
-            Interfaces["ethernet1/2"] = new InterfaceConfig("ethernet1/2", this);
+            AddInterface("ethernet1/1", new InterfaceConfig("ethernet1/1", this));
+            AddInterface("ethernet1/2", new InterfaceConfig("ethernet1/2", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -37,7 +35,17 @@ namespace NetForge.Simulation.Devices
 
         public override string GetPrompt()
         {
-            return CurrentMode == DeviceMode.Privileged ? $"{Hostname}#" : $"{Hostname}>";
+            var mode = GetCurrentModeEnum();
+            var hostname = GetHostname();
+
+            return mode switch
+            {
+                DeviceMode.User => $"{hostname}>",
+                DeviceMode.Privileged => $"{hostname}#",
+                DeviceMode.Config => $"{hostname}(config)#",
+                DeviceMode.Interface => $"{hostname}(config-if)#",
+                _ => $"{hostname}>"
+            };
         }
 
         public override async Task<string> ProcessCommandAsync(string command)
@@ -45,16 +53,9 @@ namespace NetForge.Simulation.Devices
             if (string.IsNullOrWhiteSpace(command))
                 return GetPrompt();
 
-            var result = await CommandManager.ProcessCommandAsync(command);
-            if (result != null)
-            {
-                var output = result.Output;
-                if (!output.EndsWith("\n"))
-                    output += "\n";
-                return output + GetPrompt();
-            }
-
-            return $"Invalid command: {command}\n" + GetPrompt();
+            // Use the base class implementation for actual command processing
+            // This will use the vendor discovery system to find appropriate handlers
+            return await base.ProcessCommandAsync(command);
         }
     }
 }

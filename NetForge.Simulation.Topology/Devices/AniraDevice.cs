@@ -9,35 +9,44 @@ namespace NetForge.Simulation.Topology.Devices
     /// </summary>
     public sealed class AniraDevice : NetworkDevice
     {
-        public AniraDevice(string name) : base(name)
+        public override string DeviceType => "Switch";
+        public AniraDevice(string name) : base(name, "Anira")
         {
-            Vendor = "Anira";
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Anira" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()
         {
-            Interfaces["ge-0/0/0"] = new InterfaceConfig("ge-0/0/0", this);
-            Interfaces["ge-0/0/1"] = new InterfaceConfig("ge-0/0/1", this);
-            Interfaces["ge-0/0/2"] = new InterfaceConfig("ge-0/0/2", this);
-            Interfaces["ge-0/0/3"] = new InterfaceConfig("ge-0/0/3", this);
+            AddInterface("ge-0/0/0", new InterfaceConfig("ge-0/0/0", this));
+            AddInterface("ge-0/0/1", new InterfaceConfig("ge-0/0/1", this));
+            AddInterface("ge-0/0/2", new InterfaceConfig("ge-0/0/2", this));
+            AddInterface("ge-0/0/3", new InterfaceConfig("ge-0/0/3", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Anira handlers to ensure they are available for tests
             var registry = new AniraHandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Implement handler registration with new architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()
         {
-            return CurrentMode == DeviceMode.Privileged ? $"{Hostname}#" : $"{Hostname}>";
+            var mode = GetCurrentModeEnum();
+            var hostname = GetHostname();
+
+            return mode switch
+            {
+                DeviceMode.User => $"{hostname}>",
+                DeviceMode.Privileged => $"{hostname}#",
+                DeviceMode.Config => $"{hostname}(config)#",
+                DeviceMode.Interface => $"{hostname}(config-if)#",
+                _ => $"{hostname}>"
+            };
         }
 
         public override async Task<string> ProcessCommandAsync(string command)
@@ -51,11 +60,11 @@ namespace NetForge.Simulation.Topology.Devices
         }
 
         // Expose interface creation for command handlers
-        public void AddInterface(string name)
+        public void AddNewInterface(string name)
         {
-            if (!Interfaces.ContainsKey(name))
+            if (GetInterface(name) == null)
             {
-                Interfaces[name] = new InterfaceConfig(name, this);
+                AddInterface(name, new InterfaceConfig(name, this));
             }
         }
     }

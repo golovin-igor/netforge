@@ -5,35 +5,33 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// Juniper Junos device implementation
     /// </summary>
     public sealed class JuniperDevice : NetworkDevice
     {
+        public override string DeviceType => "Router";
         private List<string> _candidateConfig = new List<string>();
         private bool _inConfigMode = false;
 
-        public JuniperDevice(string name) : base(name)
+        public JuniperDevice(string name) : base(name, "Juniper")
         {
-            Vendor = "Juniper";
-            base.CurrentMode = DeviceModeExtensions.FromModeString("operational"); // Start in operational mode
+            SetModeEnum(DeviceModeExtensions.FromModeString("operational")); // Start in operational mode
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Juniper" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()
         {
             // Add default interfaces for a Juniper router
-            Interfaces["ge-0/0/0"] = new InterfaceConfig("ge-0/0/0", this);
-            Interfaces["ge-0/0/1"] = new InterfaceConfig("ge-0/0/1", this);
-            Interfaces["ge-0/0/2"] = new InterfaceConfig("ge-0/0/2", this);
-            Interfaces["ge-0/0/3"] = new InterfaceConfig("ge-0/0/3", this);
+            AddInterface("ge-0/0/0", new InterfaceConfig("ge-0/0/0", this));
+            AddInterface("ge-0/0/1", new InterfaceConfig("ge-0/0/1", this));
+            AddInterface("ge-0/0/2", new InterfaceConfig("ge-0/0/2", this));
+            AddInterface("ge-0/0/3", new InterfaceConfig("ge-0/0/3", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -46,14 +44,14 @@ namespace NetForge.Simulation.Devices
         /// <summary>
         /// Get the current device mode
         /// </summary>
-        public string GetMode() => base.CurrentMode.ToModeString();
+        public string GetMode() => GetCurrentModeEnum().ToModeString();
 
         /// <summary>
         /// Set the device mode
         /// </summary>
         public override void SetMode(string mode)
         {
-            base.SetMode(mode);
+            SetModeEnum(DeviceModeExtensions.FromModeString(mode));
             _inConfigMode = (mode == "configuration");
         }
 
@@ -156,7 +154,7 @@ namespace NetForge.Simulation.Devices
                 case "system":
                     if (parts.Length > 3 && parts[2].ToLower() == "host-name")
                     {
-                        Hostname = parts[3];
+                        SetHostname(parts[3]);
                     }
                     break;
 
@@ -188,12 +186,12 @@ namespace NetForge.Simulation.Devices
             var interfaceName = parts[2];
 
             // Ensure interface exists
-            if (!Interfaces.ContainsKey(interfaceName))
+            var iface = GetInterface(interfaceName);
+            if (iface == null)
             {
-                Interfaces[interfaceName] = new InterfaceConfig(interfaceName, this);
+                iface = new InterfaceConfig(interfaceName, this);
+                AddInterface(interfaceName, iface);
             }
-
-            var iface = Interfaces[interfaceName];
 
             if (parts.Length > 3 && parts[3].ToLower() == "description")
             {
@@ -229,13 +227,15 @@ namespace NetForge.Simulation.Devices
 
             if (parts[3].ToLower() == "vlan-id" && int.TryParse(parts[4], out int vlanId))
             {
-                if (!Vlans.ContainsKey(vlanId))
+                var vlans = GetVlans();
+                var existingVlan = vlans.FirstOrDefault(v => v.Id == vlanId);
+                if (existingVlan == null)
                 {
-                    Vlans[vlanId] = new VlanConfig(vlanId, vlanName);
+                    AddVlan(vlanId, new VlanConfig(vlanId, vlanName));
                 }
                 else
                 {
-                    Vlans[vlanId].Name = vlanName;
+                    existingVlan.Name = vlanName;
                 }
             }
         }
@@ -268,9 +268,9 @@ namespace NetForge.Simulation.Devices
         {
             if (parts.Length < 7) return;
 
-            if (OspfConfig == null)
+            if (GetOspfConfiguration() == null)
             {
-                OspfConfig = new OspfConfig(1);
+                SetOspfConfiguration(new OspfConfig(1));
             }
 
             if (parts[3].ToLower() == "area" && parts[5].ToLower() == "interface")
@@ -279,22 +279,23 @@ namespace NetForge.Simulation.Devices
                 if (int.TryParse(areaStr, out int area))
                 {
                     var interfaceName = parts[6];
-                    if (Interfaces.ContainsKey(interfaceName))
+                    var iface = GetInterface(interfaceName);
+                    if (iface != null)
                     {
-                        OspfConfig.Interfaces[interfaceName] = new OspfInterface(interfaceName, area);
+                        var ospfConfig = GetOspfConfiguration();
+                        ospfConfig.Interfaces[interfaceName] = new OspfInterface(interfaceName, area);
 
-                        var iface = Interfaces[interfaceName];
                         if (!string.IsNullOrEmpty(iface.IpAddress))
                         {
                             var network = GetNetwork(iface.IpAddress, iface.SubnetMask);
-                            OspfConfig.NetworkAreas[network] = area;
-                            if (!OspfConfig.Networks.Contains(network))
+                            ospfConfig.NetworkAreas[network] = area;
+                            if (!ospfConfig.Networks.Contains(network))
                             {
-                                OspfConfig.Networks.Add(network);
+                                ospfConfig.Networks.Add(network);
                             }
                         }
 
-                        ParentNetwork?.UpdateProtocols();
+                        GetParentNetwork()?.UpdateProtocols();
                     }
                 }
             }
@@ -307,9 +308,9 @@ namespace NetForge.Simulation.Devices
         {
             if (parts.Length < 5) return;
 
-            if (BgpConfig == null)
+            if (GetBgpConfiguration() == null)
             {
-                BgpConfig = new BgpConfig(65000); // Default AS
+                SetBgpConfiguration(new BgpConfig(65000)); // Default AS
             }
 
             if (parts[3].ToLower() == "group" && parts.Length > 8)
@@ -319,13 +320,14 @@ namespace NetForge.Simulation.Devices
                     var neighborIp = parts[6];
                     if (int.TryParse(parts[8], out int peerAs))
                     {
-                        if (!BgpConfig.Neighbors.ContainsKey(neighborIp))
+                        var bgpConfig = GetBgpConfiguration();
+                        if (!bgpConfig.Neighbors.ContainsKey(neighborIp))
                         {
                             var neighbor = new BgpNeighbor(neighborIp, peerAs);
-                            BgpConfig.Neighbors[neighbor.IpAddress] = neighbor;
+                            bgpConfig.Neighbors[neighbor.IpAddress] = neighbor;
                         }
-                        BgpConfig.Neighbors[neighborIp].RemoteAs = peerAs;
-                        ParentNetwork?.UpdateProtocols();
+                        bgpConfig.Neighbors[neighborIp].RemoteAs = peerAs;
+                        GetParentNetwork()?.UpdateProtocols();
                     }
                 }
             }
@@ -333,7 +335,8 @@ namespace NetForge.Simulation.Devices
             {
                 if (int.TryParse(parts[4], out int localAs))
                 {
-                    BgpConfig.LocalAs = localAs;
+                    var bgpConfig = GetBgpConfiguration();
+                    bgpConfig.LocalAs = localAs;
                 }
             }
         }
@@ -345,22 +348,23 @@ namespace NetForge.Simulation.Devices
         {
             if (parts.Length < 6) return;
 
-            if (RipConfig == null)
+            if (GetRipConfiguration() == null)
             {
-                RipConfig = new RipConfig();
+                SetRipConfiguration(new RipConfig());
             }
 
             if (parts[3].ToLower() == "group" && parts[5].ToLower() == "neighbor")
             {
                 var interfaceName = parts[6];
-                if (Interfaces.ContainsKey(interfaceName))
+                var iface = GetInterface(interfaceName);
+                if (iface != null)
                 {
-                    var iface = Interfaces[interfaceName];
                     if (!string.IsNullOrEmpty(iface.IpAddress))
                     {
                         var network = GetNetwork(iface.IpAddress, iface.SubnetMask);
-                        RipConfig.Networks.Add(network);
-                        ParentNetwork?.UpdateProtocols();
+                        var ripConfig = GetRipConfiguration();
+                        ripConfig.Networks.Add(network);
+                        GetParentNetwork()?.UpdateProtocols();
                     }
                 }
             }
@@ -384,18 +388,20 @@ namespace NetForge.Simulation.Devices
 
                     var route = new Route(network, mask, nextHop, "", "Static");
                     route.Metric = 1;
-                    RoutingTable.Add(route);
+                    AddStaticRoute(network, mask, nextHop, 1);
                 }
             }
             else if (parts[2].ToLower() == "router-id" && parts.Length > 3)
             {
-                if (OspfConfig != null)
+                var ospfConfig = GetOspfConfiguration();
+                if (ospfConfig != null)
                 {
-                    OspfConfig.RouterId = parts[3];
+                    ospfConfig.RouterId = parts[3];
                 }
-                if (BgpConfig != null)
+                var bgpConfig = GetBgpConfiguration();
+                if (bgpConfig != null)
                 {
-                    BgpConfig.RouterId = parts[3];
+                    bgpConfig.RouterId = parts[3];
                 }
             }
         }
@@ -420,12 +426,15 @@ namespace NetForge.Simulation.Devices
 
         public override string GetPrompt()
         {
-            return base.CurrentMode switch
+            var mode = GetCurrentModeEnum();
+            var hostname = GetHostname();
+
+            return mode switch
             {
-                DeviceMode.Operational => $"{Hostname}> ",
-                DeviceMode.Configuration => $"{Hostname}# ",
-                DeviceMode.Interface => $"[edit interfaces {CurrentInterface}]\n{Hostname}# ",
-                _ => $"{Hostname}> "
+                DeviceMode.Operational => $"{hostname}> ",
+                DeviceMode.Configuration => $"{hostname}# ",
+                DeviceMode.Interface => $"[edit interfaces {GetCurrentInterfaceName()}]\n{hostname}# ",
+                _ => $"{hostname}> "
             };
         }
 
@@ -442,12 +451,12 @@ namespace NetForge.Simulation.Devices
         // Helper methods for command handlers
         public new void SetCurrentMode(string mode)
         {
-            base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
+            SetModeEnum(DeviceModeExtensions.FromModeString(mode));
             _inConfigMode = (mode == "configuration");
         }
 
-        public new string GetCurrentInterface() => CurrentInterface;
-        public new void SetCurrentInterface(string iface) => CurrentInterface = iface;
+        public new string GetCurrentInterface() => GetCurrentInterfaceName();
+        public new void SetCurrentInterface(string iface) => SetCurrentInterfaceName(iface);
 
         // Juniper-specific helper methods
         public bool IsInConfigMode() => _inConfigMode;
@@ -465,14 +474,14 @@ namespace NetForge.Simulation.Devices
 
         public void UpdateProtocols()
         {
-            ParentNetwork?.UpdateProtocols();
+            GetParentNetwork()?.UpdateProtocols();
         }
 
         public void ClearInterfaceCounters(string? interfaceName = null)
         {
             if (string.IsNullOrEmpty(interfaceName))
             {
-                foreach (var iface in Interfaces.Values)
+                foreach (var iface in GetAllInterfaces().Values)
                 {
                     iface.RxPackets = 0;
                     iface.TxPackets = 0;
@@ -480,13 +489,16 @@ namespace NetForge.Simulation.Devices
                     iface.TxBytes = 0;
                 }
             }
-            else if (Interfaces.ContainsKey(interfaceName))
+            else 
             {
-                var iface = Interfaces[interfaceName];
-                iface.RxPackets = 0;
-                iface.TxPackets = 0;
-                iface.RxBytes = 0;
-                iface.TxBytes = 0;
+                var iface = GetInterface(interfaceName);
+                if (iface != null)
+                {
+                    iface.RxPackets = 0;
+                    iface.TxPackets = 0;
+                    iface.RxBytes = 0;
+                    iface.TxBytes = 0;
+                }
             }
         }
 
@@ -514,22 +526,22 @@ namespace NetForge.Simulation.Devices
         // Additional methods needed by tests
         public Dictionary<string, RoutingPolicy> GetRoutingPolicies()
         {
-            return RoutingPolicies ?? new Dictionary<string, RoutingPolicy>();
+            return GetRoutingPolicyConfiguration() ?? new Dictionary<string, RoutingPolicy>();
         }
 
         public Dictionary<string, PrefixList> GetPrefixLists()
         {
-            return PrefixLists ?? new Dictionary<string, PrefixList>();
+            return GetPrefixListConfiguration() ?? new Dictionary<string, PrefixList>();
         }
 
         public Dictionary<string, BgpCommunity> GetCommunities()
         {
-            return BgpCommunities ?? new Dictionary<string, BgpCommunity>();
+            return GetBgpCommunityConfiguration() ?? new Dictionary<string, BgpCommunity>();
         }
 
         public Dictionary<string, AsPathGroup> GetAsPathGroups()
         {
-            return AsPathGroups ?? new Dictionary<string, AsPathGroup>();
+            return GetAsPathGroupConfiguration() ?? new Dictionary<string, AsPathGroup>();
         }
 
         /// <summary>
@@ -543,12 +555,13 @@ namespace NetForge.Simulation.Devices
                 return null;
 
             // Try direct lookup first
-            if (Interfaces.TryGetValue(interfaceName, out var directMatch))
+            var interfaces = GetAllInterfaces();
+            if (interfaces.TryGetValue(interfaceName, out var directMatch))
                 return directMatch;
 
             // Try basic alias expansion - interface alias handling is now managed by the vendor registry system
             // For now, just do a case-insensitive search
-            foreach (var kvp in Interfaces)
+            foreach (var kvp in interfaces)
             {
                 if (string.Equals(kvp.Key, interfaceName, StringComparison.OrdinalIgnoreCase))
                 {
@@ -572,9 +585,9 @@ namespace NetForge.Simulation.Devices
             // Use canonical interface name for storage - simplified for now
             var canonicalName = interfaceName.ToLower();
 
-            if (!Interfaces.ContainsKey(canonicalName))
+            if (GetInterface(canonicalName) == null)
             {
-                Interfaces[canonicalName] = interfaceConfig ?? new InterfaceConfig(canonicalName, this);
+                AddInterface(canonicalName, interfaceConfig ?? new InterfaceConfig(canonicalName, this));
             }
         }
     }

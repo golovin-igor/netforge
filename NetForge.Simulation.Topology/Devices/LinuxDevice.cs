@@ -5,26 +5,26 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// Simple Linux host implementation with vendor-agnostic CLI handlers
     /// </summary>
     public sealed class LinuxDevice : NetworkDevice
     {
+        public override string DeviceType => "Host";
         private VendorAwareCliHandlerManager? _vendorHandlerManager;
 
-        public LinuxDevice(string name) : base(name)
+        public LinuxDevice(string name) : base(name, "Linux")
         {
-            Vendor = "Linux";
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
         }
 
         protected override void InitializeDefaultInterfaces()
         {
-            Interfaces["eth0"] = new InterfaceConfig("eth0", this);
-            Interfaces["eth1"] = new InterfaceConfig("eth1", this);
+            AddInterface("eth0", new InterfaceConfig("eth0", this));
+            AddInterface("eth1", new InterfaceConfig("eth1", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -36,9 +36,7 @@ namespace NetForge.Simulation.Devices
             // Initialize vendor-aware handler manager
             _vendorHandlerManager = VendorHandlerFactory.CreateWithDiscovery(this);
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Linux" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         public override string GetPrompt()

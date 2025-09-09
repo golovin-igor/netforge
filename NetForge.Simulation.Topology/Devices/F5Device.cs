@@ -3,34 +3,32 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// F5 BIG-IP device implementation using vendor registry system
     /// </summary>
     public sealed class F5Device : NetworkDevice
     {
-        public F5Device(string name) : base(name)
+        public override string DeviceType => "Firewall";
+        public F5Device(string name) : base(name, "F5")
         {
-            Vendor = "F5";
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "F5" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()
         {
             // F5 BIG-IP typically uses interface names like 1.1, 1.2, etc.
-            Interfaces["1.1"] = new InterfaceConfig("1.1", this);
-            Interfaces["1.2"] = new InterfaceConfig("1.2", this);
-            Interfaces["1.3"] = new InterfaceConfig("1.3", this);
-            Interfaces["1.4"] = new InterfaceConfig("1.4", this);
+            AddInterface("1.1", new InterfaceConfig("1.1", this));
+            AddInterface("1.2", new InterfaceConfig("1.2", this));
+            AddInterface("1.3", new InterfaceConfig("1.3", this));
+            AddInterface("1.4", new InterfaceConfig("1.4", this));
 
             // Set default IP addresses for management interface
-            var mgmtInterface = Interfaces["1.1"];
+            var mgmtInterface = GetInterface("1.1");
             mgmtInterface.IpAddress = "192.168.1.100";
             mgmtInterface.SubnetMask = "255.255.255.0";
             mgmtInterface.IsUp = true;
@@ -72,7 +70,7 @@ namespace NetForge.Simulation.Devices
         {
             if (!Interfaces.ContainsKey(name))
             {
-                Interfaces[name] = new InterfaceConfig(name, this);
+                AddInterface(name, new InterfaceConfig(name, this));
             }
         }
 

@@ -4,16 +4,16 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// MikroTik RouterOS device implementation
     /// </summary>
     public sealed class MikroTikDevice : NetworkDevice
     {
-        public MikroTikDevice(string name) : base(name)
+        public override string DeviceType => "Router";
+        public MikroTikDevice(string name) : base(name, "MikroTik")
         {
-            Vendor = "MikroTik";
             SystemSettings["version"] = "6.48.6";
             SystemSettings["board-name"] = "RB750Gr3";
             SystemSettings["architecture-name"] = "mipsbe";
@@ -23,9 +23,7 @@ namespace NetForge.Simulation.Devices
             LogEntries.Add("jan/15 10:23:45 interface,info ether1 link up (speed 1G, full duplex)");
             LogEntries.Add("jan/15 10:24:13 system,info,account user admin logged in from 192.168.88.2 via winbox");
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "MikroTik" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()

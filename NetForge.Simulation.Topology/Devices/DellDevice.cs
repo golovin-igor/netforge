@@ -4,26 +4,25 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// Dell EMC OS10 device implementation
     /// </summary>
     public sealed class DellDevice : NetworkDevice
     {
+        public override string DeviceType => "Switch";
+        
         // Device state is now managed by command handlers
 
-        public DellDevice(string name) : base(name)
+        public DellDevice(string name) : base(name, "Dell")
         {
-            Vendor = "Dell";
             // Add default VLAN 1
-            Vlans[1] = new VlanConfig(1, "default");
+            AddVlan(1, new VlanConfig(1, "default"));
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Dell" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()
@@ -33,10 +32,10 @@ namespace NetForge.Simulation.Devices
             {
                 for (int j = 1; j <= 24; j++)
                 {
-                    Interfaces[$"ethernet 1/{i}/{j}"] = new InterfaceConfig($"ethernet 1/{i}/{j}", this);
+                    AddInterface($"ethernet 1/{i}/{j}", new InterfaceConfig($"ethernet 1/{i}/{j}", this));
                 }
             }
-            Interfaces["mgmt 1/1/1"] = new InterfaceConfig("mgmt 1/1/1", this);
+            AddInterface("mgmt 1/1/1", new InterfaceConfig("mgmt 1/1/1", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -48,16 +47,19 @@ namespace NetForge.Simulation.Devices
 
         public override string GetPrompt()
         {
-            return base.CurrentMode switch
+            var mode = GetCurrentModeEnum();
+            var hostname = GetHostname();
+
+            return mode switch
             {
-                DeviceMode.User => $"{Hostname}>",
-                DeviceMode.Privileged => $"{Hostname}#",
-                DeviceMode.Config => $"{Hostname}(config)#",
-                DeviceMode.Interface => $"{Hostname}(conf-if-{CurrentInterface.Replace(" ", "-").Replace("/", "-")})#",
-                DeviceMode.Vlan => $"{Hostname}(conf-vlan-{Vlans.Keys.LastOrDefault()})#",
+                DeviceMode.User => $"{hostname}>",
+                DeviceMode.Privileged => $"{hostname}#",
+                DeviceMode.Config => $"{hostname}(config)#",
+                DeviceMode.Interface => $"{hostname}(conf-if-{GetCurrentInterfaceName()?.Replace(" ", "-").Replace("/", "-")})#",
+                DeviceMode.Vlan => $"{hostname}(conf-vlan-{GetVlans().LastOrDefault()?.Id})#",
                 DeviceMode.Router => GetRouterPrompt(),
-                DeviceMode.Acl => $"{Hostname}(config-ipv4-acl)#",
-                _ => $"{Hostname}>"
+                DeviceMode.Acl => $"{hostname}(config-ipv4-acl)#",
+                _ => $"{hostname}>"
             };
         }
 
@@ -67,52 +69,34 @@ namespace NetForge.Simulation.Devices
             var ospfConfig = GetOspfConfiguration();
             var bgpConfig = GetBgpConfiguration();
             if (bgpConfig != null) protocol = "bgp";
-            return $"{Hostname}(config-router-{protocol})# ";
+            return $"{GetHostname()}(config-router-{protocol})# ";
         }
 
         public override async Task<string> ProcessCommandAsync(string command)
         {
-            // Use the command handler manager for all command processing
-            if (CommandManager != null)
-            {
-                var result = await CommandManager.ProcessCommandAsync(command);
+            if (string.IsNullOrWhiteSpace(command))
+                return GetPrompt();
 
-                // If command was handled, return the result
-                if (result != null)
-                {
-                    // Check if result already ends with prompt
-                    var prompt = GetPrompt();
-                    if (result.Output.EndsWith(prompt))
-                    {
-                        return result.Output;
-                    }
-                    else
-                    {
-                        return result.Output + prompt;
-                    }
-
-                }
-            }
-
-            // If no handler found, return Dell error format
-            return "% Invalid input detected at '^' marker.\n" + GetPrompt();
+            // Use the base class implementation for actual command processing
+            // This will use the vendor discovery system to find appropriate handlers
+            return await base.ProcessCommandAsync(command);
         }
 
         // Helper methods for command handlers
-        public string GetMode() => base.CurrentMode.ToModeString();
-        public new void SetCurrentMode(string mode) => base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
-        public new string GetCurrentInterface() => CurrentInterface;
-        public new void SetCurrentInterface(string iface) => CurrentInterface = iface;
+        public string GetMode() => GetCurrentModeEnum().ToModeString();
+        public new void SetCurrentMode(string mode) => SetModeEnum(DeviceModeExtensions.FromModeString(mode));
+        public new string GetCurrentInterface() => GetCurrentInterfaceName();
+        public new void SetCurrentInterface(string iface) => SetCurrentInterfaceName(iface);
 
         // Dell-specific helper methods
         public void AppendToRunningConfig(string line)
         {
-            RunningConfig.AppendLine(line);
+            GetRunningConfigBuilder().AppendLine(line);
         }
 
         public void UpdateProtocols()
         {
-            ParentNetwork?.UpdateProtocols();
+            GetParentNetwork()?.UpdateProtocols();
         }
 
         public void UpdateConnectedRoutesPublic()
@@ -187,7 +171,7 @@ namespace NetForge.Simulation.Devices
         private bool IsReachable(string destIp)
         {
             // Check if IP is in any connected network
-            foreach (var route in RoutingTable.Where(r => r.Protocol == "Connected"))
+            foreach (var route in GetRoutingTable().Where(r => r.Protocol == "Connected"))
             {
                 if (IsIpInNetwork(destIp, route.Network, route.Mask))
                 {
@@ -196,7 +180,7 @@ namespace NetForge.Simulation.Devices
             }
 
             // Check if there's a route to the destination
-            foreach (var route in RoutingTable)
+            foreach (var route in GetRoutingTable())
             {
                 if (IsIpInNetwork(destIp, route.Network, route.Mask))
                 {
@@ -231,7 +215,7 @@ namespace NetForge.Simulation.Devices
 
         private string GetBridgeId()
         {
-            return $"{StpConfig.GetPriority(1):x4}.aabb.cc00.0100";
+            return $"{GetStpConfiguration().GetPriority(1):x4}.aabb.cc00.0100";
         }
 
         /// <summary>
@@ -245,12 +229,13 @@ namespace NetForge.Simulation.Devices
                 return null;
 
             // Try direct lookup first
-            if (Interfaces.TryGetValue(interfaceName, out var directMatch))
+            var interfaces = GetAllInterfaces();
+            if (interfaces.TryGetValue(interfaceName, out var directMatch))
                 return directMatch;
 
             // Try basic alias expansion - interface alias handling is now managed by the vendor registry system
             // For now, just do a case-insensitive search and common Dell interface format variations
-            foreach (var kvp in Interfaces)
+            foreach (var kvp in interfaces)
             {
                 if (string.Equals(kvp.Key, interfaceName, StringComparison.OrdinalIgnoreCase))
                 {
@@ -274,11 +259,11 @@ namespace NetForge.Simulation.Devices
         }
 
         /// <summary>
-        /// Add interface to the device
+        /// Add interface to the device (exposed for command handlers)
         /// </summary>
         /// <param name="interfaceName">Interface name</param>
         /// <param name="interfaceConfig">Interface configuration (optional)</param>
-        public void AddInterface(string interfaceName, InterfaceConfig? interfaceConfig = null)
+        public void AddNewInterface(string interfaceName, InterfaceConfig? interfaceConfig = null)
         {
             if (string.IsNullOrEmpty(interfaceName))
                 return;
@@ -286,9 +271,9 @@ namespace NetForge.Simulation.Devices
             // Use canonical interface name for storage - simplified for now
             var canonicalName = interfaceName.ToLower().Replace("eth ", "ethernet ");
 
-            if (!Interfaces.ContainsKey(canonicalName))
+            if (GetInterface(canonicalName) == null)
             {
-                Interfaces[canonicalName] = interfaceConfig ?? new InterfaceConfig(canonicalName, this);
+                AddInterface(canonicalName, interfaceConfig ?? new InterfaceConfig(canonicalName, this));
             }
         }
     }

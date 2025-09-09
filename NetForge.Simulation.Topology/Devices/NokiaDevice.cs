@@ -5,45 +5,44 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// Nokia SR OS device implementation
     /// </summary>
     public sealed class NokiaDevice : NetworkDevice
     {
+        public override string DeviceType => "Router";
         private string _currentContext = "";
         private string _currentPort = "";
         private string _currentRouterInterface = "";
         private string _currentVlan = "";
         private string _currentRouterProtocol = "";
 
-        public NokiaDevice(string name) : base(name)
+        public NokiaDevice(string name) : base(name, "Nokia")
         {
-            Vendor = "Nokia";
-            Hostname = name;
+            SetHostname(name);
             // Nokia devices start in admin mode
-            base.CurrentMode = DeviceModeExtensions.FromModeString("admin");
+            SetModeEnum(DeviceModeExtensions.FromModeString("admin"));
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Nokia" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()
         {
             // Add default ports for a Nokia router
-            Interfaces["1/1/1"] = new InterfaceConfig("1/1/1", this);
-            Interfaces["1/1/2"] = new InterfaceConfig("1/1/2", this);
-            Interfaces["1/1/3"] = new InterfaceConfig("1/1/3", this);
-            Interfaces["1/1/4"] = new InterfaceConfig("1/1/4", this);
+            AddInterface("1/1/1", new InterfaceConfig("1/1/1", this));
+            AddInterface("1/1/2", new InterfaceConfig("1/1/2", this));
+            AddInterface("1/1/3", new InterfaceConfig("1/1/3", this));
+            AddInterface("1/1/4", new InterfaceConfig("1/1/4", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Nokia handlers to ensure they are available for tests
             var registry = new NokiaHandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Implement handler registration with new architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()
@@ -108,8 +107,8 @@ namespace NetForge.Simulation.Devices
         public void SetCurrentPort(string port) => _currentPort = port;
         public void SetCurrentVlan(string vlan) => _currentVlan = vlan;
 
-        public string GetMode() => base.CurrentMode.ToModeString();
-        public new void SetCurrentMode(string mode) => base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
+        public string GetMode() => GetCurrentModeEnum().ToModeString();
+        public new void SetCurrentMode(string mode) => SetModeEnum(DeviceModeExtensions.FromModeString(mode));
 
         // Nokia-specific ping simulation
         private string SimulateNokiaPing(string destination)
@@ -128,27 +127,9 @@ namespace NetForge.Simulation.Devices
 
         public override async Task<string> ProcessCommandAsync(string command)
         {
-            // Use the command handler manager for all command processing
-            if (CommandManager != null)
-            {
-                var result = await CommandManager.ProcessCommandAsync(command);
-
-                // If command was handled, return the result
-                if (result != null)
-                {
-                    // Check if result already ends with prompt
-                    var prompt = GetPrompt();
-                    if (result.Output.EndsWith(prompt))
-                    {
-                        return result.Output;
-                    }
-                    else
-                    {
-                        return result.Output + prompt;
-                    }
-
-                }
-            }
+            // Use the base class implementation for actual command processing
+            // This will use the vendor discovery system to find appropriate handlers
+            return await base.ProcessCommandAsync(command);
 
             // If no handler found, return Nokia error
             return "Error: Invalid command" + GetPrompt();
@@ -186,50 +167,57 @@ namespace NetForge.Simulation.Devices
         // Protocol initialization helpers
         public void InitializeOspf(int processId)
         {
-            if (OspfConfig == null)
+            if (GetOspfConfiguration() == null)
             {
-                OspfConfig = new OspfConfig(processId);
+                SetOspfConfiguration(new OspfConfig(processId));
             }
         }
 
         public void InitializeBgp(int asNumber)
         {
-            if (BgpConfig == null)
+            if (GetBgpConfiguration() == null)
             {
-                BgpConfig = new BgpConfig(asNumber);
+                SetBgpConfiguration(new BgpConfig(asNumber));
             }
         }
 
         public void CreateOrSelectVlan(int vlanId)
         {
-            if (!Vlans.ContainsKey(vlanId))
+            var vlans = GetVlans();
+            if (!vlans.Any(v => v.Id == vlanId))
             {
-                Vlans[vlanId] = new VlanConfig(vlanId);
+                AddVlan(vlanId, new VlanConfig(vlanId));
             }
         }
 
         public Dictionary<string, RoutingPolicy> GetRoutingPolicies()
         {
-            return RoutingPolicies ?? new Dictionary<string, RoutingPolicy>();
+            // TODO: Implement with new architecture
+            return new Dictionary<string, RoutingPolicy>();
         }
 
         public Dictionary<string, PrefixList> GetPrefixLists()
         {
-            return PrefixLists ?? new Dictionary<string, PrefixList>();
+            // TODO: Implement with new architecture
+            return new Dictionary<string, PrefixList>();
         }
 
         public Dictionary<string, BgpCommunity> GetCommunities()
         {
-            return BgpCommunities ?? new Dictionary<string, BgpCommunity>();
+            // TODO: Implement with new architecture
+            return new Dictionary<string, BgpCommunity>();
         }
 
         public Dictionary<string, AsPathGroup> GetAsPathGroups()
         {
-            return AsPathGroups ?? new Dictionary<string, AsPathGroup>();
+            // TODO: Implement with new architecture
+            return new Dictionary<string, AsPathGroup>();
         }
 
         // Keep the complex context processing methods for backwards compatibility
         // but these can be called by command handlers if needed
+        // TODO: This method has been temporarily commented out due to architecture changes
+        /*
         private string ProcessRootContext(string[] parts)
         {
             var cmd = parts[0].ToLower();
@@ -653,6 +641,7 @@ namespace NetForge.Simulation.Devices
 
             return "Error: Invalid command\n";
         }
+        */
 
         private string ProcessSystemContext(string[] parts)
         {
@@ -680,16 +669,16 @@ namespace NetForge.Simulation.Devices
             switch (protocol)
             {
                 case "ospf":
-                    if (OspfConfig == null)
-                        OspfConfig = new OspfConfig(0);
+                    if (GetOspfConfiguration() == null)
+                        SetOspfConfiguration(new OspfConfig(0));
                     break;
                 case "bgp":
-                    if (BgpConfig == null)
-                        BgpConfig = new BgpConfig(65000);
+                    if (GetBgpConfiguration() == null)
+                        SetBgpConfiguration(new BgpConfig(65000));
                     break;
                 case "rip":
-                    if (RipConfig == null)
-                        RipConfig = new RipConfig();
+                    if (GetRipConfiguration() == null)
+                        SetRipConfiguration(new RipConfig());
                     break;
             }
         }

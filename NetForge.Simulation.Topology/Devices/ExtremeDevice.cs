@@ -6,27 +6,22 @@ using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Topology.Devices;
 using PortChannelConfig = NetForge.Simulation.Common.Configuration.PortChannel;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// Extreme Networks EXOS device implementation
     /// </summary>
     public sealed class ExtremeDevice : NetworkDevice
     {
+        public override string DeviceType => "Switch";
         private Dictionary<int, string> _vlanNameMap = new Dictionary<int, string>();
 
-        public ExtremeDevice(string name) : base(name)
+        public ExtremeDevice(string name) : base(name, "Extreme")
         {
-            Vendor = "Extreme";
-            // InitializeDefaultInterfaces(); // Called by base constructor
-            // RegisterDeviceSpecificHandlers(); // Called by base constructor
-
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Extreme" vendor
-            AutoRegisterProtocols();
-
             // Default VLAN
-            Vlans[1] = new VlanConfig(1, "Default");
+            AddVlan(1, new VlanConfig(1, "Default"));
+            
+            // Protocol registration is now handled by the vendor registry system
             _vlanNameMap[1] = "Default";
         }
 
@@ -36,13 +31,13 @@ namespace NetForge.Simulation.Devices
             // Example: 48 1Gbps ports + 4 10Gbps uplink ports
             for (int i = 1; i <= 48; i++)
             {
-                Interfaces[$"1:{i}"] = new InterfaceConfig($"1:{i}", this);
+                AddInterface($"1:{i}", new InterfaceConfig($"1:{i}", this));
             }
             for (int i = 49; i <= 52; i++)
             {
-                Interfaces[$"1:{i}"] = new InterfaceConfig($"1:{i}", this) { Speed = "10G" }; // Assuming a way to denote speed
+                AddInterface($"1:{i}", new InterfaceConfig($"1:{i}", this) { Speed = "10G" }); // Assuming a way to denote speed
             }
-            Interfaces["mgmt"] = new InterfaceConfig("mgmt", this);
+            AddInterface("mgmt", new InterfaceConfig("mgmt", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -52,7 +47,7 @@ namespace NetForge.Simulation.Devices
             registry.RegisterHandlers(CommandManager);
         }
 
-        protected override void RegisterCommonHandlers()
+        private void RegisterCommonHandlers()
         {
             // Don't register CommonPingCommandHandler - ExtremeGeneralCommandHandler handles ping with Extreme-specific format
             // Other common handlers can be added here if needed in the future
@@ -145,14 +140,14 @@ namespace NetForge.Simulation.Devices
 
         public void InitializeOspf(int processId)
         {
-            if (OspfConfig == null)
-                OspfConfig = new OspfConfig(processId);
+            if (GetOspfConfiguration() == null)
+                SetOspfConfiguration(new OspfConfig(processId));
         }
 
         public void InitializeBgp(int asNumber)
         {
-            if (BgpConfig == null)
-                BgpConfig = new BgpConfig(asNumber);
+            if (GetBgpConfiguration() == null)
+                SetBgpConfiguration(new BgpConfig(asNumber));
         }
 
         public void ClearPortCounters()
@@ -708,8 +703,8 @@ namespace NetForge.Simulation.Devices
         {
             var output = new StringBuilder();
 
-            if (OspfConfig == null)
-                OspfConfig = new OspfConfig(1);
+            if (GetOspfConfiguration() == null)
+                SetOspfConfiguration(new OspfConfig(1));
 
             if (parts.Length > 2)
             {

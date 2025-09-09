@@ -4,30 +4,29 @@ using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// HPE/Aruba switch running ArubaOS-Switch (formerly ProCurve)
     /// </summary>
     public sealed class ArubaDevice : NetworkDevice
     {
+        public override string DeviceType => "Switch";
+        
         // Mode shadowing removed - using base class currentMode
         private string _currentRouterProtocol = "";
         private int _currentVlanId = 0;
         private int _currentAclNumber = 0;
 
-        public ArubaDevice(string name) : base(name)
+        public ArubaDevice(string name) : base(name, "Aruba")
         {
-            Vendor = "Aruba";
             // InitializeDefaultInterfaces(); // Called by base constructor
             // RegisterDeviceSpecificHandlers(); // Called by base constructor
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Aruba" vendor
-            AutoRegisterProtocols();
-
             // Add default VLAN 1
-            Vlans[1] = new VlanConfig(1, "DEFAULT_VLAN");
+            AddVlan(1, new VlanConfig(1, "DEFAULT_VLAN"));
+            
+            // Protocol registration is now handled by the vendor registry system
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
         }
@@ -38,13 +37,13 @@ namespace NetForge.Simulation.Devices
             // Example: 24 1Gbps ports + 4 SFP+ uplink ports
             for (int i = 1; i <= 24; i++)
             {
-                Interfaces[$"1/1/{i}"] = new InterfaceConfig($"1/1/{i}", this);
+                AddInterface($"1/1/{i}", new InterfaceConfig($"1/1/{i}", this));
             }
             for (int i = 25; i <= 28; i++)
             {
-                Interfaces[$"1/1/{i}"] = new InterfaceConfig($"1/1/{i}", this) { Description = "SFP+ Uplink" };
+                AddInterface($"1/1/{i}", new InterfaceConfig($"1/1/{i}", this) { Description = "SFP+ Uplink" });
             }
-            Interfaces["mgmt"] = new InterfaceConfig("mgmt", this);
+            AddInterface("mgmt", new InterfaceConfig("mgmt", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -56,19 +55,22 @@ namespace NetForge.Simulation.Devices
 
         public override string GetPrompt()
         {
-            return base.CurrentMode switch
+            var mode = GetCurrentModeEnum();
+            var hostname = GetHostname();
+
+            return mode switch
             {
-                DeviceMode.User => $"{Hostname}>",
-                DeviceMode.Privileged => $"{Hostname}#",
-                DeviceMode.Config => $"{Hostname}(config)#",
-                DeviceMode.Interface => $"{Hostname}(eth-{GetSimplifiedInterfaceName(CurrentInterface)})#",
-                DeviceMode.Vlan => $"{Hostname}(vlan-{Vlans.Keys.LastOrDefault()})#",
-                DeviceMode.Router => $"{Hostname}(config-{_currentRouterProtocol})#",
-                _ => $"{Hostname}>"
+                DeviceMode.User => $"{hostname}>",
+                DeviceMode.Privileged => $"{hostname}#",
+                DeviceMode.Config => $"{hostname}(config)#",
+                DeviceMode.Interface => $"{hostname}(eth-{GetSimplifiedInterfaceName(GetCurrentInterface())})#",
+                DeviceMode.Vlan => $"{hostname}(vlan-{GetVlans().LastOrDefault()?.Id})#",
+                DeviceMode.Router => $"{hostname}(config-{_currentRouterProtocol})#",
+                _ => $"{hostname}>"
             };
         }
 
-        private string GetSimplifiedInterfaceName(string interfaceName)
+        private string GetSimplifiedInterfaceName(string? interfaceName)
         {
             // Convert "1/1/1" back to "1" for prompt display
             if (interfaceName?.StartsWith("1/1/") == true)
@@ -81,29 +83,12 @@ namespace NetForge.Simulation.Devices
 
         public override async Task<string> ProcessCommandAsync(string command)
         {
-            // Use the command handler manager for all command processing
-            if (CommandManager != null)
-            {
-                var result = await CommandManager.ProcessCommandAsync(command);
+            if (string.IsNullOrWhiteSpace(command))
+                return GetPrompt();
 
-                // If command was handled, return the result
-                if (result != null)
-                {
-                    // Check if result already ends with prompt
-                    var prompt = GetPrompt();
-                    if (result.Output.EndsWith(prompt))
-                    {
-                        return result.Output;
-                    }
-                    else
-                    {
-                        return result.Output + prompt;
-                    }
-                }
-            }
-
-            // If no handler found, return Aruba error format
-            return "Invalid input\n" + GetPrompt();
+            // Use the base class implementation for actual command processing
+            // This will use the vendor discovery system to find appropriate handlers
+            return await base.ProcessCommandAsync(command);
         }
 
         // All ProcessXXXModeCommand methods removed - now handled by command handlers
@@ -111,10 +96,10 @@ namespace NetForge.Simulation.Devices
         // All ProcessXXXCommand methods removed - now handled by command handlers
 
         // Helper methods for command handlers
-        public string GetMode() => base.CurrentMode.ToModeString();
-        public new void SetCurrentMode(string mode) => base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
-        public new string GetCurrentInterface() => CurrentInterface;
-        public new void SetCurrentInterface(string iface) => CurrentInterface = iface;
+        public string GetMode() => GetCurrentModeEnum().ToModeString();
+        public new void SetCurrentMode(string mode) => SetModeEnum(DeviceModeExtensions.FromModeString(mode));
+        public new string GetCurrentInterface() => GetCurrentInterfaceName();
+        public new void SetCurrentInterface(string iface) => SetCurrentInterfaceName(iface);
 
         // Aruba-specific helper methods
         public string GetCurrentRouterProtocol() => _currentRouterProtocol;
@@ -122,12 +107,12 @@ namespace NetForge.Simulation.Devices
 
         public void AppendToRunningConfig(string line)
         {
-            RunningConfig.AppendLine(line);
+            GetRunningConfigBuilder().AppendLine(line);
         }
 
         public void UpdateProtocols()
         {
-            ParentNetwork?.UpdateProtocols();
+            GetParentNetwork()?.UpdateProtocols();
         }
 
         public void UpdateConnectedRoutesPublic()
@@ -144,7 +129,7 @@ namespace NetForge.Simulation.Devices
 
         public override void SetMode(string mode)
         {
-            base.SetMode(mode);
+            SetModeEnum(DeviceModeExtensions.FromModeString(mode));
             // Additional Aruba-specific mode logic here
         }
 
@@ -162,10 +147,10 @@ namespace NetForge.Simulation.Devices
         {
             var sb = new StringBuilder();
             sb.AppendLine("Running configuration:");
-            sb.AppendLine("hostname " + Name);
+            sb.AppendLine("hostname " + GetHostname());
 
             // VLAN configurations
-            foreach (var vlan in Vlans.Values.OrderBy(v => v.Id))
+            foreach (var vlan in GetVlans().OrderBy(v => v.Id))
             {
                 sb.AppendLine($"vlan {vlan.Id}");
                 if (!string.IsNullOrEmpty(vlan.Name))
@@ -173,7 +158,7 @@ namespace NetForge.Simulation.Devices
             }
 
             // Interface configurations
-            foreach (var iface in Interfaces.Values.OrderBy(i => i.Name))
+            foreach (var iface in GetAllInterfaces().Values.OrderBy(i => i.Name))
             {
                 sb.AppendLine($"interface {iface.Name}");
                 if (!string.IsNullOrEmpty(iface.IpAddress))
@@ -192,7 +177,7 @@ namespace NetForge.Simulation.Devices
             sb.AppendLine("Port     Status       VLAN   Duplex  Speed   Type");
             sb.AppendLine("-------- ------------ ------ ------- ------- ------------");
 
-            foreach (var iface in Interfaces.Values.OrderBy(i => i.Name))
+            foreach (var iface in GetAllInterfaces().Values.OrderBy(i => i.Name))
             {
                 var status = iface.IsShutdown ? "down" : "up";
                 var vlan = "1"; // Default VLAN
@@ -213,7 +198,7 @@ namespace NetForge.Simulation.Devices
             sb.AppendLine("VLAN ID  Name                              Status");
             sb.AppendLine("-------- --------------------------------- ----------");
 
-            foreach (var vlan in Vlans.Values.OrderBy(v => v.Id))
+            foreach (var vlan in GetVlans().OrderBy(v => v.Id))
             {
                 var status = "Active";
                 sb.AppendLine($"{vlan.Id,-8} {vlan.Name,-33} {status}");
@@ -229,7 +214,7 @@ namespace NetForge.Simulation.Devices
             sb.AppendLine("Interface  IP Address      Subnet Mask     Status");
             sb.AppendLine("---------- -------------- --------------- ----------");
 
-            foreach (var iface in Interfaces.Values.OrderBy(i => i.Name))
+            foreach (var iface in GetAllInterfaces().Values.OrderBy(i => i.Name))
             {
                 if (!string.IsNullOrEmpty(iface.IpAddress))
                 {
@@ -243,7 +228,7 @@ namespace NetForge.Simulation.Devices
 
         public void ClearCounters()
         {
-            foreach (var iface in Interfaces.Values)
+            foreach (var iface in GetAllInterfaces().Values)
             {
                 iface.RxPackets = 0;
                 iface.TxPackets = 0;
@@ -260,10 +245,11 @@ namespace NetForge.Simulation.Devices
 
         public void CreateOrUpdatePortChannel(int channelId, string interfaceName, string mode)
         {
-            if (!PortChannels.TryGetValue(channelId, out PortChannel? value))
+            var portChannels = GetPortChannels();
+            if (!portChannels.TryGetValue(channelId, out PortChannel? value))
             {
                 value = new PortChannel(channelId);
-                PortChannels[channelId] = value;
+                portChannels[channelId] = value;
             }
 
             value.MemberInterfaces.Add(interfaceName);
@@ -272,10 +258,11 @@ namespace NetForge.Simulation.Devices
 
         public void AddInterfaceToPortChannel(string interfaceName, int channelId)
         {
-            if (!PortChannels.TryGetValue(channelId, out PortChannel? value))
+            var portChannels = GetPortChannels();
+            if (!portChannels.TryGetValue(channelId, out PortChannel? value))
             {
                 value = new PortChannel(channelId);
-                PortChannels[channelId] = value;
+                portChannels[channelId] = value;
             }
 
             value.MemberInterfaces.Add(interfaceName);

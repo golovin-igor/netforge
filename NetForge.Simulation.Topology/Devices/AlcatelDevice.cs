@@ -9,46 +9,39 @@ namespace NetForge.Simulation.Topology.Devices
     /// </summary>
     public sealed class AlcatelDevice : NetworkDevice
     {
-        public AlcatelDevice(string name) : base(name)
-        {
-            Vendor = "Alcatel";
-            InitializeDefaultInterfaces();
-            RegisterDeviceSpecificHandlers();
+        public override string DeviceType => "Switch";
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Alcatel" vendor
-            AutoRegisterProtocols();
+        public AlcatelDevice(string name) : base(name, "Alcatel")
+        {
         }
 
         protected override void InitializeDefaultInterfaces()
         {
             // Alcatel devices use port numbering like 1/1/1, 1/1/2, etc.
-            var interfaces = GetAllInterfaces();
-            interfaces["1/1/1"] = new InterfaceConfig("1/1/1", this);
-            interfaces["1/1/2"] = new InterfaceConfig("1/1/2", this);
-            interfaces["1/1/3"] = new InterfaceConfig("1/1/3", this);
-            interfaces["1/1/4"] = new InterfaceConfig("1/1/4", this);
+            AddInterface("1/1/1", new InterfaceConfig("1/1/1", this));
+            AddInterface("1/1/2", new InterfaceConfig("1/1/2", this));
+            AddInterface("1/1/3", new InterfaceConfig("1/1/3", this));
+            AddInterface("1/1/4", new InterfaceConfig("1/1/4", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
         {
-            // Explicitly register Alcatel handlers to ensure they are available for tests
-            var registry = new AlcatelHandlerRegistry();
-            registry.Initialize(); // Initialize vendor context factory
-            registry.RegisterHandlers(CommandManager);
+            // Alcatel-specific handler registration would go here
+            // For now, use default behavior
         }
 
         public override string GetPrompt()
         {
             var mode = GetCurrentModeEnum();
+            var hostname = GetHostname();
 
             return mode switch
             {
-                DeviceMode.User => $"{Hostname}->",
-                DeviceMode.Privileged => $"A:{Hostname}#",
-                DeviceMode.Config => $"A:{Hostname}(config)#",
-                DeviceMode.Interface => $"A:{Hostname}(config-if)#",
-                _ => $"{Hostname}>"
+                DeviceMode.User => $"{hostname}->",
+                DeviceMode.Privileged => $"A:{hostname}#",
+                DeviceMode.Config => $"A:{hostname}(config)#",
+                DeviceMode.Interface => $"A:{hostname}(config-if)#",
+                _ => $"{hostname}>"
             };
         }
 
@@ -63,11 +56,11 @@ namespace NetForge.Simulation.Topology.Devices
         }
 
         // Expose interface creation for command handlers
-        public void AddInterface(string name)
+        public void AddNewInterface(string name)
         {
-            if (!Interfaces.ContainsKey(name))
+            if (GetInterface(name) == null)
             {
-                Interfaces[name] = new InterfaceConfig(name, this);
+                AddInterface(name, new InterfaceConfig(name, this));
             }
         }
     }

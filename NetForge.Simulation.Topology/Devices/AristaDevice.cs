@@ -8,51 +8,52 @@ namespace NetForge.Simulation.Topology.Devices
 {
     public sealed class AristaDevice : NetworkDevice
     {
+        public override string DeviceType => "Switch";
         private string _currentRouterProtocol = "";
         private int _currentVlanId = 0;
         private int _currentAclNumber = 0;
 
-        public AristaDevice(string name) : base(name)
+        public AristaDevice(string name) : base(name, "Arista")
         {
-            Vendor = "Arista";
             InitializeDefaultInterfaces();
-            RegisterCommonHandlers();
             RegisterDeviceSpecificHandlers();
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Arista" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()
         {
             // Add default interfaces for an Arista switch
-            Interfaces["Ethernet1"] = new InterfaceConfig("Ethernet1", this);
-            Interfaces["Ethernet2"] = new InterfaceConfig("Ethernet2", this);
-            Interfaces["Ethernet3"] = new InterfaceConfig("Ethernet3", this);
-            Interfaces["Ethernet4"] = new InterfaceConfig("Ethernet4", this);
-            Interfaces["Management1"] = new InterfaceConfig("Management1", this);
+            AddInterface("Ethernet1", new InterfaceConfig("Ethernet1", this));
+            AddInterface("Ethernet2", new InterfaceConfig("Ethernet2", this));
+            AddInterface("Ethernet3", new InterfaceConfig("Ethernet3", this));
+            AddInterface("Ethernet4", new InterfaceConfig("Ethernet4", this));
+            AddInterface("Management1", new InterfaceConfig("Management1", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
         {
             // Explicitly register Arista handlers to ensure they are available for tests
             var registry = new AristaHandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Implement handler registration with new architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()
         {
-            return base.CurrentMode switch
+            var mode = GetCurrentModeEnum();
+            var hostname = GetHostname();
+
+            return mode switch
             {
-                DeviceMode.User => $"{Hostname}>",
-                DeviceMode.Privileged => $"{Hostname}#",
-                DeviceMode.Config => $"{Hostname}(config)#",
-                DeviceMode.Interface => $"{Hostname}(config-if-{base.CurrentInterface})#",
-                DeviceMode.Router => $"{Hostname}(config-router-{_currentRouterProtocol})#",
-                DeviceMode.Vlan => $"{Hostname}(config-vlan-{Vlans.Keys.LastOrDefault()})#",
-                DeviceMode.Acl => $"{Hostname}(config-acl-{_currentAclNumber})#",
-                _ => $"{Hostname}>"
+                DeviceMode.User => $"{hostname}>",
+                DeviceMode.Privileged => $"{hostname}#",
+                DeviceMode.Config => $"{hostname}(config)#",
+                DeviceMode.Interface => $"{hostname}(config-if)#",
+                DeviceMode.Router => $"{hostname}(config-router-{_currentRouterProtocol})#",
+                DeviceMode.Vlan => $"{hostname}(config-vlan-{GetVlans().LastOrDefault()?.Id})#",
+                DeviceMode.Acl => $"{hostname}(config-acl-{_currentAclNumber})#",
+                _ => $"{hostname}>"
             };
         }
 
@@ -81,71 +82,75 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void CreateOrSelectVlan(int vlanId)
         {
-            if (!Vlans.ContainsKey(vlanId))
+            var vlans = GetVlans();
+            if (!vlans.Any(v => v.Id == vlanId))
             {
-                Vlans[vlanId] = new VlanConfig(vlanId);
+                AddVlan(vlanId, new VlanConfig(vlanId));
             }
         }
 
         public void SetCurrentVlanName(string name)
         {
-            if (Vlans.Count > 0)
+            var vlans = GetVlans();
+            if (vlans.Count > 0)
             {
-                var lastVlan = Vlans.Values.Last();
+                var lastVlan = vlans.Last();
                 lastVlan.Name = name;
             }
         }
 
         public void InitializeOspf(int processId)
         {
-            if (OspfConfig == null)
+            if (GetOspfConfiguration() == null)
             {
-                OspfConfig = new OspfConfig(processId);
+                SetOspfConfiguration(new OspfConfig(processId));
             }
         }
 
         public void InitializeBgp(int asNumber)
         {
-            if (BgpConfig == null)
+            if (GetBgpConfiguration() == null)
             {
-                BgpConfig = new BgpConfig(asNumber);
+                SetBgpConfiguration(new BgpConfig(asNumber));
             }
         }
 
         public void InitializeRip()
         {
-            if (RipConfig == null)
+            if (GetRipConfiguration() == null)
             {
-                RipConfig = new RipConfig();
+                SetRipConfiguration(new RipConfig());
             }
         }
 
         public void AppendToRunningConfig(string line)
         {
-            RunningConfig.AppendLine(line);
+            // TODO: Implement with new architecture
         }
 
         public bool VlanExists(int vlanId)
         {
-            return Vlans.ContainsKey(vlanId);
+            return GetVlans().Any(v => v.Id == vlanId);
         }
 
         public void AddInterfaceToVlan(string interfaceName, int vlanId)
         {
-            if (Vlans.ContainsKey(vlanId))
+            var vlan = GetVlans().FirstOrDefault(v => v.Id == vlanId);
+            if (vlan != null)
             {
-                Vlans[vlanId].Interfaces.Add(interfaceName);
+                vlan.Interfaces.Add(interfaceName);
             }
         }
 
         public void CreateOrUpdatePortChannel(int channelId, string interfaceName, string mode)
         {
-            if (!PortChannels.ContainsKey(channelId))
+            var portChannels = GetPortChannels();
+            if (!portChannels.ContainsKey(channelId))
             {
-                PortChannels[channelId] = new PortChannel(channelId);
+                portChannels[channelId] = new PortChannel(channelId);
             }
-            PortChannels[channelId].MemberInterfaces.Add(interfaceName);
-            PortChannels[channelId].Mode = mode;
+            portChannels[channelId].MemberInterfaces.Add(interfaceName);
+            portChannels[channelId].Mode = mode;
         }
 
         public override void AddStaticRoute(string network, string mask, string nextHop, int metric)
@@ -154,41 +159,42 @@ namespace NetForge.Simulation.Topology.Devices
             // Additional Arista-specific route logic here
         }
 
-        public void AddInterface(string name)
+        public void AddNewInterface(string name)
         {
-            if (!Interfaces.ContainsKey(name))
+            if (GetInterface(name) == null)
             {
-                Interfaces[name] = new InterfaceConfig(name, this);
+                AddInterface(name, new InterfaceConfig(name, this));
             }
         }
 
         public void SetCurrentAclNumber(int aclNumber)
         {
             _currentAclNumber = aclNumber;
-            if (!AccessLists.ContainsKey(aclNumber))
+            var acls = GetAccessLists();
+            if (!acls.ContainsKey(aclNumber))
             {
-                AccessLists[aclNumber] = new AccessList(aclNumber);
+                acls[aclNumber] = new AccessList(aclNumber);
             }
         }
 
-        // Public getters for compatibility
-        public List<VlanConfig> GetVlans() => Vlans.Values.ToList();
-        public OspfConfig GetOspfConfig() => OspfConfig;
-        public BgpConfig GetBgpConfig() => BgpConfig;
-        public RipConfig GetRipConfig() => RipConfig;
-        public new List<Route> GetRoutingTable() => RoutingTable;
+        // Public getters for compatibility - use base class methods
+        public new List<VlanConfig> GetVlans() => new List<VlanConfig>(); // TODO: Implement with new architecture
+        public OspfConfig GetOspfConfig() => GetOspfConfiguration();
+        public BgpConfig GetBgpConfig() => GetBgpConfiguration();
+        public RipConfig GetRipConfig() => GetRipConfiguration();
+        public new List<Route> GetRoutingTable() => base.GetRoutingTable();
 
         // Add missing methods that command handlers expect
         public override void SetMode(string mode)
         {
-            base.SetMode(mode);
+            SetModeEnum(DeviceModeExtensions.FromModeString(mode));
             // Additional Arista-specific mode logic here
         }
-        public new string GetCurrentInterface() => base.CurrentInterface;
-        public new void SetCurrentInterface(string iface) => base.CurrentInterface = iface;
-        public List<IInterfaceConfig> GetInterfaces() => [.. Interfaces.Values];
+        public new string GetCurrentInterface() => string.Empty; // TODO: Implement with new architecture
+        public new void SetCurrentInterface(string iface) { /* TODO: Implement with new architecture */ }
+        public List<IInterfaceConfig> GetInterfaces() => [.. GetAllInterfaces().Values];
 
-        public string GetMode() => base.CurrentMode.ToModeString();
+        public string GetMode() => GetCurrentModeEnum().ToModeString();
 
         /// <summary>
         /// Get interface by name with alias support
@@ -199,13 +205,14 @@ namespace NetForge.Simulation.Topology.Devices
                 return null;
 
             // Try direct lookup first
-            if (Interfaces.TryGetValue(name, out IInterfaceConfig? @interface))
+            var interfaces = GetAllInterfaces();
+            if (interfaces.TryGetValue(name, out IInterfaceConfig? @interface))
                 return @interface;
 
             // Try with alias expansion - now handled by the new vendor-agnostic system
             // Interface alias handling is now managed by the vendor registry system
             // For now, just do a case-insensitive search for flexibility
-            foreach ((string interfaceName, IInterfaceConfig config) in Interfaces)
+            foreach ((string interfaceName, IInterfaceConfig config) in interfaces)
             {
                 if (string.Equals(name, interfaceName, StringComparison.OrdinalIgnoreCase))
                     return config;

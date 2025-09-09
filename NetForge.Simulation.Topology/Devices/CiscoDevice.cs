@@ -8,13 +8,15 @@ using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common.Services;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// Cisco IOS device implementation
     /// </summary>
     public sealed class CiscoDevice : NetworkDevice
     {
+        public override string DeviceType => "Router";
+        
         // Removed mode shadowing - using base class strongly typed currentMode
         private string _currentRouterProtocol = "";
         private int _currentVlanId = 0;
@@ -23,29 +25,25 @@ namespace NetForge.Simulation.Devices
         private int _cdpTimer = 60;
         private int _cdpHoldtime = 180;
 
-        public CiscoDevice(string name) : base(name)
+        public CiscoDevice(string name) : base(name, "Cisco")
         {
-            Vendor = "Cisco";
-
             // Add default VLAN 1
-            Vlans[1] = new VlanConfig(1, "default");
+            AddVlan(1, new VlanConfig(1, "default"));
             InitializeDefaultInterfaces();
 
             // Register device-specific handlers (now handled by vendor registry)
             RegisterDeviceSpecificHandlers();
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Cisco" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()
         {
             // Add default interfaces for a Cisco router
-            Interfaces["GigabitEthernet0/0"] = new InterfaceConfig("GigabitEthernet0/0", this);
-            Interfaces["GigabitEthernet0/1"] = new InterfaceConfig("GigabitEthernet0/1", this);
-            Interfaces["GigabitEthernet0/2"] = new InterfaceConfig("GigabitEthernet0/2", this);
-            Interfaces["GigabitEthernet0/3"] = new InterfaceConfig("GigabitEthernet0/3", this);
+            AddInterface("GigabitEthernet0/0", new InterfaceConfig("GigabitEthernet0/0", this));
+            AddInterface("GigabitEthernet0/1", new InterfaceConfig("GigabitEthernet0/1", this));
+            AddInterface("GigabitEthernet0/2", new InterfaceConfig("GigabitEthernet0/2", this));
+            AddInterface("GigabitEthernet0/3", new InterfaceConfig("GigabitEthernet0/3", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -56,7 +54,7 @@ namespace NetForge.Simulation.Devices
             registry.RegisterHandlers(CommandManager);
         }
 
-        protected override void AutoRegisterProtocols()
+        private new void AutoRegisterProtocols()
         {
             var protocolDiscovery = new ProtocolDiscoveryService();
             var discoveredProtocols = protocolDiscovery.GetProtocolsForVendor("Cisco");
@@ -88,16 +86,19 @@ namespace NetForge.Simulation.Devices
 
         public override string GetPrompt()
         {
-            return base.CurrentMode switch
+            var mode = GetCurrentModeEnum();
+            var hostname = GetHostname();
+
+            return mode switch
             {
-                DeviceMode.User => $"{Hostname}>",
-                DeviceMode.Privileged => $"{Hostname}#",
-                DeviceMode.Config => $"{Hostname}(config)#",
-                DeviceMode.Interface => $"{Hostname}(config-if)#",
-                DeviceMode.Router => $"{Hostname}(config-router)#",
-                DeviceMode.Vlan => $"{Hostname}(config-vlan)#",
-                DeviceMode.Acl => $"{Hostname}(config-std-nacl)#",
-                _ => $"{Hostname}>"
+                DeviceMode.User => $"{hostname}>",
+                DeviceMode.Privileged => $"{hostname}#",
+                DeviceMode.Config => $"{hostname}(config)#",
+                DeviceMode.Interface => $"{hostname}(config-if)#",
+                DeviceMode.Router => $"{hostname}(config-router)#",
+                DeviceMode.Vlan => $"{hostname}(config-vlan)#",
+                DeviceMode.Acl => $"{hostname}(config-std-nacl)#",
+                _ => $"{hostname}>"
             };
         }
 
@@ -110,13 +111,14 @@ namespace NetForge.Simulation.Devices
                 return null;
 
             // Try direct lookup first
-            if (Interfaces.ContainsKey(name))
-                return Interfaces[name];
+            var interfaces = GetAllInterfaces();
+            if (interfaces.ContainsKey(name))
+                return interfaces[name];
 
             // Try with expanded alias
             var canonicalName = CiscoInterfaceAliasHandler.ExpandInterfaceAlias(name);
-            if (!string.Equals(name, canonicalName, StringComparison.OrdinalIgnoreCase) && Interfaces.ContainsKey(canonicalName))
-                return Interfaces[canonicalName];
+            if (!string.Equals(name, canonicalName, StringComparison.OrdinalIgnoreCase) && interfaces.ContainsKey(canonicalName))
+                return interfaces[canonicalName];
 
             return null;
         }
@@ -131,14 +133,15 @@ namespace NetForge.Simulation.Devices
             // Check for history recall commands first
             if (command.StartsWith("!"))
             {
-                var recalledCommand = CommandHistory.ProcessRecallCommand(command);
+                var history = GetCommandHistory();
+                var recalledCommand = history.ProcessRecallCommand(command);
                 if (!string.IsNullOrEmpty(recalledCommand))
                 {
                     command = recalledCommand;
                 }
                 else
                 {
-                    CommandHistory.AddCommand(originalCommand, base.CurrentMode.ToModeString(), false);
+                    history.AddCommand(originalCommand, GetCurrentModeEnum().ToModeString(), false);
                     return $"% No command found for '{command}'\n" + GetPrompt();
                 }
             }
@@ -190,41 +193,41 @@ namespace NetForge.Simulation.Devices
         }
 
         // Add helper methods for command handlers to access device state
-        public string GetMode() => base.CurrentMode.ToModeString();
+        public string GetMode() => GetCurrentModeEnum().ToModeString();
 
         public void SetMode(string mode)
         {
-            base.SetMode(mode);
+            SetModeEnum(DeviceModeExtensions.FromModeString(mode));
             // Additional Cisco-specific mode logic here
         }
 
         /// <summary>
         /// Get current mode as strongly typed enum
         /// </summary>
-        public DeviceMode GetModeEnum() => base.CurrentMode;
+        public DeviceMode GetModeEnum() => GetCurrentModeEnum();
 
         /// <summary>
         /// Set mode using strongly typed enum
         /// </summary>
-        public void SetModeEnum(DeviceMode mode)
+        public new void SetModeEnum(DeviceMode mode)
         {
             base.SetModeEnum(mode);
             // Additional Cisco-specific mode logic here
         }
 
-        public List<IInterfaceConfig> GetInterfaces() => Interfaces.Values.ToList();
-        public OspfConfig GetOspfConfig() => OspfConfig;
-        public BgpConfig GetBgpConfig() => BgpConfig;
-        public RipConfig GetRipConfig() => RipConfig;
+        public List<IInterfaceConfig> GetInterfaces() => GetAllInterfaces().Values.ToList();
+        public OspfConfig GetOspfConfig() => GetOspfConfiguration();
+        public BgpConfig GetBgpConfig() => GetBgpConfiguration();
+        public RipConfig GetRipConfig() => GetRipConfiguration();
 
         public string ShowRunningConfig()
         {
             var output = new StringBuilder();
-            var config = RunningConfig.Build();
+            var config = GetRunningConfigBuilder().Build();
             output.AppendLine("Building configuration...\n");
             output.AppendLine("Current configuration : " + config + " bytes");
             output.AppendLine("!");
-            output.AppendLine($"hostname {Hostname}");
+            output.AppendLine($"hostname {GetHostname()}");
             output.AppendLine("!");
             output.Append(config);
             output.AppendLine("!");
@@ -232,20 +235,20 @@ namespace NetForge.Simulation.Devices
             return output.ToString();
         }
 
-        public List<VlanConfig> GetVlans() => Vlans.Values.ToList();
-        public new List<Route> GetRoutingTable() => RoutingTable;
+        public new List<VlanConfig> GetVlans() => base.GetVlans();
+        public new List<Route> GetRoutingTable() => base.GetRoutingTable();
         public int GetCurrentVlanId() => _currentVlanId;
 
         // Add interface management method
-        public void AddInterface(string name)
+        public void AddNewInterface(string name)
         {
-            if (!Interfaces.ContainsKey(name))
+            if (GetInterface(name) == null)
             {
-                Interfaces[name] = new InterfaceConfig(name, this);
+                AddInterface(name, new InterfaceConfig(name, this));
             }
         }
 
-        public void SetHostname(string name)
+        public new void SetHostname(string name)
         {
             base.SetHostname(name);
             // Additional Cisco-specific hostname logic here
@@ -253,62 +256,67 @@ namespace NetForge.Simulation.Devices
 
         public void CreateOrSelectVlan(int vlanId)
         {
-            if (!Vlans.ContainsKey(vlanId))
+            var vlans = GetVlans();
+            if (!vlans.Any(v => v.Id == vlanId))
             {
-                Vlans[vlanId] = new VlanConfig(vlanId);
+                AddVlan(vlanId, new VlanConfig(vlanId));
             }
 
             _currentVlanId = vlanId; // Set the current VLAN ID for name commands
-            RunningConfig.AppendLine($"vlan {vlanId}");
+            GetRunningConfigBuilder().AppendLine($"vlan {vlanId}");
         }
 
         public void SetCurrentVlanName(string name)
         {
-            if (_currentVlanId > 0 && Vlans.ContainsKey(_currentVlanId))
+            if (_currentVlanId > 0)
             {
-                Vlans[_currentVlanId].Name = name;
-                RunningConfig.AppendLine($" name {name}");
+                var vlan = GetVlans().FirstOrDefault(v => v.Id == _currentVlanId);
+                if (vlan != null)
+                {
+                    vlan.Name = name;
+                    GetRunningConfigBuilder().AppendLine($" name {name}");
+                }
             }
         }
 
         public void InitializeOspf(int processId)
         {
-            if (OspfConfig == null)
+            if (GetOspfConfiguration() == null)
             {
-                OspfConfig = new OspfConfig(processId);
+                SetOspfConfiguration(new OspfConfig(processId));
             }
 
-            RunningConfig.AppendLine($"router ospf {processId}");
+            GetRunningConfigBuilder().AppendLine($"router ospf {processId}");
         }
 
         public void InitializeBgp(int asNumber)
         {
-            if (BgpConfig == null)
+            if (GetBgpConfiguration() == null)
             {
-                BgpConfig = new BgpConfig(asNumber);
+                SetBgpConfiguration(new BgpConfig(asNumber));
             }
 
-            RunningConfig.AppendLine($"router bgp {asNumber}");
+            GetRunningConfigBuilder().AppendLine($"router bgp {asNumber}");
         }
 
         public void InitializeRip()
         {
-            if (RipConfig == null)
+            if (GetRipConfiguration() == null)
             {
-                RipConfig = new RipConfig();
+                SetRipConfiguration(new RipConfig());
             }
 
-            RunningConfig.AppendLine("router rip");
+            GetRunningConfigBuilder().AppendLine("router rip");
         }
 
         public void InitializeEigrp(int asNumber)
         {
-            if (EigrpConfig == null)
+            if (GetEigrpConfiguration() == null)
             {
-                EigrpConfig = new EigrpConfig(asNumber);
+                SetEigrpConfiguration(new EigrpConfig(asNumber));
             }
 
-            RunningConfig.AppendLine($"router eigrp {asNumber}");
+            GetRunningConfigBuilder().AppendLine($"router eigrp {asNumber}");
         }
 
         public void SetCurrentRouterProtocol(string protocol)
@@ -318,19 +326,20 @@ namespace NetForge.Simulation.Devices
 
         public void AppendToRunningConfig(string line)
         {
-            RunningConfig.AppendLine(line);
+            GetRunningConfigBuilder().AppendLine(line);
         }
 
         public bool VlanExists(int vlanId)
         {
-            return Vlans.ContainsKey(vlanId);
+            return GetVlans().Any(v => v.Id == vlanId);
         }
 
         public void AddInterfaceToVlan(string interfaceName, int vlanId)
         {
-            if (Vlans.ContainsKey(vlanId))
+            var vlan = GetVlans().FirstOrDefault(v => v.Id == vlanId);
+            if (vlan != null)
             {
-                Vlans[vlanId].Interfaces.Add(interfaceName);
+                vlan.Interfaces.Add(interfaceName);
             }
         }
 
@@ -340,155 +349,166 @@ namespace NetForge.Simulation.Devices
 
         public void AddOspfNetwork(string network, string wildcard, int area)
         {
-            if (OspfConfig == null) return;
+            var ospfConfig = GetOspfConfiguration();
+            if (ospfConfig == null) return;
 
             var mask = WildcardToMask(wildcard);
-            OspfConfig.NetworkAreas[network] = area;
+            ospfConfig.NetworkAreas[network] = area;
 
             // Store the full command format like the test expects
             var networkStr = $"{network} {wildcard} area {area}";
-            if (!OspfConfig.Networks.Contains(networkStr))
+            if (!ospfConfig.Networks.Contains(networkStr))
             {
-                OspfConfig.Networks.Add(networkStr);
+                ospfConfig.Networks.Add(networkStr);
             }
 
             // Find interfaces in this network
-            foreach (var iface in Interfaces.Values)
+            foreach (var iface in GetAllInterfaces().Values)
             {
                 if (!string.IsNullOrEmpty(iface.IpAddress))
                 {
                     var ifaceNetwork = GetNetwork(iface.IpAddress, mask);
                     if (ifaceNetwork == network)
                     {
-                        OspfConfig.Interfaces[iface.Name] = new OspfInterface(iface.Name, area);
+                        ospfConfig.Interfaces[iface.Name] = new OspfInterface(iface.Name, area);
                     }
                 }
             }
 
-            RunningConfig.AppendLine($" network {network} {wildcard} area {area}");
-            ParentNetwork?.UpdateProtocols();
+            GetRunningConfigBuilder().AppendLine($" network {network} {wildcard} area {area}");
+            GetParentNetwork()?.UpdateProtocols();
         }
 
         public void SetOspfRouterId(string routerId)
         {
-            if (OspfConfig != null)
+            var ospfConfig = GetOspfConfiguration();
+            if (ospfConfig != null)
             {
-                OspfConfig.RouterId = routerId;
-                RunningConfig.AppendLine($" router-id {routerId}");
+                ospfConfig.RouterId = routerId;
+                GetRunningConfigBuilder().AppendLine($" router-id {routerId}");
             }
         }
 
         public void AddRipNetwork(string network)
         {
-            if (RipConfig != null)
+            var ripConfig = GetRipConfiguration();
+            if (ripConfig != null)
             {
-                RipConfig.Networks.Add(network);
-                RunningConfig.AppendLine($" network {network}");
-                ParentNetwork?.UpdateProtocols();
+                ripConfig.Networks.Add(network);
+                GetRunningConfigBuilder().AppendLine($" network {network}");
+                GetParentNetwork()?.UpdateProtocols();
             }
         }
 
         public void AddEigrpNetwork(string network, string wildcard)
         {
-            if (EigrpConfig != null)
+            var eigrpConfig = GetEigrpConfiguration();
+            if (eigrpConfig != null)
             {
                 var mask = WildcardToMask(wildcard);
                 var networkStr = $"{network} {wildcard}";
-                EigrpConfig.Networks.Add(networkStr);
-                RunningConfig.AppendLine($" network {network} {wildcard}");
-                ParentNetwork?.UpdateProtocols();
+                eigrpConfig.Networks.Add(networkStr);
+                GetRunningConfigBuilder().AppendLine($" network {network} {wildcard}");
+                GetParentNetwork()?.UpdateProtocols();
             }
         }
 
         public void SetRipVersion(int version)
         {
-            if (RipConfig != null)
+            var ripConfig = GetRipConfiguration();
+            if (ripConfig != null)
             {
-                RipConfig.Version = version;
-                RunningConfig.AppendLine($" version {version}");
+                ripConfig.Version = version;
+                GetRunningConfigBuilder().AppendLine($" version {version}");
             }
         }
 
         public void SetRipAutoSummary(bool enabled)
         {
-            if (RipConfig != null)
+            var ripConfig = GetRipConfiguration();
+            if (ripConfig != null)
             {
-                RipConfig.AutoSummary = enabled;
+                ripConfig.AutoSummary = enabled;
                 if (!enabled)
                 {
-                    RunningConfig.AppendLine(" no auto-summary");
+                    GetRunningConfigBuilder().AppendLine(" no auto-summary");
                 }
             }
         }
 
         public void SetEigrpAutoSummary(bool enabled)
         {
-            if (EigrpConfig != null)
+            var eigrpConfig = GetEigrpConfiguration();
+            if (eigrpConfig != null)
             {
-                EigrpConfig.AutoSummary = enabled;
+                eigrpConfig.AutoSummary = enabled;
                 if (!enabled)
                 {
-                    RunningConfig.AppendLine(" no auto-summary");
+                    GetRunningConfigBuilder().AppendLine(" no auto-summary");
                 }
             }
         }
 
         public void AddBgpNetwork(string network, string mask)
         {
-            if (BgpConfig != null)
+            var bgpConfig = GetBgpConfiguration();
+            if (bgpConfig != null)
             {
                 var cidr = mask != null ? MaskToCidr(mask) : 0;
                 var networkStr = mask != null ? $"{network}/{cidr}" : network;
-                BgpConfig.Networks.Add(networkStr);
+                bgpConfig.Networks.Add(networkStr);
 
                 if (mask != null)
                 {
-                    RunningConfig.AppendLine($" network {network} mask {mask}");
+                    GetRunningConfigBuilder().AppendLine($" network {network} mask {mask}");
                 }
                 else
                 {
-                    RunningConfig.AppendLine($" network {network}");
+                    GetRunningConfigBuilder().AppendLine($" network {network}");
                 }
 
-                ParentNetwork?.UpdateProtocols();
+                GetParentNetwork()?.UpdateProtocols();
             }
         }
 
         public void AddBgpNeighbor(string neighborIp, int remoteAs)
         {
-            if (BgpConfig == null) return;
+            var bgpConfig = GetBgpConfiguration();
+            if (bgpConfig == null) return;
 
-            if (!BgpConfig.Neighbors.ContainsKey(neighborIp))
+            if (!bgpConfig.Neighbors.ContainsKey(neighborIp))
             {
                 var neighbor = new BgpNeighbor(neighborIp, remoteAs);
-                BgpConfig.Neighbors[neighborIp] = neighbor;
+                bgpConfig.Neighbors[neighborIp] = neighbor;
             }
             else
             {
-                BgpConfig.Neighbors[neighborIp].RemoteAs = remoteAs;
+                bgpConfig.Neighbors[neighborIp].RemoteAs = remoteAs;
             }
 
-            RunningConfig.AppendLine($" neighbor {neighborIp} remote-as {remoteAs}");
-            ParentNetwork?.UpdateProtocols();
+            GetRunningConfigBuilder().AppendLine($" neighbor {neighborIp} remote-as {remoteAs}");
+            GetParentNetwork()?.UpdateProtocols();
         }
 
         public void SetBgpRouterId(string routerId)
         {
-            if (BgpConfig != null)
+            var bgpConfig = GetBgpConfiguration();
+            if (bgpConfig != null)
             {
-                BgpConfig.RouterId = routerId;
-                RunningConfig.AppendLine($" bgp router-id {routerId}");
+                bgpConfig.RouterId = routerId;
+                GetRunningConfigBuilder().AppendLine($" bgp router-id {routerId}");
             }
         }
 
         public void SetBgpNeighborDescription(string neighborIp, string description)
         {
-            if (BgpConfig == null) return;
+            var bgpConfig = GetBgpConfiguration();
+            if (bgpConfig == null) return;
 
-            if (BgpConfig.Neighbors.ContainsKey(neighborIp))
+            if (bgpConfig.Neighbors.ContainsKey(neighborIp))
             {
-                BgpConfig.Neighbors[neighborIp].Description = description;
-                RunningConfig.AppendLine($" neighbor {neighborIp} description {description}");
+                bgpConfig.Neighbors[neighborIp].Description = description;
+                GetRunningConfigBuilder().AppendLine($" neighbor {neighborIp} description {description}");
             }
         }
 
@@ -518,9 +538,10 @@ namespace NetForge.Simulation.Devices
         public void SetCurrentAclNumber(int aclNumber)
         {
             _currentAclNumber = aclNumber;
-            if (!AccessLists.ContainsKey(aclNumber))
+            var acls = GetAccessLists();
+            if (!acls.ContainsKey(aclNumber))
             {
-                AccessLists[aclNumber] = new AccessList(aclNumber);
+                acls[aclNumber] = new AccessList(aclNumber);
             }
         }
 
@@ -528,12 +549,13 @@ namespace NetForge.Simulation.Devices
 
         public void AddAclEntry(int aclNumber, AclEntry entry)
         {
-            if (!AccessLists.ContainsKey(aclNumber))
+            var acls = GetAccessLists();
+            if (!acls.ContainsKey(aclNumber))
             {
-                AccessLists[aclNumber] = new AccessList(aclNumber);
+                acls[aclNumber] = new AccessList(aclNumber);
             }
 
-            AccessLists[aclNumber].Entries.Add(entry);
+            acls[aclNumber].Entries.Add(entry);
 
             var cmd = new StringBuilder($"access-list {aclNumber} {entry.Action}");
             if (entry.Protocol != "ip" && aclNumber >= 100)
@@ -570,43 +592,46 @@ namespace NetForge.Simulation.Devices
                 }
             }
 
-            RunningConfig.AppendLine(cmd.ToString());
+            GetRunningConfigBuilder().AppendLine(cmd.ToString());
         }
 
         // STP helper methods
         public void SetStpMode(string mode)
         {
-            StpConfig.Mode = mode;
-            RunningConfig.AppendLine($"spanning-tree mode {mode}");
+            var stpConfig = GetStpConfiguration();
+            stpConfig.Mode = mode;
+            GetRunningConfigBuilder().AppendLine($"spanning-tree mode {mode}");
         }
 
         public void SetStpVlanPriority(int vlanId, int priority)
         {
-            StpConfig.VlanPriorities[vlanId] = priority;
-            RunningConfig.AppendLine($"spanning-tree vlan {vlanId} priority {priority}");
-            ParentNetwork?.UpdateProtocols();
+            var stpConfig = GetStpConfiguration();
+            stpConfig.VlanPriorities[vlanId] = priority;
+            GetRunningConfigBuilder().AppendLine($"spanning-tree vlan {vlanId} priority {priority}");
+            GetParentNetwork()?.UpdateProtocols();
         }
 
         public void SetStpPriority(int priority)
         {
-            StpConfig.DefaultPriority = priority;
-            RunningConfig.AppendLine($"spanning-tree priority {priority}");
-            ParentNetwork?.UpdateProtocols();
+            var stpConfig = GetStpConfiguration();
+            stpConfig.DefaultPriority = priority;
+            GetRunningConfigBuilder().AppendLine($"spanning-tree priority {priority}");
+            GetParentNetwork()?.UpdateProtocols();
         }
 
         public void EnablePortfast(string interfaceName)
         {
-            if (Interfaces.ContainsKey(interfaceName))
+            if (GetInterface(interfaceName) != null)
             {
                 // Store portfast setting in running config
-                RunningConfig.AppendLine(" spanning-tree portfast");
+                GetRunningConfigBuilder().AppendLine(" spanning-tree portfast");
             }
         }
 
         public void EnablePortfastDefault()
         {
             // Store portfast default setting in running config
-            RunningConfig.AppendLine("spanning-tree portfast default");
+            GetRunningConfigBuilder().AppendLine("spanning-tree portfast default");
         }
 
         public void EnableBpduGuard(string interfaceName)
@@ -835,9 +860,9 @@ namespace NetForge.Simulation.Devices
         }
 
         /// <summary>
-        /// Override ping simulation to provide Cisco-style output
+        /// Provide Cisco-style ping output
         /// </summary>
-        protected override string SimulatePing(string destination)
+        private string SimulatePing(string destination)
         {
             if (ParentNetwork == null)
                 return "% Network not initialized";

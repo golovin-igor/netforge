@@ -4,13 +4,14 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Topology.Devices;
 
-namespace NetForge.Simulation.Devices
+namespace NetForge.Simulation.Topology.Devices
 {
     /// <summary>
     /// Fortinet FortiOS device implementation
     /// </summary>
     public sealed class FortinetDevice : NetworkDevice
     {
+        public override string DeviceType => "Firewall";
         private int _currentVlanId = 0;
         private string _currentNeighborIp = "";
         private string _currentBgpNetwork = "";
@@ -18,31 +19,27 @@ namespace NetForge.Simulation.Devices
         private int _currentStaticRouteId = 0;
         private Dictionary<int, (string Network, string Mask, string Gateway, string Device)> _pendingStaticRoutes = new Dictionary<int, (string, string, string, string)>();
 
-        public FortinetDevice(string name) : base(name)
+        public FortinetDevice(string name) : base(name, "Fortinet")
         {
-            Vendor = "Fortinet";
-
             // Fortinet devices should start in Global mode, not User mode
-            CurrentMode = DeviceMode.Global;
+            SetModeEnum(DeviceMode.Global);
 
             InitializeDefaultInterfaces();
             RegisterDeviceSpecificHandlers();
 
             // FortiGate uses VLAN 1 by default
-            Vlans[1] = new VlanConfig(1, "default");
+            AddVlan(1, new VlanConfig(1, "default"));
 
-            // Auto-register protocols using the new plugin-based discovery service
-            // This will discover and register protocols that support the "Fortinet" vendor
-            AutoRegisterProtocols();
+            // Protocol registration is now handled by the vendor registry system
         }
 
         protected override void InitializeDefaultInterfaces()
         {
-            Interfaces["port1"] = new InterfaceConfig("port1", this);
-            Interfaces["port2"] = new InterfaceConfig("port2", this);
-            Interfaces["port3"] = new InterfaceConfig("port3", this);
-            Interfaces["port4"] = new InterfaceConfig("port4", this);
-            Interfaces["internal"] = new InterfaceConfig("internal", this);
+            AddInterface("port1", new InterfaceConfig("port1", this));
+            AddInterface("port2", new InterfaceConfig("port2", this));
+            AddInterface("port3", new InterfaceConfig("port3", this));
+            AddInterface("port4", new InterfaceConfig("port4", this));
+            AddInterface("internal", new InterfaceConfig("internal", this));
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -167,25 +164,25 @@ namespace NetForge.Simulation.Devices
 
         public void InitializeOspf(int processId)
         {
-            if (OspfConfig == null)
+            if (GetOspfConfiguration() == null)
             {
-                OspfConfig = new OspfConfig(processId);
+                SetOspfConfiguration(new OspfConfig(processId));
             }
         }
 
         public void InitializeBgp(int asNumber)
         {
-            if (BgpConfig == null)
+            if (GetBgpConfiguration() == null)
             {
-                BgpConfig = new BgpConfig(asNumber);
+                SetBgpConfiguration(new BgpConfig(asNumber));
             }
         }
 
         public void InitializeRip()
         {
-            if (RipConfig == null)
+            if (GetRipConfiguration() == null)
             {
-                RipConfig = new RipConfig();
+                SetRipConfiguration(new RipConfig());
             }
         }
 
