@@ -44,9 +44,10 @@ namespace NetForge.Simulation.Tests
 
         private class DummyDevice : NetworkDevice
         {
-            public DummyDevice(string name) : base(name)
+            public override string DeviceType => "Test";
+            
+            public DummyDevice(string name) : base(name, "Dummy")
             {
-                Vendor = "Dummy";
             }
 
             protected override void InitializeDefaultInterfaces()
@@ -57,7 +58,7 @@ namespace NetForge.Simulation.Tests
             {
             }
 
-            public override string GetPrompt() => $"{Hostname}>";
+            public override string GetPrompt() => $"{GetHostname()}>";
         }
     }
 }

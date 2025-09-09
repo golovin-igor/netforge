@@ -8,8 +8,9 @@ namespace NetForge.Player;
 /// <summary>
 /// Dummy network device used for capability scanning and testing
 /// </summary>
-public class DummyNetworkDevice() : NetworkDevice("DummyDevice")
+public class DummyNetworkDevice() : NetworkDevice("DummyDevice", "Dummy")
 {
+    public override string DeviceType => "Dummy";
     protected override void InitializeDefaultInterfaces()
     {
     }

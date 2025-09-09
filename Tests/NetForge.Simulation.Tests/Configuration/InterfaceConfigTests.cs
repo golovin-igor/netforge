@@ -1,5 +1,6 @@
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Devices;
+using NetForge.Simulation.Topology.Devices;
 using Xunit;
 
 namespace NetForge.Simulation.Tests.Configuration
