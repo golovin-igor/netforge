@@ -38,14 +38,15 @@ namespace NetForge.Simulation.Topology.Devices
         {
             // Explicitly register F5 handlers to ensure they are available
             var registry = new F5HandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Update command handler registration with new architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()
         {
-            var hostname = Hostname ?? "F5";
+            var hostname = GetHostname() ?? "F5";
 
-            return CurrentMode switch
+            return GetCurrentModeEnum() switch
             {
                 DeviceMode.User => $"{hostname}>",
                 DeviceMode.Privileged => $"{hostname}#",

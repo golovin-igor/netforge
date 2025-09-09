@@ -882,13 +882,13 @@ namespace NetForge.Simulation.Topology.Devices
                         output.AppendLine("VLAN ID  VLAN Name                        Type         Adm  Opr  MTU");
                         output.AppendLine("-------------------------------------------------------------------------------");
 
-                        foreach (var vlan in Vlans.Values.OrderBy(v => v.Id))
+                        foreach (var vlan in GetAllVlans().Values.OrderBy(v => v.Id))
                         {
                             output.AppendLine($"{vlan.Id,-8} {vlan.Name,-32} service      Up   Up   1514");
                         }
 
                         output.AppendLine("-------------------------------------------------------------------------------");
-                        output.AppendLine($"Number of VLANs : {Vlans.Count}");
+                        output.AppendLine($"Number of VLANs : {GetAllVlans().Count}");
                         output.AppendLine("===============================================================================");
                     }
                     break;

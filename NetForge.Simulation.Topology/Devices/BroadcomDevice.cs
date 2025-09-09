@@ -30,7 +30,8 @@ namespace NetForge.Simulation.Topology.Devices
             // Explicitly register Broadcom handlers to ensure they are available for tests
             var registry = new BroadcomHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Update command handler registration with new architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()

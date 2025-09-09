@@ -138,6 +138,6 @@ public class DevicePhysicalConnectivityService : IPhysicalConnectivity
     private bool IsInterfaceOperationallyUp(string interfaceName)
     {
         var interfaceConfig = _device.GetInterface(interfaceName);
-        return interfaceConfig?.IsEnabled ?? false;
+        return interfaceConfig?.IsUp ?? false;
     }
 }

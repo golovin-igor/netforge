@@ -100,10 +100,10 @@ namespace NetForge.Simulation.Topology.Devices
         }
 
         // Helper methods for command handlers
-        public string GetMode() => base.CurrentMode.ToModeString();
-        public new void SetCurrentMode(string mode) => base.CurrentMode = DeviceModeExtensions.FromModeString(mode);
-        public new string GetCurrentInterface() => CurrentInterface;
-        public new void SetCurrentInterface(string iface) => CurrentInterface = iface;
+        public string GetMode() => GetCurrentMode();
+        // SetCurrentMode is inherited from base class
+        // GetCurrentInterface is inherited from base class
+        // SetCurrentInterface is inherited from base class
 
         // EXOS-specific helper methods
         public void AppendToRunningConfig(string line)
@@ -374,17 +374,17 @@ namespace NetForge.Simulation.Topology.Devices
                 }
                 else if (parts[2].ToLower() == "interfaces")
                 {
-                    if (OspfConfig != null)
+                    if (GetOspfConfiguration() != null)
                     {
                         output.AppendLine("Interface     IP Address         OSPF Area    OSPF State  Designated Router");
                         output.AppendLine("==============================================================================");
 
-                        foreach (var ospfIface in OspfConfig.Interfaces.Values)
+                        foreach (var ospfIface in GetOspfConfiguration().Interfaces.Values)
                         {
-                            var iface = Interfaces.Values.FirstOrDefault(i => i.Name == ospfIface.Name);
+                            var iface = GetAllInterfaces().Values.FirstOrDefault(i => i.Name == ospfIface.Name);
                             if (iface != null)
                             {
-                                output.AppendLine($"{ospfIface.Name,-13} {iface.IpAddress,-18} 0.0.0.{ospfIface.Area,-10} DR          {OspfConfig.RouterId ?? "0.0.0.0"}");
+                                output.AppendLine($"{ospfIface.Name,-13} {iface.IpAddress,-18} 0.0.0.{ospfIface.Area,-10} DR          {GetOspfConfiguration().RouterId ?? "0.0.0.0"}");
                             }
                         }
                     }
@@ -398,14 +398,14 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var output = new StringBuilder();
 
-            if (BgpConfig != null && parts.Length > 2 && parts[2].ToLower() == "neighbor")
+            if (GetBgpConfiguration() != null && parts.Length > 2 && parts[2].ToLower() == "neighbor")
             {
                 output.AppendLine("BGP Peer Table");
                 output.AppendLine("==============================================================================");
                 output.AppendLine("Peer Address      AS              State         Up/Down       In/Out/Pend");
                 output.AppendLine("------------------------------------------------------------------------------");
 
-                                        foreach (var neighbor in BgpConfig.Neighbors.Values)
+                                        foreach (var neighbor in GetBgpConfiguration()?.Neighbors.Values ?? new Dictionary<string, BgpNeighbor>().Values)
                 {
                     var upDown = neighbor.State == "Established" ? "0d:0h:1m:0s" : "0d:0h:0m:0s";
                     var inOut = neighbor.State == "Established" ? $"{neighbor.ReceivedRoutes.Count}/0/0" : "0/0/0";
@@ -414,7 +414,7 @@ namespace NetForge.Simulation.Topology.Devices
                 }
 
                 output.AppendLine("------------------------------------------------------------------------------");
-                output.AppendLine($"Total Peers : {BgpConfig.Neighbors.Count}");
+                output.AppendLine($"Total Peers : {GetBgpConfiguration()?.Neighbors.Count ?? 0}");
             }
 
             return output.ToString();
@@ -507,7 +507,7 @@ namespace NetForge.Simulation.Topology.Devices
             output.AppendLine("VR            Destination      Mac                Age  Static  VLAN");
             output.AppendLine("===================================================================");
 
-            foreach (var iface in Interfaces.Values)
+            foreach (var iface in GetAllInterfaces().Values)
             {
                 if (!string.IsNullOrEmpty(iface.IpAddress))
                 {
@@ -666,10 +666,10 @@ namespace NetForge.Simulation.Topology.Devices
                 {
                     // Create or update VLAN interface
                     var vlanIfaceName = $"vlan {vlanId}";
-                    if (!Interfaces.TryGetValue(vlanIfaceName, out var vlanIface))
+                    if (!GetAllInterfaces().TryGetValue(vlanIfaceName, out var vlanIface))
                     {
                         vlanIface = new InterfaceConfig(vlanIfaceName, this);
-                        Interfaces[vlanIfaceName] = vlanIface;
+                        GetAllInterfaces()[vlanIfaceName] = vlanIface;
                     }
 
                     vlanIface.VlanId = vlanId;

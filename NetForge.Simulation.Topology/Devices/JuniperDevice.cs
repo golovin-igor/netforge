@@ -527,22 +527,22 @@ namespace NetForge.Simulation.Topology.Devices
         // Additional methods needed by tests
         public Dictionary<string, RoutingPolicy> GetRoutingPolicies()
         {
-            return GetRoutingPolicyConfiguration() ?? new Dictionary<string, RoutingPolicy>();
+            return (Dictionary<string, RoutingPolicy>?)GetRoutingPolicyConfiguration() ?? new Dictionary<string, RoutingPolicy>();
         }
 
         public Dictionary<string, PrefixList> GetPrefixLists()
         {
-            return GetPrefixListConfiguration() ?? new Dictionary<string, PrefixList>();
+            return (Dictionary<string, PrefixList>?)GetPrefixListConfiguration() ?? new Dictionary<string, PrefixList>();
         }
 
         public Dictionary<string, BgpCommunity> GetCommunities()
         {
-            return GetBgpCommunityConfiguration() ?? new Dictionary<string, BgpCommunity>();
+            return (Dictionary<string, BgpCommunity>?)GetBgpCommunityConfiguration() ?? new Dictionary<string, BgpCommunity>();
         }
 
         public Dictionary<string, AsPathGroup> GetAsPathGroups()
         {
-            return GetAsPathGroupConfiguration() ?? new Dictionary<string, AsPathGroup>();
+            return (Dictionary<string, AsPathGroup>?)GetAsPathGroupConfiguration() ?? new Dictionary<string, AsPathGroup>();
         }
 
         /// <summary>

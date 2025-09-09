@@ -535,7 +535,7 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void ShutdownBgpNeighbor(string neighborIp)
         {
-            if (BgpConfig == null) return;
+            if (GetBgpConfiguration() == null) return;
 
             if (GetBgpConfiguration()?.Neighbors.ContainsKey(neighborIp) == true)
             {
@@ -547,7 +547,7 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void ActivateBgpNeighbor(string neighborIp)
         {
-            if (BgpConfig == null) return;
+            if (GetBgpConfiguration() == null) return;
 
             if (GetBgpConfiguration()?.Neighbors.ContainsKey(neighborIp) == true)
             {
@@ -795,19 +795,19 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void ClearSpecificRoute(string route)
         {
-            RoutingTable.RemoveAll(r => r.Network == route && r.Protocol == "Static");
+            GetRoutingTable().RemoveAll(r => r.Network == route && r.Protocol == "Static");
         }
 
         public void ClearAllRoutes()
         {
             // Clear only non-connected routes
-            RoutingTable.RemoveAll(r => r.Protocol != "Connected");
+            GetRoutingTable().RemoveAll(r => r.Protocol != "Connected");
             ForceUpdateConnectedRoutes();
         }
 
         public void ClearOspfProcess()
         {
-            if (OspfConfig != null)
+            if (GetOspfConfiguration() != null)
             {
                 GetOspfConfiguration()?.Neighbors.Clear();
                 // OSPF will reconverge
@@ -816,9 +816,9 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void ClearBgpPeer(string peerIp)
         {
-            if (BgpConfig != null)
+            if (GetBgpConfiguration() != null)
             {
-                if (BgpConfig.Neighbors.ContainsKey(peerIp))
+                if (GetBgpConfiguration().Neighbors.ContainsKey(peerIp))
                 {
                     GetBgpConfiguration().Neighbors[peerIp].State = "Idle";
                     // BGP will attempt to reconnect
@@ -828,7 +828,7 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void ClearAllBgpPeers()
         {
-            if (BgpConfig != null)
+            if (GetBgpConfiguration() != null)
             {
                 foreach (var peer in GetBgpConfiguration()?.Neighbors.Values ?? new Dictionary<string, BgpNeighbor>().Values)
                 {
@@ -866,34 +866,22 @@ namespace NetForge.Simulation.Topology.Devices
         }
 
         // Additional methods needed by tests
-        public EigrpConfig? GetEigrpConfiguration()
-        {
-            return EigrpConfig;
-        }
+        // GetEigrpConfiguration is inherited from base class
 
-        public OspfConfig? GetOspfConfiguration()
-        {
-            return OspfConfig;
-        }
+        // GetOspfConfiguration is inherited from base class
 
-        public BgpConfig? GetBgpConfiguration()
-        {
-            return BgpConfig;
-        }
+        // GetBgpConfiguration is inherited from base class
 
-        public RipConfig? GetRipConfiguration()
-        {
-            return RipConfig;
-        }
+        // GetRipConfiguration is inherited from base class
 
         public Dictionary<string, RouteMap> GetRouteMaps()
         {
-            return RouteMaps ?? new Dictionary<string, RouteMap>();
+            return new Dictionary<string, RouteMap>();
         }
 
         public Dictionary<string, PrefixList> GetPrefixLists()
         {
-            return PrefixLists ?? new Dictionary<string, PrefixList>();
+            return new Dictionary<string, PrefixList>();
         }
 
         /// <summary>

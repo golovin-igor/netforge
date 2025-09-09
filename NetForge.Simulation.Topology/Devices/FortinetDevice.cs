@@ -46,7 +46,8 @@ namespace NetForge.Simulation.Topology.Devices
         {
             // Explicitly register Fortinet handlers to ensure they are available for tests
             var registry = new FortinetHandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Update command handler registration with new architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()
