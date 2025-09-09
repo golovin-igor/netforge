@@ -537,7 +537,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (parts.Length > 2)
             {
                 var vlanName = parts[2].Trim('"');
-                var vlanId = Vlans.FirstOrDefault(v => _vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
+                var vlanId = GetAllVlans().FirstOrDefault(v => _vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
 
                 if (vlanId > 0)
                 {
@@ -568,7 +568,7 @@ namespace NetForge.Simulation.Topology.Devices
                                 {
                                     // Change VLAN tag
                                     var vlan = GetAllVlans()[vlanId];
-                                    Vlans.Remove(vlanId);
+                                    GetAllVlans().Remove(vlanId);
                                     GetAllVlans()[newTag] = vlan;
                                     _vlanNameMap[newTag] = vlanName;
                                     _vlanNameMap.Remove(vlanId);
@@ -660,7 +660,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (parts.Length > 3)
             {
                 var vlanName = parts[2].Trim('"');
-                var vlanId = Vlans.FirstOrDefault(v => _vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
+                var vlanId = GetAllVlans().FirstOrDefault(v => _vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
 
                 if (vlanId > 0)
                 {
