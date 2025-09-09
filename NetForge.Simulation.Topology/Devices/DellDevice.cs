@@ -87,7 +87,7 @@ namespace NetForge.Simulation.Topology.Devices
         public string GetMode() => GetCurrentModeEnum().ToModeString();
         public new void SetCurrentMode(string mode) => SetModeEnum(DeviceModeExtensions.FromModeString(mode));
         // GetCurrentInterface is already available from base class
-        public new void SetCurrentInterface(string iface) => SetCurrentInterfaceName(iface);
+        public new void SetCurrentInterface(string iface) => base.SetCurrentInterface(iface);
 
         // Dell-specific helper methods
         public void AppendToRunningConfig(string line)

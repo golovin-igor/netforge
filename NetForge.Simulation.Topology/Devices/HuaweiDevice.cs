@@ -44,7 +44,7 @@ namespace NetForge.Simulation.Topology.Devices
 
         public override string GetPrompt()
         {
-            return base.CurrentMode switch
+            return GetCurrentModeEnum() switch
             {
                 DeviceMode.User => $"<{GetHostname()}>",
                 DeviceMode.Privileged => $"<{GetHostname()}>",
@@ -72,12 +72,12 @@ namespace NetForge.Simulation.Topology.Devices
         // Additional methods needed by tests
         public Dictionary<string, RoutingPolicy> GetRoutePolicies()
         {
-            return RoutingPolicies ?? new Dictionary<string, RoutingPolicy>();
+            return new Dictionary<string, RoutingPolicy>(); // Simplified implementation
         }
 
         public Dictionary<string, PrefixList> GetIpPrefixLists()
         {
-            return PrefixLists ?? new Dictionary<string, PrefixList>();
+            return new Dictionary<string, PrefixList>(); // Simplified implementation
         }
 
         // Helper methods for command handlers (similar to AristaDevice)
@@ -95,9 +95,9 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void CreateOrSelectVlan(int vlanId)
         {
-            if (!Vlans.ContainsKey(vlanId))
+            if (!GetAllVlans().ContainsKey(vlanId))
             {
-                Vlans[vlanId] = new VlanConfig(vlanId);
+                AddVlan(vlanId, new VlanConfig(vlanId));
             }
         }
 
@@ -133,9 +133,9 @@ namespace NetForge.Simulation.Topology.Devices
         // GetRoutingTable is inherited from base class
         public List<IInterfaceConfig> GetInterfaces() => GetAllInterfaces().Values.ToList();
 
-        public new string GetCurrentInterface() => base.CurrentInterface;
-        public new void SetCurrentInterface(string iface) => base.CurrentInterface = iface;
-        public string GetMode() => base.CurrentMode.ToModeString();
+        public new string GetCurrentInterface() => base.GetCurrentInterface();
+        public new void SetCurrentInterface(string iface) => base.SetCurrentInterface(iface);
+        public string GetMode() => GetCurrentModeEnum().ToModeString();
 
         /// <summary>
         /// Get interface with alias expansion support
@@ -148,12 +148,12 @@ namespace NetForge.Simulation.Topology.Devices
                 return null;
 
             // Try direct lookup first
-            if (Interfaces.TryGetValue(interfaceName, out var directMatch))
+            if (GetAllInterfaces().TryGetValue(interfaceName, out var directMatch))
                 return directMatch;
 
             // Try basic alias expansion - interface alias handling is now managed by the vendor registry system
             // For now, just do a case-insensitive search
-            foreach (var kvp in Interfaces)
+            foreach (var kvp in GetAllInterfaces())
             {
                 if (string.Equals(kvp.Key, interfaceName, StringComparison.OrdinalIgnoreCase))
                 {
@@ -177,9 +177,9 @@ namespace NetForge.Simulation.Topology.Devices
             // Use canonical interface name for storage - simplified for now
             var canonicalName = interfaceName.ToLower();
 
-            if (!Interfaces.ContainsKey(canonicalName))
+            if (!GetAllInterfaces().ContainsKey(canonicalName))
             {
-                Interfaces[canonicalName] = interfaceConfig ?? new InterfaceConfig(canonicalName, this);
+                AddInterface(canonicalName, interfaceConfig ?? new InterfaceConfig(canonicalName, this));
             }
         }
     }

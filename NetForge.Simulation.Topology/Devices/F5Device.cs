@@ -69,7 +69,7 @@ namespace NetForge.Simulation.Topology.Devices
         // Expose interface creation for command handlers
         public void AddInterface(string name)
         {
-            if (!Interfaces.ContainsKey(name))
+            if (!GetAllInterfaces().ContainsKey(name))
             {
                 AddInterface(name, new InterfaceConfig(name, this));
             }

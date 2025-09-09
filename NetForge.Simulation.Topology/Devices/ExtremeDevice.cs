@@ -139,7 +139,7 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void ClearPortCounters()
         {
-            foreach (var iface in Interfaces.Values)
+            foreach (var iface in GetAllInterfaces().Values)
             {
                 iface.RxPackets = 0;
                 iface.TxPackets = 0;

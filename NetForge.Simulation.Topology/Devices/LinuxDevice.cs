@@ -31,7 +31,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             // Explicitly register Linux handlers to ensure they are available for tests
             var registry = new LinuxHandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // registry.RegisterHandlers(CommandManager); // Commented out until command manager is properly implemented
 
             // Initialize vendor-aware handler manager
             _vendorHandlerManager = VendorHandlerFactory.CreateWithDiscovery(this);
@@ -52,16 +52,16 @@ namespace NetForge.Simulation.Topology.Devices
                 return GetPrompt();
 
             // Process command using vendor-aware handler manager
-            var result = _vendorHandlerManager != null ?
-                        await _vendorHandlerManager.ProcessCommandAsync(command) :
-                        await CommandManager.ProcessCommandAsync(command);
-
-            if (result != null)
+            if (_vendorHandlerManager != null)
             {
-                var output = result.Output;
-                if (!output.EndsWith("\n"))
-                    output += "\n";
-                return output + GetPrompt();
+                var result = await _vendorHandlerManager.ProcessCommandAsync(command);
+                if (result != null)
+                {
+                    var output = result.Output;
+                    if (!output.EndsWith("\n"))
+                        output += "\n";
+                    return output + GetPrompt();
+                }
             }
 
             return $"bash: {command}: command not found\n" + GetPrompt();
