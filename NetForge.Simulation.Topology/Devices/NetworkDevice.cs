@@ -83,6 +83,7 @@ public abstract class NetworkDevice : INetworkDevice
     public string? GetSystemSetting(string name) => _configurationManager.GetSystemSetting(name);
     public void SetSystemSetting(string name, string value) => _configurationManager.SetSystemSetting(name, value);
     public void SetRunningConfig(string config) => _configurationManager.SetRunningConfig(config);
+    public DeviceConfiguration GetRunningConfig() => _configurationManager.GetRunningConfig();
     
     // Protocol configurations
     public OspfConfig? GetOspfConfiguration() => _configurationManager.GetOspfConfiguration();
@@ -134,6 +135,9 @@ public abstract class NetworkDevice : INetworkDevice
     public bool CheckIpInNetwork(string ip, string network, string mask) => 
         _connectivityService.CheckIpInNetwork(ip, network, mask);
     public int MaskToCidr(string mask) => _connectivityService.MaskToCidr(mask);
+    public string CidrToMask(int cidr) => _connectivityService.CidrToMask(cidr);
+    public void UpdateConnectedRoutes() => _connectivityService.ForceUpdateConnectedRoutes();
+    public string GetNetwork(string ip, string mask) => _connectivityService.GetNetworkAddress(ip, mask);
 
     #endregion
 

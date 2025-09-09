@@ -14,9 +14,9 @@ namespace NetForge.Simulation.Topology.Devices
         public override string DeviceType => "Router";
         public MikroTikDevice(string name) : base(name, "MikroTik")
         {
-            SystemSettings["version"] = "6.48.6";
-            SystemSettings["board-name"] = "RB750Gr3";
-            SystemSettings["architecture-name"] = "mipsbe";
+            SetSystemSetting("version", "6.48.6");
+            SetSystemSetting("board-name", "RB750Gr3");
+            SetSystemSetting("architecture-name", "mipsbe");
 
             // Initialize default log entries
             LogEntries.Add("jan/15 10:23:30 system,info system identity was changed by admin");
@@ -173,7 +173,7 @@ namespace NetForge.Simulation.Topology.Devices
                             if (nameParam.StartsWith("name="))
                             {
                                 Hostname = nameParam.Substring(5).Trim('"');
-                                RunningConfig.AppendLine($"/system identity set name=\"{Hostname}\"");
+                                GetRunningConfig().AppendLine($"/system identity set name=\"{Hostname}\"");
                                 LogEntries.Add($"{DateTime.Now:MMM/dd HH:mm:ss} system,info system identity was changed to {Hostname} by admin");
                             }
                         }
@@ -188,7 +188,7 @@ namespace NetForge.Simulation.Topology.Devices
                     if (parts.Length > 2 && parts[2].ToLower() == "print")
                     {
                         output.AppendLine($"                   uptime: 1w2d3h24m13s");
-                        output.AppendLine($"                  version: {SystemSettings["version"]} (stable)");
+                        output.AppendLine($"                  version: {GetSystemSetting("version")} (stable)");
                         output.AppendLine($"               build-time: Dec/04/2020 14:19:51");
                         output.AppendLine($"         factory-software: 6.44.6");
                         output.AppendLine($"              free-memory: 233.4MiB");
@@ -202,8 +202,8 @@ namespace NetForge.Simulation.Topology.Devices
                         output.AppendLine($"  write-sect-since-reboot: 2147");
                         output.AppendLine($"         write-sect-total: 52644");
                         output.AppendLine($"               bad-blocks: 0%");
-                        output.AppendLine($"        architecture-name: {SystemSettings["architecture-name"]}");
-                        output.AppendLine($"               board-name: {SystemSettings["board-name"]}");
+                        output.AppendLine($"        architecture-name: {GetSystemSetting("architecture-name")}");
+                        output.AppendLine($"               board-name: {GetSystemSetting("board-name")}");
                         output.AppendLine($"                platform: MikroTik");
                     }
                     break;
@@ -249,7 +249,7 @@ namespace NetForge.Simulation.Topology.Devices
                     output.AppendLine(" #     NAME                                TYPE       ACTUAL-MTU L2MTU  MAX-L2MTU MAC-ADDRESS");
 
                     int idx = 0;
-                    foreach (var iface in Interfaces.Values)
+                    foreach (var iface in GetAllInterfaces().Values)
                     {
                         var flags = "";
                         if (!iface.IsUp) flags += "X";
@@ -303,7 +303,7 @@ namespace NetForge.Simulation.Topology.Devices
 
                             // Show bridge ports
                             int portIdx = 0;
-                            foreach (var iface in Interfaces.Values)
+                            foreach (var iface in GetAllInterfaces().Values)
                             {
                                 if (iface.SwitchportMode == "access" && iface.Name != "bridge")
                                 {
@@ -344,11 +344,11 @@ namespace NetForge.Simulation.Topology.Devices
                     if (parts.Length > 3)
                     {
                         var ifaceName = ExtractValue(string.Join(" ", parts), "numbers") ?? parts[3];
-                        if (Interfaces.ContainsKey(ifaceName))
+                        if (GetAllInterfaces().ContainsKey(ifaceName))
                         {
                             Interfaces[ifaceName].IsShutdown = false;
                             Interfaces[ifaceName].IsUp = true;
-                            RunningConfig.AppendLine($"/interface ethernet enable {ifaceName}");
+                            GetRunningConfig().AppendLine($"/interface ethernet enable {ifaceName}");
                             ParentNetwork?.UpdateProtocols();
                         }
                     }
@@ -358,11 +358,11 @@ namespace NetForge.Simulation.Topology.Devices
                     if (parts.Length > 3)
                     {
                         var ifaceName = ExtractValue(string.Join(" ", parts), "numbers") ?? parts[3];
-                        if (Interfaces.ContainsKey(ifaceName))
+                        if (GetAllInterfaces().ContainsKey(ifaceName))
                         {
                             Interfaces[ifaceName].IsShutdown = true;
                             Interfaces[ifaceName].IsUp = false;
-                            RunningConfig.AppendLine($"/interface ethernet disable {ifaceName}");
+                            GetRunningConfig().AppendLine($"/interface ethernet disable {ifaceName}");
                             ParentNetwork?.UpdateProtocols();
                         }
                     }
@@ -370,7 +370,7 @@ namespace NetForge.Simulation.Topology.Devices
 
                 case "reset-counters":
                     // Clear all interface counters
-                    foreach (var iface in Interfaces.Values)
+                    foreach (var iface in GetAllInterfaces().Values)
                     {
                         iface.RxPackets = 0;
                         iface.TxPackets = 0;
@@ -383,7 +383,7 @@ namespace NetForge.Simulation.Topology.Devices
                     if (parts.Length > 3)
                     {
                         var ifaceName = parts[3];
-                        if (Interfaces.ContainsKey(ifaceName))
+                        if (GetAllInterfaces().ContainsKey(ifaceName))
                         {
                             var iface = Interfaces[ifaceName];
                             output.AppendLine($"                      name: {ifaceName}");
@@ -405,7 +405,7 @@ namespace NetForge.Simulation.Topology.Devices
                         var cmdLine = string.Join(" ", parts);
                         var ifaceName = ExtractNumberParam(cmdLine) ?? parts[3];
 
-                        if (Interfaces.ContainsKey(ifaceName))
+                        if (GetAllInterfaces().ContainsKey(ifaceName))
                         {
                             var iface = Interfaces[ifaceName];
 
@@ -414,7 +414,7 @@ namespace NetForge.Simulation.Topology.Devices
                             if (!string.IsNullOrEmpty(comment))
                             {
                                 iface.Description = comment.Trim('"');
-                                RunningConfig.AppendLine($"/interface ethernet set {ifaceName} comment=\"{iface.Description}\"");
+                                GetRunningConfig().AppendLine($"/interface ethernet set {ifaceName} comment=\"{iface.Description}\"");
                             }
 
                             var disabled = ExtractValue(cmdLine, "disabled");
@@ -422,14 +422,14 @@ namespace NetForge.Simulation.Topology.Devices
                             {
                                 iface.IsShutdown = true;
                                 iface.IsUp = false;
-                                RunningConfig.AppendLine($"/interface ethernet set {ifaceName} disabled=yes");
+                                GetRunningConfig().AppendLine($"/interface ethernet set {ifaceName} disabled=yes");
                                 ParentNetwork?.UpdateProtocols();
                             }
                             else if (disabled == "no")
                             {
                                 iface.IsShutdown = false;
                                 iface.IsUp = true;
-                                RunningConfig.AppendLine($"/interface ethernet set {ifaceName} disabled=no");
+                                GetRunningConfig().AppendLine($"/interface ethernet set {ifaceName} disabled=no");
                                 ParentNetwork?.UpdateProtocols();
                             }
                         }
@@ -467,7 +467,7 @@ namespace NetForge.Simulation.Topology.Devices
                         Interfaces[vlanIfaceName] = new InterfaceConfig(vlanIfaceName, this);
                         Interfaces[vlanIfaceName].VlanId = vlanId;
 
-                        RunningConfig.AppendLine($"/interface vlan add vlan-id={vlanId} interface={ifaceName} name={vlanIfaceName}");
+                        GetRunningConfig().AppendLine($"/interface vlan add vlan-id={vlanId} interface={ifaceName} name={vlanIfaceName}");
                     }
                     break;
 
@@ -509,15 +509,15 @@ namespace NetForge.Simulation.Topology.Devices
                             if (!string.IsNullOrEmpty(address) && !string.IsNullOrEmpty(ifaceName))
                             {
                                 var addrParts = address.Split('/');
-                                if (addrParts.Length == 2 && Interfaces.ContainsKey(ifaceName))
+                                if (addrParts.Length == 2 && GetAllInterfaces().ContainsKey(ifaceName))
                                 {
-                                    var iface = Interfaces[ifaceName];
+                                    var iface = GetAllInterfaces()[ifaceName];
                                     iface.IpAddress = addrParts[0];
                                     iface.SubnetMask = CidrToMask(int.Parse(addrParts[1]));
                                     UpdateConnectedRoutes();
                                     ParentNetwork?.UpdateProtocols();
 
-                                    RunningConfig.AppendLine($"/ip address add address={address} interface={ifaceName}");
+                                    GetRunningConfig().AppendLine($"/ip address add address={address} interface={ifaceName}");
                                 }
                             }
                         }
@@ -527,7 +527,7 @@ namespace NetForge.Simulation.Topology.Devices
                             output.AppendLine(" #   ADDRESS            NETWORK         INTERFACE");
 
                             int idx = 0;
-                            foreach (var iface in Interfaces.Values)
+                            foreach (var iface in GetAllInterfaces().Values)
                             {
                                 if (!string.IsNullOrEmpty(iface.IpAddress))
                                 {
@@ -551,7 +551,7 @@ namespace NetForge.Simulation.Topology.Devices
                             output.AppendLine(" #      DST-ADDRESS        PREF-SRC        GATEWAY            DISTANCE");
 
                             int idx = 0;
-                            foreach (var route in RoutingTable.OrderBy(r => r.Network))
+                            foreach (var route in GetRoutingTable().OrderBy(r => r.Network))
                             {
                                 var flags = "A";
                                 flags += route.Protocol switch
@@ -586,9 +586,9 @@ namespace NetForge.Simulation.Topology.Devices
 
                                     var route = new Route(network, mask, gateway, "", "Static");
                                     route.Metric = 1;
-                                    RoutingTable.Add(route);
+                                    GetRoutingTable().Add(route);
 
-                                    RunningConfig.AppendLine($"/ip route add dst-address={dstAddress} gateway={gateway}");
+                                    GetRunningConfig().AppendLine($"/ip route add dst-address={dstAddress} gateway={gateway}");
                                 }
                             }
                         }
@@ -602,7 +602,7 @@ namespace NetForge.Simulation.Topology.Devices
                         output.AppendLine(" #    ADDRESS                                 MAC-ADDRESS       INTERFACE");
 
                         int idx = 0;
-                        foreach (var iface in Interfaces.Values)
+                        foreach (var iface in GetAllInterfaces().Values)
                         {
                             if (!string.IsNullOrEmpty(iface.IpAddress))
                             {
@@ -673,8 +673,8 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var output = new StringBuilder();
 
-            if (OspfConfig == null)
-                OspfConfig = new OspfConfig(1);
+            if (GetOspfConfiguration() == null)
+                SetOspfConfiguration(new OspfConfig(1));
 
             switch (parts[2].ToLower())
             {
@@ -685,8 +685,8 @@ namespace NetForge.Simulation.Topology.Devices
                         var routerId = ExtractValue(cmdLine, "router-id");
                         if (!string.IsNullOrEmpty(routerId))
                         {
-                            OspfConfig.RouterId = routerId;
-                            RunningConfig.AppendLine($"/routing ospf instance set 0 router-id={routerId}");
+                            GetOspfConfiguration().RouterId = routerId;
+                            GetRunningConfig().AppendLine($"/routing ospf instance set 0 router-id={routerId}");
                         }
                     }
                     break;
@@ -700,12 +700,12 @@ namespace NetForge.Simulation.Topology.Devices
 
                         if (!string.IsNullOrEmpty(network))
                         {
-                            OspfConfig.NetworkAreas[network] = 0; // Simplified area handling
-                            if (!OspfConfig.Networks.Contains(network))
+                            GetOspfConfiguration().NetworkAreas[network] = 0; // Simplified area handling
+                            if (!GetOspfConfiguration().Networks.Contains(network))
                             {
-                                OspfConfig.Networks.Add(network);
+                                GetOspfConfiguration().Networks.Add(network);
                             }
-                            RunningConfig.AppendLine($"/routing ospf network add network={network} area={area}");
+                            GetRunningConfig().AppendLine($"/routing ospf network add network={network} area={area}");
                             ParentNetwork?.UpdateProtocols();
                         }
                     }
@@ -714,12 +714,12 @@ namespace NetForge.Simulation.Topology.Devices
                 case "neighbor":
                     if (parts.Length > 3 && parts[3].ToLower() == "print")
                     {
-                        if (OspfConfig.Neighbors.Any())
+                        if (GetOspfConfiguration()?.Neighbors.Any() == true)
                         {
                             output.AppendLine(" # INSTANCE ROUTER-ID      ADDRESS         INTERFACE              PRIORITY STATE         STATE-CHANGES");
 
                             int idx = 0;
-                            foreach (var neighbor in OspfConfig.Neighbors)
+                            foreach (var neighbor in GetOspfConfiguration()?.Neighbors ?? new List<OspfNeighbor>())
                             {
                                 output.AppendLine($" {idx} default  {neighbor.NeighborId,-14} {neighbor.IpAddress,-15} {neighbor.Interface,-22} {neighbor.Priority,-8} {neighbor.State,-13} 3");
                                 idx++;
@@ -736,8 +736,8 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var output = new StringBuilder();
 
-            if (BgpConfig == null)
-                BgpConfig = new BgpConfig(65000);
+            if (GetBgpConfiguration() == null)
+                SetBgpConfiguration(new BgpConfig(65000));
 
             switch (parts[2].ToLower())
             {
@@ -750,13 +750,13 @@ namespace NetForge.Simulation.Topology.Devices
 
                         if (asn > 0)
                         {
-                            BgpConfig.LocalAs = asn;
-                            RunningConfig.AppendLine($"/routing bgp instance set default as={asn}");
+                            GetBgpConfiguration().LocalAs = asn;
+                            GetRunningConfig().AppendLine($"/routing bgp instance set default as={asn}");
                         }
                         if (!string.IsNullOrEmpty(routerId))
                         {
-                            BgpConfig.RouterId = routerId;
-                            RunningConfig.AppendLine($"/routing bgp instance set default router-id={routerId}");
+                            GetBgpConfiguration().RouterId = routerId;
+                            GetRunningConfig().AppendLine($"/routing bgp instance set default router-id={routerId}");
                         }
                     }
                     break;
@@ -773,8 +773,8 @@ namespace NetForge.Simulation.Topology.Devices
                             if (!string.IsNullOrEmpty(remoteAddr) && remoteAs > 0)
                             {
                                 var neighbor = new BgpNeighbor(remoteAddr, remoteAs);
-                                BgpConfig.Neighbors[neighbor.IpAddress] = neighbor;
-                                RunningConfig.AppendLine($"/routing bgp peer add remote-address={remoteAddr} remote-as={remoteAs}");
+                                GetBgpConfiguration().Neighbors[neighbor.IpAddress] = neighbor;
+                                GetRunningConfig().AppendLine($"/routing bgp peer add remote-address={remoteAddr} remote-as={remoteAs}");
                                 ParentNetwork?.UpdateProtocols();
                             }
                         }
@@ -784,7 +784,7 @@ namespace NetForge.Simulation.Topology.Devices
                             output.AppendLine(" # INSTANCE REMOTE-ADDRESS                                  REMOTE-AS");
 
                             int idx = 0;
-                            foreach (var neighbor in BgpConfig.Neighbors.Values)
+                            foreach (var neighbor in GetBgpConfiguration()?.Neighbors.Values ?? new Dictionary<string, BgpNeighbor>().Values)
                             {
                                 var flags = neighbor.State == "Established" ? "E" : " ";
                                 output.AppendLine($" {idx} {flags} default  {neighbor.IpAddress,-47} {neighbor.RemoteAs}");
@@ -802,8 +802,8 @@ namespace NetForge.Simulation.Topology.Devices
 
                         if (!string.IsNullOrEmpty(network))
                         {
-                            BgpConfig.Networks.Add(network);
-                            RunningConfig.AppendLine($"/routing bgp network add network={network}");
+                            GetBgpConfiguration().Networks.Add(network);
+                            GetRunningConfig().AppendLine($"/routing bgp network add network={network}");
                             ParentNetwork?.UpdateProtocols();
                         }
                     }
@@ -817,8 +817,8 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var output = new StringBuilder();
 
-            if (RipConfig == null)
-                RipConfig = new RipConfig();
+            if (GetRipConfiguration() == null)
+                SetRipConfiguration(new RipConfig());
 
             if (parts.Length > 2)
             {
@@ -832,8 +832,8 @@ namespace NetForge.Simulation.Topology.Devices
 
                             if (!string.IsNullOrEmpty(network))
                             {
-                                RipConfig.Networks.Add(network);
-                                RunningConfig.AppendLine($"/routing rip network add network={network}");
+                                GetRipConfiguration().Networks.Add(network);
+                                GetRunningConfig().AppendLine($"/routing rip network add network={network}");
                                 ParentNetwork?.UpdateProtocols();
                             }
                         }
@@ -847,7 +847,7 @@ namespace NetForge.Simulation.Topology.Devices
 
                             if (!string.IsNullOrEmpty(ifaceName))
                             {
-                                RunningConfig.AppendLine($"/routing rip interface add interface={ifaceName}");
+                                GetRunningConfig().AppendLine($"/routing rip interface add interface={ifaceName}");
                             }
                         }
                         break;
@@ -861,17 +861,17 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var output = new StringBuilder();
 
-            output.AppendLine($"# jan/15/2021 10:24:13 by RouterOS {SystemSettings["version"]}");
+            output.AppendLine($"# jan/15/2021 10:24:13 by RouterOS {GetSystemSetting("version")}");
             output.AppendLine("# software id = 1234-5678");
             output.AppendLine("#");
-            output.AppendLine($"# model = {SystemSettings["board-name"]}");
+            output.AppendLine($"# model = {GetSystemSetting("board-name")}");
             output.AppendLine("# serial number = 1234567890AB");
 
             // System identity
-            output.AppendLine($"/system identity set name=\"{Hostname}\"");
+            output.AppendLine($"/system identity set name=\"{GetHostname()}\"");
 
             // Interface configurations
-            foreach (var iface in Interfaces.Values)
+            foreach (var iface in GetAllInterfaces().Values)
             {
                 if (iface.IsShutdown)
                 {
@@ -884,13 +884,13 @@ namespace NetForge.Simulation.Topology.Devices
             }
 
             // VLAN configurations
-            foreach (var vlan in Vlans.Values.Where(v => v.Id > 1))
+            foreach (var vlan in GetAllVlans().Values.Where(v => v.Id > 1))
             {
                 output.AppendLine($"/interface vlan add vlan-id={vlan.Id} interface=bridge name={vlan.Name}");
             }
 
             // IP addresses
-            foreach (var iface in Interfaces.Values)
+            foreach (var iface in GetAllInterfaces().Values)
             {
                 if (!string.IsNullOrEmpty(iface.IpAddress))
                 {
@@ -900,9 +900,10 @@ namespace NetForge.Simulation.Topology.Devices
             }
 
             // Running config additions
-            if (RunningConfig.Length > 0)
+            var runningConfig = GetRunningConfig();
+            if (runningConfig != null && !string.IsNullOrEmpty(runningConfig.ToString()))
             {
-                output.Append(RunningConfig.ToString());
+                output.Append(runningConfig.ToString());
             }
 
             return output.ToString();
@@ -936,7 +937,7 @@ namespace NetForge.Simulation.Topology.Devices
         private bool IsReachable(string destIp)
         {
             // Check if IP is in any connected network
-            foreach (var route in RoutingTable.Where(r => r.Protocol == "Connected"))
+            foreach (var route in GetRoutingTable().Where(r => r.Protocol == "Connected"))
             {
                 if (IsIpInNetwork(destIp, route.Network, route.Mask))
                 {
@@ -945,7 +946,7 @@ namespace NetForge.Simulation.Topology.Devices
             }
 
             // Check if there's a route to the destination
-            foreach (var route in RoutingTable)
+            foreach (var route in GetRoutingTable())
             {
                 if (IsIpInNetwork(destIp, route.Network, route.Mask))
                 {
@@ -1008,13 +1009,13 @@ namespace NetForge.Simulation.Topology.Devices
                 if (int.TryParse(parts[i], out int num))
                 {
                     // Convert number to interface name
-                    var interfaces = this.Interfaces.Keys.ToList();
+                    var interfaces = this.GetAllInterfaces().Keys.ToList();
                     if (num < interfaces.Count)
                     {
                         return interfaces[num];
                     }
                 }
-                else if (this.Interfaces.ContainsKey(parts[i]))
+                else if (this.GetAllInterfaces().ContainsKey(parts[i]))
                 {
                     return parts[i];
                 }

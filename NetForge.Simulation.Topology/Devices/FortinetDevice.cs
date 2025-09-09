@@ -105,14 +105,14 @@ namespace NetForge.Simulation.Topology.Devices
         // Add missing methods for command handlers
         public void AppendToRunningConfig(string line)
         {
-            RunningConfig.AppendLine(line);
+            GetRunningConfig().AppendLine(line);
         }
 
         public void AddInterface(string interfaceName)
         {
-            if (!Interfaces.ContainsKey(interfaceName))
+            if (!GetAllInterfaces().ContainsKey(interfaceName))
             {
-                Interfaces[interfaceName] = new InterfaceConfig(interfaceName, this);
+                GetAllInterfaces()[interfaceName] = new InterfaceConfig(interfaceName, this);
             }
         }
 
@@ -153,9 +153,9 @@ namespace NetForge.Simulation.Topology.Devices
         }
 
         public new Dictionary<string, IInterfaceConfig> GetAllInterfaces() => Interfaces;
-        public new OspfConfig? GetOspfConfiguration() => OspfConfig;
-        public new BgpConfig? GetBgpConfiguration() => BgpConfig;
-        public new RipConfig? GetRipConfiguration() => RipConfig;
+        // GetOspfConfiguration is inherited from base class
+        // GetBgpConfiguration is inherited from base class
+        // GetRipConfiguration is inherited from base class
 
         public string GetRunningConfig()
         {

@@ -42,7 +42,8 @@ namespace NetForge.Simulation.Topology.Devices
         {
             // Explicitly register Dell handlers to ensure they are available for tests
             var registry = new DellHandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Register handlers with new command processor architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()
@@ -55,8 +56,8 @@ namespace NetForge.Simulation.Topology.Devices
                 DeviceMode.User => $"{hostname}>",
                 DeviceMode.Privileged => $"{hostname}#",
                 DeviceMode.Config => $"{hostname}(config)#",
-                DeviceMode.Interface => $"{hostname}(conf-if-{GetCurrentInterfaceName()?.Replace(" ", "-").Replace("/", "-")})#",
-                DeviceMode.Vlan => $"{hostname}(conf-vlan-{GetVlans().LastOrDefault()?.Id})#",
+                DeviceMode.Interface => $"{hostname}(conf-if-{GetCurrentInterface()?.Replace(" ", "-").Replace("/", "-")})#",
+                DeviceMode.Vlan => $"{hostname}(conf-vlan-{GetAllVlans().Values.LastOrDefault()?.Id})#",
                 DeviceMode.Router => GetRouterPrompt(),
                 DeviceMode.Acl => $"{hostname}(config-ipv4-acl)#",
                 _ => $"{hostname}>"
@@ -85,23 +86,24 @@ namespace NetForge.Simulation.Topology.Devices
         // Helper methods for command handlers
         public string GetMode() => GetCurrentModeEnum().ToModeString();
         public new void SetCurrentMode(string mode) => SetModeEnum(DeviceModeExtensions.FromModeString(mode));
-        public new string GetCurrentInterface() => GetCurrentInterfaceName();
+        // GetCurrentInterface is already available from base class
         public new void SetCurrentInterface(string iface) => SetCurrentInterfaceName(iface);
 
         // Dell-specific helper methods
         public void AppendToRunningConfig(string line)
         {
-            GetRunningConfigBuilder().AppendLine(line);
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine(line);
         }
 
         public void UpdateProtocols()
         {
-            GetParentNetwork()?.UpdateProtocols();
+            ParentNetwork?.UpdateProtocols();
         }
 
         public void UpdateConnectedRoutesPublic()
         {
-            UpdateConnectedRoutes();
+            ForceUpdateConnectedRoutes();
         }
 
         /// <summary>

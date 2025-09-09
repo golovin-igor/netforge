@@ -51,7 +51,8 @@ namespace NetForge.Simulation.Topology.Devices
             // Explicitly register Cisco handlers to ensure they are available for tests
             var registry = new CiscoHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Register handlers with new command processor architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         private new void AutoRegisterProtocols()
@@ -223,7 +224,8 @@ namespace NetForge.Simulation.Topology.Devices
         public string ShowRunningConfig()
         {
             var output = new StringBuilder();
-            var config = GetRunningConfigBuilder().Build();
+            // TODO: Implement configuration building with new architecture
+            var config = "! Configuration not yet implemented with new architecture";
             output.AppendLine("Building configuration...\n");
             output.AppendLine("Current configuration : " + config + " bytes");
             output.AppendLine("!");
@@ -235,7 +237,7 @@ namespace NetForge.Simulation.Topology.Devices
             return output.ToString();
         }
 
-        public new List<VlanConfig> GetVlans() => base.GetVlans();
+        public new List<VlanConfig> GetVlans() => GetAllVlans().Values.ToList();
         public new List<Route> GetRoutingTable() => base.GetRoutingTable();
         public int GetCurrentVlanId() => _currentVlanId;
 
@@ -256,25 +258,27 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void CreateOrSelectVlan(int vlanId)
         {
-            var vlans = GetVlans();
+            var vlans = GetAllVlans().Values;
             if (!vlans.Any(v => v.Id == vlanId))
             {
                 AddVlan(vlanId, new VlanConfig(vlanId));
             }
 
             _currentVlanId = vlanId; // Set the current VLAN ID for name commands
-            GetRunningConfigBuilder().AppendLine($"vlan {vlanId}");
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine($"vlan {vlanId}");
         }
 
         public void SetCurrentVlanName(string name)
         {
             if (_currentVlanId > 0)
             {
-                var vlan = GetVlans().FirstOrDefault(v => v.Id == _currentVlanId);
+                var vlan = GetAllVlans().Values.FirstOrDefault(v => v.Id == _currentVlanId);
                 if (vlan != null)
                 {
                     vlan.Name = name;
-                    GetRunningConfigBuilder().AppendLine($" name {name}");
+                    // TODO: Implement configuration building with new architecture
+                    // GetRunningConfigBuilder().AppendLine($" name {name}");
                 }
             }
         }
@@ -286,7 +290,8 @@ namespace NetForge.Simulation.Topology.Devices
                 SetOspfConfiguration(new OspfConfig(processId));
             }
 
-            GetRunningConfigBuilder().AppendLine($"router ospf {processId}");
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine($"router ospf {processId}");
         }
 
         public void InitializeBgp(int asNumber)
@@ -296,7 +301,8 @@ namespace NetForge.Simulation.Topology.Devices
                 SetBgpConfiguration(new BgpConfig(asNumber));
             }
 
-            GetRunningConfigBuilder().AppendLine($"router bgp {asNumber}");
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine($"router bgp {asNumber}");
         }
 
         public void InitializeRip()
@@ -306,7 +312,8 @@ namespace NetForge.Simulation.Topology.Devices
                 SetRipConfiguration(new RipConfig());
             }
 
-            GetRunningConfigBuilder().AppendLine("router rip");
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine("router rip");
         }
 
         public void InitializeEigrp(int asNumber)
@@ -316,7 +323,8 @@ namespace NetForge.Simulation.Topology.Devices
                 SetEigrpConfiguration(new EigrpConfig(asNumber));
             }
 
-            GetRunningConfigBuilder().AppendLine($"router eigrp {asNumber}");
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine($"router eigrp {asNumber}");
         }
 
         public void SetCurrentRouterProtocol(string protocol)
@@ -326,17 +334,18 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void AppendToRunningConfig(string line)
         {
-            GetRunningConfigBuilder().AppendLine(line);
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine(line);
         }
 
         public bool VlanExists(int vlanId)
         {
-            return GetVlans().Any(v => v.Id == vlanId);
+            return GetAllVlans().Values.Any(v => v.Id == vlanId);
         }
 
         public void AddInterfaceToVlan(string interfaceName, int vlanId)
         {
-            var vlan = GetVlans().FirstOrDefault(v => v.Id == vlanId);
+            var vlan = GetAllVlans().Values.FirstOrDefault(v => v.Id == vlanId);
             if (vlan != null)
             {
                 vlan.Interfaces.Add(interfaceName);
@@ -375,8 +384,9 @@ namespace NetForge.Simulation.Topology.Devices
                 }
             }
 
-            GetRunningConfigBuilder().AppendLine($" network {network} {wildcard} area {area}");
-            GetParentNetwork()?.UpdateProtocols();
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine($" network {network} {wildcard} area {area}");
+            ParentNetwork?.UpdateProtocols();
         }
 
         public void SetOspfRouterId(string routerId)
@@ -385,7 +395,8 @@ namespace NetForge.Simulation.Topology.Devices
             if (ospfConfig != null)
             {
                 ospfConfig.RouterId = routerId;
-                GetRunningConfigBuilder().AppendLine($" router-id {routerId}");
+                // TODO: Implement configuration building with new architecture
+                // GetRunningConfigBuilder().AppendLine($" router-id {routerId}");
             }
         }
 
@@ -395,8 +406,9 @@ namespace NetForge.Simulation.Topology.Devices
             if (ripConfig != null)
             {
                 ripConfig.Networks.Add(network);
-                GetRunningConfigBuilder().AppendLine($" network {network}");
-                GetParentNetwork()?.UpdateProtocols();
+                // TODO: Implement configuration building with new architecture
+                // GetRunningConfigBuilder().AppendLine($" network {network}");
+                ParentNetwork?.UpdateProtocols();
             }
         }
 
@@ -408,8 +420,9 @@ namespace NetForge.Simulation.Topology.Devices
                 var mask = WildcardToMask(wildcard);
                 var networkStr = $"{network} {wildcard}";
                 eigrpConfig.Networks.Add(networkStr);
-                GetRunningConfigBuilder().AppendLine($" network {network} {wildcard}");
-                GetParentNetwork()?.UpdateProtocols();
+                // TODO: Implement configuration building with new architecture
+                // GetRunningConfigBuilder().AppendLine($" network {network} {wildcard}");
+                ParentNetwork?.UpdateProtocols();
             }
         }
 
@@ -419,7 +432,8 @@ namespace NetForge.Simulation.Topology.Devices
             if (ripConfig != null)
             {
                 ripConfig.Version = version;
-                GetRunningConfigBuilder().AppendLine($" version {version}");
+                // TODO: Implement configuration building with new architecture
+                // GetRunningConfigBuilder().AppendLine($" version {version}");
             }
         }
 
@@ -431,7 +445,8 @@ namespace NetForge.Simulation.Topology.Devices
                 ripConfig.AutoSummary = enabled;
                 if (!enabled)
                 {
-                    GetRunningConfigBuilder().AppendLine(" no auto-summary");
+                    // TODO: Implement configuration building with new architecture
+                    // GetRunningConfigBuilder().AppendLine(" no auto-summary");
                 }
             }
         }
@@ -444,7 +459,8 @@ namespace NetForge.Simulation.Topology.Devices
                 eigrpConfig.AutoSummary = enabled;
                 if (!enabled)
                 {
-                    GetRunningConfigBuilder().AppendLine(" no auto-summary");
+                    // TODO: Implement configuration building with new architecture
+                    // GetRunningConfigBuilder().AppendLine(" no auto-summary");
                 }
             }
         }
@@ -460,14 +476,16 @@ namespace NetForge.Simulation.Topology.Devices
 
                 if (mask != null)
                 {
-                    GetRunningConfigBuilder().AppendLine($" network {network} mask {mask}");
+                    // TODO: Implement configuration building with new architecture
+                    // GetRunningConfigBuilder().AppendLine($" network {network} mask {mask}");
                 }
                 else
                 {
-                    GetRunningConfigBuilder().AppendLine($" network {network}");
+                    // TODO: Implement configuration building with new architecture
+                    // GetRunningConfigBuilder().AppendLine($" network {network}");
                 }
 
-                GetParentNetwork()?.UpdateProtocols();
+                ParentNetwork?.UpdateProtocols();
             }
         }
 
@@ -486,8 +504,9 @@ namespace NetForge.Simulation.Topology.Devices
                 bgpConfig.Neighbors[neighborIp].RemoteAs = remoteAs;
             }
 
-            GetRunningConfigBuilder().AppendLine($" neighbor {neighborIp} remote-as {remoteAs}");
-            GetParentNetwork()?.UpdateProtocols();
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine($" neighbor {neighborIp} remote-as {remoteAs}");
+            ParentNetwork?.UpdateProtocols();
         }
 
         public void SetBgpRouterId(string routerId)
@@ -496,7 +515,8 @@ namespace NetForge.Simulation.Topology.Devices
             if (bgpConfig != null)
             {
                 bgpConfig.RouterId = routerId;
-                GetRunningConfigBuilder().AppendLine($" bgp router-id {routerId}");
+                // TODO: Implement configuration building with new architecture
+                // GetRunningConfigBuilder().AppendLine($" bgp router-id {routerId}");
             }
         }
 
@@ -508,7 +528,8 @@ namespace NetForge.Simulation.Topology.Devices
             if (bgpConfig.Neighbors.ContainsKey(neighborIp))
             {
                 bgpConfig.Neighbors[neighborIp].Description = description;
-                GetRunningConfigBuilder().AppendLine($" neighbor {neighborIp} description {description}");
+                // TODO: Implement configuration building with new architecture
+                // GetRunningConfigBuilder().AppendLine($" neighbor {neighborIp} description {description}");
             }
         }
 
@@ -516,10 +537,11 @@ namespace NetForge.Simulation.Topology.Devices
         {
             if (BgpConfig == null) return;
 
-            if (BgpConfig.Neighbors.ContainsKey(neighborIp))
+            if (GetBgpConfiguration()?.Neighbors.ContainsKey(neighborIp) == true)
             {
-                BgpConfig.Neighbors[neighborIp].State = "Idle (Admin)";
-                RunningConfig.AppendLine($" neighbor {neighborIp} shutdown");
+                GetBgpConfiguration().Neighbors[neighborIp].State = "Idle (Admin)";
+                // TODO: Implement configuration building with new architecture
+                // RunningConfig.AppendLine($" neighbor {neighborIp} shutdown");
             }
         }
 
@@ -527,10 +549,11 @@ namespace NetForge.Simulation.Topology.Devices
         {
             if (BgpConfig == null) return;
 
-            if (BgpConfig.Neighbors.ContainsKey(neighborIp))
+            if (GetBgpConfiguration()?.Neighbors.ContainsKey(neighborIp) == true)
             {
-                BgpConfig.Neighbors[neighborIp].State = "Established";
-                RunningConfig.AppendLine($" neighbor {neighborIp} activate");
+                GetBgpConfiguration().Neighbors[neighborIp].State = "Established";
+                // TODO: Implement configuration building with new architecture
+                // RunningConfig.AppendLine($" neighbor {neighborIp} activate");
             }
         }
 
@@ -592,7 +615,8 @@ namespace NetForge.Simulation.Topology.Devices
                 }
             }
 
-            GetRunningConfigBuilder().AppendLine(cmd.ToString());
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine(cmd.ToString());
         }
 
         // STP helper methods
@@ -600,23 +624,26 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var stpConfig = GetStpConfiguration();
             stpConfig.Mode = mode;
-            GetRunningConfigBuilder().AppendLine($"spanning-tree mode {mode}");
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine($"spanning-tree mode {mode}");
         }
 
         public void SetStpVlanPriority(int vlanId, int priority)
         {
             var stpConfig = GetStpConfiguration();
             stpConfig.VlanPriorities[vlanId] = priority;
-            GetRunningConfigBuilder().AppendLine($"spanning-tree vlan {vlanId} priority {priority}");
-            GetParentNetwork()?.UpdateProtocols();
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine($"spanning-tree vlan {vlanId} priority {priority}");
+            ParentNetwork?.UpdateProtocols();
         }
 
         public void SetStpPriority(int priority)
         {
             var stpConfig = GetStpConfiguration();
             stpConfig.DefaultPriority = priority;
-            GetRunningConfigBuilder().AppendLine($"spanning-tree priority {priority}");
-            GetParentNetwork()?.UpdateProtocols();
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine($"spanning-tree priority {priority}");
+            ParentNetwork?.UpdateProtocols();
         }
 
         public void EnablePortfast(string interfaceName)
@@ -624,70 +651,80 @@ namespace NetForge.Simulation.Topology.Devices
             if (GetInterface(interfaceName) != null)
             {
                 // Store portfast setting in running config
-                GetRunningConfigBuilder().AppendLine(" spanning-tree portfast");
+                // TODO: Implement configuration building with new architecture
+                // GetRunningConfigBuilder().AppendLine(" spanning-tree portfast");
             }
         }
 
         public void EnablePortfastDefault()
         {
             // Store portfast default setting in running config
-            GetRunningConfigBuilder().AppendLine("spanning-tree portfast default");
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine("spanning-tree portfast default");
         }
 
         public void EnableBpduGuard(string interfaceName)
         {
-            if (Interfaces.ContainsKey(interfaceName))
+            if (GetAllInterfaces().ContainsKey(interfaceName))
             {
                 // Store bpduguard setting in running config
-                RunningConfig.AppendLine(" spanning-tree bpduguard enable");
+                // TODO: Implement configuration building with new architecture
+                // RunningConfig.AppendLine(" spanning-tree bpduguard enable");
             }
         }
 
         public void EnableBpduGuardDefault()
         {
             // Store bpduguard default setting in running config
-            RunningConfig.AppendLine("spanning-tree portfast bpduguard default");
+            // TODO: Implement configuration building with new architecture
+            // RunningConfig.AppendLine("spanning-tree portfast bpduguard default");
         }
 
         // CDP helper methods
         public void EnableCdpGlobal()
         {
             _cdpEnabled = true;
-            RunningConfig.AppendLine("cdp run");
+            // TODO: Implement configuration building with new architecture
+            // RunningConfig.AppendLine("cdp run");
         }
 
         public void DisableCdpGlobal()
         {
             _cdpEnabled = false;
-            RunningConfig.AppendLine("no cdp run");
+            // TODO: Implement configuration building with new architecture
+            // RunningConfig.AppendLine("no cdp run");
         }
 
         public void EnableCdpInterface(string interfaceName)
         {
-            if (Interfaces.ContainsKey(interfaceName))
+            if (GetAllInterfaces().ContainsKey(interfaceName))
             {
-                RunningConfig.AppendLine(" cdp enable");
+                // TODO: Implement configuration building with new architecture
+                // RunningConfig.AppendLine(" cdp enable");
             }
         }
 
         public void DisableCdpInterface(string interfaceName)
         {
-            if (Interfaces.ContainsKey(interfaceName))
+            if (GetAllInterfaces().ContainsKey(interfaceName))
             {
-                RunningConfig.AppendLine(" no cdp enable");
+                // TODO: Implement configuration building with new architecture
+                // RunningConfig.AppendLine(" no cdp enable");
             }
         }
 
         public void SetCdpTimer(int seconds)
         {
             _cdpTimer = seconds;
-            RunningConfig.AppendLine($"cdp timer {seconds}");
+            // TODO: Implement configuration building with new architecture
+            // RunningConfig.AppendLine($"cdp timer {seconds}");
         }
 
         public void SetCdpHoldtime(int seconds)
         {
             _cdpHoldtime = seconds;
-            RunningConfig.AppendLine($"cdp holdtime {seconds}");
+            // TODO: Implement configuration building with new architecture
+            // RunningConfig.AppendLine($"cdp holdtime {seconds}");
         }
 
         public string ShowCdpStatus()
@@ -726,7 +763,7 @@ namespace NetForge.Simulation.Topology.Devices
         public string ShowCdpInterface()
         {
             var output = new StringBuilder();
-            foreach (var iface in Interfaces.Values)
+            foreach (var iface in GetAllInterfaces().Values)
             {
                 output.AppendLine($"{iface.Name} is {iface.GetStatus()}, line protocol is {(iface.IsUp ? "up" : "down")}");
                 output.AppendLine($"  Encapsulation ARPA");
@@ -765,14 +802,14 @@ namespace NetForge.Simulation.Topology.Devices
         {
             // Clear only non-connected routes
             RoutingTable.RemoveAll(r => r.Protocol != "Connected");
-            UpdateConnectedRoutes();
+            ForceUpdateConnectedRoutes();
         }
 
         public void ClearOspfProcess()
         {
             if (OspfConfig != null)
             {
-                OspfConfig.Neighbors.Clear();
+                GetOspfConfiguration()?.Neighbors.Clear();
                 // OSPF will reconverge
             }
         }
@@ -783,7 +820,7 @@ namespace NetForge.Simulation.Topology.Devices
             {
                 if (BgpConfig.Neighbors.ContainsKey(peerIp))
                 {
-                    BgpConfig.Neighbors[peerIp].State = "Idle";
+                    GetBgpConfiguration().Neighbors[peerIp].State = "Idle";
                     // BGP will attempt to reconnect
                 }
             }
@@ -793,7 +830,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             if (BgpConfig != null)
             {
-                foreach (var peer in BgpConfig.Neighbors.Values)
+                foreach (var peer in GetBgpConfiguration()?.Neighbors.Values ?? new Dictionary<string, BgpNeighbor>().Values)
                 {
                     peer.State = "Idle";
                 }
@@ -802,9 +839,9 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void ClearInterfaceCounters(string interfaceName)
         {
-            if (Interfaces.ContainsKey(interfaceName))
+            if (GetAllInterfaces().ContainsKey(interfaceName))
             {
-                var iface = Interfaces[interfaceName];
+                var iface = GetAllInterfaces()[interfaceName];
                 iface.RxPackets = 0;
                 iface.TxPackets = 0;
                 iface.RxBytes = 0;
@@ -814,7 +851,7 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void ClearAllCounters()
         {
-            foreach (var iface in Interfaces.Values)
+            foreach (var iface in GetAllInterfaces().Values)
             {
                 iface.RxPackets = 0;
                 iface.TxPackets = 0;
@@ -972,6 +1009,19 @@ namespace NetForge.Simulation.Topology.Devices
             sb.AppendLine("U.U.U");
             sb.AppendLine("Success rate is 0 percent (0/5)");
             return sb.ToString();
+        }
+
+        private string FindOutgoingInterface(string destination)
+        {
+            // Simple stub implementation - returns first available interface
+            var interfaces = GetAllInterfaces();
+            return interfaces.Values.FirstOrDefault()?.Name ?? "GigabitEthernet0/0";
+        }
+
+        private bool IsDestinationIcmpBlocked(object destDevice, string interfaceName, string destination)
+        {
+            // Simple stub implementation - assume ICMP is allowed
+            return false;
         }
     }
 }

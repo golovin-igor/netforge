@@ -183,7 +183,7 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void CreateOrSelectVlan(int vlanId)
         {
-            var vlans = GetVlans();
+            var vlans = GetAllVlans().Values;
             if (!vlans.Any(v => v.Id == vlanId))
             {
                 AddVlan(vlanId, new VlanConfig(vlanId));
@@ -256,9 +256,10 @@ namespace NetForge.Simulation.Topology.Devices
                     if (parts.Length > 2 && parts[1].ToLower() == "port" && parts.Length > 3 && parts[3].ToLower() == "statistics")
                     {
                         var portName = parts[2];
-                        if (Interfaces.ContainsKey(portName))
+                        var allInterfaces = GetAllInterfaces();
+                        if (allInterfaces.ContainsKey(portName))
                         {
-                            var iface = Interfaces[portName];
+                            var iface = allInterfaces[portName];
                             iface.RxPackets = 0;
                             iface.TxPackets = 0;
                             iface.RxBytes = 0;
@@ -319,7 +320,7 @@ namespace NetForge.Simulation.Topology.Devices
                         {
                             if (!Vlans.ContainsKey(vlanId))
                             {
-                                Vlans[vlanId] = new VlanConfig(vlanId);
+                                AddVlan(vlanId, new VlanConfig(vlanId));
                             }
                         }
                         return "\n";
@@ -349,20 +350,22 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var cmd = parts[0].ToLower();
 
-            if (!Interfaces.ContainsKey(_currentPort))
+            var allInterfaces = GetAllInterfaces();
+            if (!allInterfaces.ContainsKey(_currentPort))
             {
-                Interfaces[_currentPort] = new InterfaceConfig(_currentPort, this);
+                AddInterface(_currentPort, new InterfaceConfig(_currentPort, this));
             }
 
-            var iface = Interfaces[_currentPort];
+            var iface = allInterfaces[_currentPort];
 
             switch (cmd)
             {
                 case "shutdown":
                     iface.IsShutdown = true;
                     iface.IsUp = false;
-                    RunningConfig.AppendLine($"    port {_currentPort}");
-                    RunningConfig.AppendLine("        shutdown");
+                    // TODO: Implement running config building with new architecture
+                    // RunningConfig.AppendLine($"    port {_currentPort}");
+                    // RunningConfig.AppendLine("        shutdown");
                     ParentNetwork?.UpdateProtocols();
                     return "\n";
 
@@ -371,8 +374,9 @@ namespace NetForge.Simulation.Topology.Devices
                     {
                         iface.IsShutdown = false;
                         iface.IsUp = true;
-                        RunningConfig.AppendLine($"    port {_currentPort}");
-                        RunningConfig.AppendLine("        no shutdown");
+                        // TODO: Implement running config building with new architecture
+                        // RunningConfig.AppendLine($"    port {_currentPort}");
+                        // RunningConfig.AppendLine("        no shutdown");
                         ParentNetwork?.UpdateProtocols();
                         return "\n";
                     }
@@ -382,15 +386,17 @@ namespace NetForge.Simulation.Topology.Devices
                     if (parts.Length > 1)
                     {
                         iface.Description = string.Join(" ", parts.Skip(1)).Trim('"');
-                        RunningConfig.AppendLine($"    port {_currentPort}");
-                        RunningConfig.AppendLine($"        description \"{iface.Description}\"");
+                        // TODO: Implement running config building with new architecture
+                        // RunningConfig.AppendLine($"    port {_currentPort}");
+                        // RunningConfig.AppendLine($"        description \"{iface.Description}\"");
                         return "\n";
                     }
                     return "Error: Invalid command\n";
 
                 case "ethernet":
-                    RunningConfig.AppendLine($"    port {_currentPort}");
-                    RunningConfig.AppendLine("        ethernet");
+                    // TODO: Implement running config building with new architecture
+                    // RunningConfig.AppendLine($"    port {_currentPort}");
+                    // RunningConfig.AppendLine("        ethernet");
                     return "\n";
 
                 default:
@@ -433,9 +439,10 @@ namespace NetForge.Simulation.Topology.Devices
 
                             var route = new Route(network, mask, nextHop, "", "Static");
                             route.Metric = 1;
-                            RoutingTable.Add(route);
+                            AddRoute(route);
 
-                            RunningConfig.AppendLine($"        static-route {parts[1]} next-hop {nextHop}");
+                            // TODO: Implement running config building with new architecture
+                            // RunningConfig.AppendLine($"        static-route {parts[1]} next-hop {nextHop}");
                             return "\n";
                         }
                     }
@@ -459,12 +466,13 @@ namespace NetForge.Simulation.Topology.Devices
 
             // Create a virtual interface for router interfaces
             var ifaceName = $"router-{_currentRouterInterface}";
-            if (!Interfaces.ContainsKey(ifaceName))
+            var allInterfaces = GetAllInterfaces();
+            if (!allInterfaces.ContainsKey(ifaceName))
             {
-                Interfaces[ifaceName] = new InterfaceConfig(ifaceName, this);
+                AddInterface(ifaceName, new InterfaceConfig(ifaceName, this));
             }
 
-            var iface = Interfaces[ifaceName];
+            var iface = allInterfaces[ifaceName];
 
             switch (cmd)
             {
@@ -476,9 +484,10 @@ namespace NetForge.Simulation.Topology.Devices
                         {
                             iface.IpAddress = addressParts[0];
                             iface.SubnetMask = CidrToMask(int.Parse(addressParts[1]));
-                            RunningConfig.AppendLine($"        interface \"{_currentRouterInterface}\"");
-                            RunningConfig.AppendLine($"            address {parts[1]}");
-                            UpdateConnectedRoutes();
+                            // TODO: Implement running config building with new architecture
+                            // RunningConfig.AppendLine($"        interface \"{_currentRouterInterface}\"");
+                            // RunningConfig.AppendLine($"            address {parts[1]}");
+                            ForceUpdateConnectedRoutes();
                             ParentNetwork?.UpdateProtocols();
                             return "\n";
                         }
@@ -488,8 +497,9 @@ namespace NetForge.Simulation.Topology.Devices
                 case "port":
                     if (parts.Length > 1)
                     {
-                        RunningConfig.AppendLine($"        interface \"{_currentRouterInterface}\"");
-                        RunningConfig.AppendLine($"            port {parts[1]}");
+                        // TODO: Implement running config building with new architecture
+                        // RunningConfig.AppendLine($"        interface \"{_currentRouterInterface}\"");
+                        // RunningConfig.AppendLine($"            port {parts[1]}");
                         return "\n";
                     }
                     return "Error: Invalid command\n";
@@ -525,15 +535,21 @@ namespace NetForge.Simulation.Topology.Devices
                 case "area":
                     if (parts.Length > 1)
                     {
-                        RunningConfig.AppendLine($"        ospf");
-                        RunningConfig.AppendLine($"            area {parts[1]}");
+                        // TODO: Implement running config building with new architecture
+                        // RunningConfig.AppendLine($"        ospf");
+                        // RunningConfig.AppendLine($"            area {parts[1]}");
                         if (parts.Length > 2 && parts[2].ToLower() == "interface" && parts.Length > 3)
                         {
                             var ifaceName = parts[3].Trim('"');
                             if (int.TryParse(parts[1], out int area))
                             {
-                                OspfConfig.Interfaces[ifaceName] = new OspfInterface(ifaceName, area);
-                                RunningConfig.AppendLine($"                interface \"{ifaceName}\"");
+                                var ospfConfig = GetOspfConfiguration();
+                                if (ospfConfig != null)
+                                {
+                                    ospfConfig.Interfaces[ifaceName] = new OspfInterface(ifaceName, area);
+                                }
+                                // TODO: Implement running config building with new architecture
+                                // RunningConfig.AppendLine($"                interface \"{ifaceName}\"");
                                 ParentNetwork?.UpdateProtocols();
                             }
                         }
@@ -555,8 +571,9 @@ namespace NetForge.Simulation.Topology.Devices
                 case "group":
                     if (parts.Length > 1)
                     {
-                        RunningConfig.AppendLine($"        bgp");
-                        RunningConfig.AppendLine($"            group \"{parts[1]}\"");
+                        // TODO: Implement running config building with new architecture
+                        // RunningConfig.AppendLine($"        bgp");
+                        // RunningConfig.AppendLine($"            group \"{parts[1]}\"");
                         return "\n";
                     }
                     return "Error: Invalid command\n";
@@ -564,14 +581,20 @@ namespace NetForge.Simulation.Topology.Devices
                 case "neighbor":
                     if (parts.Length > 1)
                     {
-                        RunningConfig.AppendLine($"                neighbor {parts[1]}");
+                        // TODO: Implement running config building with new architecture
+                        // RunningConfig.AppendLine($"                neighbor {parts[1]}");
                         if (parts.Length > 3 && parts[2].ToLower() == "peer-as")
                         {
                             if (int.TryParse(parts[3], out int peerAs))
                             {
                                 var neighbor = new BgpNeighbor(parts[1], peerAs);
-                                BgpConfig.Neighbors[parts[1]] = neighbor;
-                                RunningConfig.AppendLine($"                    peer-as {peerAs}");
+                                var bgpConfig = GetBgpConfiguration();
+                                if (bgpConfig != null)
+                                {
+                                    bgpConfig.Neighbors[parts[1]] = neighbor;
+                                }
+                                // TODO: Implement running config building with new architecture
+                                // RunningConfig.AppendLine($"                    peer-as {peerAs}");
                                 ParentNetwork?.UpdateProtocols();
                             }
                         }
@@ -593,8 +616,9 @@ namespace NetForge.Simulation.Topology.Devices
                 case "group":
                     if (parts.Length > 1)
                     {
-                        RunningConfig.AppendLine($"        rip");
-                        RunningConfig.AppendLine($"            group \"{parts[1]}\"");
+                        // TODO: Implement running config building with new architecture
+                        // RunningConfig.AppendLine($"        rip");
+                        // RunningConfig.AppendLine($"            group \"{parts[1]}\"");
                         return "\n";
                     }
                     return "Error: Invalid command\n";
@@ -602,8 +626,13 @@ namespace NetForge.Simulation.Topology.Devices
                 case "neighbor":
                     if (parts.Length > 1)
                     {
-                        RunningConfig.AppendLine($"                neighbor {parts[1]}");
-                        RipConfig.Networks.Add(parts[1]);
+                        // TODO: Implement running config building with new architecture
+                        // RunningConfig.AppendLine($"                neighbor {parts[1]}");
+                        var ripConfig = GetRipConfiguration();
+                        if (ripConfig != null)
+                        {
+                            ripConfig.Networks.Add(parts[1]);
+                        }
                         ParentNetwork?.UpdateProtocols();
                         return "\n";
                     }
@@ -618,9 +647,11 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var cmd = parts[0].ToLower();
 
-            if (int.TryParse(_currentVlan, out int vlanId) && Vlans.ContainsKey(vlanId))
+            if (int.TryParse(_currentVlan, out int vlanId))
             {
-                var vlan = Vlans[vlanId];
+                var vlan = GetVlan(vlanId);
+                if (vlan != null)
+                {
 
                 switch (cmd)
                 {
@@ -628,14 +659,16 @@ namespace NetForge.Simulation.Topology.Devices
                         if (parts.Length > 1)
                         {
                             vlan.Name = string.Join(" ", parts.Skip(1)).Trim('"');
-                            RunningConfig.AppendLine($"    vlan {vlanId}");
-                            RunningConfig.AppendLine($"        name \"{vlan.Name}\"");
+                            // TODO: Implement running config building with new architecture
+                            // RunningConfig.AppendLine($"    vlan {vlanId}");
+                            // RunningConfig.AppendLine($"        name \"{vlan.Name}\"");
                             return "\n";
                         }
                         return "Error: Invalid command\n";
 
                     default:
                         return "Error: Invalid command\n";
+                }
                 }
             }
 
@@ -652,9 +685,10 @@ namespace NetForge.Simulation.Topology.Devices
                 case "name":
                     if (parts.Length > 1)
                     {
-                        Hostname = parts[1].Trim('"');
-                        RunningConfig.AppendLine("    system");
-                        RunningConfig.AppendLine($"        name \"{Hostname}\"");
+                        SetHostname(parts[1].Trim('"'));
+                        // TODO: Implement running config building with new architecture
+                        // RunningConfig.AppendLine("    system");
+                        // RunningConfig.AppendLine($"        name \"{GetHostname()}\"");
                         return "\n";
                     }
                     return "Error: Invalid command\n";
@@ -705,13 +739,14 @@ namespace NetForge.Simulation.Topology.Devices
                     output.AppendLine("echo \"System Configuration\"");
                     output.AppendLine("#--------------------------------------------------");
                     output.AppendLine("    system");
-                    output.AppendLine($"        name \"{Hostname}\"");
+                    output.AppendLine($"        name \"{GetHostname()}\"");
                     output.AppendLine("    exit");
 
-                    if (RunningConfig.Length > 0)
-                    {
-                        output.Append(RunningConfig.ToString());
-                    }
+                    // TODO: Implement running config building with new architecture
+                    // if (RunningConfig.Length > 0)
+                    // {
+                    //     output.Append(RunningConfig.ToString());
+                    // }
 
                     output.AppendLine("exit all");
                     output.AppendLine("\n# Finished FRI JAN 01 00:00:00 2021 UTC");
@@ -730,7 +765,7 @@ namespace NetForge.Simulation.Topology.Devices
                                 output.AppendLine("      Next Hop[Interface Name]                                    Metric");
                                 output.AppendLine("-------------------------------------------------------------------------------");
 
-                                foreach (var route in RoutingTable.OrderBy(r => r.Network))
+                                foreach (var route in GetRoutingTable().OrderBy(r => r.Network))
                                 {
                                     var cidr = MaskToCidr(route.Mask);
                                     var type = route.Protocol == "Connected" ? "Local" : "Remote";
@@ -741,7 +776,7 @@ namespace NetForge.Simulation.Topology.Devices
                                 }
 
                                 output.AppendLine("-------------------------------------------------------------------------------");
-                                output.AppendLine($"No. of Routes: {RoutingTable.Count}");
+                                output.AppendLine($"No. of Routes: {GetRoutingTable().Count}");
                                 break;
 
                             case "interface":
@@ -752,7 +787,7 @@ namespace NetForge.Simulation.Topology.Devices
                                 output.AppendLine("   IP-Address                                                  PfxState");
                                 output.AppendLine("-------------------------------------------------------------------------------");
 
-                                foreach (var iface in Interfaces.Values.Where(i => i.Name.StartsWith("router-")))
+                                foreach (var iface in GetAllInterfaces().Values.Where(i => i.Name.StartsWith("router-")))
                                 {
                                     var adminState = iface.IsShutdown ? "Down" : "Up";
                                     var operState = iface.IsUp ? "Up" : "Down";
@@ -767,7 +802,7 @@ namespace NetForge.Simulation.Topology.Devices
                                 }
 
                                 output.AppendLine("-------------------------------------------------------------------------------");
-                                output.AppendLine("Interfaces : " + Interfaces.Values.Count(i => i.Name.StartsWith("router-")));
+                                output.AppendLine("Interfaces : " + GetAllInterfaces().Values.Count(i => i.Name.StartsWith("router-")));
                                 break;
                         }
                     }
@@ -777,9 +812,10 @@ namespace NetForge.Simulation.Topology.Devices
                     if (parts.Length > 2)
                     {
                         var portName = parts[2];
-                        if (Interfaces.ContainsKey(portName))
+                        var allInterfaces = GetAllInterfaces();
+                        if (allInterfaces.ContainsKey(portName))
                         {
-                            var port = Interfaces[portName];
+                            var port = allInterfaces[portName];
                             output.AppendLine("===============================================================================");
                             output.AppendLine($"Ethernet Interface");
                             output.AppendLine("===============================================================================");
@@ -800,7 +836,7 @@ namespace NetForge.Simulation.Topology.Devices
                         output.AppendLine("===============================================================================");
                         output.AppendLine("System Information");
                         output.AppendLine("===============================================================================");
-                        output.AppendLine($"System Name            : {Hostname}");
+                        output.AppendLine($"System Name            : {GetHostname()}");
                         output.AppendLine("System Type            : 7750 SR-12");
                         output.AppendLine("System Version         : B-14.0.R4");
                         output.AppendLine("System Up Time         : 0 days, 00:00:00 (hr:min:sec)");
@@ -825,13 +861,13 @@ namespace NetForge.Simulation.Topology.Devices
                         output.AppendLine("Description : Default System Log");
                         output.AppendLine("Memory Log contents  [size=500   next event=6  (wrapped)]");
                         output.AppendLine("-------------------------------------------------------------------------------");
-                        output.AppendLine($"5 2021/01/15 10:24:13.39 UTC MINOR: SYSTEM #2002 Base {Hostname}");
+                        output.AppendLine($"5 2021/01/15 10:24:13.39 UTC MINOR: SYSTEM #2002 Base {GetHostname()}");
                         output.AppendLine("\"System configured from Console\"");
                         output.AppendLine("");
-                        output.AppendLine($"4 2021/01/15 10:23:45.12 UTC MINOR: PORT #2001 Base {Hostname}");
+                        output.AppendLine($"4 2021/01/15 10:23:45.12 UTC MINOR: PORT #2001 Base {GetHostname()}");
                         output.AppendLine("\"Port 1/1/1 is now operationally up\"");
                         output.AppendLine("");
-                        output.AppendLine($"3 2021/01/15 10:23:30.00 UTC MAJOR: SYSTEM #2006 Base {Hostname}");
+                        output.AppendLine($"3 2021/01/15 10:23:30.00 UTC MAJOR: SYSTEM #2006 Base {GetHostname()}");
                         output.AppendLine("\"System startup\"");
                         output.AppendLine("===============================================================================");
                     }
@@ -864,7 +900,7 @@ namespace NetForge.Simulation.Topology.Devices
                     output.AppendLine("IP Address      MAC Address       Expiry    Type   Interface");
                     output.AppendLine("-------------------------------------------------------------------------------");
 
-                    foreach (var iface in Interfaces.Values)
+                    foreach (var iface in GetAllInterfaces().Values)
                     {
                         if (!string.IsNullOrEmpty(iface.IpAddress))
                         {
@@ -873,7 +909,7 @@ namespace NetForge.Simulation.Topology.Devices
                     }
 
                     output.AppendLine("-------------------------------------------------------------------------------");
-                    output.AppendLine($"No. of ARP Entries: {Interfaces.Values.Count(i => !string.IsNullOrEmpty(i.IpAddress))}");
+                    output.AppendLine($"No. of ARP Entries: {GetAllInterfaces().Values.Count(i => !string.IsNullOrEmpty(i.IpAddress))}");
                     output.AppendLine("===============================================================================");
                     break;
 
@@ -885,13 +921,13 @@ namespace NetForge.Simulation.Topology.Devices
                     output.AppendLine("Id           State  Threshold     Type   Ports  Active Stdby  Act");
                     output.AppendLine("-------------------------------------------------------------------------------");
 
-                    foreach (var pc in PortChannels)
+                    foreach (var pc in GetPortChannels())
                     {
                         output.AppendLine($"lag-{pc.Key,-3} up     up     0             ether  {pc.Value.MemberInterfaces.Count,-6} {pc.Value.MemberInterfaces.Count,-6} 0/0    N/A");
                     }
 
                     output.AppendLine("-------------------------------------------------------------------------------");
-                    output.AppendLine($"Total LAGs : {PortChannels.Count}");
+                    output.AppendLine($"Total LAGs : {GetPortChannels().Count}");
                     output.AppendLine("===============================================================================");
                     break;
             }
@@ -908,9 +944,10 @@ namespace NetForge.Simulation.Topology.Devices
                     output.AppendLine("  Nbr IP Addr");
                     output.AppendLine("-------------------------------------------------------------------------------");
 
-                    if (OspfConfig != null)
+                    var ospfConfig = GetOspfConfiguration();
+                    if (ospfConfig != null)
                     {
-                        foreach (var neighbor in OspfConfig.Neighbors)
+                        foreach (var neighbor in ospfConfig.Neighbors)
                         {
                             output.AppendLine($"{neighbor.Interface,-32} {neighbor.NeighborId,-15} {neighbor.State,-10} {neighbor.Priority,-4} 00:00:38");
                             output.AppendLine($"  {neighbor.IpAddress}");
@@ -918,7 +955,7 @@ namespace NetForge.Simulation.Topology.Devices
                     }
 
                     output.AppendLine("-------------------------------------------------------------------------------");
-                    output.AppendLine($"No. of Neighbors: {OspfConfig?.Neighbors.Count ?? 0}");
+                    output.AppendLine($"No. of Neighbors: {ospfConfig?.Neighbors.Count ?? 0}");
                     output.AppendLine("===============================================================================");
                 }
             }
@@ -936,9 +973,10 @@ namespace NetForge.Simulation.Topology.Devices
                     output.AppendLine("                      PktSent OutQ");
                     output.AppendLine("-------------------------------------------------------------------------------");
 
-                    if (BgpConfig != null)
+                    var bgpConfig = GetBgpConfiguration();
+                    if (bgpConfig != null)
                     {
-                        foreach (var neighbor in BgpConfig.Neighbors.Values)
+                        foreach (var neighbor in bgpConfig.Neighbors.Values)
                         {
                             output.AppendLine($"{neighbor.IpAddress}");
                             output.AppendLine($"                {neighbor.RemoteAs,5}       1    0 00:00:00   {neighbor.State,-12} {neighbor.ReceivedRoutes.Count}/{neighbor.ReceivedRoutes.Count}/0");

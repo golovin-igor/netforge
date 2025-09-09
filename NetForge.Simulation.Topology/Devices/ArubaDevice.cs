@@ -50,7 +50,8 @@ namespace NetForge.Simulation.Topology.Devices
         {
             // Explicitly register Aruba handlers to ensure they are available for tests
             var registry = new ArubaHandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Register handlers with new command processor architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()
@@ -64,7 +65,7 @@ namespace NetForge.Simulation.Topology.Devices
                 DeviceMode.Privileged => $"{hostname}#",
                 DeviceMode.Config => $"{hostname}(config)#",
                 DeviceMode.Interface => $"{hostname}(eth-{GetSimplifiedInterfaceName(GetCurrentInterface())})#",
-                DeviceMode.Vlan => $"{hostname}(vlan-{GetVlans().LastOrDefault()?.Id})#",
+                DeviceMode.Vlan => $"{hostname}(vlan-{GetAllVlans().Values.LastOrDefault()?.Id})#",
                 DeviceMode.Router => $"{hostname}(config-{_currentRouterProtocol})#",
                 _ => $"{hostname}>"
             };
@@ -98,8 +99,7 @@ namespace NetForge.Simulation.Topology.Devices
         // Helper methods for command handlers
         public string GetMode() => GetCurrentModeEnum().ToModeString();
         public new void SetCurrentMode(string mode) => SetModeEnum(DeviceModeExtensions.FromModeString(mode));
-        public new string GetCurrentInterface() => GetCurrentInterfaceName();
-        public new void SetCurrentInterface(string iface) => SetCurrentInterfaceName(iface);
+        // GetCurrentInterface and SetCurrentInterface are already available from base class
 
         // Aruba-specific helper methods
         public string GetCurrentRouterProtocol() => _currentRouterProtocol;
@@ -107,17 +107,18 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void AppendToRunningConfig(string line)
         {
-            GetRunningConfigBuilder().AppendLine(line);
+            // TODO: Implement configuration building with new architecture
+            // GetRunningConfigBuilder().AppendLine(line);
         }
 
         public void UpdateProtocols()
         {
-            GetParentNetwork()?.UpdateProtocols();
+            ParentNetwork?.UpdateProtocols();
         }
 
         public void UpdateConnectedRoutesPublic()
         {
-            UpdateConnectedRoutes();
+            ForceUpdateConnectedRoutes();
         }
 
         // ProcessShowCommand removed - now handled by ShowCommandHandler
@@ -150,7 +151,7 @@ namespace NetForge.Simulation.Topology.Devices
             sb.AppendLine("hostname " + GetHostname());
 
             // VLAN configurations
-            foreach (var vlan in GetVlans().OrderBy(v => v.Id))
+            foreach (var vlan in GetAllVlans().Values.OrderBy(v => v.Id))
             {
                 sb.AppendLine($"vlan {vlan.Id}");
                 if (!string.IsNullOrEmpty(vlan.Name))
@@ -198,7 +199,7 @@ namespace NetForge.Simulation.Topology.Devices
             sb.AppendLine("VLAN ID  Name                              Status");
             sb.AppendLine("-------- --------------------------------- ----------");
 
-            foreach (var vlan in GetVlans().OrderBy(v => v.Id))
+            foreach (var vlan in GetAllVlans().Values.OrderBy(v => v.Id))
             {
                 var status = "Active";
                 sb.AppendLine($"{vlan.Id,-8} {vlan.Name,-33} {status}");

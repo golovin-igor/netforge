@@ -38,23 +38,24 @@ namespace NetForge.Simulation.Topology.Devices
         {
             // Explicitly register Huawei handlers to ensure they are available for tests
             var registry = new HuaweiHandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Register handlers with new command processor architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         public override string GetPrompt()
         {
             return base.CurrentMode switch
             {
-                DeviceMode.User => $"<{Hostname}>",
-                DeviceMode.Privileged => $"<{Hostname}>",
-                DeviceMode.Config => $"[{Hostname}]",
-                DeviceMode.Interface => $"[{Hostname}-{base.CurrentInterface}]",
-                DeviceMode.Vlan => $"[{Hostname}-vlan{_currentVlanId}]",
-                DeviceMode.RouterOspf => $"[{Hostname}-ospf-{OspfConfig?.ProcessId ?? 1}]",
-                DeviceMode.RouterBgp => $"[{Hostname}-bgp]",
-                DeviceMode.RouterRip => $"[{Hostname}-rip]",
-                DeviceMode.Acl => $"[{Hostname}-acl-basic-{_currentAclNumber}]",
-                _ => $"<{Hostname}>"
+                DeviceMode.User => $"<{GetHostname()}>",
+                DeviceMode.Privileged => $"<{GetHostname()}>",
+                DeviceMode.Config => $"[{GetHostname()}]",
+                DeviceMode.Interface => $"[{GetHostname()}-{GetCurrentInterface()}]",
+                DeviceMode.Vlan => $"[{GetHostname()}-vlan{_currentVlanId}]",
+                DeviceMode.RouterOspf => $"[{GetHostname()}-ospf-{GetOspfConfiguration()?.ProcessId ?? 1}]",
+                DeviceMode.RouterBgp => $"[{GetHostname()}-bgp]",
+                DeviceMode.RouterRip => $"[{GetHostname()}-rip]",
+                DeviceMode.Acl => $"[{GetHostname()}-acl-basic-{_currentAclNumber}]",
+                _ => $"<{GetHostname()}>"
             };
         }
 
@@ -88,7 +89,8 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void AppendToRunningConfig(string line)
         {
-            RunningConfig.AppendLine(line);
+            // TODO: Implement configuration building with new architecture
+            // RunningConfig.AppendLine(line);
         }
 
         public void CreateOrSelectVlan(int vlanId)
@@ -124,12 +126,12 @@ namespace NetForge.Simulation.Topology.Devices
         }
 
         // Public getters for compatibility
-        public List<VlanConfig> GetVlans() => Vlans.Values.ToList();
-        public OspfConfig GetOspfConfig() => OspfConfig;
-        public BgpConfig GetBgpConfig() => BgpConfig;
-        public RipConfig GetRipConfig() => RipConfig;
-        public new List<Route> GetRoutingTable() => RoutingTable;
-        public List<IInterfaceConfig> GetInterfaces() => Interfaces.Values.ToList();
+        public new List<VlanConfig> GetVlans() => GetAllVlans().Values.ToList();
+        public OspfConfig GetOspfConfig() => GetOspfConfiguration() ?? new OspfConfig(1);
+        public BgpConfig GetBgpConfig() => GetBgpConfiguration() ?? new BgpConfig(65000);
+        public RipConfig GetRipConfig() => GetRipConfiguration() ?? new RipConfig();
+        // GetRoutingTable is inherited from base class
+        public List<IInterfaceConfig> GetInterfaces() => GetAllInterfaces().Values.ToList();
 
         public new string GetCurrentInterface() => base.CurrentInterface;
         public new void SetCurrentInterface(string iface) => base.CurrentInterface = iface;

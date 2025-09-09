@@ -202,6 +202,18 @@ public class DeviceConnectivityService : INetworkConnectivity
     }
 
     /// <summary>
+    /// Converts a CIDR prefix length to a subnet mask.
+    /// </summary>
+    public string CidrToMask(int cidr)
+    {
+        if (cidr < 0 || cidr > 32)
+            return "0.0.0.0";
+            
+        uint mask = 0xFFFFFFFF << (32 - cidr);
+        return $"{(mask >> 24) & 0xFF}.{(mask >> 16) & 0xFF}.{(mask >> 8) & 0xFF}.{mask & 0xFF}";
+    }
+
+    /// <summary>
     /// Updates an entry in the ARP table.
     /// </summary>
     public void UpdateArpTable(string ipAddress, string macAddress)

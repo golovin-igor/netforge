@@ -44,7 +44,8 @@ namespace NetForge.Simulation.Topology.Devices
         {
             // Explicitly register Extreme handlers to ensure they are available for tests
             var registry = new ExtremeHandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Register handlers with new command processor architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         private void RegisterCommonHandlers()
@@ -59,13 +60,13 @@ namespace NetForge.Simulation.Topology.Devices
             switch (mode)
             {
                 case "config":
-                    return $"{Hostname}(config)#";
+                    return $"{GetHostname()}(config)#";
                 case "interface":
                     var interfaceName = GetCurrentInterface();
-                    return $"{Hostname}(config-if-{interfaceName})#";
+                    return $"{GetHostname()}(config-if-{interfaceName})#";
                 case "operational":
                 default:
-                    return $"{Hostname}#";
+                    return $"{GetHostname()}#";
             }
         }
 
@@ -78,39 +79,24 @@ namespace NetForge.Simulation.Topology.Devices
         public override async Task<string> ProcessCommandAsync(string command)
         {
             // Use the command handler manager for all command processing
-            if (CommandManager != null)
+            // TODO: Update command processing with new architecture
+            /*if (CommandManager != null)
             {
                 var result = await CommandManager.ProcessCommandAsync(command);
-
-                // If command was handled, return the result
-                if (result != null)
+                if (!string.IsNullOrEmpty(result))
                 {
-                    // For successful commands that return just prompt, don't add extra prompt
-                    var prompt = GetPrompt();
-                    if (result.Output == prompt)
-                    {
-                        return result.Output;
-                    }
-                    // For commands that return content, add prompt if not already there
-                    else if (!result.Output.EndsWith(prompt))
-                    {
-                        return result.Output + prompt;
-                    }
-                    else
-                    {
-                        return result.Output;
-                    }
+                    return result;
                 }
-            }
+            }*/
 
             // Handle special case for incomplete "configure" command
             if (command.Trim().ToLower() == "configure")
             {
-                return "% Incomplete command.\n" + $"* {Hostname}.1 # ";
+                return "% Incomplete command.\n" + $"* {GetHostname()}.1 # ";
             }
 
             // If no handler found, return EXOS error format
-            return $"Invalid command\n" + $"* {Hostname}.1 # ";
+            return $"Invalid command\n" + $"* {GetHostname()}.1 # ";
         }
 
         // Helper methods for command handlers
@@ -122,7 +108,8 @@ namespace NetForge.Simulation.Topology.Devices
         // EXOS-specific helper methods
         public void AppendToRunningConfig(string line)
         {
-            RunningConfig.AppendLine(line);
+            // TODO: Implement configuration building with new architecture
+            // RunningConfig.AppendLine(line);
         }
 
         public void UpdateProtocols()
@@ -132,7 +119,7 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void UpdateConnectedRoutesPublic()
         {
-            UpdateConnectedRoutes();
+            ForceUpdateConnectedRoutes();
         }
 
         public Dictionary<int, string> GetVlanNameMap() => _vlanNameMap;
@@ -203,21 +190,22 @@ namespace NetForge.Simulation.Topology.Devices
             output.AppendLine("#");
             output.AppendLine("# Module devmgr configuration.");
             output.AppendLine("#");
-            output.AppendLine($"configure snmp sysName \"{Hostname}\"");
+            output.AppendLine($"configure snmp sysName \"{GetHostname()}\"");
             output.AppendLine("");
 
             // Show created VLANs
-            foreach (var vlan in Vlans.Values.Where(v => v.Id > 1))
+            foreach (var vlan in GetAllVlans().Values.Where(v => v.Id > 1))
             {
                 output.AppendLine($"create vlan \"{vlan.Name}\"");
                 output.AppendLine($"configure vlan \"{vlan.Name}\" tag {vlan.Id}");
             }
 
             // Add running config
-            if (RunningConfig.Length > 0)
-            {
-                output.Append(RunningConfig.ToString());
-            }
+            // TODO: Implement configuration building with new architecture
+            // if (RunningConfig.Length > 0)
+            // {
+            //     output.Append(RunningConfig.ToString());
+            // }
 
             return output.ToString();
         }
@@ -228,7 +216,7 @@ namespace NetForge.Simulation.Topology.Devices
 
             if (parts.Length > 2 && parts[2].ToLower() == "ipv4")
             {
-                foreach (var vlan in Vlans.Values)
+                foreach (var vlan in GetAllVlans().Values)
                 {
                     var vlanName = _vlanNameMap.GetValueOrDefault(vlan.Id, vlan.Name);
                     var vlanIface = Interfaces.Values.FirstOrDefault(i => i.VlanId == vlan.Id && !string.IsNullOrEmpty(i.IpAddress));
@@ -278,7 +266,7 @@ namespace NetForge.Simulation.Topology.Devices
 
             if (parts.Length > 2 && parts[2].ToLower() == "detail")
             {
-                foreach (var vlan in Vlans.Values.OrderBy(v => v.Id))
+                foreach (var vlan in GetAllVlans().Values.OrderBy(v => v.Id))
                 {
                     var vlanName = _vlanNameMap.GetValueOrDefault(vlan.Id, vlan.Name);
                     output.AppendLine($"VLAN Interface[{vlan.Id}] with name \"{vlanName}\" created by user");
@@ -309,7 +297,7 @@ namespace NetForge.Simulation.Topology.Devices
                 output.AppendLine("                                                                             Active Router");
                 output.AppendLine("---------------------------------------------------------------------------------------------");
 
-                foreach (var vlan in Vlans.Values.OrderBy(v => v.Id))
+                foreach (var vlan in GetAllVlans().Values.OrderBy(v => v.Id))
                 {
                     var vlanName = _vlanNameMap.GetValueOrDefault(vlan.Id, vlan.Name);
                     var flags = "/32";
@@ -345,9 +333,9 @@ namespace NetForge.Simulation.Topology.Devices
             else if (parts.Length > 3 && parts[2].ToLower() == "statistics")
             {
                 var portName = parts[3];
-                if (Interfaces.ContainsKey(portName))
+                if (GetAllInterfaces().ContainsKey(portName))
                 {
-                    var iface = Interfaces[portName];
+                    var iface = GetAllInterfaces()[portName];
                     output.AppendLine($"Port          : {portName}");
                     output.AppendLine($"Link State    : {(iface.IsUp ? "Active" : "Ready")}");
                     output.AppendLine($"Port State    : {(iface.IsShutdown ? "Disabled" : "Enabled")}");
@@ -370,13 +358,13 @@ namespace NetForge.Simulation.Topology.Devices
             {
                 if (parts[2].ToLower() == "neighbor")
                 {
-                    if (OspfConfig != null && OspfConfig.Neighbors.Any())
+                    if (GetOspfConfiguration() != null && GetOspfConfiguration().Neighbors.Any())
                     {
                         output.AppendLine("Neighbor ID      Pri State      Up/Dead Time       Address         Interface");
                         output.AppendLine("                                BFD Session State");
                         output.AppendLine("==============================================================================");
 
-                        foreach (var neighbor in OspfConfig.Neighbors)
+                        foreach (var neighbor in GetOspfConfiguration()?.Neighbors ?? new List<OspfNeighbor>())
                         {
                             output.AppendLine($"{neighbor.NeighborId,-16} {neighbor.Priority,-3} {neighbor.State,-10} 0d:0h:1m:0s/       {neighbor.IpAddress,-15} {neighbor.Interface}");
                             output.AppendLine($"                               0d:0h:0m:40s");
@@ -436,7 +424,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var output = new StringBuilder();
 
-            output.AppendLine($"System Name:          {Hostname}");
+            output.AppendLine($"System Name:          {GetHostname()}");
             output.AppendLine($"System Type:          X440-24t");
             output.AppendLine($"System Model:         SummitX");
             output.AppendLine($"System Serial Number: 1234567890");
@@ -454,7 +442,7 @@ namespace NetForge.Simulation.Topology.Devices
             var output = new StringBuilder();
 
             output.AppendLine($"Switch      : 1234567890 Rev 1.0 BootROM: 1.0.1.4 IMG: 30.6.1.11");
-            output.AppendLine($"SysName     : {Hostname}");
+            output.AppendLine($"SysName     : {GetHostname()}");
             output.AppendLine($"SwitchType  : 220-24t-10GE2");
             output.AppendLine($"Platform    : X440-24t");
             output.AppendLine($"BootromVer  : 1.0.1.4");
@@ -501,7 +489,7 @@ namespace NetForge.Simulation.Topology.Devices
             output.AppendLine("Master    Master   Type   Description            Name");
             output.AppendLine("================================================================================");
 
-            foreach (var pc in PortChannels)
+            foreach (var pc in GetPortChannels())
             {
                 var master = pc.Value.MemberInterfaces.FirstOrDefault() ?? $"{pc.Key}";
                 var algorithm = pc.Value.Mode == "lacp" ? "L2" : "L3_L4";
@@ -537,7 +525,7 @@ namespace NetForge.Simulation.Topology.Devices
 
             output.AppendLine("Name       Mode   State       Priority   Ports");
             output.AppendLine("=================================================");
-            output.AppendLine($"s0         802.1D ENABLED     {StpConfig.GetPriority(1),-10} 24");
+            output.AppendLine($"s0         802.1D ENABLED     {GetStpConfiguration().GetPriority(1),-10} 24");
 
             return output.ToString();
         }
@@ -563,14 +551,15 @@ namespace NetForge.Simulation.Topology.Devices
                                     var portList = ParsePortList(parts[5]);
                                     foreach (var port in portList)
                                     {
-                                        if (Interfaces.ContainsKey(port))
+                                        if (GetAllInterfaces().ContainsKey(port))
                                         {
-                                            Interfaces[port].VlanId = vlanId;
-                                            Interfaces[port].SwitchportMode = "access";
-                                            Vlans[vlanId].Interfaces.Add(port);
+                                            GetAllInterfaces()[port].VlanId = vlanId;
+                                            GetAllInterfaces()[port].SwitchportMode = "access";
+                                            GetAllVlans()[vlanId].Interfaces.Add(port);
                                         }
                                     }
-                                    RunningConfig.AppendLine($"configure vlan {vlanName} add ports {parts[5]}");
+                                    // TODO: Implement configuration building with new architecture
+                                    // RunningConfig.AppendLine($"configure vlan {vlanName} add ports {parts[5]}");
                                 }
                                 break;
 
@@ -578,12 +567,13 @@ namespace NetForge.Simulation.Topology.Devices
                                 if (parts.Length > 4 && int.TryParse(parts[4], out int newTag))
                                 {
                                     // Change VLAN tag
-                                    var vlan = Vlans[vlanId];
+                                    var vlan = GetAllVlans()[vlanId];
                                     Vlans.Remove(vlanId);
-                                    Vlans[newTag] = vlan;
+                                    GetAllVlans()[newTag] = vlan;
                                     _vlanNameMap[newTag] = vlanName;
                                     _vlanNameMap.Remove(vlanId);
-                                    RunningConfig.AppendLine($"configure vlan {vlanName} tag {newTag}");
+                                    // TODO: Implement configuration building with new architecture
+                                    // RunningConfig.AppendLine($"configure vlan {vlanName} tag {newTag}");
                                 }
                                 break;
 
@@ -592,11 +582,11 @@ namespace NetForge.Simulation.Topology.Devices
                                 {
                                     // Create VLAN interface
                                     var vlanIfaceName = $"vlan_{vlanName}";
-                                    if (!Interfaces.ContainsKey(vlanIfaceName))
+                                    if (!GetAllInterfaces().ContainsKey(vlanIfaceName))
                                     {
-                                        Interfaces[vlanIfaceName] = new InterfaceConfig(vlanIfaceName, this);
+                                        GetAllInterfaces()[vlanIfaceName] = new InterfaceConfig(vlanIfaceName, this);
                                     }
-                                    var vlanIface = Interfaces[vlanIfaceName];
+                                    var vlanIface = GetAllInterfaces()[vlanIfaceName];
                                     vlanIface.VlanId = vlanId;
 
                                     // Parse IP address
@@ -605,9 +595,10 @@ namespace NetForge.Simulation.Topology.Devices
                                     {
                                         vlanIface.IpAddress = ipParts[0];
                                         vlanIface.SubnetMask = CidrToMask(int.Parse(ipParts[1]));
-                                        UpdateConnectedRoutes();
+                                        ForceUpdateConnectedRoutes();
                                         ParentNetwork?.UpdateProtocols();
-                                        RunningConfig.AppendLine($"configure vlan {vlanName} ipaddress {parts[4]}");
+                                        // TODO: Implement configuration building with new architecture
+                                        // RunningConfig.AppendLine($"configure vlan {vlanName} ipaddress {parts[4]}");
                                     }
                                 }
                                 break;
@@ -635,12 +626,13 @@ namespace NetForge.Simulation.Topology.Devices
                             var description = string.Join(" ", parts.Skip(4)).Trim('"');
                             foreach (var port in portList)
                             {
-                                if (Interfaces.ContainsKey(port))
+                                if (GetAllInterfaces().ContainsKey(port))
                                 {
-                                    Interfaces[port].Description = description;
+                                    GetAllInterfaces()[port].Description = description;
                                 }
                             }
-                            RunningConfig.AppendLine($"configure ports {parts[2]} display-string \"{description}\"");
+                            // TODO: Implement configuration building with new architecture
+                            // RunningConfig.AppendLine($"configure ports {parts[2]} display-string \"{description}\"");
                         }
                         break;
 
@@ -649,7 +641,8 @@ namespace NetForge.Simulation.Topology.Devices
                         {
                             if (parts.Length > 6 && parts[5].ToLower() == "speed")
                             {
-                                RunningConfig.AppendLine($"configure ports {parts[2]} auto off speed {parts[6]}");
+                                // TODO: Implement configuration building with new architecture
+                                // RunningConfig.AppendLine($"configure ports {parts[2]} auto off speed {parts[6]}");
                             }
                         }
                         break;
@@ -690,9 +683,10 @@ namespace NetForge.Simulation.Topology.Devices
 
                     vlanIface.IpAddress = ipParts[0];
                     vlanIface.SubnetMask = CidrToMask(int.Parse(ipParts[1]));
-                    UpdateConnectedRoutes();
+                    ForceUpdateConnectedRoutes();
                     ParentNetwork?.UpdateProtocols();
-                    RunningConfig.AppendLine($"configure ipaddress {vlanName} {parts[3]}");
+                    // TODO: Implement configuration building with new architecture
+                    // RunningConfig.AppendLine($"configure ipaddress {vlanName} {parts[3]}");
                 }
             }
 
@@ -713,8 +707,9 @@ namespace NetForge.Simulation.Topology.Devices
                     case "routerid":
                         if (parts.Length > 3)
                         {
-                            OspfConfig.RouterId = parts[3];
-                            RunningConfig.AppendLine($"configure ospf routerid {parts[3]}");
+                            GetOspfConfiguration().RouterId = parts[3];
+                            // TODO: Implement configuration building with new architecture
+                            // RunningConfig.AppendLine($"configure ospf routerid {parts[3]}");
                         }
                         break;
 
@@ -722,7 +717,7 @@ namespace NetForge.Simulation.Topology.Devices
                         if (parts.Length > 4 && parts[3].ToLower() == "vlan")
                         {
                             var vlanName = parts[4];
-                            var vlanId = Vlans.FirstOrDefault(v => _vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
+                            var vlanId = GetAllVlans().FirstOrDefault(v => _vlanNameMap.GetValueOrDefault(v.Key, v.Value.Name) == vlanName).Key;
 
                             if (vlanId > 0)
                             {
@@ -731,22 +726,23 @@ namespace NetForge.Simulation.Topology.Devices
 
                                 // Add interface to OSPF
                                 var vlanIfaceName = $"vlan {vlanId}";
-                                if (Interfaces.ContainsKey(vlanIfaceName))
+                                if (GetAllInterfaces().ContainsKey(vlanIfaceName))
                                 {
-                                    OspfConfig.Interfaces[vlanIfaceName] = new OspfInterface(vlanIfaceName, areaNum);
+                                    GetOspfConfiguration().Interfaces[vlanIfaceName] = new OspfInterface(vlanIfaceName, areaNum);
 
-                                    var iface = Interfaces[vlanIfaceName];
+                                    var iface = GetAllInterfaces()[vlanIfaceName];
                                     if (!string.IsNullOrEmpty(iface.IpAddress))
                                     {
                                         var network = GetNetwork(iface.IpAddress, iface.SubnetMask);
-                                        OspfConfig.NetworkAreas[network] = areaNum;
-                                        if (!OspfConfig.Networks.Contains(network))
+                                        GetOspfConfiguration().NetworkAreas[network] = areaNum;
+                                        if (!GetOspfConfiguration().Networks.Contains(network))
                                         {
-                                            OspfConfig.Networks.Add(network);
+                                            GetOspfConfiguration().Networks.Add(network);
                                         }
                                     }
 
-                                    RunningConfig.AppendLine($"configure ospf add vlan {vlanName} area {area}");
+                                    // TODO: Implement configuration building with new architecture
+                                    // RunningConfig.AppendLine($"configure ospf add vlan {vlanName} area {area}");
                                 }
                             }
                         }
@@ -768,21 +764,23 @@ namespace NetForge.Simulation.Topology.Devices
                     case "as-number":
                         if (parts.Length > 3 && int.TryParse(parts[3], out int asNumber))
                         {
-                            if (BgpConfig == null)
-                                BgpConfig = new BgpConfig(asNumber);
+                            if (GetBgpConfiguration() == null)
+                                SetBgpConfiguration(new BgpConfig(asNumber));
                             else
-                                BgpConfig.LocalAs = asNumber;
-                            RunningConfig.AppendLine($"configure bgp as-number {asNumber}");
+                                GetBgpConfiguration().LocalAs = asNumber;
+                            // TODO: Implement configuration building with new architecture
+                            // RunningConfig.AppendLine($"configure bgp as-number {asNumber}");
                         }
                         break;
 
                     case "routerid":
                         if (parts.Length > 3)
                         {
-                            if (BgpConfig == null)
-                                BgpConfig = new BgpConfig(65001);
-                            BgpConfig.RouterId = parts[3];
-                            RunningConfig.AppendLine($"configure bgp routerid {parts[3]}");
+                            if (GetBgpConfiguration() == null)
+                                SetBgpConfiguration(new BgpConfig(65001));
+                            GetBgpConfiguration().RouterId = parts[3];
+                            // TODO: Implement configuration building with new architecture
+                            // RunningConfig.AppendLine($"configure bgp routerid {parts[3]}");
                         }
                         break;
 
@@ -791,10 +789,11 @@ namespace NetForge.Simulation.Topology.Devices
                         {
                             var neighborIp = parts[3];
                             var remoteAs = parts[5];
-                            if (BgpConfig == null)
-                                BgpConfig = new BgpConfig(65001);
-                            BgpConfig.Neighbors[neighborIp] = new BgpNeighbor(neighborIp, int.Parse(remoteAs));
-                            RunningConfig.AppendLine($"configure bgp neighbor {neighborIp} remote-as {remoteAs}");
+                            if (GetBgpConfiguration() == null)
+                                SetBgpConfiguration(new BgpConfig(65001));
+                            GetBgpConfiguration().Neighbors[neighborIp] = new BgpNeighbor(neighborIp, int.Parse(remoteAs));
+                            // TODO: Implement configuration building with new architecture
+                            // RunningConfig.AppendLine($"configure bgp neighbor {neighborIp} remote-as {remoteAs}");
                         }
                         break;
                 }
@@ -815,14 +814,16 @@ namespace NetForge.Simulation.Topology.Devices
                         if (parts.Length > 4)
                         {
                             var mode = parts[4];
-                            RunningConfig.AppendLine($"configure stpd s0 mode {mode}");
+                            // TODO: Implement configuration building with new architecture
+                            // RunningConfig.AppendLine($"configure stpd s0 mode {mode}");
                         }
                         break;
 
                     case "priority":
                         if (parts.Length > 4 && int.TryParse(parts[4], out int priority))
                         {
-                            RunningConfig.AppendLine($"configure stpd s0 priority {priority}");
+                            // TODO: Implement configuration building with new architecture
+                            // RunningConfig.AppendLine($"configure stpd s0 priority {priority}");
                         }
                         break;
 
@@ -830,7 +831,8 @@ namespace NetForge.Simulation.Topology.Devices
                         if (parts.Length > 5 && parts[4].ToLower() == "vlan")
                         {
                             var vlanName = parts[5];
-                            RunningConfig.AppendLine($"configure stpd s0 add vlan {vlanName}");
+                            // TODO: Implement configuration building with new architecture
+                            // RunningConfig.AppendLine($"configure stpd s0 add vlan {vlanName}");
                         }
                         break;
                 }
@@ -872,7 +874,7 @@ namespace NetForge.Simulation.Topology.Devices
         private bool IsReachable(string destIp)
         {
             // Check if IP is in any connected network
-            foreach (var route in RoutingTable.Where(r => r.Protocol == "Connected"))
+            foreach (var route in GetRoutingTable().Where(r => r.Protocol == "Connected"))
             {
                 if (IsIpInNetwork(destIp, route.Network, route.Mask))
                 {
@@ -881,7 +883,7 @@ namespace NetForge.Simulation.Topology.Devices
             }
 
             // Check if there's a route to the destination
-            foreach (var route in RoutingTable)
+            foreach (var route in GetRoutingTable())
             {
                 if (IsIpInNetwork(destIp, route.Network, route.Mask))
                 {
@@ -965,21 +967,21 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void CreateOrUpdatePortChannel(int channelId, string interfaceName, string mode)
         {
-            if (!PortChannels.ContainsKey(channelId))
+            if (!GetPortChannels().ContainsKey(channelId))
             {
-                PortChannels[channelId] = new PortChannelConfig(channelId);
+                GetPortChannels()[channelId] = new PortChannelConfig(channelId);
             }
-            PortChannels[channelId].MemberInterfaces.Add(interfaceName);
-            PortChannels[channelId].Mode = mode;
+            GetPortChannels()[channelId].MemberInterfaces.Add(interfaceName);
+            GetPortChannels()[channelId].Mode = mode;
         }
 
         public void AddInterfaceToPortChannel(string interfaceName, int channelId)
         {
-            if (!PortChannels.ContainsKey(channelId))
+            if (!GetPortChannels().ContainsKey(channelId))
             {
-                PortChannels[channelId] = new PortChannelConfig(channelId);
+                GetPortChannels()[channelId] = new PortChannelConfig(channelId);
             }
-            PortChannels[channelId].MemberInterfaces.Add(interfaceName);
+            GetPortChannels()[channelId].MemberInterfaces.Add(interfaceName);
         }
     }
 }

@@ -38,7 +38,8 @@ namespace NetForge.Simulation.Topology.Devices
         {
             // Explicitly register Juniper handlers to ensure they are available for tests
             var registry = new JuniperHandlerRegistry();
-            registry.RegisterHandlers(CommandManager);
+            // TODO: Register handlers with new command processor architecture
+            // registry.RegisterHandlers(CommandManager);
         }
 
         /// <summary>
@@ -211,7 +212,7 @@ namespace NetForge.Simulation.Topology.Devices
                 {
                     iface.IpAddress = addressParts[0];
                     iface.SubnetMask = CidrToMask(int.Parse(addressParts[1]));
-                    UpdateConnectedRoutes();
+                    ForceUpdateConnectedRoutes();
                 }
             }
         }
@@ -227,7 +228,7 @@ namespace NetForge.Simulation.Topology.Devices
 
             if (parts[3].ToLower() == "vlan-id" && int.TryParse(parts[4], out int vlanId))
             {
-                var vlans = GetVlans();
+                var vlans = GetAllVlans().Values;
                 var existingVlan = vlans.FirstOrDefault(v => v.Id == vlanId);
                 if (existingVlan == null)
                 {
@@ -589,6 +590,30 @@ namespace NetForge.Simulation.Topology.Devices
             {
                 AddInterface(canonicalName, interfaceConfig ?? new InterfaceConfig(canonicalName, this));
             }
+        }
+
+        private object GetRoutingPolicyConfiguration()
+        {
+            // Stub implementation for routing policy configuration
+            return new { };
+        }
+
+        private object GetPrefixListConfiguration()
+        {
+            // Stub implementation for prefix list configuration  
+            return new { };
+        }
+
+        private object GetBgpCommunityConfiguration()
+        {
+            // Stub implementation for BGP community configuration
+            return new { };
+        }
+
+        private object GetAsPathGroupConfiguration()
+        {
+            // Stub implementation for AS path group configuration
+            return new { };
         }
     }
 }
