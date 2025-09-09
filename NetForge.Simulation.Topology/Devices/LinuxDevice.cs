@@ -42,8 +42,8 @@ namespace NetForge.Simulation.Topology.Devices
         public override string GetPrompt()
         {
             // Use vendor-specific prompt format
-            var mode = CurrentMode == DeviceMode.Privileged ? "root" : "user";
-            return mode == "root" ? $"{Hostname}# " : $"{Hostname}$";
+            var mode = GetCurrentModeEnum() == DeviceMode.Privileged ? "root" : "user";
+            return mode == "root" ? $"{GetHostname()}# " : $"{GetHostname()}$";
         }
 
         public override async Task<string> ProcessCommandAsync(string command)

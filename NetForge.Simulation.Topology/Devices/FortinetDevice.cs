@@ -265,7 +265,7 @@ namespace NetForge.Simulation.Topology.Devices
                         Metric = 0
                     };
 
-                    RoutingTable.Add(routeEntry);
+                    GetRoutingTable().Add(routeEntry);
                 }
             }
         }

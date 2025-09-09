@@ -296,7 +296,7 @@ namespace NetForge.Simulation.Topology.Devices
                             }
                         }
 
-                        GetParentNetwork()?.UpdateProtocols();
+                        ParentNetwork?.UpdateProtocols();
                     }
                 }
             }
@@ -328,7 +328,7 @@ namespace NetForge.Simulation.Topology.Devices
                             bgpConfig.Neighbors[neighbor.IpAddress] = neighbor;
                         }
                         bgpConfig.Neighbors[neighborIp].RemoteAs = peerAs;
-                        GetParentNetwork()?.UpdateProtocols();
+                        ParentNetwork?.UpdateProtocols();
                     }
                 }
             }
@@ -365,7 +365,7 @@ namespace NetForge.Simulation.Topology.Devices
                         var network = GetNetwork(iface.IpAddress, iface.SubnetMask);
                         var ripConfig = GetRipConfiguration();
                         ripConfig.Networks.Add(network);
-                        GetParentNetwork()?.UpdateProtocols();
+                        ParentNetwork?.UpdateProtocols();
                     }
                 }
             }
@@ -434,7 +434,7 @@ namespace NetForge.Simulation.Topology.Devices
             {
                 DeviceMode.Operational => $"{hostname}> ",
                 DeviceMode.Configuration => $"{hostname}# ",
-                DeviceMode.Interface => $"[edit interfaces {GetCurrentInterfaceName()}]\n{hostname}# ",
+                DeviceMode.Interface => $"[edit interfaces {GetCurrentInterface()}]\n{hostname}# ",
                 _ => $"{hostname}> "
             };
         }
@@ -456,8 +456,8 @@ namespace NetForge.Simulation.Topology.Devices
             _inConfigMode = (mode == "configuration");
         }
 
-        public new string GetCurrentInterface() => GetCurrentInterfaceName();
-        public new void SetCurrentInterface(string iface) => SetCurrentInterfaceName(iface);
+        public new string GetCurrentInterface() => base.GetCurrentInterface();
+        public new void SetCurrentInterface(string iface) => base.SetCurrentInterface(iface);
 
         // Juniper-specific helper methods
         public bool IsInConfigMode() => _inConfigMode;
@@ -475,7 +475,7 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void UpdateProtocols()
         {
-            GetParentNetwork()?.UpdateProtocols();
+            ParentNetwork?.UpdateProtocols();
         }
 
         public void ClearInterfaceCounters(string? interfaceName = null)

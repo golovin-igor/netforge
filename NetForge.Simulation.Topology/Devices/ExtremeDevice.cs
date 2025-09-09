@@ -219,7 +219,7 @@ namespace NetForge.Simulation.Topology.Devices
                 foreach (var vlan in GetAllVlans().Values)
                 {
                     var vlanName = _vlanNameMap.GetValueOrDefault(vlan.Id, vlan.Name);
-                    var vlanIface = Interfaces.Values.FirstOrDefault(i => i.VlanId == vlan.Id && !string.IsNullOrEmpty(i.IpAddress));
+                    var vlanIface = GetAllInterfaces().Values.FirstOrDefault(i => i.VlanId == vlan.Id && !string.IsNullOrEmpty(i.IpAddress));
 
                     if (vlanIface != null)
                     {
@@ -245,7 +245,7 @@ namespace NetForge.Simulation.Topology.Devices
             output.AppendLine("Destination      Gateway         Mtr  Flags    Use  VLAN         Duration");
             output.AppendLine("-------------------------------------------------------------------------------");
 
-            foreach (var route in RoutingTable.OrderBy(r => r.Network))
+            foreach (var route in GetRoutingTable().OrderBy(r => r.Network))
             {
                 var cidr = MaskToCidr(route.Mask);
                 var flags = route.Protocol == "Connected" ? "UC" : "UG";
@@ -255,7 +255,7 @@ namespace NetForge.Simulation.Topology.Devices
             }
 
             output.AppendLine("");
-            output.AppendLine($"Total number of routes = {RoutingTable.Count}");
+            output.AppendLine($"Total number of routes = {GetRoutingTable().Count}");
 
             return output.ToString();
         }
@@ -320,7 +320,7 @@ namespace NetForge.Simulation.Topology.Devices
                 output.AppendLine("         String                          (or # VLANs)       State State Actual  Actual");
                 output.AppendLine("=====================================================================================");
 
-                foreach (var iface in Interfaces.Values)
+                foreach (var iface in GetAllInterfaces().Values)
                 {
                     var displayString = string.IsNullOrEmpty(iface.Description) ? "" : iface.Description;
                     var vlan = iface.VlanId > 0 ? _vlanNameMap.GetValueOrDefault(iface.VlanId, $"VLAN{iface.VlanId}") : "0";

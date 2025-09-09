@@ -19,9 +19,9 @@ namespace NetForge.Simulation.Topology.Devices
             SetSystemSetting("architecture-name", "mipsbe");
 
             // Initialize default log entries
-            LogEntries.Add("jan/15 10:23:30 system,info system identity was changed by admin");
-            LogEntries.Add("jan/15 10:23:45 interface,info ether1 link up (speed 1G, full duplex)");
-            LogEntries.Add("jan/15 10:24:13 system,info,account user admin logged in from 192.168.88.2 via winbox");
+            GetLogEntries().Add("jan/15 10:23:30 system,info system identity was changed by admin");
+            GetLogEntries().Add("jan/15 10:23:45 interface,info ether1 link up (speed 1G, full duplex)");
+            GetLogEntries().Add("jan/15 10:24:13 system,info,account user admin logged in from 192.168.88.2 via winbox");
 
             // Protocol registration is now handled by the vendor registry system
         }
@@ -29,11 +29,11 @@ namespace NetForge.Simulation.Topology.Devices
         protected override void InitializeDefaultInterfaces()
         {
             // Default interfaces for MikroTik
-            Interfaces["ether1"] = new InterfaceConfig("ether1", this) { Description = "WAN" };
-            Interfaces["ether2"] = new InterfaceConfig("ether2", this) { Description = "LAN1" };
-            Interfaces["ether3"] = new InterfaceConfig("ether3", this) { Description = "LAN2" };
-            Interfaces["ether4"] = new InterfaceConfig("ether4", this) { Description = "LAN3" };
-            Interfaces["wlan1"] = new InterfaceConfig("wlan1", this) { Description = "Wireless" };
+            AddInterface("ether1", new InterfaceConfig("ether1", this) { Description = "WAN" });
+            AddInterface("ether2", new InterfaceConfig("ether2", this) { Description = "LAN1" });
+            AddInterface("ether3", new InterfaceConfig("ether3", this) { Description = "LAN2" });
+            AddInterface("ether4", new InterfaceConfig("ether4", this) { Description = "LAN3" });
+            AddInterface("wlan1", new InterfaceConfig("wlan1", this) { Description = "Wireless" });
         }
 
         protected override void RegisterDeviceSpecificHandlers()
@@ -41,12 +41,12 @@ namespace NetForge.Simulation.Topology.Devices
             // Explicitly register MikroTik handlers to ensure they are available for tests
             var registry = new MikroTikHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
-            registry.RegisterHandlers(CommandManager);
+            // registry.RegisterHandlers(CommandManager); // Commented out until command manager is properly implemented
         }
 
         public override string GetPrompt()
         {
-            return $"[{Hostname}] > ";
+            return $"[{GetHostname()}] > ";
         }
 
         public override async Task<string> ProcessCommandAsync(string command)
@@ -139,7 +139,7 @@ namespace NetForge.Simulation.Topology.Devices
                 case "/log":
                     if (parts.Length > 1 && parts[1].ToLower() == "print")
                     {
-                        foreach (var log in LogEntries.TakeLast(10))
+                        foreach (var log in GetLogEntries().TakeLast(10))
                         {
                             output.AppendLine(log);
                         }
@@ -172,14 +172,14 @@ namespace NetForge.Simulation.Topology.Devices
                             var nameParam = string.Join(" ", parts.Skip(3));
                             if (nameParam.StartsWith("name="))
                             {
-                                Hostname = nameParam.Substring(5).Trim('"');
-                                GetRunningConfig().AppendLine($"/system identity set name=\"{Hostname}\"");
-                                LogEntries.Add($"{DateTime.Now:MMM/dd HH:mm:ss} system,info system identity was changed to {Hostname} by admin");
+                                SetHostname(nameParam.Substring(5).Trim('"'));
+                                GetRunningConfig().AppendLine($"/system identity set name=\"{GetHostname()}\"");
+                                GetLogEntries().Add($"{DateTime.Now:MMM/dd HH:mm:ss} system,info system identity was changed to {GetHostname()} by admin");
                             }
                         }
                         else if (parts[2].ToLower() == "print")
                         {
-                            output.AppendLine($"  name: {Hostname}");
+                            output.AppendLine($"  name: {GetHostname()}");
                         }
                     }
                     break;
@@ -285,7 +285,7 @@ namespace NetForge.Simulation.Topology.Devices
                         output.AppendLine("Flags: X - disabled, R - running");
                         output.AppendLine(" #   NAME                         MTU   MAC-ADDRESS       ARP     SLAVES");
                         // Show bonding interfaces if any
-                        foreach (var pc in PortChannels)
+                        foreach (var pc in GetPortChannels())
                         {
                             var members = string.Join(",", pc.Value.MemberInterfaces);
                             output.AppendLine($" 0 R bond{pc.Key}                       1500  {GetMacAddress(pc.Key)}  enabled {members}");
@@ -332,7 +332,7 @@ namespace NetForge.Simulation.Topology.Devices
                     output.AppendLine(" # NAME          MTU MAC-ADDRESS       ARP     SWITCH");
 
                     int idx = 0;
-                    foreach (var iface in Interfaces.Values.Where(i => i.Name.StartsWith("ether")))
+                    foreach (var iface in GetAllInterfaces().Values.Where(i => i.Name.StartsWith("ether")))
                     {
                         var arp = "enabled";
                         output.AppendLine($" {idx} {iface.Name,-13} 1500 {GetMacAddress(idx)} {arp,-7} switch1");
@@ -346,8 +346,8 @@ namespace NetForge.Simulation.Topology.Devices
                         var ifaceName = ExtractValue(string.Join(" ", parts), "numbers") ?? parts[3];
                         if (GetAllInterfaces().ContainsKey(ifaceName))
                         {
-                            Interfaces[ifaceName].IsShutdown = false;
-                            Interfaces[ifaceName].IsUp = true;
+                            GetInterface(ifaceName).IsShutdown = false;
+                            GetInterface(ifaceName).IsUp = true;
                             GetRunningConfig().AppendLine($"/interface ethernet enable {ifaceName}");
                             ParentNetwork?.UpdateProtocols();
                         }
@@ -360,8 +360,8 @@ namespace NetForge.Simulation.Topology.Devices
                         var ifaceName = ExtractValue(string.Join(" ", parts), "numbers") ?? parts[3];
                         if (GetAllInterfaces().ContainsKey(ifaceName))
                         {
-                            Interfaces[ifaceName].IsShutdown = true;
-                            Interfaces[ifaceName].IsUp = false;
+                            GetInterface(ifaceName).IsShutdown = true;
+                            GetInterface(ifaceName).IsUp = false;
                             GetRunningConfig().AppendLine($"/interface ethernet disable {ifaceName}");
                             ParentNetwork?.UpdateProtocols();
                         }
@@ -385,7 +385,7 @@ namespace NetForge.Simulation.Topology.Devices
                         var ifaceName = parts[3];
                         if (GetAllInterfaces().ContainsKey(ifaceName))
                         {
-                            var iface = Interfaces[ifaceName];
+                            var iface = GetInterface(ifaceName);
                             output.AppendLine($"                      name: {ifaceName}");
                             output.AppendLine($"                    status: {(iface.IsUp ? "link-ok" : "no-link")}");
                             output.AppendLine($"          auto-negotiation: done");
@@ -407,7 +407,7 @@ namespace NetForge.Simulation.Topology.Devices
 
                         if (GetAllInterfaces().ContainsKey(ifaceName))
                         {
-                            var iface = Interfaces[ifaceName];
+                            var iface = GetInterface(ifaceName);
 
                             // Check for various parameters
                             var comment = ExtractValue(cmdLine, "comment");
@@ -458,14 +458,15 @@ namespace NetForge.Simulation.Topology.Devices
 
                     if (vlanId > 0 && !string.IsNullOrEmpty(ifaceName))
                     {
-                        if (!Vlans.ContainsKey(vlanId))
+                        if (!GetAllVlans().ContainsKey(vlanId))
                         {
-                            Vlans[vlanId] = new VlanConfig(vlanId, vlanName ?? $"vlan{vlanId}");
+                            AddVlan(vlanId, new VlanConfig(vlanId, vlanName ?? $"vlan{vlanId}"));
                         }
                         // Create VLAN interface
                         var vlanIfaceName = vlanName ?? $"vlan{vlanId}";
-                        Interfaces[vlanIfaceName] = new InterfaceConfig(vlanIfaceName, this);
-                        Interfaces[vlanIfaceName].VlanId = vlanId;
+                        var vlanInterface = new InterfaceConfig(vlanIfaceName, this);
+                        vlanInterface.VlanId = vlanId;
+                        AddInterface(vlanIfaceName, vlanInterface);
 
                         GetRunningConfig().AppendLine($"/interface vlan add vlan-id={vlanId} interface={ifaceName} name={vlanIfaceName}");
                     }
@@ -476,7 +477,7 @@ namespace NetForge.Simulation.Topology.Devices
                     output.AppendLine(" #   NAME              MTU   ARP     VLAN-ID INTERFACE");
 
                     int idx = 0;
-                    foreach (var iface in Interfaces.Values.Where(i => i.VlanId > 0))
+                    foreach (var iface in GetAllInterfaces().Values.Where(i => i.VlanId > 0))
                     {
                         var flags = iface.IsUp ? "R" : "X";
                         output.AppendLine($" {idx} {flags} {iface.Name,-17} 1500  enabled {iface.VlanId,-7} bridge");
