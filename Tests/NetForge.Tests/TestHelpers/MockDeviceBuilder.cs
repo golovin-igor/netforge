@@ -54,7 +54,7 @@ public class MockDeviceBuilder
         }
 
         // Add default interface if none provided
-        if (!_interfaces.Any())
+        if (_interfaces.Count == 0)
         {
             device.SetupInterface("eth0", "192.168.1.10", true);
         }
