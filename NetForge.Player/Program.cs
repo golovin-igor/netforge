@@ -101,8 +101,8 @@ class Program
                 services.AddSingleton<PlayerApplication>();
                 services.AddSingleton<ICommandProcessor, CommandProcessor>();
 
-                // Register NetForge simulation services
-                services.AddNetForgeSimulation(); // Extension method from NetForge.Simulation.Common
+                // TODO: Register NetForge simulation services when available
+                // services.AddNetForgeSimulation(); // Extension method from NetForge.Simulation.Common
 
                 // Register network services
                 services.AddSingleton<INetworkManager, NetworkManager>();

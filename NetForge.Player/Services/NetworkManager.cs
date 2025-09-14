@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
-using NetForge.Interfaces.Devices;
 using NetForge.Player.Core;
+using NetForge.Player.Interfaces;
 using NetForge.Simulation.Topology;
 
 namespace NetForge.Player.Services;
