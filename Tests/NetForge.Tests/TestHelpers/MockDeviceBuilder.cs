@@ -83,10 +83,17 @@ public class MockDeviceBuilder
     {
         var device = new MockNetworkDevice(_name, _vendor);
 
-        // Add interfaces
+        // Add interfaces (preserving all their properties)
         foreach (var kvp in _interfaces)
         {
-            device.SetupInterface(kvp.Key, kvp.Value.IpAddress, kvp.Value.IsUp, kvp.Value.IsShutdown);
+            device.SetupInterface(kvp.Key, kvp.Value.IpAddress, kvp.Value.IsUp, kvp.Value.IsShutdown, kvp.Value.SubnetMask);
+
+            // Copy additional properties
+            var deviceInterface = device.GetInterface(kvp.Key);
+            deviceInterface.InterfaceType = kvp.Value.InterfaceType;
+            deviceInterface.MacAddress = kvp.Value.MacAddress;
+            deviceInterface.Mtu = kvp.Value.Mtu;
+            deviceInterface.Description = kvp.Value.Description;
         }
 
         // Add default interface if none provided
