@@ -144,7 +144,7 @@ public class InteractiveShell
 
     private async Task HandleTabCompletionAsync(StringBuilder input, int cursorPosition)
     {
-        var completions = _commandProcessor.GetCompletions(input.ToString());
+        var completions = await _commandProcessor.GetCompletionsAsync(input.ToString());
         
         if (completions.Count == 0)
             return;
