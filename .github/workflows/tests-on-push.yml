@@ -24,75 +24,29 @@ jobs:
     name: 🔬 Test Suite
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    
+
     steps:
     - name: 📥 Checkout
       uses: actions/checkout@v4
-      
+
     - name: 🛠️ Setup .NET ${{ env.DOTNET_VERSION }}
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-        
+
     - name: 📦 Restore packages
       run: dotnet restore NetForge.sln
-      
+
     - name: 🔨 Build
       run: dotnet build NetForge.sln --no-restore --configuration Release
-            
-    - name: 🧪 Test Simulation Core  
+
+    - name: 🧪 Run Tests
       run: |
-        echo "::group::🌐 Testing Simulation Core"
-        dotnet test NetForge.Simulation.Tests/ \
+        dotnet test NetForge.Tests/ \
           --no-build \
           --configuration Release \
           --logger "console;verbosity=normal" \
           --parallel \
           --maxcpucount:4 \
           --settings:test.runsettings
-        echo "::endgroup::"
 
-    - name: 🧪 Test Protocol Implementations
-      run: |
-        echo "::group::🔌 Testing Protocol Implementations"
-        dotnet test NetForge.Simulation.Protocols.Tests/ \
-          --no-build \
-          --configuration Release \
-          --logger "console;verbosity=normal" \
-          --maxcpucount:4 \
-          --settings:test.runsettings
-        echo "::endgroup::"
-
-    - name: 🧪 Test CLI Handlers
-      run: |
-        echo "::group::🔧 Testing CLI Handlers"
-        dotnet test NetForge.Simulation.CliHandlers/NetForge.Simulation.CliHandlers.Tests/ \
-          --no-build \
-          --configuration Release \
-          --logger "console;verbosity=normal" \
-          --parallel \
-          --maxcpucount:4 \
-          --settings:test.runsettings
-        echo "::endgroup::"
-        
-        
-    - name: 📊 Test Summary
-      if: always()
-      run: |
-        echo "## 🧪 NetForge Test Results" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Test Projects" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ **NetForge.Simulation.Tests**: Core simulation and protocol testing" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ **NetForge.Simulation.Protocols.Tests**: New protocol architecture testing" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ **NetForge.Simulation.CliHandlers.Tests**: Multi-vendor CLI command validation" >> $GITHUB_STEP_SUMMARY  
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Test Scale" >> $GITHUB_STEP_SUMMARY
-        echo "- 🔢 **1,327+ Test Methods**: Comprehensive test coverage across all components" >> $GITHUB_STEP_SUMMARY
-        echo "- 📊 **1,765+ Parameterized Cases**: Data-driven testing with multiple scenarios" >> $GITHUB_STEP_SUMMARY
-        echo "- 📁 **129 Test Files**: Organized by vendor and feature area" >> $GITHUB_STEP_SUMMARY
-        echo "- ⚡ **Parallel Execution**: Tests run in parallel for optimal performance" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Coverage" >> $GITHUB_STEP_SUMMARY
-        echo "- 🏭 **15 Network Vendors**: Cisco, Juniper, Arista, Nokia, Huawei, Fortinet, MikroTik, Aruba, Dell, F5, Extreme, Broadcom, Alcatel, Anira, Linux" >> $GITHUB_STEP_SUMMARY
-        echo "- 🌐 **13+ Network Protocols**: OSPF, BGP, EIGRP, RIP, IGRP, IS-IS, CDP, LLDP, ARP, SSH, Telnet, STP, HSRP, VRRP" >> $GITHUB_STEP_SUMMARY
-        echo "- 🔧 **Performance Optimized**: Test timeout set to 60 minutes with parallelization" >> $GITHUB_STEP_SUMMARY

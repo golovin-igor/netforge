@@ -93,10 +93,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetForge.Simulation.HttpHan
 		NetForge.Simulation.HttpHandlers\HTTP_HANDLERS_IMPLEMENTATION_PLAN.md = NetForge.Simulation.HttpHandlers\HTTP_HANDLERS_IMPLEMENTATION_PLAN.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Tests", "Tests\NetForge.Simulation.Tests\NetForge.Simulation.Tests.csproj", "{454322CD-0E0D-4D7E-9BFD-56336DF00B3C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Protocols.Tests", "Tests\NetForge.Simulation.Protocols.Tests\NetForge.Simulation.Protocols.Tests.csproj", "{CB5C33A6-5B8B-461A-A53D-6481D35DA724}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Interfaces", "NetForge.Interfaces\NetForge.Interfaces.csproj", "{2B7645DD-21B1-43CC-B763-3492310E5756}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.DataTypes", "NetForge.Simulation.DataTypes\NetForge.Simulation.DataTypes.csproj", "{82B84FD5-C8A5-405C-A702-F9BC19D5F5E5}"
@@ -106,6 +102,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Handlers.Common", "NetForge.Simulation.Handlers.Common\NetForge.Simulation.Handlers.Common.csproj", "{F5F4619F-6C3E-48EA-B2FC-7F0115BAE263}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Topology", "NetForge.Simulation.Topology\NetForge.Simulation.Topology.csproj", "{493F2C3A-BCAA-40B8-986C-3917272D88DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Tests", "Tests\NetForge.Tests\NetForge.Tests.csproj", "{5422AF98-BE12-4A52-8689-5F0C28AB34A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -253,14 +251,6 @@ Global
 		{E00370E4-046D-46DB-B006-78EEC58E1E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E00370E4-046D-46DB-B006-78EEC58E1E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E00370E4-046D-46DB-B006-78EEC58E1E8A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{454322CD-0E0D-4D7E-9BFD-56336DF00B3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{454322CD-0E0D-4D7E-9BFD-56336DF00B3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{454322CD-0E0D-4D7E-9BFD-56336DF00B3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{454322CD-0E0D-4D7E-9BFD-56336DF00B3C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CB5C33A6-5B8B-461A-A53D-6481D35DA724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CB5C33A6-5B8B-461A-A53D-6481D35DA724}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CB5C33A6-5B8B-461A-A53D-6481D35DA724}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CB5C33A6-5B8B-461A-A53D-6481D35DA724}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2B7645DD-21B1-43CC-B763-3492310E5756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2B7645DD-21B1-43CC-B763-3492310E5756}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B7645DD-21B1-43CC-B763-3492310E5756}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -281,6 +271,10 @@ Global
 		{493F2C3A-BCAA-40B8-986C-3917272D88DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{493F2C3A-BCAA-40B8-986C-3917272D88DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{493F2C3A-BCAA-40B8-986C-3917272D88DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5422AF98-BE12-4A52-8689-5F0C28AB34A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5422AF98-BE12-4A52-8689-5F0C28AB34A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5422AF98-BE12-4A52-8689-5F0C28AB34A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5422AF98-BE12-4A52-8689-5F0C28AB34A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -324,9 +318,8 @@ Global
 		{66969522-17B7-42DC-BA5C-993840AF25BC} = {9052BD1E-7B4A-45CB-952E-A7E1FED3333A}
 		{E00370E4-046D-46DB-B006-78EEC58E1E8A} = {897E0406-546D-4094-BFAA-3A4CD4F7F311}
 		{352DC46B-D102-4687-89F9-BB7E632E27E2} = {9052BD1E-7B4A-45CB-952E-A7E1FED3333A}
-		{454322CD-0E0D-4D7E-9BFD-56336DF00B3C} = {868FD21A-97B3-4991-8411-FB9763469FC4}
-		{CB5C33A6-5B8B-461A-A53D-6481D35DA724} = {868FD21A-97B3-4991-8411-FB9763469FC4}
 		{2944CDCC-F87E-4C51-878D-EBED72AA7482} = {66969522-17B7-42DC-BA5C-993840AF25BC}
 		{F5F4619F-6C3E-48EA-B2FC-7F0115BAE263} = {9052BD1E-7B4A-45CB-952E-A7E1FED3333A}
+		{5422AF98-BE12-4A52-8689-5F0C28AB34A7} = {868FD21A-97B3-4991-8411-FB9763469FC4}
 	EndGlobalSection
 EndGlobal
