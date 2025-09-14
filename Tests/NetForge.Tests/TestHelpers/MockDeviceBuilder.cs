@@ -1,5 +1,6 @@
 using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.DataTypes.Protocols;
 
 namespace NetForge.Tests.TestHelpers;
 
@@ -119,6 +120,42 @@ public class MockNetworkDevice : INetworkDevice, IInterfaceManager, IDeviceLoggi
 
     // INetworkContext implementation (minimal for testing)
     public INetworkDevice Device => this;
+    public object ParentNetwork => null;
+
+    // IConfigurationProvider missing methods (stub implementations for testing)
+    public OspfConfig GetOspfConfiguration() => new OspfConfig();
+    public void SetOspfConfiguration(OspfConfig config) { }
+    public EigrpConfig GetEigrpConfiguration() => new EigrpConfig();
+    public void SetEigrpConfiguration(EigrpConfig config) { }
+    public BgpConfig GetBgpConfiguration() => new BgpConfig();
+    public void SetBgpConfiguration(BgpConfig config) { }
+    public RipConfig GetRipConfiguration() => new RipConfig();
+    public void SetRipConfiguration(RipConfig config) { }
+    public IsIsConfig GetIsIsConfiguration() => new IsIsConfig();
+    public void SetIsIsConfiguration(IsIsConfig config) { }
+    public IgrpConfig GetIgrpConfiguration() => new IgrpConfig();
+    public void SetIgrpConfiguration(IgrpConfig config) { }
+    public StpConfig GetStpConfiguration() => new StpConfig();
+    public void SetStpConfiguration(StpConfig config) { }
+    public VlanConfig GetVlanConfiguration() => new VlanConfig();
+    public void SetVlanConfiguration(VlanConfig config) { }
+    public VrrpConfig GetVrrpConfiguration() => new VrrpConfig();
+    public void SetVrrpConfiguration(VrrpConfig config) { }
+    public HsrpConfig GetHsrpConfiguration() => new HsrpConfig();
+    public void SetHsrpConfiguration(HsrpConfig config) { }
+    public CdpConfig GetCdpConfiguration() => new CdpConfig();
+    public void SetCdpConfiguration(CdpConfig config) { }
+    public LldpConfig GetLldpConfiguration() => new LldpConfig();
+    public void SetLldpConfiguration(LldpConfig config) { }
+    public object GetTelnetConfiguration() => new object();
+    public void SetTelnetConfiguration(object config) { }
+    public object GetSshConfiguration() => new object();
+    public void SetSshConfiguration(object config) { }
+    public object GetSnmpConfiguration() => new object();
+    public void SetSnmpConfiguration(object config) { }
+    public object GetHttpConfiguration() => new object();
+    public void SetHttpConfiguration(object config) { }
+    public bool IsNvramLoaded => true;
 }
 
 /// <summary>
