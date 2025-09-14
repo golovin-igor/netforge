@@ -202,13 +202,91 @@ public class MyVendorPingFormatter : BaseCommandFormatter
 }
 ```
 
-## Next Commands to Migrate
+## ✅ Completed: Show Version Command Migration
+
+### Architecture Components
+
+1. **`IDeviceInformationService`** - Device information business logic interface
+2. **`DeviceInformationService`** - Concrete implementation with comprehensive device info
+3. **`ShowVersionCommand`** - Vendor-agnostic command wrapper
+4. **`CiscoShowVersionFormatter`** - Cisco IOS-style show version output
+5. **`JuniperShowVersionFormatter`** - JunOS-style show version output
+
+### Usage Examples
+
+#### Cisco Show Version
+```csharp
+var deviceInfoService = new DeviceInformationService();
+var ciscoFormatter = new CiscoShowVersionFormatter();
+var ciscoShowVersionHandler = ShowVersionHandlerFactory.CreateShowVersionHandler(deviceInfoService, ciscoFormatter);
+
+manager.RegisterHandler(ciscoShowVersionHandler);
+```
+
+#### Juniper Show Version
+```csharp
+var deviceInfoService = new DeviceInformationService();
+var juniperFormatter = new JuniperShowVersionFormatter();
+var juniperShowVersionHandler = ShowVersionHandlerFactory.CreateShowVersionHandler(deviceInfoService, juniperFormatter);
+
+manager.RegisterHandler(juniperShowVersionHandler);
+```
+
+### Output Comparison
+
+#### Cisco IOS Show Version
+```
+Cisco IOS Software, Catalyst 2960-24TT-L Software (C2960-LANBASEK9-M), Version 15.2(4)E7, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2016 by Cisco Systems, Inc.
+Compiled Mar 21 2023 by prod_rel_team
+
+ROM: Bootstrap program is Catalyst 2960-24TT-L boot loader
+BOOTLDR: Catalyst 2960-24TT-L Boot Loader (C2960-HBOOT-M) Version 12.2(44)SE5, RELEASE SOFTWARE (fc1)
+
+Router1 uptime is 15 days, 8 hours, 23 minutes
+System returned to ROM by power-on
+System restarted at 14:35:22 UTC Mon Jan 30 2023
+System image file is "bootflash:c2960-lanbasek9-mz.152-4.E7.bin"
+
+cisco WS-C2960-24TT-L (PowerPC405) processor (revision A0) with 64K/32K bytes of memory.
+Processor board ID FCW12345X678
+Last reset from power-on
+24 FastEthernet interfaces
+The password-recovery mechanism is enabled.
+
+Configuration register is 0x2102
+```
+
+#### JunOS Show Version
+```
+Hostname: Router1
+Model: EX2200-24T-4G
+Junos: 12.3R12-S13
+JUNOS Software Release [12.3R12-S13] (Export edition)
+
+{master:0}
+fpc0:
+  CPU utilization          :    2 percent (5 sec avg)
+  CPU utilization          :    1 percent (1 min avg)
+  CPU utilization          :    1 percent (5 min avg)
+  Memory utilization       :   25 percent
+  Total CPU DRAM installed :    1024 MB
+  Memory utilization       :   25 percent
+  Total memory             :    1024 MB Max
+  Reserved memory          :    128 MB
+  Available memory         :    768 MB
+
+15 days, 08:23
+```
+
+## Next Commands Ready for Migration
 
 Following the same pattern, these commands are ready for migration:
 
-1. **Show Version** - Device information display
-2. **Show Interfaces** - Interface status and statistics
-3. **Show IP Route** - Routing table display
-4. **Show ARP** - ARP table display
+1. **Show Interfaces** - Interface status and statistics
+2. **Show IP Route** - Routing table display
+3. **Show ARP** - ARP table display
+4. **Show MAC Address Table** - MAC learning table display
 
-Each will follow the same pattern: `Service` → `Command` → `Formatter` → `UnifiedHandler`.
+Each follows the same pattern: `Service` → `Command` → `Formatter` → `UnifiedHandler`.
