@@ -1,177 +1,275 @@
-﻿// TODO: Phase 1.1 - Implement Command Line Interface System
-// - Command Parser Engine with tokenization and argument parsing
-// - Interactive Shell with REPL implementation
-// - Help System with dynamic help generation
-// - Command routing and validation
-// - Context-aware command completion
-// - Command history management
-// - Multi-line command support
-// - Context switching between Player and device modes
-// - Error handling and user feedback
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using NetForge.Player.Configuration;
+using NetForge.Player.Core;
+using NetForge.Player.Services;
+using NetForge.Simulation.Common;
+using NetForge.Simulation.Topology;
 
-// TODO: Phase 1.2 - Implement Network Management System
-// - Network Manager for device lifecycle management
-// - Device Factory Integration with Player-specific features
-// - Session Management with device connection handling
-// - Topology creation and modification
-// - Link management and validation
-// - Network state persistence
-// - Multi-session support
-// - Session security and authentication
+namespace NetForge.Player;
 
-// TODO: Phase 1.3 - Implement Configuration Management
-// - Player Configuration System with JSON-based config files
-// - Scenario Management with network topology save/load
-// - Runtime configuration updates
-// - Environment variable support
-// - Configuration validation
-// - Configuration templates
-// - Scenario versioning
-// - Import/export functionality
+class Program
+{
+    private static IHost? _host;
+    private static PlayerApplication? _application;
 
-// TODO: Phase 2.1 - Implement Built-in Terminal Emulator
-// - Terminal Interface with VT100/ANSI terminal emulation
-// - Device Connection Manager with direct device access
-// - Color support and formatting
-// - Terminal resizing and scrollback
-// - Copy/paste functionality
-// - Terminal session multiplexing
-// - Session switching and management
-// - Disconnect/reconnect handling
+    static async Task<int> Main(string[] args)
+    {
+        try
+        {
+            // Handle command line arguments
+            if (args.Length > 0)
+            {
+                return HandleCommandLineArgs(args);
+            }
 
-// TODO: Phase 2.2 - Implement Network Terminal Server
-// - Terminal Server Manager for multi-protocol server coordination
-// - Session Multiplexing with multiple concurrent connections
-// - Port management and configuration
-// - Client connection handling
-// - Authentication and authorization
-// - Session isolation and security
-// - Resource management
-// - Connection monitoring
+            // Build and configure host
+            _host = CreateHostBuilder(args).Build();
 
-// TODO: Phase 2.3 - Implement WebSocket Terminal Server
-// - WebSocket Server with real-time bi-directional communication
-// - Web Terminal Client with HTML/JavaScript terminal interface
-// - Web browser terminal interface
-// - Session management over WebSocket
-// - Message queuing and buffering
-// - Terminal emulation in browser
-// - File upload/download support
-// - Session persistence
+            // Setup console cancellation
+            Console.CancelKeyPress += OnCancelKeyPress;
 
-// TODO: Phase 3.1 - Implement Network Bridge Infrastructure
-// - Virtual Interface Manager with TAP/TUN interface creation
-// - Traffic Routing Engine for packet forwarding
-// - Interface lifecycle management
-// - Cross-platform compatibility
-// - Administrative privilege handling
-// - Protocol translation and proxy
-// - Traffic filtering and security
-// - Performance optimization
+            // Get application instance and run
+            _application = _host.Services.GetRequiredService<PlayerApplication>();
+            await _application.RunAsync();
 
-// TODO: Phase 3.2 - Implement IP Address Management
-// - IP Address Pool Manager with dynamic IP allocation
-// - Device IP Binding with external IP assignment
-// - Address conflict detection
-// - Subnet management
-// - DHCP integration
-// - Address binding validation
-// - Routing table updates
-// - DNS integration
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Fatal error: {ex.Message}");
+            Console.ResetColor();
 
-// TODO: Phase 3.3 - Implement Security and Isolation
-// - Network Firewall with traffic filtering rules
-// - Isolation Manager with network segmentation
-// - Access control lists
-// - Connection monitoring
-// - Threat detection
-// - Resource access control
-// - Security policy enforcement
-// - Audit logging
+            if (args.Contains("--verbose") || args.Contains("-v"))
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
 
-// TODO: Phase 4.1 - Implement Web Interface
-// - Web Server with HTTP/HTTPS server integration
-// - Topology Visualization with interactive network diagrams
-// - Device Management UI with web-based device configuration
-// - Static file serving
-// - API endpoint management
-// - Authentication middleware
-// - Drag-and-drop editing
-// - Real-time status updates
-// - Export functionality
-// - Bulk operations interface
-// - Configuration wizards
-// - Status monitoring dashboards
+            return 1;
+        }
+    }
 
-// TODO: Phase 4.2 - Implement REST API
-// - API Controller Framework with RESTful endpoint definitions
-// - Integration Endpoints for device management API
-// - Request/response serialization
-// - Error handling and validation
-// - API documentation generation
-// - Topology manipulation API
-// - Configuration API
-// - Monitoring and metrics API
+    private static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((context, config) =>
+            {
+                // Load configuration from multiple sources
+                config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                      .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true)
+                      .AddEnvironmentVariables("NETFORGE_")
+                      .AddCommandLine(args);
+            })
+            .ConfigureLogging((context, logging) =>
+            {
+                logging.ClearProviders();
 
-// TODO: Phase 4.3 - Implement Scripting Support
-// - Script Engine with NetSim script format parser
-// - Automation Framework with scheduled script execution
-// - Script execution environment
-// - Variable substitution
-// - Control flow and loops
-// - Event-driven automation
-// - Script library management
-// - Integration with external tools
+                // Configure logging based on environment
+                if (context.HostingEnvironment.IsDevelopment())
+                {
+                    logging.AddConsole()
+                           .AddDebug()
+                           .SetMinimumLevel(LogLevel.Debug);
+                }
+                else
+                {
+                    logging.AddConsole()
+                           .SetMinimumLevel(LogLevel.Information);
+                }
 
-// TODO: Phase 5.1 - Implement Performance Optimization
-// - Resource Monitoring with memory usage tracking
-// - Performance Tuning with async operation optimization
-// - CPU utilization monitoring
-// - Network performance metrics
-// - Device scalability testing
-// - Memory management improvements
-// - Protocol execution optimization
-// - Database query optimization
+                // Add file logging if configured
+                var logPath = context.Configuration["Logging:FilePath"];
+                if (!string.IsNullOrEmpty(logPath))
+                {
+                    // TODO: Add file logging provider
+                }
+            })
+            .ConfigureServices((context, services) =>
+            {
+                // Register configuration
+                services.Configure<PlayerConfiguration>(context.Configuration.GetSection("Player"));
+                services.AddSingleton(provider =>
+                {
+                    var config = context.Configuration.GetSection("Player").Get<PlayerConfiguration>();
+                    return config ?? new PlayerConfiguration();
+                });
 
-// TODO: Phase 5.2 - Implement Logging and Diagnostics
-// - Structured Logging with configurable log levels
-// - Diagnostic Tools with system health monitoring
-// - Structured log output (JSON)
-// - Log rotation and archival
-// - Performance logging
-// - Error tracking and reporting
-// - Performance profiling
-// - Debug information collection
+                // Register core services
+                services.AddSingleton<PlayerApplication>();
+                services.AddSingleton<ICommandProcessor, CommandProcessor>();
 
-// TODO: Implement Dependency Injection Container
-// - Register core services: INetworkManager, ICommandProcessor, ISessionManager
-// - Register terminal servers: ITerminalServerManager, INetworkBridge
-// - Register commands: CreateDeviceCommand, ConnectCommand, etc.
-// - Register configuration: PlayerConfiguration sections
-// - Setup service lifetime management
-// - Configure logging providers
-// - Setup exception handling middleware
+                // Register NetForge simulation services
+                services.AddNetForgeSimulation(); // Extension method from NetForge.Simulation.Common
 
-// TODO: Implement Main Application Loop
-// - Initialize dependency injection container
-// - Load configuration from appsettings.json and environment
-// - Start background services (terminal servers, network bridge)
-// - Initialize command processor and interactive shell
-// - Handle graceful shutdown on CTRL+C
-// - Cleanup resources and save state on exit
-// - Implement application lifecycle management
+                // Register network services
+                services.AddSingleton<INetworkManager, NetworkManager>();
+                services.AddSingleton<ISessionManager, SessionManager>();
 
-using NetForge.Player;
+                // Register terminal services (if enabled)
+                services.AddSingleton<ITerminalServerManager, TerminalServerManager>();
 
-ConsoleBanner.Print();
-SimulationInfo.Print();
+                // Register all player commands
+                RegisterCommands(services);
 
-// TODO: Replace this minimal implementation with full PlayerApplication
-// Current implementation only shows banner and capabilities
-// Need to implement complete application with:
-// 1. Dependency injection setup
-// 2. Configuration loading
-// 3. Service initialization
-// 4. Interactive command loop
-// 5. Graceful shutdown handling
+                // Add hosted services for background tasks
+                services.AddHostedService<NetworkManagerBackgroundService>();
+            })
+            .UseConsoleLifetime();
+
+    private static void RegisterCommands(IServiceCollection services)
+    {
+        // Auto-discover and register all commands from the current assembly
+        var commandTypes = Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(t => typeof(IPlayerCommand).IsAssignableFrom(t)
+                     && !t.IsInterface
+                     && !t.IsAbstract);
+
+        foreach (var commandType in commandTypes)
+        {
+            services.AddTransient(typeof(IPlayerCommand), commandType);
+        }
+    }
+
+    private static int HandleCommandLineArgs(string[] args)
+    {
+        var arg = args[0].ToLowerInvariant();
+
+        return arg switch
+        {
+            "--version" or "-v" => ShowVersion(),
+            "--help" or "-h" or "-?" => ShowHelp(),
+            "--check" or "-c" => CheckEnvironment(),
+            _ => RunWithArgs(args)
+        };
+    }
+
+    private static int ShowVersion()
+    {
+        var version = Assembly.GetExecutingAssembly().GetName().Version;
+        var buildDate = GetBuildDate();
+
+        Console.WriteLine($"NetForge.Player Version {version}");
+        Console.WriteLine($"Build Date: {buildDate}");
+        Console.WriteLine($"Runtime: .NET {Environment.Version}");
+        Console.WriteLine($"Platform: {Environment.OSVersion}");
+
+        return 0;
+    }
+
+    private static int ShowHelp()
+    {
+        Console.WriteLine("NetForge.Player - Interactive Network Simulation Console");
+        Console.WriteLine();
+        Console.WriteLine("Usage:");
+        Console.WriteLine("  NetForge.Player                    Start interactive mode");
+        Console.WriteLine("  NetForge.Player --version          Show version information");
+        Console.WriteLine("  NetForge.Player --help             Show this help message");
+        Console.WriteLine("  NetForge.Player --check            Check environment and prerequisites");
+        Console.WriteLine();
+        Console.WriteLine("Interactive Commands:");
+        Console.WriteLine("  help                               Show available commands");
+        Console.WriteLine("  create device <name> --type <type> --vendor <vendor>");
+        Console.WriteLine("                                     Create a new network device");
+        Console.WriteLine("  list devices                       List all devices");
+        Console.WriteLine("  connect <device>                   Connect to device console");
+        Console.WriteLine("  exit                               Exit the application");
+        Console.WriteLine();
+        Console.WriteLine("Environment Variables:");
+        Console.WriteLine("  NETFORGE_LogLevel                  Set logging level (Debug, Info, Warning, Error)");
+        Console.WriteLine("  NETFORGE_Player__ConfigPath        Path to configuration file");
+        Console.WriteLine("  NETFORGE_Player__DataPath          Path to data directory");
+
+        return 0;
+    }
+
+    private static int CheckEnvironment()
+    {
+        Console.WriteLine("NetForge.Player Environment Check");
+        Console.WriteLine("=================================\n");
+
+        var allChecks = true;
+
+        // Check .NET version
+        Console.Write(".NET Runtime Version: ");
+        Console.WriteLine($"{Environment.Version} ✓");
+
+        // Check OS compatibility
+        Console.Write("Operating System: ");
+        Console.WriteLine($"{Environment.OSVersion} ✓");
+
+        // Check available memory
+        Console.Write("Available Memory: ");
+        try
+        {
+            var totalMemory = GC.GetTotalMemory(false);
+            Console.WriteLine($"{totalMemory / 1024 / 1024} MB ✓");
+        }
+        catch
+        {
+            Console.WriteLine("Unable to determine ✗");
+            allChecks = false;
+        }
+
+        // Check assembly loading
+        Console.Write("NetForge Assemblies: ");
+        try
+        {
+            // Try to load key NetForge assemblies
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(a => a.GetName().Name?.StartsWith("NetForge") == true)
+                .Count();
+
+            Console.WriteLine($"{assemblies} loaded ✓");
+        }
+        catch
+        {
+            Console.WriteLine("Load failed ✗");
+            allChecks = false;
+        }
+
+        Console.WriteLine();
+        Console.WriteLine(allChecks ? "Environment check passed ✓" : "Environment check failed ✗");
+
+        return allChecks ? 0 : 1;
+    }
+
+    private static int RunWithArgs(string[] args)
+    {
+        Console.WriteLine("Command-line execution not yet implemented.");
+        Console.WriteLine("Use NetForge.Player without arguments to start interactive mode.");
+        return 1;
+    }
+
+    private static void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e)
+    {
+        Console.WriteLine("\nShutdown requested...");
+
+        // Cancel the event to prevent immediate termination
+        e.Cancel = true;
+
+        // Stop the application gracefully
+        _application?.Stop();
+
+        // Stop the host
+        _host?.StopAsync().Wait(TimeSpan.FromSeconds(5));
+    }
+
+    private static string GetBuildDate()
+    {
+        try
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var fileInfo = new FileInfo(assembly.Location);
+            return fileInfo.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+        catch
+        {
+            return "Unknown";
+        }
+    }
+}
 

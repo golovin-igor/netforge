@@ -1,7 +1,8 @@
 // TODO: Phase 1.2 - Implement Network Management System
 // This interface defines network management functionality for device lifecycle and topology
 
-using NetForge.Simulation.Topology.Devices;
+using NetForge.Player.Services;
+using NetForge.Simulation.Topology;
 
 namespace NetForge.Player.Core;
 
@@ -21,11 +22,12 @@ public interface INetworkManager
     /// <summary>
     /// Create a new network device
     /// </summary>
-    /// <param name="vendor">Vendor type (cisco, juniper, etc.)</param>
-    /// <param name="hostname">Device hostname</param>
-    /// <param name="deviceType">Device type (router, switch, etc.)</param>
+    /// <param name="name">Device name</param>
+    /// <param name="deviceType">Device type</param>
+    /// <param name="vendor">Vendor name</param>
+    /// <param name="model">Device model</param>
     /// <returns>Created network device</returns>
-    Task<NetworkDevice> CreateDeviceAsync(string vendor, string hostname, string? deviceType = null);
+    Task<INetworkDevice> CreateDeviceAsync(string name, DeviceType deviceType, string vendor, string model);
 
     /// <summary>
     /// Delete a network device
@@ -39,13 +41,13 @@ public interface INetworkManager
     /// </summary>
     /// <param name="hostname">Device hostname</param>
     /// <returns>Network device or null if not found</returns>
-    Task<NetworkDevice?> GetDeviceAsync(string hostname);
+    Task<INetworkDevice?> GetDeviceAsync(string hostname);
 
     /// <summary>
     /// Get all devices in the network
     /// </summary>
     /// <returns>List of all network devices</returns>
-    Task<IEnumerable<NetworkDevice>> GetAllDevicesAsync();
+    Task<IEnumerable<INetworkDevice>> GetAllDevicesAsync();
 
     // TODO: Implement topology management methods
     // - CreateLinkAsync: Create physical links between devices
@@ -53,6 +55,16 @@ public interface INetworkManager
     // - GetTopologyAsync: Retrieve current network topology
     // - ValidateTopologyAsync: Check topology consistency
     // - OptimizeTopologyAsync: Suggest topology improvements
+
+    /// <summary>
+    /// Create a connection between two devices
+    /// </summary>
+    /// <param name="sourceDevice">Source device name</param>
+    /// <param name="sourceInterface">Source interface name</param>
+    /// <param name="destDevice">Destination device name</param>
+    /// <param name="destInterface">Destination interface name</param>
+    /// <returns>Task representing the connection creation</returns>
+    Task CreateConnectionAsync(string sourceDevice, string sourceInterface, string destDevice, string destInterface);
 
     /// <summary>
     /// Create a link between two devices
@@ -97,5 +109,15 @@ public interface INetworkManager
     /// </summary>
     /// <returns>True if protocols updated successfully</returns>
     Task<bool> UpdateProtocolsAsync();
+
+    /// <summary>
+    /// Initialize the network manager
+    /// </summary>
+    Task InitializeAsync();
+
+    /// <summary>
+    /// Save current network state
+    /// </summary>
+    Task SaveStateAsync();
 }
 

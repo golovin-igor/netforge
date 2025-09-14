@@ -42,7 +42,12 @@ public class PlayerConfiguration
     /// Logging and diagnostics configuration
     /// </summary>
     public LoggingConfig Logging { get; set; } = new();
-    
+
+    /// <summary>
+    /// Interactive shell configuration
+    /// </summary>
+    public ShellConfig? Shell { get; set; }
+
     // TODO: Add additional configuration sections
     // public WebInterfaceConfig WebInterface { get; set; } = new();
     // public ScriptingConfig Scripting { get; set; } = new();
