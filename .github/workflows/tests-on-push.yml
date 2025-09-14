@@ -42,11 +42,17 @@ jobs:
 
     - name: 🧪 Run Tests
       run: |
-        dotnet test NetForge.Tests/ \
+        dotnet test Tests/NetForge.Tests/NetForge.Tests.csproj \
           --no-build \
           --configuration Release \
           --logger "console;verbosity=normal" \
-          --parallel \
-          --maxcpucount:4 \
-          --settings:test.runsettings
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./TestResults
+
+    - name: 📊 Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: TestResults/
 
