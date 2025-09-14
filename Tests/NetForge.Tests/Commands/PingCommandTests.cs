@@ -55,10 +55,10 @@ public class PingCommandTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<PingCommandData>();
-        var pingResult = (PingCommandData)result;
-        pingResult.Success.Should().BeTrue();
-        pingResult.Destination.Should().Be(destination);
-        pingResult.PacketsSent.Should().Be(5);
+        var pingCommandData = (PingCommandData)result;
+        pingCommandData.Success.Should().BeTrue();
+        pingCommandData.PingResult.Destination.Should().Be(destination);
+        pingCommandData.PingResult.PacketsSent.Should().Be(5);
 
         _mockPingService.Verify(s => s.ExecutePing(_mockDevice, destination, 5, 64), Times.Once);
     }
@@ -84,8 +84,8 @@ public class PingCommandTests
         var result = await _pingCommand.ExecuteBusinessLogicAsync(_mockDevice, args);
 
         // Assert
-        var pingResult = (PingCommandData)result;
-        pingResult.PacketsSent.Should().Be(10);
+        var pingCommandData = (PingCommandData)result;
+        pingCommandData.PingResult.PacketsSent.Should().Be(10);
 
         _mockPingService.Verify(s => s.ExecutePing(_mockDevice, destination, 10, 64), Times.Once);
     }
@@ -110,8 +110,8 @@ public class PingCommandTests
         var result = await _pingCommand.ExecuteBusinessLogicAsync(_mockDevice, args);
 
         // Assert
-        var pingResult = (PingCommandData)result;
-        pingResult.PacketSize.Should().Be(1500);
+        var pingCommandData = (PingCommandData)result;
+        pingCommandData.PingResult.PacketSize.Should().Be(1500);
 
         _mockPingService.Verify(s => s.ExecutePing(_mockDevice, destination, 5, 1500), Times.Once);
     }
@@ -139,11 +139,11 @@ public class PingCommandTests
         var result = await _pingCommand.ExecuteBusinessLogicAsync(_mockDevice, args);
 
         // Assert
-        var pingResult = (PingCommandData)result;
-        pingResult.PacketsSent.Should().Be(3);
-        pingResult.PacketSize.Should().Be(128);
-        pingResult.SourceInterface.Should().Be("eth0");
-        pingResult.Ttl.Should().Be(64);
+        var pingCommandData = (PingCommandData)result;
+        pingCommandData.PingResult.PacketsSent.Should().Be(3);
+        pingCommandData.PingResult.PacketSize.Should().Be(128);
+        pingCommandData.PingResult.SourceInterface.Should().Be("eth0");
+        pingCommandData.PingResult.Ttl.Should().Be(64);
 
         _mockPingService.Verify(s => s.ExecutePingWithOptions(_mockDevice, It.Is<PingOptions>(o =>
             o.PingCount == 3 &&
@@ -446,8 +446,8 @@ public class PingCommandTests
         var commandData = (PingCommandData)result;
         commandData.Success.Should().BeTrue();
         commandData.ErrorMessage.Should().BeNull();
-        commandData.PacketsReceived.Should().Be(5);
-        commandData.PacketLossPercentage.Should().Be(0);
+        commandData.PingResult.PacketsReceived.Should().Be(5);
+        commandData.PingResult.PacketLossPercentage.Should().Be(0);
     }
 
     [Fact]
@@ -475,8 +475,8 @@ public class PingCommandTests
         var commandData = (PingCommandData)result;
         commandData.Success.Should().BeFalse();
         commandData.ErrorMessage.Should().Be("Host unreachable");
-        commandData.PacketsReceived.Should().Be(0);
-        commandData.PacketLossPercentage.Should().Be(100);
+        commandData.PingResult.PacketsReceived.Should().Be(0);
+        commandData.PingResult.PacketLossPercentage.Should().Be(100);
     }
 
     [Fact]
@@ -497,8 +497,8 @@ public class PingCommandTests
         // Assert
         var afterExecution = DateTime.UtcNow;
         var commandData = (PingCommandData)result;
-        commandData.ExecutionTime.Should().BeOnOrAfter(beforeExecution);
-        commandData.ExecutionTime.Should().BeOnOrBefore(afterExecution);
+        commandData.Timestamp.Should().BeOnOrAfter(beforeExecution);
+        commandData.Timestamp.Should().BeOnOrBefore(afterExecution);
     }
 
     [Fact]
@@ -534,16 +534,16 @@ public class PingCommandTests
 
         // Assert
         var commandData = (PingCommandData)result;
-        commandData.Destination.Should().Be("192.168.1.1");
-        commandData.PacketsSent.Should().Be(3);
-        commandData.PacketsReceived.Should().Be(2);
-        commandData.PacketLossPercentage.Should().BeApproximately(33.33, 0.1);
-        commandData.PacketSize.Should().Be(128);
-        commandData.MinRoundTripTime.Should().Be(1);
-        commandData.AvgRoundTripTime.Should().Be(2);
-        commandData.MaxRoundTripTime.Should().Be(4);
-        commandData.StandardDeviation.Should().BeApproximately(1.5, 0.1);
-        commandData.Replies.Should().HaveCount(3);
+        commandData.PingResult.Destination.Should().Be("192.168.1.1");
+        commandData.PingResult.PacketsSent.Should().Be(3);
+        commandData.PingResult.PacketsReceived.Should().Be(2);
+        commandData.PingResult.PacketLossPercentage.Should().BeApproximately(33.33, 0.1);
+        commandData.PingResult.PacketSize.Should().Be(128);
+        commandData.PingResult.MinRoundTripTime.Should().Be(1);
+        commandData.PingResult.AvgRoundTripTime.Should().Be(2);
+        commandData.PingResult.MaxRoundTripTime.Should().Be(4);
+        commandData.PingResult.StandardDeviation.Should().BeApproximately(1.5, 0.1);
+        commandData.PingResult.Replies.Should().HaveCount(3);
     }
 
     #endregion
