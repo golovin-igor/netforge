@@ -37,14 +37,9 @@ public class ShowVersionCommandTests
         // Arrange
         var args = new[] { "show", "version" };
         var expectedVersionData = CreateMockDeviceVersionData();
-        var expectedSystemInfo = CreateMockSystemInfo();
-        var expectedHardwareInfo = CreateMockHardwareInfo();
-        var expectedMemoryInfo = CreateMockMemoryInfo();
-        var expectedStorageInfo = CreateMockStorageInfo();
-        var expectedBootInfo = CreateMockBootInfo();
 
-        SetupMockServiceCalls(expectedVersionData, expectedSystemInfo, expectedHardwareInfo,
-            expectedMemoryInfo, expectedStorageInfo, expectedBootInfo);
+        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(_mockDevice))
+            .Returns(expectedVersionData);
 
         // Act
         var result = await _showVersionCommand.ExecuteBusinessLogicAsync(_mockDevice, args);
@@ -54,14 +49,9 @@ public class ShowVersionCommandTests
         result.Should().BeOfType<ShowVersionCommandData>();
         var showVersionResult = (ShowVersionCommandData)result;
 
-        showVersionResult.DeviceVersion.Should().Be(expectedVersionData);
-        showVersionResult.SystemInfo.Should().Be(expectedSystemInfo);
-        showVersionResult.HardwareInfo.Should().Be(expectedHardwareInfo);
-        showVersionResult.MemoryInfo.Should().Be(expectedMemoryInfo);
-        showVersionResult.StorageInfo.Should().Be(expectedStorageInfo);
-        showVersionResult.BootInfo.Should().Be(expectedBootInfo);
+        showVersionResult.VersionData.Should().Be(expectedVersionData);
 
-        VerifyAllServiceCalls();
+        _mockDeviceInfoService.Verify(s => s.GetDeviceVersion(_mockDevice), Times.Once);
     }
 
     [Fact]
@@ -101,14 +91,9 @@ public class ShowVersionCommandTests
         // Arrange
         var args = new string[] { };
         var expectedVersionData = CreateMockDeviceVersionData();
-        var expectedSystemInfo = CreateMockSystemInfo();
-        var expectedHardwareInfo = CreateMockHardwareInfo();
-        var expectedMemoryInfo = CreateMockMemoryInfo();
-        var expectedStorageInfo = CreateMockStorageInfo();
-        var expectedBootInfo = CreateMockBootInfo();
 
-        SetupMockServiceCalls(expectedVersionData, expectedSystemInfo, expectedHardwareInfo,
-            expectedMemoryInfo, expectedStorageInfo, expectedBootInfo);
+        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(_mockDevice))
+            .Returns(expectedVersionData);
 
         // Act
         var result = await _showVersionCommand.ExecuteBusinessLogicAsync(_mockDevice, args);
@@ -116,7 +101,7 @@ public class ShowVersionCommandTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<ShowVersionCommandData>();
-        VerifyAllServiceCalls();
+        _mockDeviceInfoService.Verify(s => s.GetDeviceVersion(_mockDevice), Times.Once);
     }
 
     #endregion
@@ -133,18 +118,14 @@ public class ShowVersionCommandTests
             .Build();
         var args = new[] { "show", "version" };
 
-        SetupMockServiceCallsForDevice(ciscoDevice);
+        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(ciscoDevice))
+            .Returns(CreateMockDeviceVersionData());
 
         // Act
         await _showVersionCommand.ExecuteBusinessLogicAsync(ciscoDevice, args);
 
         // Assert
         _mockDeviceInfoService.Verify(s => s.GetDeviceVersion(ciscoDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetSystemInfo(ciscoDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetHardwareInfo(ciscoDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetMemoryInfo(ciscoDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetStorageInfo(ciscoDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetBootInfo(ciscoDevice), Times.Once);
     }
 
     [Fact]
@@ -157,18 +138,14 @@ public class ShowVersionCommandTests
             .Build();
         var args = new[] { "show", "version" };
 
-        SetupMockServiceCallsForDevice(juniperDevice);
+        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(juniperDevice))
+            .Returns(CreateMockDeviceVersionData());
 
         // Act
         await _showVersionCommand.ExecuteBusinessLogicAsync(juniperDevice, args);
 
         // Assert
         _mockDeviceInfoService.Verify(s => s.GetDeviceVersion(juniperDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetSystemInfo(juniperDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetHardwareInfo(juniperDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetMemoryInfo(juniperDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetStorageInfo(juniperDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetBootInfo(juniperDevice), Times.Once);
     }
 
     [Fact]
@@ -185,7 +162,8 @@ public class ShowVersionCommandTests
                 .WithVendor(vendor)
                 .Build();
 
-            SetupMockServiceCallsForDevice(device);
+            _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(device))
+                .Returns(new DeviceVersionData { Vendor = vendor });
 
             // Act
             var result = await _showVersionCommand.ExecuteBusinessLogicAsync(device, args);
@@ -194,7 +172,7 @@ public class ShowVersionCommandTests
             result.Should().NotBeNull();
             result.Should().BeOfType<ShowVersionCommandData>();
             var commandData = (ShowVersionCommandData)result;
-            commandData.DeviceVersion.Vendor.Should().Be(vendor);
+            commandData.VersionData.Vendor.Should().Be(vendor);
         }
     }
 
@@ -208,13 +186,9 @@ public class ShowVersionCommandTests
         // Arrange
         var args = new[] { "show", "version" };
         var versionData = CreateMockDeviceVersionData();
-        var systemInfo = CreateMockSystemInfo();
-        var hardwareInfo = CreateMockHardwareInfo();
-        var memoryInfo = CreateMockMemoryInfo();
-        var storageInfo = CreateMockStorageInfo();
-        var bootInfo = CreateMockBootInfo();
 
-        SetupMockServiceCalls(versionData, systemInfo, hardwareInfo, memoryInfo, storageInfo, bootInfo);
+        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(_mockDevice))
+            .Returns(versionData);
 
         var beforeExecution = DateTime.UtcNow;
 
@@ -226,16 +200,11 @@ public class ShowVersionCommandTests
         var commandData = (ShowVersionCommandData)result;
 
         // Verify all data is properly mapped
-        commandData.DeviceVersion.Should().Be(versionData);
-        commandData.SystemInfo.Should().Be(systemInfo);
-        commandData.HardwareInfo.Should().Be(hardwareInfo);
-        commandData.MemoryInfo.Should().Be(memoryInfo);
-        commandData.StorageInfo.Should().Be(storageInfo);
-        commandData.BootInfo.Should().Be(bootInfo);
+        commandData.VersionData.Should().Be(versionData);
 
         // Verify timestamp is set correctly
-        commandData.ExecutionTime.Should().BeOnOrAfter(beforeExecution);
-        commandData.ExecutionTime.Should().BeOnOrBefore(afterExecution);
+        commandData.Timestamp.Should().BeOnOrAfter(beforeExecution);
+        commandData.Timestamp.Should().BeOnOrBefore(afterExecution);
     }
 
     [Fact]
@@ -243,7 +212,10 @@ public class ShowVersionCommandTests
     {
         // Arrange
         var args = new[] { "show", "version" };
-        SetupMockServiceCallsForDevice(_mockDevice);
+        var versionData = CreateMockDeviceVersionData();
+
+        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(_mockDevice))
+            .Returns(versionData);
 
         // Act
         var result1 = await _showVersionCommand.ExecuteBusinessLogicAsync(_mockDevice, args);
@@ -255,11 +227,11 @@ public class ShowVersionCommandTests
 
         // Each execution should create a new instance with fresh timestamp
         commandData1.Should().NotBeSameAs(commandData2);
-        commandData1.ExecutionTime.Should().BeLessOrEqualTo(commandData2.ExecutionTime);
+        commandData1.Timestamp.Should().BeLessOrEqualTo(commandData2.Timestamp);
 
         // But the device information should be consistent
-        commandData1.DeviceVersion.SerialNumber.Should().Be(commandData2.DeviceVersion.SerialNumber);
-        commandData1.DeviceVersion.Model.Should().Be(commandData2.DeviceVersion.Model);
+        commandData1.VersionData.SerialNumber.Should().Be(commandData2.VersionData.SerialNumber);
+        commandData1.VersionData.Model.Should().Be(commandData2.VersionData.Model);
     }
 
     #endregion
@@ -330,7 +302,8 @@ public class ShowVersionCommandTests
     {
         // Arrange
         var args = new[] { "show", "version" };
-        SetupMockServiceCallsForDevice(_mockDevice);
+        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(_mockDevice))
+            .Returns(CreateMockDeviceVersionData());
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
         // Act
@@ -353,7 +326,8 @@ public class ShowVersionCommandTests
         foreach (var vendor in vendors)
         {
             var device = MockDeviceBuilder.Create().WithVendor(vendor).Build();
-            SetupMockServiceCallsForDevice(device);
+            _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(device))
+                .Returns(CreateMockDeviceVersionData());
 
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -383,20 +357,15 @@ public class ShowVersionCommandTests
     {
         // Arrange
         var args = new[] { "show", "version" };
-        var versionData = CreateMockDeviceVersionData();
 
-        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(_mockDevice)).Returns(versionData);
-        _mockDeviceInfoService.Setup(s => s.GetSystemInfo(_mockDevice)).Returns(CreateMockSystemInfo());
-        _mockDeviceInfoService.Setup(s => s.GetHardwareInfo(_mockDevice)).Throws(new InvalidOperationException("Hardware info unavailable"));
-        _mockDeviceInfoService.Setup(s => s.GetMemoryInfo(_mockDevice)).Returns(CreateMockMemoryInfo());
-        _mockDeviceInfoService.Setup(s => s.GetStorageInfo(_mockDevice)).Returns(CreateMockStorageInfo());
-        _mockDeviceInfoService.Setup(s => s.GetBootInfo(_mockDevice)).Returns(CreateMockBootInfo());
+        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(_mockDevice))
+            .Throws(new InvalidOperationException("Device info unavailable"));
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<CommandExecutionException>(
             () => _showVersionCommand.ExecuteBusinessLogicAsync(_mockDevice, args));
 
-        exception.Message.Should().Contain("Hardware info unavailable");
+        exception.Message.Should().Contain("Device info unavailable");
     }
 
     #endregion
@@ -421,103 +390,7 @@ public class ShowVersionCommandTests
         };
     }
 
-    private DeviceSystemInfo CreateMockSystemInfo()
-    {
-        return new DeviceSystemInfo
-        {
-            Hostname = "TestDevice",
-            Uptime = TimeSpan.FromDays(30).Add(TimeSpan.FromHours(12)),
-            SystemTime = DateTime.UtcNow,
-            LastReboot = DateTime.UtcNow.AddDays(-30.5),
-            RebootReason = "power cycle",
-            ConfigurationLastChanged = DateTime.UtcNow.AddDays(-5),
-            SystemDescription = "Cisco IOS Software",
-            SystemLocation = "Test Lab",
-            SystemContact = "admin@example.com"
-        };
-    }
 
-    private DeviceHardwareInfo CreateMockHardwareInfo()
-    {
-        return new DeviceHardwareInfo
-        {
-            ProcessorType = "PowerPC405",
-            ProcessorSpeed = 266,
-            ProcessorCount = 1,
-            BoardRevision = "Rev 1.0",
-            ChassisType = "Switch",
-            PowerSupplies = new[] { "Power Supply 1 OK" }.ToList(),
-            Fans = new[] { "Fan 1 OK" }.ToList(),
-            TemperatureSensors = new[] { "Temp Sensor 1: 35C" }.ToList()
-        };
-    }
-
-    private DeviceMemoryInfo CreateMockMemoryInfo()
-    {
-        return new DeviceMemoryInfo
-        {
-            TotalMemory = 1024 * 1024 * 1024, // 1GB
-            UsedMemory = 512 * 1024 * 1024,   // 512MB
-            FreeMemory = 512 * 1024 * 1024,   // 512MB
-            MemoryUtilizationPercentage = 50.0
-        };
-    }
-
-    private DeviceStorageInfo CreateMockStorageInfo()
-    {
-        return new DeviceStorageInfo
-        {
-            TotalFlash = 32 * 1024 * 1024,   // 32MB
-            UsedFlash = 16 * 1024 * 1024,    // 16MB
-            FreeFlash = 16 * 1024 * 1024,    // 16MB
-            FlashUtilizationPercentage = 50.0,
-            FlashType = "Compact Flash"
-        };
-    }
-
-    private DeviceBootInfo CreateMockBootInfo()
-    {
-        return new DeviceBootInfo
-        {
-            BootImageName = "c2960-lanbasek9-mz.152-4.E7.bin",
-            BootImagePath = "flash:c2960-lanbasek9-mz.152-4.E7.bin",
-            ConfigurationRegister = "0x010F",
-            BootTime = TimeSpan.FromSeconds(45),
-            BootOrder = new[] { "flash:", "tftp:" }.ToList()
-        };
-    }
-
-    private void SetupMockServiceCalls(DeviceVersionData versionData, DeviceSystemInfo systemInfo,
-        DeviceHardwareInfo hardwareInfo, DeviceMemoryInfo memoryInfo,
-        DeviceStorageInfo storageInfo, DeviceBootInfo bootInfo)
-    {
-        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(_mockDevice)).Returns(versionData);
-        _mockDeviceInfoService.Setup(s => s.GetSystemInfo(_mockDevice)).Returns(systemInfo);
-        _mockDeviceInfoService.Setup(s => s.GetHardwareInfo(_mockDevice)).Returns(hardwareInfo);
-        _mockDeviceInfoService.Setup(s => s.GetMemoryInfo(_mockDevice)).Returns(memoryInfo);
-        _mockDeviceInfoService.Setup(s => s.GetStorageInfo(_mockDevice)).Returns(storageInfo);
-        _mockDeviceInfoService.Setup(s => s.GetBootInfo(_mockDevice)).Returns(bootInfo);
-    }
-
-    private void SetupMockServiceCallsForDevice(INetworkDevice device)
-    {
-        _mockDeviceInfoService.Setup(s => s.GetDeviceVersion(device)).Returns(CreateMockDeviceVersionData());
-        _mockDeviceInfoService.Setup(s => s.GetSystemInfo(device)).Returns(CreateMockSystemInfo());
-        _mockDeviceInfoService.Setup(s => s.GetHardwareInfo(device)).Returns(CreateMockHardwareInfo());
-        _mockDeviceInfoService.Setup(s => s.GetMemoryInfo(device)).Returns(CreateMockMemoryInfo());
-        _mockDeviceInfoService.Setup(s => s.GetStorageInfo(device)).Returns(CreateMockStorageInfo());
-        _mockDeviceInfoService.Setup(s => s.GetBootInfo(device)).Returns(CreateMockBootInfo());
-    }
-
-    private void VerifyAllServiceCalls()
-    {
-        _mockDeviceInfoService.Verify(s => s.GetDeviceVersion(_mockDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetSystemInfo(_mockDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetHardwareInfo(_mockDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetMemoryInfo(_mockDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetStorageInfo(_mockDevice), Times.Once);
-        _mockDeviceInfoService.Verify(s => s.GetBootInfo(_mockDevice), Times.Once);
-    }
 
     #endregion
 }
