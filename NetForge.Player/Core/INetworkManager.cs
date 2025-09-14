@@ -1,7 +1,7 @@
 // TODO: Phase 1.2 - Implement Network Management System
 // This interface defines network management functionality for device lifecycle and topology
 
-using NetForge.Player.Services;
+using NetForge.Player.Interfaces;
 using NetForge.Simulation.Topology;
 
 namespace NetForge.Player.Core;

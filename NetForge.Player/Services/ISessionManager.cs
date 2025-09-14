@@ -1,4 +1,4 @@
-using NetForge.Interfaces.Devices;
+using NetForge.Player.Interfaces;
 
 namespace NetForge.Player.Services;
 
