@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using NetForge.Player.Core;
 using NetForge.Player.Interfaces;
 using NetForge.Player.Services;
@@ -55,7 +56,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
             return CommandResult.Fail("Vendor is required. Use --vendor <cisco|juniper|arista|f5|mikrotik>");
         }
 
-        var networkManager = context.ServiceProvider.GetService<INetworkManager>();
+        var networkManager = context.ServiceProvider.GetRequiredService<INetworkManager>();
         if (networkManager == null)
         {
             return CommandResult.Fail("Network manager not available");
@@ -124,7 +125,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
             return CommandResult.Fail("Usage: create connection <source_device:interface> <dest_device:interface>");
         }
 
-        var networkManager = context.ServiceProvider.GetService<INetworkManager>();
+        var networkManager = context.ServiceProvider.GetRequiredService<INetworkManager>();
         if (networkManager == null)
         {
             return CommandResult.Fail("Network manager not available");
@@ -166,7 +167,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
         var interfaceName = args[1];
         var parameters = ParseParameters(args.Skip(2).ToArray());
         
-        var networkManager = context.ServiceProvider.GetService<INetworkManager>();
+        var networkManager = context.ServiceProvider.GetRequiredService<INetworkManager>();
         if (networkManager == null)
         {
             return CommandResult.Fail("Network manager not available");

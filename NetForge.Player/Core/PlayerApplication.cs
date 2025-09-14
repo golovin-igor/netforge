@@ -2,6 +2,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NetForge.Player.Configuration;
+using NetForge.Player.Services;
 
 namespace NetForge.Player.Core;
 
@@ -122,7 +123,7 @@ public class PlayerApplication
         _logger.LogDebug("Initializing services...");
         
         // Initialize any background services
-        var networkManager = _services.GetService<INetworkManager>();
+        var networkManager = _services.GetRequiredService<INetworkManager>();
         if (networkManager != null)
         {
             await networkManager.InitializeAsync();
@@ -131,7 +132,7 @@ public class PlayerApplication
         // Initialize terminal server if configured
         if (_configuration.Terminal?.Enabled == true)
         {
-            var terminalServer = _services.GetService<ITerminalServerManager>();
+            var terminalServer = _services.GetRequiredService<ITerminalServerManager>();
             if (terminalServer != null)
             {
                 await terminalServer.StartAsync();
@@ -150,14 +151,14 @@ public class PlayerApplication
         try
         {
             // Stop terminal server
-            var terminalServer = _services.GetService<ITerminalServerManager>();
+            var terminalServer = _services.GetRequiredService<ITerminalServerManager>();
             if (terminalServer != null)
             {
                 await terminalServer.StopAsync();
             }
             
             // Save network state
-            var networkManager = _services.GetService<INetworkManager>();
+            var networkManager = _services.GetRequiredService<INetworkManager>();
             if (networkManager != null)
             {
                 await networkManager.SaveStateAsync();

@@ -30,7 +30,22 @@ public class CommandContext
     /// Command execution timestamp
     /// </summary>
     public DateTime ExecutedAt { get; set; } = DateTime.UtcNow;
-    
+
+    /// <summary>
+    /// Command name being executed
+    /// </summary>
+    public string CommandName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Raw input command string
+    /// </summary>
+    public string RawInput { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Service provider for dependency injection
+    /// </summary>
+    public IServiceProvider? ServiceProvider { get; set; }
+
     // TODO: Add service dependencies
     // public INetworkManager NetworkManager { get; set; }
     // public ISessionManager SessionManager { get; set; }

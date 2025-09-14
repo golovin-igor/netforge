@@ -36,7 +36,13 @@ public interface ICommandProcessor
     /// <param name="command">Command name</param>
     /// <returns>Command metadata and help</returns>
     CommandMetadata GetCommandHelp(string command);
-    
+
+    /// <summary>
+    /// Get all registered commands
+    /// </summary>
+    /// <returns>Collection of all registered commands</returns>
+    IEnumerable<IPlayerCommand> GetAllCommands();
+
     // TODO: Add command registration methods
     // void RegisterCommand<T>() where T : IPlayerCommand;
     // void UnregisterCommand(string commandName);

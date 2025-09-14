@@ -14,7 +14,17 @@ public class TerminalConfig
     // - Session limits and timeouts
     // - Terminal emulation settings
     // - Logging and audit configuration
-    
+
+    /// <summary>
+    /// Whether terminal server is enabled
+    /// </summary>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    /// Primary terminal server port
+    /// </summary>
+    public int Port { get; set; } = 2323;
+
     public bool EnableTelnet { get; set; } = true;
     public int TelnetPort { get; set; } = 2323;
     public bool EnableSSH { get; set; } = true;

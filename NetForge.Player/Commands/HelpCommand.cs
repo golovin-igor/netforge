@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using NetForge.Player.Core;
 
 namespace NetForge.Player.Commands;
@@ -15,7 +16,7 @@ public class HelpCommand : IPlayerCommand
     public async Task<CommandResult> ExecuteAsync(CommandContext context)
     {
         var args = context.Arguments;
-        var commandProcessor = context.ServiceProvider.GetService<ICommandProcessor>();
+        var commandProcessor = context.ServiceProvider.GetRequiredService<ICommandProcessor>();
         
         if (commandProcessor == null)
         {

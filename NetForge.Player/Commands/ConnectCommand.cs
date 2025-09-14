@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using NetForge.Player.Core;
 using NetForge.Player.Services;
 
@@ -25,8 +26,8 @@ public class ConnectCommand : IPlayerCommand, ISupportsCompletion
         var parameters = ParseParameters(args.Skip(1).ToArray());
         var protocol = parameters.GetValueOrDefault("protocol", "console").ToLowerInvariant();
         
-        var networkManager = context.ServiceProvider.GetService<INetworkManager>();
-        var sessionManager = context.ServiceProvider.GetService<ISessionManager>();
+        var networkManager = context.ServiceProvider.GetRequiredService<INetworkManager>();
+        var sessionManager = context.ServiceProvider.GetRequiredService<ISessionManager>();
         
         if (networkManager == null)
         {

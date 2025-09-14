@@ -79,7 +79,7 @@ public class CommandProcessor : ICommandProcessor
 
             // Find and execute registered command
             var resolvedCommand = ResolveCommand(commandName);
-            if (command == null)
+            if (resolvedCommand == null)
             {
                 return CommandResult.Fail($"Unknown command: '{commandName}'. Type 'help' for available commands.");
             }
@@ -95,7 +95,7 @@ public class CommandProcessor : ICommandProcessor
 
             // Execute the command
             _logger.LogDebug("Executing command: {Command} with {ArgCount} arguments", commandName, args.Length);
-            var result = await command.ExecuteAsync(context);
+            var result = await resolvedCommand.ExecuteAsync(context);
 
             return result;
         }

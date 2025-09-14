@@ -1,5 +1,7 @@
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using NetForge.Player.Core;
+using NetForge.Player.Interfaces;
 using NetForge.Player.Services;
 
 namespace NetForge.Player.Commands;
@@ -16,7 +18,7 @@ public class ListDevicesCommand : IPlayerCommand
     public async Task<CommandResult> ExecuteAsync(CommandContext context)
     {
         var args = context.Arguments;
-        var networkManager = context.ServiceProvider.GetService<INetworkManager>();
+        var networkManager = context.ServiceProvider.GetRequiredService<INetworkManager>();
         
         if (networkManager == null)
         {
@@ -122,11 +124,11 @@ public class ListDevicesCommand : IPlayerCommand
         sb.AppendLine($"{"Source Device",-20} {"Source Interface",-15} {"Destination Device",-20} {"Dest Interface",-15} {"Status",-8}");
         sb.AppendLine(new string('-', 85));
 
-        foreach (var link in topology.Links.OrderBy(l => l.SourceDevice.Name).ThenBy(l => l.DestinationDevice.Name))
+        foreach (var link in topology.Links.OrderBy(l => l.SourceDevice).ThenBy(l => l.DestinationDevice))
         {
             var status = link.IsActive ? "Active" : "Down";
             
-            sb.AppendLine($"{link.SourceDevice.Name,-20} {link.SourceInterface.Name,-15} {link.DestinationDevice.Name,-20} {link.DestinationInterface.Name,-15} {status,-8}");
+            sb.AppendLine($"{link.SourceDevice,-20} {link.SourceInterface,-15} {link.DestinationDevice,-20} {link.DestinationInterface,-15} {status,-8}");
         }
 
         sb.AppendLine();
