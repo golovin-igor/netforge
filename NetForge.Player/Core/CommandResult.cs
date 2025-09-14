@@ -20,7 +20,61 @@ public class CommandResult
     public string Message { get; set; } = string.Empty;
     public string ErrorMessage { get; set; } = string.Empty;
     public TimeSpan ExecutionTime { get; set; }
-    
+    public bool ShouldExit { get; set; }
+
+    public bool IsError => !Success;
+    public bool IsWarning { get; set; }
+
+    /// <summary>
+    /// Create a successful result
+    /// </summary>
+    public static CommandResult Ok(string message = "")
+    {
+        return new CommandResult
+        {
+            Success = true,
+            Message = message
+        };
+    }
+
+    /// <summary>
+    /// Create an error result
+    /// </summary>
+    public static CommandResult Fail(string message)
+    {
+        return new CommandResult
+        {
+            Success = false,
+            Message = message,
+            ErrorMessage = message
+        };
+    }
+
+    /// <summary>
+    /// Create an empty result
+    /// </summary>
+    public static CommandResult Empty()
+    {
+        return new CommandResult
+        {
+            Success = true,
+            Message = ""
+        };
+    }
+
+    /// <summary>
+    /// Create an exit result
+    /// </summary>
+    public static CommandResult Exit(string message = "")
+    {
+        return new CommandResult
+        {
+            Success = true,
+            Message = message,
+            ShouldExit = true
+        };
+    }
+
     // TODO: Add additional result properties
     // public object? ReturnValue { get; set; }
     // public Dictionary<string, object> Context { get; set; } = new();
