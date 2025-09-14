@@ -18,7 +18,7 @@ public class ConnectCommand : IPlayerCommand, ISupportsCompletion
         
         if (args.Length < 1)
         {
-            return CommandResult.Error("Device name is required. Usage: " + Usage);
+            return CommandResult.Fail("Device name is required. Usage: " + Usage);
         }
 
         var deviceName = args[0];
@@ -30,12 +30,12 @@ public class ConnectCommand : IPlayerCommand, ISupportsCompletion
         
         if (networkManager == null)
         {
-            return CommandResult.Error("Network manager not available");
+            return CommandResult.Fail("Network manager not available");
         }
         
         if (sessionManager == null)
         {
-            return CommandResult.Error("Session manager not available");
+            return CommandResult.Fail("Session manager not available");
         }
 
         try
@@ -44,19 +44,19 @@ public class ConnectCommand : IPlayerCommand, ISupportsCompletion
             var device = await networkManager.GetDeviceAsync(deviceName);
             if (device == null)
             {
-                return CommandResult.Error($"Device '{deviceName}' not found. Use 'list devices' to see available devices.");
+                return CommandResult.Fail($"Device '{deviceName}' not found. Use 'list devices' to see available devices.");
             }
 
             // Check if device is running
             if (!device.IsRunning)
             {
-                return CommandResult.Error($"Device '{deviceName}' is not running. Start the device first.");
+                return CommandResult.Fail($"Device '{deviceName}' is not running. Start the device first.");
             }
 
             // Validate protocol
             if (!IsValidProtocol(protocol))
             {
-                return CommandResult.Error($"Invalid protocol: '{protocol}'. Valid protocols: console, telnet, ssh");
+                return CommandResult.Fail($"Invalid protocol: '{protocol}'. Valid protocols: console, telnet, ssh");
             }
 
             // Create or get existing session
@@ -64,7 +64,7 @@ public class ConnectCommand : IPlayerCommand, ISupportsCompletion
             
             if (session == null)
             {
-                return CommandResult.Error($"Failed to create session to device '{deviceName}' using {protocol}");
+                return CommandResult.Fail($"Failed to create session to device '{deviceName}' using {protocol}");
             }
 
             // Start the terminal session
@@ -73,11 +73,11 @@ public class ConnectCommand : IPlayerCommand, ISupportsCompletion
             
             await session.StartInteractiveSessionAsync();
             
-            return CommandResult.Success($"Disconnected from {deviceName}");
+            return CommandResult.Ok($"Disconnected from {deviceName}");
         }
         catch (Exception ex)
         {
-            return CommandResult.Error($"Failed to connect to device: {ex.Message}");
+            return CommandResult.Fail($"Failed to connect to device: {ex.Message}");
         }
     }
 

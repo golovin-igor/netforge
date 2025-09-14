@@ -27,35 +27,35 @@ public class CommandProcessor : ICommandProcessor
     /// <summary>
     /// Process a command line input
     /// </summary>
-    public async Task<CommandResult> ProcessAsync(string input)
+    public async Task<CommandResult> ProcessCommandAsync(string command)
     {
-        if (string.IsNullOrWhiteSpace(input))
+        if (string.IsNullOrWhiteSpace(command))
         {
             return CommandResult.Empty();
         }
 
         // Add to history
-        _commandHistory.Add(input);
+        _commandHistory.Add(command);
 
         // Handle history recall commands
-        if (input.StartsWith("!"))
+        if (command.StartsWith("!"))
         {
-            var historicalCommand = _commandHistory.GetByIndex(input);
+            var historicalCommand = _commandHistory.GetByIndex(command);
             if (historicalCommand != null)
             {
-                input = historicalCommand;
-                _logger.LogDebug("Executing historical command: {Command}", input);
+                command = historicalCommand;
+                _logger.LogDebug("Executing historical command: {Command}", command);
             }
             else
             {
-                return CommandResult.Error($"No command found in history matching '{input}'");
+                return CommandResult.Fail($"No command found in history matching '{command}'");
             }
         }
 
         try
         {
             // Parse the command line
-            var tokens = TokenizeInput(input);
+            var tokens = TokenizeInput(command);
             if (tokens.Length == 0)
             {
                 return CommandResult.Empty();
@@ -71,17 +71,17 @@ public class CommandProcessor : ICommandProcessor
                     return ShowHistory();
                 case "clear":
                     Console.Clear();
-                    return CommandResult.Success("Screen cleared");
+                    return CommandResult.Ok("Screen cleared");
                 case "exit":
                 case "quit":
                     return CommandResult.Exit("Goodbye!");
             }
 
             // Find and execute registered command
-            var command = ResolveCommand(commandName);
+            var resolvedCommand = ResolveCommand(commandName);
             if (command == null)
             {
-                return CommandResult.Error($"Unknown command: '{commandName}'. Type 'help' for available commands.");
+                return CommandResult.Fail($"Unknown command: '{commandName}'. Type 'help' for available commands.");
             }
 
             // Build execution context
@@ -89,7 +89,7 @@ public class CommandProcessor : ICommandProcessor
             {
                 CommandName = commandName,
                 Arguments = args,
-                RawInput = input,
+                RawInput = command,
                 ServiceProvider = _serviceProvider
             };
 
@@ -101,29 +101,29 @@ public class CommandProcessor : ICommandProcessor
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error processing command: {Input}", input);
-            return CommandResult.Error($"Command failed: {ex.Message}");
+            _logger.LogError(ex, "Error processing command: {Input}", command);
+            return CommandResult.Fail($"Command failed: {ex.Message}");
         }
     }
 
     /// <summary>
     /// Get command suggestions for tab completion
     /// </summary>
-    public List<string> GetCompletions(string partialInput)
+    public async Task<List<string>> GetCompletionsAsync(string partialCommand)
     {
-        if (string.IsNullOrWhiteSpace(partialInput))
+        if (string.IsNullOrWhiteSpace(partialCommand))
         {
             return _commandRegistry.Keys.OrderBy(k => k).ToList();
         }
 
-        var tokens = TokenizeInput(partialInput);
+        var tokens = TokenizeInput(partialCommand);
         if (tokens.Length == 0)
         {
             return _commandRegistry.Keys.OrderBy(k => k).ToList();
         }
 
         // If we're still on the first token, complete command names
-        if (tokens.Length == 1 && !partialInput.EndsWith(" "))
+        if (tokens.Length == 1 && !partialCommand.EndsWith(" "))
         {
             return _commandRegistry.Keys
                 .Where(k => k.StartsWith(tokens[0], StringComparison.OrdinalIgnoreCase))
@@ -136,10 +136,42 @@ public class CommandProcessor : ICommandProcessor
         if (command is ISupportsCompletion completableCommand)
         {
             var args = tokens.Skip(1).ToArray();
-            return completableCommand.GetCompletions(args, partialInput);
+            return completableCommand.GetCompletions(args, partialCommand);
         }
 
         return new List<string>();
+    }
+
+    /// <summary>
+    /// Get help information for a command
+    /// </summary>
+    public CommandMetadata GetCommandHelp(string commandName)
+    {
+        var command = ResolveCommand(commandName);
+        if (command == null)
+        {
+            return new CommandMetadata
+            {
+                Name = commandName,
+                Description = "Command not found",
+                Usage = $"Unknown command: {commandName}"
+            };
+        }
+
+        var metadata = new CommandMetadata
+        {
+            Name = command.Name,
+            Description = command.Description,
+            Usage = command.Usage
+        };
+
+        // Add aliases if available
+        if (command is IHasAliases aliasedCommand)
+        {
+            // TODO: Add aliases property to CommandMetadata if needed
+        }
+
+        return metadata;
     }
 
     /// <summary>
@@ -267,7 +299,7 @@ public class CommandProcessor : ICommandProcessor
         var history = _commandHistory.GetAll();
         if (!history.Any())
         {
-            return CommandResult.Success("Command history is empty");
+            return CommandResult.Ok("Command history is empty");
         }
 
         var sb = new StringBuilder();
@@ -277,7 +309,7 @@ public class CommandProcessor : ICommandProcessor
             sb.AppendLine($"  {i + 1,3}: {history[i]}");
         }
 
-        return CommandResult.Success(sb.ToString());
+        return CommandResult.Ok(sb.ToString());
     }
 }
 

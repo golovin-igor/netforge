@@ -1,5 +1,6 @@
 using System.Text;
 using NetForge.Player.Core;
+using NetForge.Player.Interfaces;
 using NetForge.Player.Services;
 
 namespace NetForge.Player.Commands;
@@ -19,7 +20,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
         
         if (args.Length < 1)
         {
-            return CommandResult.Error("Usage: " + Usage);
+            return CommandResult.Fail("Usage: " + Usage);
         }
 
         var subCommand = args[0].ToLowerInvariant();
@@ -29,7 +30,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
             "device" => await CreateDeviceAsync(context, args.Skip(1).ToArray()),
             "connection" => await CreateConnectionAsync(context, args.Skip(1).ToArray()),
             "interface" => await CreateInterfaceAsync(context, args.Skip(1).ToArray()),
-            _ => CommandResult.Error($"Unknown create type: '{args[0]}'. Use 'device', 'connection', or 'interface'.")
+            _ => CommandResult.Fail($"Unknown create type: '{args[0]}'. Use 'device', 'connection', or 'interface'.")
         };
     }
 
@@ -37,7 +38,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
     {
         if (args.Length < 1)
         {
-            return CommandResult.Error("Device name is required. Usage: create device <name> --type <type> --vendor <vendor>");
+            return CommandResult.Fail("Device name is required. Usage: create device <name> --type <type> --vendor <vendor>");
         }
 
         var deviceName = args[0];
@@ -46,18 +47,18 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
         // Validate required parameters
         if (!parameters.ContainsKey("type"))
         {
-            return CommandResult.Error("Device type is required. Use --type <router|switch|firewall|server>");
+            return CommandResult.Fail("Device type is required. Use --type <router|switch|firewall|server>");
         }
         
         if (!parameters.ContainsKey("vendor"))
         {
-            return CommandResult.Error("Vendor is required. Use --vendor <cisco|juniper|arista|f5|mikrotik>");
+            return CommandResult.Fail("Vendor is required. Use --vendor <cisco|juniper|arista|f5|mikrotik>");
         }
 
         var networkManager = context.ServiceProvider.GetService<INetworkManager>();
         if (networkManager == null)
         {
-            return CommandResult.Error("Network manager not available");
+            return CommandResult.Fail("Network manager not available");
         }
 
         try
@@ -65,7 +66,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
             // Parse device type
             if (!Enum.TryParse<DeviceType>(parameters["type"], true, out var deviceType))
             {
-                return CommandResult.Error($"Invalid device type: '{parameters["type"]}'. Valid types: Router, Switch, Firewall, Server");
+                return CommandResult.Fail($"Invalid device type: '{parameters["type"]}'. Valid types: Router, Switch, Firewall, Server");
             }
 
             var vendor = parameters["vendor"];
@@ -77,7 +78,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
             {
                 if (!int.TryParse(parameters["interfaces"], out interfaceCount) || interfaceCount < 1)
                 {
-                    return CommandResult.Error("Interface count must be a positive integer");
+                    return CommandResult.Fail("Interface count must be a positive integer");
                 }
             }
 
@@ -108,11 +109,11 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
             sb.AppendLine();
             sb.AppendLine("Use 'list devices' to see all devices or 'connect <device>' to access its console.");
 
-            return CommandResult.Success(sb.ToString());
+            return CommandResult.Ok(sb.ToString());
         }
         catch (Exception ex)
         {
-            return CommandResult.Error($"Failed to create device: {ex.Message}");
+            return CommandResult.Fail($"Failed to create device: {ex.Message}");
         }
     }
 
@@ -120,13 +121,13 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
     {
         if (args.Length < 2)
         {
-            return CommandResult.Error("Usage: create connection <source_device:interface> <dest_device:interface>");
+            return CommandResult.Fail("Usage: create connection <source_device:interface> <dest_device:interface>");
         }
 
         var networkManager = context.ServiceProvider.GetService<INetworkManager>();
         if (networkManager == null)
         {
-            return CommandResult.Error("Network manager not available");
+            return CommandResult.Fail("Network manager not available");
         }
 
         try
@@ -136,7 +137,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
             
             if (sourceParts.Length != 2 || destParts.Length != 2)
             {
-                return CommandResult.Error("Connection format: <device:interface> <device:interface>");
+                return CommandResult.Fail("Connection format: <device:interface> <device:interface>");
             }
 
             var sourceDevice = sourceParts[0];
@@ -146,11 +147,11 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
 
             await networkManager.CreateConnectionAsync(sourceDevice, sourceInterface, destDevice, destInterface);
 
-            return CommandResult.Success($"Connection created: {sourceDevice}:{sourceInterface} ↔ {destDevice}:{destInterface}");
+            return CommandResult.Ok($"Connection created: {sourceDevice}:{sourceInterface} ↔ {destDevice}:{destInterface}");
         }
         catch (Exception ex)
         {
-            return CommandResult.Error($"Failed to create connection: {ex.Message}");
+            return CommandResult.Fail($"Failed to create connection: {ex.Message}");
         }
     }
 
@@ -158,7 +159,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
     {
         if (args.Length < 2)
         {
-            return CommandResult.Error("Usage: create interface <device> <interface_name> [--type <type>]");
+            return CommandResult.Fail("Usage: create interface <device> <interface_name> [--type <type>]");
         }
 
         var deviceName = args[0];
@@ -168,7 +169,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
         var networkManager = context.ServiceProvider.GetService<INetworkManager>();
         if (networkManager == null)
         {
-            return CommandResult.Error("Network manager not available");
+            return CommandResult.Fail("Network manager not available");
         }
 
         try
@@ -176,7 +177,7 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
             var device = await networkManager.GetDeviceAsync(deviceName);
             if (device == null)
             {
-                return CommandResult.Error($"Device '{deviceName}' not found");
+                return CommandResult.Fail($"Device '{deviceName}' not found");
             }
 
             var interfaceType = InterfaceType.Ethernet; // Default
@@ -184,17 +185,17 @@ public class CreateDeviceCommand : IPlayerCommand, ISupportsCompletion
             {
                 if (!Enum.TryParse<InterfaceType>(parameters["type"], true, out interfaceType))
                 {
-                    return CommandResult.Error($"Invalid interface type: '{parameters["type"]}'.");
+                    return CommandResult.Fail($"Invalid interface type: '{parameters["type"]}'.");
                 }
             }
 
             await device.AddInterfaceAsync(interfaceName, interfaceType);
 
-            return CommandResult.Success($"Interface '{interfaceName}' added to device '{deviceName}'");
+            return CommandResult.Ok($"Interface '{interfaceName}' added to device '{deviceName}'");
         }
         catch (Exception ex)
         {
-            return CommandResult.Error($"Failed to create interface: {ex.Message}");
+            return CommandResult.Fail($"Failed to create interface: {ex.Message}");
         }
     }
 

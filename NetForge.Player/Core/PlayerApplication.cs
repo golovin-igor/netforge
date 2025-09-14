@@ -50,7 +50,7 @@ public class PlayerApplication
                     if (string.IsNullOrWhiteSpace(input))
                         continue;
                     
-                    var result = await _commandProcessor.ProcessAsync(input);
+                    var result = await _commandProcessor.ProcessCommandAsync(input);
                     
                     // Display result
                     if (!string.IsNullOrEmpty(result.Message))

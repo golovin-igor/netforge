@@ -20,7 +20,7 @@ public class ListDevicesCommand : IPlayerCommand
         
         if (networkManager == null)
         {
-            return CommandResult.Error("Network manager not available");
+            return CommandResult.Fail("Network manager not available");
         }
 
         var listType = args.Length > 0 ? args[0].ToLowerInvariant() : "devices";
@@ -30,7 +30,7 @@ public class ListDevicesCommand : IPlayerCommand
             "devices" => await ListDevicesAsync(networkManager),
             "interfaces" => await ListInterfacesAsync(networkManager),
             "connections" => await ListConnectionsAsync(networkManager),
-            _ => CommandResult.Error($"Unknown list type: '{args[0]}'. Use 'devices', 'interfaces', or 'connections'.")
+            _ => CommandResult.Fail($"Unknown list type: '{args[0]}'. Use 'devices', 'interfaces', or 'connections'.")
         };
     }
 
@@ -40,7 +40,7 @@ public class ListDevicesCommand : IPlayerCommand
         
         if (!devices.Any())
         {
-            return CommandResult.Success("No devices found. Use 'create device' to add devices.");
+            return CommandResult.Ok("No devices found. Use 'create device' to add devices.");
         }
 
         var sb = new StringBuilder();
@@ -63,7 +63,7 @@ public class ListDevicesCommand : IPlayerCommand
         sb.AppendLine();
         sb.AppendLine($"Total devices: {devices.Count()}");
 
-        return CommandResult.Success(sb.ToString());
+        return CommandResult.Ok(sb.ToString());
     }
 
     private async Task<CommandResult> ListInterfacesAsync(INetworkManager networkManager)
@@ -72,7 +72,7 @@ public class ListDevicesCommand : IPlayerCommand
         
         if (!devices.Any())
         {
-            return CommandResult.Success("No devices found.");
+            return CommandResult.Ok("No devices found.");
         }
 
         var sb = new StringBuilder();
@@ -102,7 +102,7 @@ public class ListDevicesCommand : IPlayerCommand
             sb.AppendLine();
         }
 
-        return CommandResult.Success(sb.ToString());
+        return CommandResult.Ok(sb.ToString());
     }
 
     private async Task<CommandResult> ListConnectionsAsync(INetworkManager networkManager)
@@ -111,7 +111,7 @@ public class ListDevicesCommand : IPlayerCommand
         
         if (topology?.Links == null || !topology.Links.Any())
         {
-            return CommandResult.Success("No connections found.");
+            return CommandResult.Ok("No connections found.");
         }
 
         var sb = new StringBuilder();
@@ -132,7 +132,7 @@ public class ListDevicesCommand : IPlayerCommand
         sb.AppendLine();
         sb.AppendLine($"Total connections: {topology.Links.Count()}");
 
-        return CommandResult.Success(sb.ToString());
+        return CommandResult.Ok(sb.ToString());
     }
 }
 

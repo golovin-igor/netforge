@@ -19,7 +19,7 @@ public class HelpCommand : IPlayerCommand
         
         if (commandProcessor == null)
         {
-            return CommandResult.Error("Command processor not available");
+            return CommandResult.Fail("Command processor not available");
         }
 
         if (args.Length == 0)
@@ -58,7 +58,7 @@ public class HelpCommand : IPlayerCommand
         sb.AppendLine("Use 'history' to view command history.");
         sb.AppendLine("Use 'exit' or 'quit' to leave the application.");
 
-        return CommandResult.Success(sb.ToString());
+        return CommandResult.Ok(sb.ToString());
     }
 
     private async Task<CommandResult> ShowCommandHelpAsync(ICommandProcessor commandProcessor, string commandName)
@@ -69,7 +69,7 @@ public class HelpCommand : IPlayerCommand
 
         if (command == null)
         {
-            return CommandResult.Error($"Unknown command: '{commandName}'. Use 'help' to see available commands.");
+            return CommandResult.Fail($"Unknown command: '{commandName}'. Use 'help' to see available commands.");
         }
 
         var sb = new StringBuilder();
@@ -83,6 +83,6 @@ public class HelpCommand : IPlayerCommand
             sb.AppendLine($"Aliases: {string.Join(", ", aliasedCommand.Aliases)}");
         }
 
-        return CommandResult.Success(sb.ToString());
+        return CommandResult.Ok(sb.ToString());
     }
 }
