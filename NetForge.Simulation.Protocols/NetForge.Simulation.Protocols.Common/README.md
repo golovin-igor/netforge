@@ -164,22 +164,25 @@ public class MyProtocolPlugin : ProtocolPluginBase
 }
 ```
 
-### Auto-Discovery
+### Vendor-Based Protocol Management
 
-Protocols are automatically discovered and registered based on vendor:
+Protocols are managed through the new vendor system using declarative vendor descriptors:
 
 ```csharp
-// In NetworkDevice constructor
-private void AutoRegisterProtocols()
+// Using the new vendor system
+public class CiscoVendorDescriptor : VendorDescriptorBase
 {
-    var protocolDiscovery = new ProtocolDiscoveryService();
-    var protocols = protocolDiscovery.GetProtocolsForVendor(this.Vendor);
-    
-    foreach (var protocol in protocols)
+    protected override void InitializeVendor()
     {
-        RegisterProtocol(protocol);
+        // Protocols are registered declaratively
+        AddProtocol(NetworkProtocolType.OSPF, "NetForge.Simulation.Protocols.OSPF.OspfProtocol");
+        AddProtocol(NetworkProtocolType.BGP, "NetForge.Simulation.Protocols.BGP.BgpProtocol");
     }
 }
+
+// Protocol registration is handled automatically by vendor system
+services.ConfigureVendorSystem();
+var protocolService = serviceProvider.GetRequiredService<VendorBasedProtocolService>();
 ```
 
 ## Benefits

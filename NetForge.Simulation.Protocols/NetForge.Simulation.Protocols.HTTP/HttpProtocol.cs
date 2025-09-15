@@ -1,7 +1,6 @@
 using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.DataTypes;
-using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 
 namespace NetForge.Simulation.Protocols.HTTP
@@ -323,20 +322,4 @@ namespace NetForge.Simulation.Protocols.HTTP
         }
     }
 
-    /// <summary>
-    /// HTTP protocol plugin for auto-discovery
-    /// </summary>
-    public class HttpProtocolPlugin : ProtocolPluginBase
-    {
-        public override string PluginName => "HTTP Protocol Plugin";
-        public override NetworkProtocolType ProtocolType => NetworkProtocolType.HTTP;
-        public override int Priority => 900; // Lower priority than core management protocols
-
-        public override IDeviceProtocol CreateProtocol() => new HttpProtocol();
-
-        public override IEnumerable<string> GetSupportedVendors()
-        {
-            return new[] { "Generic", "Cisco", "Juniper", "Arista" };
-        }
-    }
 }

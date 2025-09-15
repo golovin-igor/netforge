@@ -5,7 +5,6 @@ using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Common.Security;
 using NetForge.Simulation.DataTypes;
-using NetForge.Simulation.Protocols.Common.Services;
 using NetForge.Simulation.Topology.Devices;
 
 namespace NetForge.Simulation.Topology.Devices
@@ -55,35 +54,6 @@ namespace NetForge.Simulation.Topology.Devices
             // registry.RegisterHandlers(CommandManager);
         }
 
-        private new void AutoRegisterProtocols()
-        {
-            var protocolDiscovery = new ProtocolDiscoveryService();
-            var discoveredProtocols = protocolDiscovery.GetProtocolsForVendor("Cisco");
-
-            foreach (var protocol in discoveredProtocols)
-            {
-                NetworkProtocolType networkProtocolType = protocol.Type;
-                try
-                {
-                    // Convert IDeviceProtocol to INetworkProtocol if needed
-                    if (protocol != null)
-                    {
-                        RegisterProtocol(protocol);
-                    }
-                    else
-                    {
-                        AddLogEntry($"Warning: Protocol {networkProtocolType} is not compatible with INetworkProtocol interface");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    AddLogEntry($"Error registering protocol {networkProtocolType}: {ex.Message}");
-                }
-            }
-
-            var stats = protocolDiscovery.GetDiscoveryStatistics();
-            AddLogEntry($"Auto-registered protocols for Cisco: {GetRegisteredProtocols().Count} protocols loaded from {stats["TotalPlugins"]} discovered plugins");
-        }
 
         public override string GetPrompt()
         {
