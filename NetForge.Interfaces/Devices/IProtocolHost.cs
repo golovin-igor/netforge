@@ -36,4 +36,6 @@ public interface IProtocolHost
     /// </summary>
     /// <returns>Read-only collection of registered protocols.</returns>
     IReadOnlyList<IDeviceProtocol> GetRegisteredProtocols();
+
+    T? GetProtocol<T>() where T : IDeviceProtocol;
 }

@@ -1,6 +1,7 @@
 using NetForge.Simulation.Protocols.Common.Base;
 using NetForge.Simulation.DataTypes.ValueObjects;
 using System.Text;
+using NetForge.Simulation.DataTypes.Validation;
 
 namespace NetForge.Simulation.Protocols.CDP;
 

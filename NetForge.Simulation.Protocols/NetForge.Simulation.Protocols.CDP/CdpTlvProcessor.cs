@@ -2,6 +2,7 @@ using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Protocols.Common.Base;
 using System.Text;
 using System.Net;
+using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.Protocols.CDP;
 

@@ -23,17 +23,17 @@ public abstract class NetworkDevice : INetworkDevice
     private readonly DeviceProtocolHost _protocolHost;
     private readonly DeviceCommandProcessor _commandProcessor;
     private readonly DevicePhysicalConnectivityService _physicalConnectivityService;
-    
+
     // Identity properties
     public string Name { get; protected set; }
     public string Vendor { get; protected init; } = string.Empty;
     public string DeviceId { get; set; } = string.Empty;
     public string DeviceName => Name;
     public abstract string DeviceType { get; }
-    
+
     // Network context
     public INetwork? ParentNetwork { get; set; }
-    
+
     // Logging
     public event Action<string> LogEntryAdded = delegate { };
     private readonly List<string> _logEntries = [];
@@ -45,7 +45,7 @@ public abstract class NetworkDevice : INetworkDevice
     {
         Name = name;
         Vendor = vendor;
-        
+
         // Initialize services
         _interfaceManager = new DeviceInterfaceManager();
         _configurationManager = new DeviceConfigurationManager();
@@ -53,7 +53,7 @@ public abstract class NetworkDevice : INetworkDevice
         _protocolHost = new DeviceProtocolHost(this);
         _commandProcessor = new DeviceCommandProcessor(this, commandManager);
         _physicalConnectivityService = new DevicePhysicalConnectivityService(this);
-        
+
         // Initialize device
         SetHostname(name);
         InitializeDefaultInterfaces();
@@ -73,18 +73,18 @@ public abstract class NetworkDevice : INetworkDevice
 
     #region IConfigurationProvider Implementation (Delegated)
 
-    public bool IsNvramLoaded 
-    { 
-        get => _configurationManager.IsNvramLoaded; 
-        set => _configurationManager.IsNvramLoaded = value; 
+    public bool IsNvramLoaded
+    {
+        get => _configurationManager.IsNvramLoaded;
+        set => _configurationManager.IsNvramLoaded = value;
     }
-    
+
     public Dictionary<string, string> GetSystemSettings() => _configurationManager.GetSystemSettings();
     public string? GetSystemSetting(string name) => _configurationManager.GetSystemSetting(name);
     public void SetSystemSetting(string name, string value) => _configurationManager.SetSystemSetting(name, value);
     public void SetRunningConfig(string config) => _configurationManager.SetRunningConfig(config);
     public DeviceConfiguration GetRunningConfig() => _configurationManager.GetRunningConfig();
-    
+
     // Protocol configurations
     public OspfConfig? GetOspfConfiguration() => _configurationManager.GetOspfConfiguration();
     public void SetOspfConfiguration(OspfConfig config) => _configurationManager.SetOspfConfiguration(config);
@@ -123,16 +123,16 @@ public abstract class NetworkDevice : INetworkDevice
     public void AddRoute(Route route) => _connectivityService.AddRoute(route);
     public void RemoveRoute(Route route) => _connectivityService.RemoveRoute(route);
     public void ClearRoutesByProtocol(string protocol) => _connectivityService.ClearRoutesByProtocol(protocol);
-    public virtual void AddStaticRoute(string network, string mask, string nextHop, int metric) => 
+    public virtual void AddStaticRoute(string network, string mask, string nextHop, int metric) =>
         _connectivityService.AddStaticRoute(network, mask, nextHop, metric);
-    public void RemoveStaticRoute(string network, string mask) => 
+    public void RemoveStaticRoute(string network, string mask) =>
         _connectivityService.RemoveStaticRoute(network, mask);
     public void ForceUpdateConnectedRoutes() => _connectivityService.ForceUpdateConnectedRoutes();
     public Dictionary<string, string> GetArpTable() => _connectivityService.GetArpTable();
     public string GetArpTableOutput() => _connectivityService.GetArpTableOutput();
     public string ExecutePing(string destination) => _connectivityService.ExecutePing(destination);
     public string GetNetworkAddress(string ip, string mask) => _connectivityService.GetNetworkAddress(ip, mask);
-    public bool CheckIpInNetwork(string ip, string network, string mask) => 
+    public bool CheckIpInNetwork(string ip, string network, string mask) =>
         _connectivityService.CheckIpInNetwork(ip, network, mask);
     public int MaskToCidr(string mask) => _connectivityService.MaskToCidr(mask);
     public string CidrToMask(int cidr) => _connectivityService.CidrToMask(cidr);
@@ -143,7 +143,7 @@ public abstract class NetworkDevice : INetworkDevice
 
     #region ICommandProcessor Implementation (Delegated)
 
-    public virtual async Task<string> ProcessCommandAsync(string command) => 
+    public virtual async Task<string> ProcessCommandAsync(string command) =>
         await _commandProcessor.ProcessCommandAsync(command);
     public CommandHistory GetCommandHistory() => _commandProcessor.GetCommandHistory();
     public void ClearCommandHistory() => _commandProcessor.ClearCommandHistory();
@@ -168,6 +168,8 @@ public abstract class NetworkDevice : INetworkDevice
     public void SubscribeProtocolsToEvents() => _protocolHost.SubscribeProtocolsToEvents();
     public IReadOnlyList<IDeviceProtocol> GetRegisteredProtocols() => _protocolHost.GetRegisteredProtocols();
 
+    public T? GetProtocol<T> () where T : IDeviceProtocol => _protocolHost.GetProtocol<T>();
+
     #endregion
 
     #region IInterfaceManager Implementation (Delegated)
@@ -185,19 +187,19 @@ public abstract class NetworkDevice : INetworkDevice
 
     #region IPhysicalConnectivity Implementation (Delegated)
 
-    public virtual List<PhysicalConnection> GetPhysicalConnectionsForInterface(string interfaceName) => 
+    public virtual List<PhysicalConnection> GetPhysicalConnectionsForInterface(string interfaceName) =>
         _physicalConnectivityService.GetPhysicalConnectionsForInterface(interfaceName);
-    public virtual List<PhysicalConnection> GetOperationalPhysicalConnections() => 
+    public virtual List<PhysicalConnection> GetOperationalPhysicalConnections() =>
         _physicalConnectivityService.GetOperationalPhysicalConnections();
-    public virtual bool IsInterfacePhysicallyConnected(string interfaceName) => 
+    public virtual bool IsInterfacePhysicallyConnected(string interfaceName) =>
         _physicalConnectivityService.IsInterfacePhysicallyConnected(interfaceName);
-    public virtual PhysicalConnectionMetrics? GetPhysicalConnectionMetrics(string interfaceName) => 
+    public virtual PhysicalConnectionMetrics? GetPhysicalConnectionMetrics(string interfaceName) =>
         _physicalConnectivityService.GetPhysicalConnectionMetrics(interfaceName);
-    public virtual PhysicalTransmissionResult TestPhysicalConnectivity(string interfaceName, int packetSize = 1500) => 
+    public virtual PhysicalTransmissionResult TestPhysicalConnectivity(string interfaceName, int packetSize = 1500) =>
         _physicalConnectivityService.TestPhysicalConnectivity(interfaceName, packetSize);
-    public virtual (INetworkDevice device, string interfaceName)? GetConnectedDevice(string localInterfaceName) => 
+    public virtual (INetworkDevice device, string interfaceName)? GetConnectedDevice(string localInterfaceName) =>
         _physicalConnectivityService.GetConnectedDevice(localInterfaceName);
-    public virtual bool ShouldInterfaceParticipateInProtocols(string interfaceName) => 
+    public virtual bool ShouldInterfaceParticipateInProtocols(string interfaceName) =>
         _physicalConnectivityService.ShouldInterfaceParticipateInProtocols(interfaceName);
 
     #endregion
@@ -223,10 +225,10 @@ public abstract class NetworkDevice : INetworkDevice
 
     #region Protected Helper Methods
 
-    protected void AddInterface(string name, IInterfaceConfig config) => 
+    protected void AddInterface(string name, IInterfaceConfig config) =>
         _interfaceManager.AddInterface(name, config);
-    
-    protected void AddVlan(int id, VlanConfig config) => 
+
+    protected void AddVlan(int id, VlanConfig config) =>
         _interfaceManager.AddVlan(id, config);
 
     #endregion

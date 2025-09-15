@@ -7,7 +7,7 @@ namespace NetForge.Simulation.Common.Common;
 /// This interface maintains backward compatibility while following the Interface Segregation Principle.
 /// Implementations should consider using the segregated interfaces directly for better separation of concerns.
 /// </summary>
-public interface INetworkDevice : 
+public interface INetworkDevice :
     IDeviceIdentity,
     IConfigurationProvider,
     INetworkConnectivity,
@@ -18,4 +18,5 @@ public interface INetworkDevice :
     IDeviceLogging,
     INetworkContext
 {
+
 }
