@@ -19,6 +19,9 @@ public class IsisProtocol : BaseProtocol
     private DateTime _lastLspRefresh = DateTime.MinValue;
     private DateTime _lastSpfCalculation = DateTime.MinValue;
 
+    private SpfAlgorithm? _spfAlgorithm;
+    private LinkStateDatabase? _lsdb;
+
     protected override BaseProtocolState CreateInitialState()
     {
         return new IsisState();
@@ -33,6 +36,15 @@ public class IsisProtocol : BaseProtocol
             isisState.SystemId = isisConfig.SystemId;
             isisState.AreaId = isisConfig.AreaId;
             isisState.Level = isisConfig.Level;
+
+            // Initialize SPF algorithm and LSDB
+            _spfAlgorithm = new SpfAlgorithm(_device, isisState);
+            _lsdb = new LinkStateDatabase(_device, isisState);
+
+            // Subscribe to LSDB events
+            _lsdb.LspAdded += OnLspChanged;
+            _lsdb.LspUpdated += OnLspChanged;
+            _lsdb.LspRemoved += OnLspChanged;
 
             LogProtocolEvent("IS-IS protocol initialized and enabled");
             _state.IsActive = true;
@@ -86,22 +98,38 @@ public class IsisProtocol : BaseProtocol
     {
         var isisState = (IsisState)_state;
 
+        if (_spfAlgorithm == null)
+        {
+            LogProtocolEvent("IS-IS: SPF algorithm not initialized");
+            return;
+        }
+
         LogProtocolEvent("IS-IS: Running SPF calculation due to topology change...");
 
         // Clear existing IS-IS routes
         device.ClearRoutesByProtocol("ISIS");
         isisState.CalculatedRoutes.Clear();
 
-        // Run Dijkstra's SPF algorithm on LSP database
-        await RunSpfCalculation(device, isisState);
+        // Run enhanced SPF algorithm
+        var spfResult = await _spfAlgorithm.RunSpf();
 
-        // Install calculated routes
-        await InstallRoutes(device, isisState);
+        if (spfResult.IsSuccessful)
+        {
+            isisState.CalculatedRoutes = spfResult.Routes;
+
+            // Install calculated routes
+            await InstallRoutes(device, isisState);
+
+            LogProtocolEvent($"IS-IS: SPF calculation completed in {spfResult.CalculationTime.TotalMilliseconds:F1}ms, {spfResult.Routes.Count} routes calculated");
+        }
+        else
+        {
+            LogProtocolEvent($"IS-IS: SPF calculation failed - {spfResult.ErrorMessage}");
+        }
 
         isisState.TopologyChanged = false;
         isisState.LspChanged = false;
         _lastSpfCalculation = DateTime.Now;
-        LogProtocolEvent("IS-IS: SPF calculation completed");
     }
 
     private async Task SendHelloPdus(INetworkDevice device, IsisConfig config, IsisState state)
@@ -181,11 +209,13 @@ public class IsisProtocol : BaseProtocol
 
     private async Task RefreshLsps(INetworkDevice device, IsisConfig config, IsisState state)
     {
-        // Generate LSP for this system
-        var myLsp = GenerateSystemLsp(device, config, state);
-        state.AddOrUpdateLsp(myLsp);
+        if (_lsdb == null) return;
 
-        LogProtocolEvent($"IS-IS: Refreshed LSP {myLsp.LspId} (seq: {myLsp.SequenceNumber})");
+        // Generate LSP for this system using enhanced LSDB
+        var myLsp = _lsdb.GenerateMyLsp(config);
+        var result = _lsdb.AddOrUpdateLsp(myLsp, false);
+
+        LogProtocolEvent($"IS-IS: Refreshed LSP {myLsp.LspId} (seq: {myLsp.SequenceNumber}) - {result.Result}");
     }
 
     private IsisLsp GenerateSystemLsp(INetworkDevice device, IsisConfig config, IsisState state)
@@ -489,6 +519,26 @@ public class IsisProtocol : BaseProtocol
         // In the new architecture, protocols are discovered through the device's protocol list
         // For now, return null - neighbor discovery will be handled differently
         return null;
+    }
+
+    private void OnLspChanged(object? sender, LspEventArgs e)
+    {
+        LogProtocolEvent($"IS-IS: LSP {e.Lsp.LspId} changed, triggering SPF recalculation");
+        _state.MarkStateChanged();
+    }
+
+    public override void Dispose()
+    {
+        if (_lsdb != null)
+        {
+            _lsdb.LspAdded -= OnLspChanged;
+            _lsdb.LspUpdated -= OnLspChanged;
+            _lsdb.LspRemoved -= OnLspChanged;
+            _lsdb = null;
+        }
+
+        _spfAlgorithm = null;
+        base.Dispose();
     }
 
     public override IEnumerable<string> GetSupportedVendors()
