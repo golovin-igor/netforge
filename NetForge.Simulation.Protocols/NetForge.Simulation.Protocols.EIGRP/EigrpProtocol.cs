@@ -15,6 +15,8 @@ namespace NetForge.Simulation.Protocols.EIGRP
     /// </summary>
     public class EigrpProtocol : BaseProtocol, IDeviceProtocol
     {
+        private DualAlgorithm? _dualAlgorithm;
+
         public override NetworkProtocolType Type => NetworkProtocolType.EIGRP;
         public override string Name => "Enhanced Interior Gateway Routing Protocol";
 
@@ -31,6 +33,10 @@ namespace NetForge.Simulation.Protocols.EIGRP
             eigrpState.RouterId = eigrpConfig.RouterId ?? _device.Name;
             eigrpState.AsNumber = eigrpConfig.AsNumber;
             eigrpState.SequenceNumber = 1;
+
+            // Initialize DUAL algorithm
+            _dualAlgorithm = new DualAlgorithm(_device, eigrpState);
+            _dualAlgorithm.RouteComputationCompleted += OnRouteComputationCompleted;
 
             _device.AddLogEntry($"EIGRP: AS {eigrpState.AsNumber} initialized with Router ID {eigrpState.RouterId}");
         }
@@ -349,10 +355,16 @@ namespace NetForge.Simulation.Protocols.EIGRP
 
         private async Task RunDualAlgorithm(INetworkDevice device, EigrpState state)
         {
-            // DUAL (Diffusing Update Algorithm) implementation
+            // Use the proper DUAL algorithm implementation
             device.AddLogEntry("EIGRP: Running DUAL algorithm...");
 
-            // Step 1: Find successors for each destination
+            if (_dualAlgorithm == null)
+            {
+                device.AddLogEntry("EIGRP: DUAL algorithm not initialized");
+                return;
+            }
+
+            // Process all topology changes through DUAL
             var destinations = state.TopologyTable.Values
                 .GroupBy(t => $"{t.Network}_{t.Mask}")
                 .ToDictionary(g => g.Key, g => g.ToList());
@@ -362,51 +374,34 @@ namespace NetForge.Simulation.Protocols.EIGRP
                 var destinationKey = kvp.Key;
                 var topologyEntries = kvp.Value;
 
-                // Find the best route (successor)
-                var successor = topologyEntries
-                    .Where(t => t.RouteState == EigrpRouteState.Passive)
-                    .OrderBy(t => t.FeasibleDistance)
-                    .FirstOrDefault();
-
-                if (successor != null)
+                // For each topology entry, create an update and process through DUAL
+                foreach (var entry in topologyEntries)
                 {
-                    // Mark as successor
-                    foreach (var entry in topologyEntries)
+                    var update = new EigrpUpdate
                     {
-                        entry.IsSuccessor = (entry == successor);
-                    }
-
-                    // Find feasible successors (backup routes)
-                    var feasibleSuccessors = topologyEntries
-                        .Where(t => t != successor &&
-                               t.ReportedDistance < successor.FeasibleDistance &&
-                               t.RouteState == EigrpRouteState.Passive)
-                        .OrderBy(t => t.FeasibleDistance)
-                        .ToList();
-
-                    foreach (var fs in feasibleSuccessors)
-                    {
-                        fs.IsFeasibleSuccessor = true;
-                    }
-
-                    // Create route entry for routing table
-                    var route = new EigrpRoute
-                    {
-                        Network = successor.Network,
-                        Mask = successor.Mask,
-                        NextHop = successor.NextHop,
-                        Interface = successor.Interface,
-                        Metric = successor.FeasibleDistance,
-                        CompositeMetric = successor.Metric,
-                        AdminDistance = successor.ViaNeighbor == "Connected" ? 90 : 90, // Internal EIGRP
-                        RouteSource = "EIGRP",
-                        IsInternal = true
+                        Network = entry.Network,
+                        Mask = entry.Mask,
+                        SourceRouter = entry.ViaNeighbor,
+                        NextHopRouter = entry.NextHop,
+                        IncomingInterface = entry.Interface,
+                        ReportedDistance = entry.ReportedDistance,
+                        CompositeMetric = entry.FeasibleDistance,
+                        Metrics = entry.Metric,
+                        UpdateTime = entry.LastUpdate
                     };
 
-                    state.CalculatedRoutes.Add(route);
-                    device.AddLogEntry($"EIGRP: Selected successor for {successor.Network}/{successor.Mask} via {successor.NextHop}");
+                    try
+                    {
+                        await _dualAlgorithm.ProcessUpdate(update);
+                    }
+                    catch (Exception ex)
+                    {
+                        device.AddLogEntry($"EIGRP: Error processing update for {destinationKey}: {ex.Message}");
+                    }
                 }
             }
+
+            device.AddLogEntry("EIGRP: DUAL algorithm processing completed");
         }
 
         private async Task InstallEigrpRoutes(INetworkDevice device, EigrpState state)
@@ -634,6 +629,34 @@ namespace NetForge.Simulation.Protocols.EIGRP
                 _state.IsActive = eigrpConfig.IsEnabled;
                 _state.MarkStateChanged();
             }
+        }
+
+        private void OnRouteComputationCompleted(object? sender, RouteComputationEventArgs e)
+        {
+            var eigrpState = (EigrpState)_state;
+
+            if (e.SuccessorFound)
+            {
+                _device.AddLogEntry($"EIGRP: Route computation completed for {e.DestinationKey} in {e.ComputationTime.TotalMilliseconds:F1}ms");
+            }
+            else
+            {
+                _device.AddLogEntry($"EIGRP: No successor found for {e.DestinationKey}, route removed");
+            }
+
+            // Update metrics
+            eigrpState.MarkStateChanged();
+        }
+
+        public override void Dispose()
+        {
+            if (_dualAlgorithm != null)
+            {
+                _dualAlgorithm.RouteComputationCompleted -= OnRouteComputationCompleted;
+                _dualAlgorithm = null;
+            }
+
+            base.Dispose();
         }
 
         public override IEnumerable<string> GetSupportedVendors()
