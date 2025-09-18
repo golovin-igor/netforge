@@ -46,6 +46,7 @@ NetForge is a comprehensive C# .NET 9.0 framework for simulating enterprise netw
 
 ### Modern Architecture
 - **Declarative Vendor System**: Vendor capabilities defined in descriptor classes
+- **Auto-Registration**: Protocols and CLI handlers automatically registered based on vendor capabilities
 - **Dependency Injection**: Full IoC container support with service registration
 - **Interface Segregation**: Clean separation of concerns with 9 focused interfaces
 - **Value Objects**: Type-safe network primitives (IpAddress, MacAddress, NetworkPrefix)
@@ -82,6 +83,7 @@ NetForge/
 
 ### ✅ Completed Components
 - **Vendor System**: Declarative vendor architecture with descriptors for Cisco, Juniper, Arista
+- **Auto-Registration System**: Protocols and CLI handlers automatically registered based on vendor capabilities
 - **CLI Handlers**: All 15 vendor implementations complete with command processing
 - **Protocols**: All 17 protocols implemented with full state management
 - **Interface Segregation**: INetworkDevice split into 9 focused interfaces
@@ -147,12 +149,12 @@ var ciscoRouter = new NetworkDevice
     DeviceType = "Router"
 };
 
-// Initialize with vendor system
+// Initialize with vendor system (auto-registers protocols and CLI handlers)
 var serviceProvider = new ServiceCollection()
     .ConfigureVendorSystem()
     .BuildServiceProvider();
 
-VendorSystemStartup.InitializeDeviceWithVendorSystem(ciscoRouter, serviceProvider);
+await VendorSystemStartup.InitializeDeviceWithVendorSystemAsync(ciscoRouter, serviceProvider);
 
 // Add interfaces
 var gi0 = new InterfaceConfig
