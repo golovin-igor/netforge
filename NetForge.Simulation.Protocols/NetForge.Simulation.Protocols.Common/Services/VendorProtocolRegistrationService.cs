@@ -1,6 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using NetForge.Interfaces;
+using NetForge.Interfaces.Devices;
 using NetForge.Interfaces.Vendors;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Protocols.Common.Services;
@@ -9,7 +11,7 @@ public interface IVendorProtocolRegistrationService
 {
     Task RegisterProtocolsAsync(INetworkDevice device);
     Task RegisterProtocolAsync(INetworkDevice device, NetworkProtocolType protocolType);
-    IEnumerable<NetworkProtocolType> GetSupportedProtocols(DeviceVendor vendor, string model);
+    IEnumerable<NetworkProtocolType> GetSupportedProtocols(string vendor);
 }
 
 public class VendorProtocolRegistrationService : IVendorProtocolRegistrationService
@@ -37,9 +39,8 @@ public class VendorProtocolRegistrationService : IVendorProtocolRegistrationServ
             ?? throw new InvalidOperationException("Device must implement IProtocolHost");
 
         var vendor = deviceIdentity.Vendor;
-        var model = deviceIdentity.Model;
 
-        var supportedProtocols = GetSupportedProtocols(vendor, model);
+        var supportedProtocols = GetSupportedProtocols(vendor);
 
         foreach (var protocolType in supportedProtocols)
         {
@@ -52,7 +53,11 @@ public class VendorProtocolRegistrationService : IVendorProtocolRegistrationServ
         var protocolHost = device as IProtocolHost
             ?? throw new InvalidOperationException("Device must implement IProtocolHost");
 
-        if (protocolHost.HasProtocol(protocolType))
+        // Check if protocol is already registered by checking if we can get it
+        var existingProtocol = protocolHost.GetRegisteredProtocols()
+            .FirstOrDefault(p => p.ProtocolType == protocolType);
+
+        if (existingProtocol != null)
         {
             return; // Protocol already registered
         }
@@ -60,16 +65,19 @@ public class VendorProtocolRegistrationService : IVendorProtocolRegistrationServ
         var deviceIdentity = device as IDeviceIdentity
             ?? throw new InvalidOperationException("Device must implement IDeviceIdentity");
 
-        var protocol = _protocolService.GetProtocol(protocolType, deviceIdentity.Vendor.ToString());
-        if (protocol != null)
+        var protocol = _protocolService.GetProtocol(protocolType, deviceIdentity.Vendor);
+        if (protocol is IDeviceProtocol deviceProtocol)
         {
-            await protocolHost.AddProtocolAsync(protocol);
+            protocolHost.RegisterProtocol(deviceProtocol);
         }
+
+        // Make this async even though RegisterProtocol is sync to maintain interface consistency
+        await Task.CompletedTask;
     }
 
-    public IEnumerable<NetworkProtocolType> GetSupportedProtocols(DeviceVendor vendor, string model)
+    public IEnumerable<NetworkProtocolType> GetSupportedProtocols(string vendor)
     {
-        var vendorDescriptor = _vendorRegistry.GetDescriptor(vendor);
+        var vendorDescriptor = _vendorRegistry.GetVendor(vendor);
         if (vendorDescriptor == null)
         {
             return Enumerable.Empty<NetworkProtocolType>();
