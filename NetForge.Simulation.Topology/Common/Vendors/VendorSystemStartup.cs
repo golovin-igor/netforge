@@ -6,6 +6,7 @@ using NetForge.Simulation.Vendors.Cisco;
 using NetForge.Simulation.Vendors.Juniper;
 using NetForge.Simulation.Vendors.Arista;
 using NetForge.Simulation.Common.Common;
+using NetForge.Interfaces;
 
 namespace NetForge.Simulation.Common.Vendors
 {
@@ -45,13 +46,23 @@ namespace NetForge.Simulation.Common.Vendors
         /// <summary>
         /// Initialize device with vendor-based protocols and handlers
         /// </summary>
-        public static void InitializeDeviceWithVendorSystem(object device, IServiceProvider serviceProvider)
+        public static async Task InitializeDeviceWithVendorSystemAsync(object device, IServiceProvider serviceProvider)
         {
             try
             {
-                // Initialize protocols using vendor service
-                var vendorService = serviceProvider.GetService<IVendorService>();
-                vendorService?.InitializeDeviceProtocols(device);
+                if (device is INetworkDevice networkDevice)
+                {
+                    // Register protocols based on vendor capabilities
+                    var protocolRegistrationService = serviceProvider.GetService<IVendorProtocolRegistrationService>();
+                    if (protocolRegistrationService != null)
+                    {
+                        await protocolRegistrationService.RegisterProtocolsAsync(networkDevice);
+                    }
+
+                    // Initialize protocols using vendor service
+                    var vendorService = serviceProvider.GetService<IVendorService>();
+                    vendorService?.InitializeDeviceProtocols(device);
+                }
 
                 // Note: Handler initialization happens automatically when VendorAwareCliHandlerManager is created
             }
@@ -60,6 +71,14 @@ namespace NetForge.Simulation.Common.Vendors
                 Console.WriteLine($"Warning: Failed to initialize device with vendor system: {ex.Message}");
                 // Fall back to default behavior
             }
+        }
+
+        /// <summary>
+        /// Initialize device with vendor-based protocols and handlers (synchronous overload for backward compatibility)
+        /// </summary>
+        public static void InitializeDeviceWithVendorSystem(object device, IServiceProvider serviceProvider)
+        {
+            InitializeDeviceWithVendorSystemAsync(device, serviceProvider).GetAwaiter().GetResult();
         }
 
         /// <summary>

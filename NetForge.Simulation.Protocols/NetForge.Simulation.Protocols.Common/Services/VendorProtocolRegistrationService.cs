@@ -1,9 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using NetForge.Interfaces;
-using NetForge.Simulation.Common.Vendor;
-using NetForge.Simulation.Protocols;
+using NetForge.Interfaces.Vendors;
+using NetForge.Simulation.DataTypes;
 
-namespace NetForge.Simulation.Common.Services;
+namespace NetForge.Simulation.Protocols.Common.Services;
 
 public interface IVendorProtocolRegistrationService
 {
@@ -16,12 +16,12 @@ public class VendorProtocolRegistrationService : IVendorProtocolRegistrationServ
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IVendorRegistry _vendorRegistry;
-    private readonly IVendorBasedProtocolService _protocolService;
+    private readonly VendorBasedProtocolService _protocolService;
 
     public VendorProtocolRegistrationService(
         IServiceProvider serviceProvider,
         IVendorRegistry vendorRegistry,
-        IVendorBasedProtocolService protocolService)
+        VendorBasedProtocolService protocolService)
     {
         _serviceProvider = serviceProvider;
         _vendorRegistry = vendorRegistry;
@@ -57,7 +57,10 @@ public class VendorProtocolRegistrationService : IVendorProtocolRegistrationServ
             return; // Protocol already registered
         }
 
-        var protocol = await _protocolService.CreateProtocolAsync(protocolType);
+        var deviceIdentity = device as IDeviceIdentity
+            ?? throw new InvalidOperationException("Device must implement IDeviceIdentity");
+
+        var protocol = _protocolService.GetProtocol(protocolType, deviceIdentity.Vendor.ToString());
         if (protocol != null)
         {
             await protocolHost.AddProtocolAsync(protocol);
@@ -72,7 +75,6 @@ public class VendorProtocolRegistrationService : IVendorProtocolRegistrationServ
             return Enumerable.Empty<NetworkProtocolType>();
         }
 
-        var modelDescriptor = vendorDescriptor.Models.FirstOrDefault(m => m.Name == model);
-        return modelDescriptor?.SupportedProtocols ?? Enumerable.Empty<NetworkProtocolType>();
+        return vendorDescriptor.SupportedProtocols.Select(p => p.ProtocolType);
     }
 }
