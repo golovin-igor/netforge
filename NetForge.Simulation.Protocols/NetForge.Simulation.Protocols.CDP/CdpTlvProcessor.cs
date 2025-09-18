@@ -3,17 +3,19 @@ using NetForge.Simulation.Protocols.Common.Base;
 using System.Text;
 using System.Net;
 using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.Common.Configuration;
 
 namespace NetForge.Simulation.Protocols.CDP;
 
 public class CdpTlvProcessor
 {
-    public List<CdpTlv> BuildTlvs(INetworkDevice device, string interfaceName)
+    public List<CdpTlv> BuildTlvs(INetworkDevice device, string interfaceName, CdpConfig cdpConfig = null)
     {
         var tlvs = new List<CdpTlv>();
 
         // Device ID TLV (Type 1) - Required
-        tlvs.Add(BuildDeviceIdTlv(device.Name));
+        var deviceId = cdpConfig?.DeviceId ?? device.Name;
+        tlvs.Add(BuildDeviceIdTlv(deviceId));
 
         // Address TLV (Type 2) - Management addresses
         var addresses = GetManagementAddresses(device);
@@ -26,16 +28,16 @@ public class CdpTlvProcessor
         tlvs.Add(BuildPortIdTlv(interfaceName));
 
         // Capabilities TLV (Type 4) - Required
-        tlvs.Add(BuildCapabilitiesTlv(device));
+        tlvs.Add(BuildCapabilitiesTlv(device, cdpConfig));
 
         // Version TLV (Type 5) - Software version
-        tlvs.Add(BuildVersionTlv(device));
+        tlvs.Add(BuildVersionTlv(cdpConfig));
 
         // Platform TLV (Type 6) - Hardware platform
-        tlvs.Add(BuildPlatformTlv(device));
+        tlvs.Add(BuildPlatformTlv(device, cdpConfig));
 
         // VTP Management Domain TLV (Type 9) - For switches
-        if (device.HasCapability("Switch"))
+        if (cdpConfig?.Capabilities?.Contains("Switch") == true || device.DeviceType == "Switch")
         {
             tlvs.Add(BuildVtpManagementDomainTlv(""));
         }
@@ -161,16 +163,17 @@ public class CdpTlvProcessor
         };
     }
 
-    private CdpTlv BuildCapabilitiesTlv(INetworkDevice device)
+    private CdpTlv BuildCapabilitiesTlv(INetworkDevice device, CdpConfig cdpConfig = null)
     {
         uint capabilities = 0;
 
-        if (device.HasCapability("Router")) capabilities |= 0x01;
-        if (device.HasCapability("Bridge")) capabilities |= 0x02;
-        if (device.HasCapability("Switch")) capabilities |= 0x08;
-        if (device.HasCapability("Host")) capabilities |= 0x10;
-        if (device.HasCapability("IGMP")) capabilities |= 0x20;
-        if (device.HasCapability("Repeater")) capabilities |= 0x40;
+        var caps = cdpConfig?.Capabilities ?? new List<string>();
+        if (caps.Contains("Router") || device.DeviceType == "Router") capabilities |= 0x01;
+        if (caps.Contains("Bridge")) capabilities |= 0x02;
+        if (caps.Contains("Switch") || device.DeviceType == "Switch") capabilities |= 0x08;
+        if (caps.Contains("Host")) capabilities |= 0x10;
+        if (caps.Contains("IGMP")) capabilities |= 0x20;
+        if (caps.Contains("Repeater")) capabilities |= 0x40;
 
         return new CdpTlv
         {
@@ -180,9 +183,9 @@ public class CdpTlvProcessor
         };
     }
 
-    private CdpTlv BuildVersionTlv(INetworkDevice device)
+    private CdpTlv BuildVersionTlv(CdpConfig cdpConfig = null)
     {
-        var version = GetDeviceVersion(device);
+        var version = cdpConfig?.Version ?? "Unknown";
         return new CdpTlv
         {
             Type = CdpTlvType.Version,
@@ -191,9 +194,9 @@ public class CdpTlvProcessor
         };
     }
 
-    private CdpTlv BuildPlatformTlv(INetworkDevice device)
+    private CdpTlv BuildPlatformTlv(INetworkDevice device, CdpConfig cdpConfig = null)
     {
-        var platform = $"{device.Vendor} {device.Model}";
+        var platform = cdpConfig?.Platform ?? $"{device.Vendor} {device.DeviceType}";
         return new CdpTlv
         {
             Type = CdpTlvType.Platform,
@@ -224,7 +227,7 @@ public class CdpTlvProcessor
         };
     }
 
-    private CdpTlv BuildDuplexTlv(INetworkInterface? interfaceConfig)
+    private CdpTlv BuildDuplexTlv(IInterfaceConfig? interfaceConfig)
     {
         byte duplex = 0x01; // Default to full duplex
         if (interfaceConfig != null)
@@ -241,7 +244,7 @@ public class CdpTlvProcessor
         };
     }
 
-    private CdpTlv BuildMtuTlv(INetworkInterface? interfaceConfig)
+    private CdpTlv BuildMtuTlv(IInterfaceConfig? interfaceConfig)
     {
         uint mtu = 1500; // Default MTU
         if (interfaceConfig != null)
@@ -349,12 +352,8 @@ public class CdpTlvProcessor
     {
         var addresses = new List<string>();
 
-        // Get management IP
-        var managementIp = device.GetManagementIpAddress();
-        if (!string.IsNullOrEmpty(managementIp) && managementIp != "0.0.0.0")
-        {
-            addresses.Add(managementIp);
-        }
+        // Get management IP from first interface with IP
+        // Since GetManagementIpAddress doesn't exist, we'll use interface IPs
 
         // Get interface IPs
         foreach (var interfaceName in device.GetAllInterfaces().Keys)
@@ -369,13 +368,13 @@ public class CdpTlvProcessor
         return addresses.Distinct().ToList();
     }
 
-    private string GetDeviceVersion(INetworkDevice device)
+    private string GetDeviceVersion(CdpConfig cdpConfig)
     {
         // Get device software version
-        return device.Version ?? "Unknown";
+        return cdpConfig?.Version ?? "Unknown";
     }
 
-    private bool IsInterfaceTrunking(INetworkInterface interfaceConfig)
+    private bool IsInterfaceTrunking(IInterfaceConfig interfaceConfig)
     {
         // Simplified check - in real implementation would check switchport mode
         return false;
