@@ -55,7 +55,7 @@ public class VendorProtocolRegistrationService : IVendorProtocolRegistrationServ
 
         // Check if protocol is already registered by checking if we can get it
         var existingProtocol = protocolHost.GetRegisteredProtocols()
-            .FirstOrDefault(p => p.ProtocolType == protocolType);
+            .FirstOrDefault(p => p.Type == protocolType);
 
         if (existingProtocol != null)
         {

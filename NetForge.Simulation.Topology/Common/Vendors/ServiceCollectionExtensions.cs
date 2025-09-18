@@ -21,7 +21,7 @@ namespace NetForge.Simulation.Common.Vendors
             services.AddSingleton<IVendorService, VendorService>();
 
             // Register protocol-related services
-            services.AddSingleton<IVendorBasedProtocolService, VendorBasedProtocolService>();
+            services.AddSingleton<VendorBasedProtocolService>();
             services.AddSingleton<IVendorProtocolRegistrationService, VendorProtocolRegistrationService>();
 
             // Register the initialization callback
