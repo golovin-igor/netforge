@@ -1,4 +1,4 @@
-using NetForge.Interfaces.CLI;
+using NetForge.Interfaces.Cli;
 using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.CLI.Base;
 
