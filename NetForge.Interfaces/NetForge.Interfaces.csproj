@@ -8,6 +8,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\NetForge.Simulation.DataTypes\NetForge.Simulation.DataTypes.csproj" />
+      <ProjectReference Include="..\NetForge.Simulation.Topology\NetForge.Simulation.Topology.csproj" />
+      <ProjectReference Include="..\NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.Common\NetForge.Simulation.Protocols.Common.csproj" />
     </ItemGroup>
 
 </Project>

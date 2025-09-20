@@ -1,4 +1,5 @@
 using NetForge.Simulation.Common.Common;
+using NetForge.Interfaces.Devices;
 
 namespace NetForge.Interfaces.Devices;
 

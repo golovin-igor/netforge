@@ -1,5 +1,6 @@
 using NetForge.Simulation.DataTypes.Cli;
 using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.DataTypes.NetworkPrimitives;
 
 namespace NetForge.Interfaces.Devices;
 

@@ -1,6 +1,8 @@
 using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.DataTypes;
+using NetForge.Interfaces.Devices;
+using NetForge.Interfaces.Events;
 
 namespace NetForge.Interfaces.Devices
 {

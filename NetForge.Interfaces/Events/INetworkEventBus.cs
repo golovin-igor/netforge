@@ -1,4 +1,6 @@
-﻿namespace NetForge.Simulation.Common.Events;
+using NetForge.Simulation.DataTypes.Events;
+
+namespace NetForge.Simulation.Common.Events;
 
 public interface INetworkEventBus
 {
