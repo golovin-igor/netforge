@@ -1,6 +1,6 @@
 using System.Reflection;
 using NetForge.Interfaces.Handlers;
-using NetForge.Simulation.Common.Common;
+using NetForge.Interfaces.Devices;
 
 namespace NetForge.Simulation.Common.CLI.Services
 {
