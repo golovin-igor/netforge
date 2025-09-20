@@ -1,4 +1,5 @@
 using NetForge.Interfaces.CLI;
+using NetForge.Interfaces.Devices;
 
 namespace NetForge.Simulation.Common.CLI.Base
 {
