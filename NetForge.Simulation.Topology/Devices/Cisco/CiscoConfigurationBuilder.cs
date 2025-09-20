@@ -12,10 +12,10 @@ namespace NetForge.Simulation.Topology.Devices.Cisco
     /// </summary>
     public class CiscoConfigurationBuilder
     {
-        private readonly INetworkDevice _device;
+        private readonly CiscoDevice _device;
         private readonly IConfigurationProvider _configProvider;
 
-        public CiscoConfigurationBuilder(INetworkDevice device, IConfigurationProvider configProvider)
+        public CiscoConfigurationBuilder(CiscoDevice device, IConfigurationProvider configProvider)
         {
             _device = device ?? throw new ArgumentNullException(nameof(device));
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
@@ -32,7 +32,7 @@ namespace NetForge.Simulation.Topology.Devices.Cisco
             config.AppendLine("!");
             config.AppendLine($"! Last configuration change at {DateTime.Now:HH:mm:ss zzz ddd MMM dd yyyy}");
             config.AppendLine("!");
-            config.AppendLine($"version {_device.GetSoftwareVersion() ?? "15.7"}");
+            config.AppendLine($"version {_device.GetVersion() ?? "15.7"}");
             config.AppendLine("service timestamps debug datetime msec");
             config.AppendLine("service timestamps log datetime msec");
             config.AppendLine("no service password-encryption");
@@ -177,9 +177,12 @@ namespace NetForge.Simulation.Topology.Devices.Cisco
                     config.AppendLine($" router-id {ospfConfig.RouterId}");
                 }
 
-                foreach (var network in ospfConfig.Networks ?? Enumerable.Empty<NetworkConfig>())
+                foreach (var network in ospfConfig.Networks ?? Enumerable.Empty<string>())
                 {
-                    config.AppendLine($" network {network.Network} {network.Wildcard} area {network.Area}");
+                    // Get area for this network from NetworkAreas dictionary
+                    var area = ospfConfig.NetworkAreas.TryGetValue(network, out var areaValue) ? areaValue : 0;
+                    // Convert network to network/wildcard format (simplified)
+                    config.AppendLine($" network {network} 0.0.0.0 area {area}");
                 }
 
                 config.AppendLine("!");
