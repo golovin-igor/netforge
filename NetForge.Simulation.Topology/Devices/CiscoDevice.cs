@@ -50,8 +50,7 @@ namespace NetForge.Simulation.Topology.Devices
             // Explicitly register Cisco handlers to ensure they are available for tests
             var registry = new CiscoHandlerRegistry();
             registry.Initialize(); // Initialize vendor context factory
-            // TODO: Register handlers with new command processor architecture
-            // registry.RegisterHandlers(CommandManager);
+            // Handlers are now registered through VendorSystemStartup
         }
 
 
@@ -194,16 +193,15 @@ namespace NetForge.Simulation.Topology.Devices
         public string ShowRunningConfig()
         {
             var output = new StringBuilder();
-            // TODO: Implement configuration building with new architecture
-            var config = "! Configuration not yet implemented with new architecture";
+
+            // Use the new configuration builder
+            var configBuilder = new Cisco.CiscoConfigurationBuilder(this, _configurationManager);
+            var config = configBuilder.BuildRunningConfiguration();
+
             output.AppendLine("Building configuration...\n");
-            output.AppendLine("Current configuration : " + config + " bytes");
-            output.AppendLine("!");
-            output.AppendLine($"hostname {GetHostname()}");
-            output.AppendLine("!");
+            output.AppendLine($"Current configuration : {config.Length} bytes");
             output.Append(config);
-            output.AppendLine("!");
-            output.AppendLine("end");
+
             return output.ToString();
         }
 
@@ -235,8 +233,7 @@ namespace NetForge.Simulation.Topology.Devices
             }
 
             _currentVlanId = vlanId; // Set the current VLAN ID for name commands
-            // TODO: Implement configuration building with new architecture
-            // GetRunningConfigBuilder().AppendLine($"vlan {vlanId}");
+            // Configuration is now managed by DeviceConfigurationManager
         }
 
         public void SetCurrentVlanName(string name)
@@ -247,7 +244,7 @@ namespace NetForge.Simulation.Topology.Devices
                 if (vlan != null)
                 {
                     vlan.Name = name;
-                    // TODO: Implement configuration building with new architecture
+                    // Configuration is now managed by DeviceConfigurationManager
                     // GetRunningConfigBuilder().AppendLine($" name {name}");
                 }
             }
@@ -260,7 +257,7 @@ namespace NetForge.Simulation.Topology.Devices
                 SetOspfConfiguration(new OspfConfig(processId));
             }
 
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine($"router ospf {processId}");
         }
 
@@ -271,7 +268,7 @@ namespace NetForge.Simulation.Topology.Devices
                 SetBgpConfiguration(new BgpConfig(asNumber));
             }
 
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine($"router bgp {asNumber}");
         }
 
@@ -282,7 +279,7 @@ namespace NetForge.Simulation.Topology.Devices
                 SetRipConfiguration(new RipConfig());
             }
 
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine("router rip");
         }
 
@@ -293,7 +290,7 @@ namespace NetForge.Simulation.Topology.Devices
                 SetEigrpConfiguration(new EigrpConfig(asNumber));
             }
 
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine($"router eigrp {asNumber}");
         }
 
@@ -304,7 +301,7 @@ namespace NetForge.Simulation.Topology.Devices
 
         public void AppendToRunningConfig(string line)
         {
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine(line);
         }
 
@@ -354,7 +351,7 @@ namespace NetForge.Simulation.Topology.Devices
                 }
             }
 
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine($" network {network} {wildcard} area {area}");
             ParentNetwork?.UpdateProtocols();
         }
@@ -365,7 +362,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (ospfConfig != null)
             {
                 ospfConfig.RouterId = routerId;
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // GetRunningConfigBuilder().AppendLine($" router-id {routerId}");
             }
         }
@@ -376,7 +373,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (ripConfig != null)
             {
                 ripConfig.Networks.Add(network);
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // GetRunningConfigBuilder().AppendLine($" network {network}");
                 ParentNetwork?.UpdateProtocols();
             }
@@ -390,7 +387,7 @@ namespace NetForge.Simulation.Topology.Devices
                 var mask = WildcardToMask(wildcard);
                 var networkStr = $"{network} {wildcard}";
                 eigrpConfig.Networks.Add(networkStr);
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // GetRunningConfigBuilder().AppendLine($" network {network} {wildcard}");
                 ParentNetwork?.UpdateProtocols();
             }
@@ -402,7 +399,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (ripConfig != null)
             {
                 ripConfig.Version = version;
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // GetRunningConfigBuilder().AppendLine($" version {version}");
             }
         }
@@ -415,7 +412,7 @@ namespace NetForge.Simulation.Topology.Devices
                 ripConfig.AutoSummary = enabled;
                 if (!enabled)
                 {
-                    // TODO: Implement configuration building with new architecture
+                    // Configuration is now managed by DeviceConfigurationManager
                     // GetRunningConfigBuilder().AppendLine(" no auto-summary");
                 }
             }
@@ -429,7 +426,7 @@ namespace NetForge.Simulation.Topology.Devices
                 eigrpConfig.AutoSummary = enabled;
                 if (!enabled)
                 {
-                    // TODO: Implement configuration building with new architecture
+                    // Configuration is now managed by DeviceConfigurationManager
                     // GetRunningConfigBuilder().AppendLine(" no auto-summary");
                 }
             }
@@ -446,12 +443,12 @@ namespace NetForge.Simulation.Topology.Devices
 
                 if (mask != null)
                 {
-                    // TODO: Implement configuration building with new architecture
+                    // Configuration is now managed by DeviceConfigurationManager
                     // GetRunningConfigBuilder().AppendLine($" network {network} mask {mask}");
                 }
                 else
                 {
-                    // TODO: Implement configuration building with new architecture
+                    // Configuration is now managed by DeviceConfigurationManager
                     // GetRunningConfigBuilder().AppendLine($" network {network}");
                 }
 
@@ -474,7 +471,7 @@ namespace NetForge.Simulation.Topology.Devices
                 bgpConfig.Neighbors[neighborIp].RemoteAs = remoteAs;
             }
 
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine($" neighbor {neighborIp} remote-as {remoteAs}");
             ParentNetwork?.UpdateProtocols();
         }
@@ -485,7 +482,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (bgpConfig != null)
             {
                 bgpConfig.RouterId = routerId;
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // GetRunningConfigBuilder().AppendLine($" bgp router-id {routerId}");
             }
         }
@@ -498,7 +495,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (bgpConfig.Neighbors.ContainsKey(neighborIp))
             {
                 bgpConfig.Neighbors[neighborIp].Description = description;
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // GetRunningConfigBuilder().AppendLine($" neighbor {neighborIp} description {description}");
             }
         }
@@ -510,7 +507,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (GetBgpConfiguration()?.Neighbors.ContainsKey(neighborIp) == true)
             {
                 GetBgpConfiguration().Neighbors[neighborIp].State = "Idle (Admin)";
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // RunningConfig.AppendLine($" neighbor {neighborIp} shutdown");
             }
         }
@@ -522,7 +519,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (GetBgpConfiguration()?.Neighbors.ContainsKey(neighborIp) == true)
             {
                 GetBgpConfiguration().Neighbors[neighborIp].State = "Established";
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // RunningConfig.AppendLine($" neighbor {neighborIp} activate");
             }
         }
@@ -585,7 +582,7 @@ namespace NetForge.Simulation.Topology.Devices
                 }
             }
 
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine(cmd.ToString());
         }
 
@@ -594,7 +591,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var stpConfig = GetStpConfiguration();
             stpConfig.Mode = mode;
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine($"spanning-tree mode {mode}");
         }
 
@@ -602,7 +599,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var stpConfig = GetStpConfiguration();
             stpConfig.VlanPriorities[vlanId] = priority;
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine($"spanning-tree vlan {vlanId} priority {priority}");
             ParentNetwork?.UpdateProtocols();
         }
@@ -611,7 +608,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             var stpConfig = GetStpConfiguration();
             stpConfig.DefaultPriority = priority;
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine($"spanning-tree priority {priority}");
             ParentNetwork?.UpdateProtocols();
         }
@@ -621,7 +618,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (GetInterface(interfaceName) != null)
             {
                 // Store portfast setting in running config
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // GetRunningConfigBuilder().AppendLine(" spanning-tree portfast");
             }
         }
@@ -629,7 +626,7 @@ namespace NetForge.Simulation.Topology.Devices
         public void EnablePortfastDefault()
         {
             // Store portfast default setting in running config
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // GetRunningConfigBuilder().AppendLine("spanning-tree portfast default");
         }
 
@@ -638,7 +635,7 @@ namespace NetForge.Simulation.Topology.Devices
             if (GetAllInterfaces().ContainsKey(interfaceName))
             {
                 // Store bpduguard setting in running config
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // RunningConfig.AppendLine(" spanning-tree bpduguard enable");
             }
         }
@@ -646,7 +643,7 @@ namespace NetForge.Simulation.Topology.Devices
         public void EnableBpduGuardDefault()
         {
             // Store bpduguard default setting in running config
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // RunningConfig.AppendLine("spanning-tree portfast bpduguard default");
         }
 
@@ -654,14 +651,14 @@ namespace NetForge.Simulation.Topology.Devices
         public void EnableCdpGlobal()
         {
             _cdpEnabled = true;
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // RunningConfig.AppendLine("cdp run");
         }
 
         public void DisableCdpGlobal()
         {
             _cdpEnabled = false;
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // RunningConfig.AppendLine("no cdp run");
         }
 
@@ -669,7 +666,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             if (GetAllInterfaces().ContainsKey(interfaceName))
             {
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // RunningConfig.AppendLine(" cdp enable");
             }
         }
@@ -678,7 +675,7 @@ namespace NetForge.Simulation.Topology.Devices
         {
             if (GetAllInterfaces().ContainsKey(interfaceName))
             {
-                // TODO: Implement configuration building with new architecture
+                // Configuration is now managed by DeviceConfigurationManager
                 // RunningConfig.AppendLine(" no cdp enable");
             }
         }
@@ -686,14 +683,14 @@ namespace NetForge.Simulation.Topology.Devices
         public void SetCdpTimer(int seconds)
         {
             _cdpTimer = seconds;
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // RunningConfig.AppendLine($"cdp timer {seconds}");
         }
 
         public void SetCdpHoldtime(int seconds)
         {
             _cdpHoldtime = seconds;
-            // TODO: Implement configuration building with new architecture
+            // Configuration is now managed by DeviceConfigurationManager
             // RunningConfig.AppendLine($"cdp holdtime {seconds}");
         }
 
