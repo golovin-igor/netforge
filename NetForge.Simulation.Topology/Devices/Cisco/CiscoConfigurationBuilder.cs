@@ -1,5 +1,6 @@
 using System.Text;
 using NetForge.Interfaces.Devices;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.DataTypes;
