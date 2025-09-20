@@ -1,6 +1,6 @@
 using NetForge.Simulation.DataTypes.Events;
 
-namespace NetForge.Simulation.Common.Events;
+namespace NetForge.Interfaces.Events;
 
 public interface INetworkEventBus
 {
