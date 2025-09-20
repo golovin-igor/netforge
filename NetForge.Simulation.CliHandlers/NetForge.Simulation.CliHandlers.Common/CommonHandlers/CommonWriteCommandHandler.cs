@@ -1,4 +1,4 @@
-using NetForge.Interfaces.CLI;
+using NetForge.Interfaces.Cli;
 using NetForge.Simulation.Common.CLI.Base;
 
 namespace NetForge.Simulation.Common.CLI.CommonHandlers
