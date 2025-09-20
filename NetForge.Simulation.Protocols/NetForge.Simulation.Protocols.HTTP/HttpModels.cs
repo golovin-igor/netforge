@@ -60,61 +60,6 @@ namespace NetForge.Simulation.Protocols.HTTP
         }
     }
 
-    /// <summary>
-    /// HTTP configuration
-    /// </summary>
-    public class HttpConfig
-    {
-        /// <summary>
-        /// Whether HTTP server is enabled
-        /// </summary>
-        public bool IsEnabled { get; set; } = false;
-
-        /// <summary>
-        /// Port number for HTTP server
-        /// </summary>
-        public int Port { get; set; } = 80;
-
-        /// <summary>
-        /// Whether HTTPS is enabled
-        /// </summary>
-        public bool HttpsEnabled { get; set; } = false;
-
-        /// <summary>
-        /// HTTPS port number
-        /// </summary>
-        public int HttpsPort { get; set; } = 443;
-
-        /// <summary>
-        /// Maximum number of concurrent connections
-        /// </summary>
-        public int MaxConnections { get; set; } = 10;
-
-        /// <summary>
-        /// Authentication required for access
-        /// </summary>
-        public bool AuthenticationRequired { get; set; } = true;
-
-        /// <summary>
-        /// Default username for authentication
-        /// </summary>
-        public string Username { get; set; } = "admin";
-
-        /// <summary>
-        /// Default password for authentication
-        /// </summary>
-        public string Password { get; set; } = "admin";
-
-        /// <summary>
-        /// Session timeout in minutes
-        /// </summary>
-        public int SessionTimeoutMinutes { get; set; } = 30;
-
-        /// <summary>
-        /// Document root directory for static files
-        /// </summary>
-        public string DocumentRoot { get; set; } = "/www";
-    }
 
     /// <summary>
     /// HTTP request representation

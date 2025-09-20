@@ -1,3 +1,7 @@
+using NetForge.Interfaces.Devices;
+using NetForge.Interfaces.Events;
+using NetForge.Simulation.Common.Protocols;
+
 namespace NetForge.Simulation.Protocols.HTTP
 {
     /// <summary>
