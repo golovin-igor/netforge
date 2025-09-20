@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Common.Events
+namespace NetForge.Simulation.DataTypes.Events
 {
     public abstract class NetworkEventArgs : EventArgs
     {

@@ -1,7 +1,7 @@
 
-using NetForge.Simulation.Common.Common;
+using NetForge.Simulation.DataTypes.NetworkPrimitives;
 
-namespace NetForge.Simulation.Common.Events
+namespace NetForge.Simulation.DataTypes.Events
 {
     /// <summary>
     /// Event arguments for physical connection state changes

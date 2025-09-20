@@ -1,4 +1,4 @@
-using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.DataTypes.Events;
 
 namespace NetForge.Simulation.DataTypes.NetworkPrimitives
 {

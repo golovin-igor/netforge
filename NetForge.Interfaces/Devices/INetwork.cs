@@ -18,7 +18,7 @@ public interface INetwork
     /// Add a physical connection between two device interfaces
     /// </summary>
     Task AddPhysicalConnectionAsync(string device1Name, string interface1, string device2Name, string interface2,
-        PhysicalConnectionType connectionType = PhysicalConnectionType.Ethernet);
+        object connectionType = null);
 
     /// <summary>
     /// Add a link between two device interfaces (legacy method - creates physical connection)
@@ -38,17 +38,17 @@ public interface INetwork
     /// <summary>
     /// Get a physical connection by device and interface names
     /// </summary>
-    PhysicalConnection? GetPhysicalConnection(string device1Name, string interface1, string device2Name, string interface2);
+    object? GetPhysicalConnection(string device1Name, string interface1, string device2Name, string interface2);
 
     /// <summary>
     /// Get all physical connections for a specific device interface
     /// </summary>
-    List<PhysicalConnection> GetPhysicalConnectionsForInterface(string deviceName, string interfaceName);
+    List<object> GetPhysicalConnectionsForInterface(string deviceName, string interfaceName);
 
     /// <summary>
     /// Get all physical connections in the network
     /// </summary>
-    IEnumerable<PhysicalConnection> GetAllPhysicalConnections();
+    IEnumerable<object> GetAllPhysicalConnections();
 
     /// <summary>
     /// Simulate cable failure on a specific connection
