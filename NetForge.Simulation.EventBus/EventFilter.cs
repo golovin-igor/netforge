@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.DataTypes.Events;
 
 namespace NetForge.Simulation.EventBus
 {
