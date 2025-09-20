@@ -1,4 +1,4 @@
-using NetForge.Simulation.Common.Common;
+using NetForge.Interfaces.Events;
 using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
