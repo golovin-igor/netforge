@@ -1,4 +1,6 @@
-namespace NetForge.Simulation.Common.Events
+using NetForge.Simulation.DataTypes.Events;
+
+namespace NetForge.Simulation.DataTypes.Events
 {
     public class InterfaceStateChangedEventArgs(string deviceName, string interfaceName, bool isUp, bool isShutdown)
         : NetworkEventArgs

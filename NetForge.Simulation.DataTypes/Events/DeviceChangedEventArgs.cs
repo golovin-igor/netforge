@@ -1,6 +1,7 @@
 
+using NetForge.Simulation.DataTypes.Events;
 
-namespace NetForge.Simulation.Common.Events
+namespace NetForge.Simulation.DataTypes.Events
 {
     public enum DeviceChangeType
     {
