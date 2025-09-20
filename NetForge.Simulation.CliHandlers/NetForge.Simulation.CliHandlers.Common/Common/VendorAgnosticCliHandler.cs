@@ -1,3 +1,4 @@
+using NetForge.Interfaces.CLI;
 using NetForge.Interfaces.Cli;
 using NetForge.Interfaces.Vendors;
 using NetForge.Interfaces.Devices;

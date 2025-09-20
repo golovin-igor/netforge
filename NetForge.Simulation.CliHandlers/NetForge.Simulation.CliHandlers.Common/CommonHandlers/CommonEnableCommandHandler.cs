@@ -1,6 +1,7 @@
 using NetForge.Interfaces.Cli;
 using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.CLI.Base;
+using NetForge.Simulation.DataTypes.NetworkPrimitives;
 
 namespace NetForge.Simulation.Common.CLI.CommonHandlers
 {

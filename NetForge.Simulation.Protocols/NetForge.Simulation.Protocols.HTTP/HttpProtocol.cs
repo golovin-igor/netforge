@@ -1,5 +1,6 @@
 using NetForge.Interfaces.Devices;
 using NetForge.Interfaces.Events;
+using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 using NetForge.Simulation.HttpHandlers.Common.Services;
 using NetForge.Simulation.HttpHandlers.Common;
