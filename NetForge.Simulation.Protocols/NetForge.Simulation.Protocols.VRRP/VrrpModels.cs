@@ -75,6 +75,11 @@ namespace NetForge.Simulation.Protocols.VRRP
         public VrrpVersion Version { get; set; } = VrrpVersion.Version3;
         public bool IsOwner { get; set; } = false; // True if this router owns the virtual IP
         public VrrpTimers Timers { get; set; } = new();
+        public string RouterId { get; set; } = ""; // Router ID for this group
+        public bool VirtualAddressesInstalled { get; set; } = false; // Track if virtual addresses are installed
+        public string LastTransitionReason { get; set; } = ""; // Reason for last state transition
+        public DateTime LastStateChange { get; set; } = DateTime.MinValue;
+        public int StateChanges { get; set; } = 0;
     }
 
     public enum VrrpProtocolState
