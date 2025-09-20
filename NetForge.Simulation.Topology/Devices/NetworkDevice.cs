@@ -164,6 +164,7 @@ public abstract class NetworkDevice : INetworkDevice
 
     public IProtocolService GetProtocolService() => _protocolHost.GetProtocolService();
     public void RegisterProtocol(IDeviceProtocol protocol) => _protocolHost.RegisterProtocol(protocol);
+    public void AddProtocol(IDeviceProtocol protocol) => _protocolHost.RegisterProtocol(protocol); // Alias for static registration compatibility
     public async Task UpdateAllProtocolStates() => await _protocolHost.UpdateAllProtocolStates();
     public void SubscribeProtocolsToEvents() => _protocolHost.SubscribeProtocolsToEvents();
     public IReadOnlyList<IDeviceProtocol> GetRegisteredProtocols() => _protocolHost.GetRegisteredProtocols();

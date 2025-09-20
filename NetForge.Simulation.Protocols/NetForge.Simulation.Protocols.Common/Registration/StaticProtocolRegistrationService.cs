@@ -1,7 +1,8 @@
+using Microsoft.Extensions.DependencyInjection;
 using NetForge.Interfaces.Devices;
-using NetForge.Interfaces.Protocol;
-using NetForge.Simulation.Common.Vendors;
+using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.DataTypes;
+using NetForge.Simulation.Protocols.Common.Services;
 
 namespace NetForge.Simulation.Protocols.Common.Registration
 {
@@ -11,46 +12,37 @@ namespace NetForge.Simulation.Protocols.Common.Registration
     /// </summary>
     public class StaticProtocolRegistrationService : IProtocolRegistrationService
     {
-        /// <summary>
-        /// Static protocol factory mapping - no reflection needed
-        /// </summary>
-        private static readonly Dictionary<NetworkProtocolType, Func<IDeviceProtocol>> _protocolFactories =
-            InitializeProtocolFactories();
+        private readonly IServiceProvider _serviceProvider;
 
-        private static Dictionary<NetworkProtocolType, Func<IDeviceProtocol>> InitializeProtocolFactories()
+        public StaticProtocolRegistrationService(IServiceProvider serviceProvider)
         {
-            return new Dictionary<NetworkProtocolType, Func<IDeviceProtocol>>
-            {
-                [NetworkProtocolType.ARP] = StaticProtocolFactory.CreateArp,
-                [NetworkProtocolType.BGP] = StaticProtocolFactory.CreateBgp,
-                [NetworkProtocolType.CDP] = StaticProtocolFactory.CreateCdp,
-                [NetworkProtocolType.EIGRP] = StaticProtocolFactory.CreateEigrp,
-                [NetworkProtocolType.HSRP] = StaticProtocolFactory.CreateHsrp,
-                [NetworkProtocolType.HTTP] = StaticProtocolFactory.CreateHttp,
-                [NetworkProtocolType.IGRP] = StaticProtocolFactory.CreateIgrp,
-                [NetworkProtocolType.ISIS] = StaticProtocolFactory.CreateIsis,
-                [NetworkProtocolType.LLDP] = StaticProtocolFactory.CreateLldp,
-                [NetworkProtocolType.OSPF] = StaticProtocolFactory.CreateOspf,
-                [NetworkProtocolType.RIP] = StaticProtocolFactory.CreateRip,
-                [NetworkProtocolType.SNMP] = StaticProtocolFactory.CreateSnmp,
-                [NetworkProtocolType.SSH] = StaticProtocolFactory.CreateSsh,
-                [NetworkProtocolType.STP] = StaticProtocolFactory.CreateStp,
-                [NetworkProtocolType.Telnet] = StaticProtocolFactory.CreateTelnet,
-                [NetworkProtocolType.VRRP] = StaticProtocolFactory.CreateVrrp
-            };
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
         /// Register all protocols for a device based on vendor configuration
-        /// No reflection - all static type-safe calls
+        /// Uses existing vendor service but with improved type safety
         /// </summary>
         public async Task RegisterProtocolsAsync(INetworkDevice device)
         {
             if (device == null)
                 return;
 
-            // Use static vendor configuration to register protocols
-            StaticVendorProtocolConfiguration.RegisterProtocolsForDevice(device, CreateProtocol);
+            // Use the existing VendorBasedProtocolService to get protocols for the device vendor
+            var protocolService = _serviceProvider.GetService<VendorBasedProtocolService>();
+            if (protocolService != null)
+            {
+                var vendor = device.Vendor ?? "Generic";
+                var protocols = protocolService.GetProtocolsForVendor(vendor);
+
+                foreach (var protocol in protocols)
+                {
+                    if (protocol is IDeviceProtocol deviceProtocol)
+                    {
+                        device.RegisterProtocol(deviceProtocol);
+                    }
+                }
+            }
 
             await Task.CompletedTask;
         }
@@ -63,16 +55,16 @@ namespace NetForge.Simulation.Protocols.Common.Registration
             if (device == null)
                 return false;
 
-            // Check if vendor supports this protocol
-            if (!device.VendorSupportsProtocol(protocolType))
-                return false;
-
-            // Create and register the protocol
-            var protocol = CreateProtocol(protocolType);
-            if (protocol != null)
+            var protocolService = _serviceProvider.GetService<VendorBasedProtocolService>();
+            if (protocolService != null)
             {
-                device.AddProtocol(protocol);
-                return true;
+                var vendor = device.Vendor ?? "Generic";
+                var protocol = protocolService.GetProtocol(protocolType, vendor);
+                if (protocol is IDeviceProtocol deviceProtocol)
+                {
+                    device.RegisterProtocol(deviceProtocol);
+                    return true;
+                }
             }
 
             return false;
@@ -83,7 +75,18 @@ namespace NetForge.Simulation.Protocols.Common.Registration
         /// </summary>
         public NetworkProtocolType[] GetSupportedProtocols(string vendor)
         {
-            return StaticVendorProtocolConfiguration.GetVendorProtocols(vendor);
+            var protocolService = _serviceProvider.GetService<VendorBasedProtocolService>();
+            if (protocolService != null)
+            {
+                var protocols = protocolService.GetProtocolsForVendor(vendor);
+                var protocolTypes = protocols
+                    .Where(p => p is IDeviceProtocol)
+                    .Cast<IDeviceProtocol>()
+                    .Select(p => p.Type)
+                    .ToArray();
+                return protocolTypes;
+            }
+            return Array.Empty<NetworkProtocolType>();
         }
 
         /// <summary>
@@ -91,20 +94,10 @@ namespace NetForge.Simulation.Protocols.Common.Registration
         /// </summary>
         public bool IsProtocolSupported(string vendor, NetworkProtocolType protocolType)
         {
-            return StaticVendorProtocolConfiguration.VendorSupportsProtocol(vendor, protocolType);
+            var protocolService = _serviceProvider.GetService<VendorBasedProtocolService>();
+            return protocolService?.IsProtocolAvailable(protocolType, vendor) ?? false;
         }
 
-        /// <summary>
-        /// Create a protocol instance without reflection
-        /// </summary>
-        private static IDeviceProtocol? CreateProtocol(NetworkProtocolType protocolType)
-        {
-            if (_protocolFactories.TryGetValue(protocolType, out var factory))
-            {
-                return factory();
-            }
-            return null;
-        }
     }
 
     /// <summary>
@@ -116,48 +109,5 @@ namespace NetForge.Simulation.Protocols.Common.Registration
         Task<bool> RegisterProtocolAsync(INetworkDevice device, NetworkProtocolType protocolType);
         NetworkProtocolType[] GetSupportedProtocols(string vendor);
         bool IsProtocolSupported(string vendor, NetworkProtocolType protocolType);
-    }
-
-    /// <summary>
-    /// Static device initialization using compile-time type safety
-    /// </summary>
-    public static class StaticDeviceInitializer
-    {
-        /// <summary>
-        /// Initialize a device with vendor-specific protocols
-        /// Replaces the old reflection-based system
-        /// </summary>
-        public static async Task InitializeDeviceAsync(INetworkDevice device)
-        {
-            if (device == null)
-                return;
-
-            var registrationService = new StaticProtocolRegistrationService();
-            await registrationService.RegisterProtocolsAsync(device);
-
-            // Log the registration results
-            var vendor = device.Vendor ?? "Generic";
-            var supportedProtocols = registrationService.GetSupportedProtocols(vendor);
-
-            device.AddLogEntry($"Device {device.Name} initialized with {supportedProtocols.Length} supported protocols for vendor {vendor}");
-        }
-
-        /// <summary>
-        /// Register protocols on multiple devices
-        /// </summary>
-        public static async Task InitializeDevicesAsync(IEnumerable<INetworkDevice> devices)
-        {
-            var tasks = devices.Select(InitializeDeviceAsync);
-            await Task.WhenAll(tasks);
-        }
-
-        /// <summary>
-        /// Add a specific protocol to a device if supported
-        /// </summary>
-        public static async Task<bool> AddProtocolToDeviceAsync(INetworkDevice device, NetworkProtocolType protocolType)
-        {
-            var registrationService = new StaticProtocolRegistrationService();
-            return await registrationService.RegisterProtocolAsync(device, protocolType);
-        }
     }
 }

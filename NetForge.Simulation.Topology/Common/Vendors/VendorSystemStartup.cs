@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NetForge.Interfaces.Vendors;
 using NetForge.Simulation.Common.CLI.Services;
+using NetForge.Simulation.Protocols.Common.Registration;
 using NetForge.Simulation.Protocols.Common.Services;
 using NetForge.Simulation.Vendors.Cisco;
 using NetForge.Simulation.Vendors.Juniper;
@@ -32,7 +33,8 @@ namespace NetForge.Simulation.Common.Vendors
             services.AddSingleton<VendorBasedProtocolService>();
             services.AddSingleton<VendorBasedHandlerService>();
 
-            // Vendor-based protocol management is now handled directly by VendorBasedProtocolService
+            // Register static protocol registration service (replaces old reflection-based system)
+            services.AddSingleton<IProtocolRegistrationService, StaticProtocolRegistrationService>();
 
             // Register factory for creating vendor-aware handler managers
             services.AddTransient<Func<INetworkDevice, VendorAwareHandlerManager>>(provider =>
@@ -44,7 +46,7 @@ namespace NetForge.Simulation.Common.Vendors
         }
 
         /// <summary>
-        /// Initialize device with vendor-based protocols and handlers
+        /// Initialize device with vendor-based protocols and handlers using static registration
         /// </summary>
         public static async Task InitializeDeviceWithVendorSystemAsync(object device, IServiceProvider serviceProvider)
         {
@@ -52,11 +54,16 @@ namespace NetForge.Simulation.Common.Vendors
             {
                 if (device is INetworkDevice networkDevice)
                 {
-                    // Register protocols based on vendor capabilities
-                    var protocolRegistrationService = serviceProvider.GetService<IVendorProtocolRegistrationService>();
+                    // Register protocols using static registration service (no reflection)
+                    var protocolRegistrationService = serviceProvider.GetService<IProtocolRegistrationService>();
                     if (protocolRegistrationService != null)
                     {
                         await protocolRegistrationService.RegisterProtocolsAsync(networkDevice);
+                    }
+                    else
+                    {
+                        // Fallback - no fallback implementation needed for static registration
+                        Console.WriteLine("Warning: No protocol registration service available");
                     }
 
                     // Initialize protocols using vendor service
