@@ -1,4 +1,4 @@
-﻿using NetForge.Simulation.Common.Events;
+using NetForge.Interfaces.Events;
 using NetForge.Simulation.DataTypes.NetworkPrimitives;
 using NetForge.Interfaces.Devices;
 

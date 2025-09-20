@@ -1,4 +1,5 @@
 using NetForge.Simulation.DataTypes.Events;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Interfaces.Events;
 
