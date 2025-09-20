@@ -39,18 +39,21 @@ namespace NetForge.Simulation.HttpHandlers.Common.Services
             var cacheKey = $"{context.Device?.Vendor}:{path}";
             byte[] content;
 
-            lock (_cacheLock)
+            // Check cache first (without lock for reading)
+            if (_cache.TryGetValue(cacheKey, out var cachedContent) &&
+                _cacheExpiration.TryGetValue(cacheKey, out var expiration) &&
+                expiration > DateTime.UtcNow)
             {
-                if (_cache.TryGetValue(cacheKey, out var cachedContent) &&
-                    _cacheExpiration.TryGetValue(cacheKey, out var expiration) &&
-                    expiration > DateTime.UtcNow)
+                content = cachedContent;
+            }
+            else
+            {
+                // Read file outside of lock to avoid async/await in lock
+                content = await ReadFileAsync(physicalPath);
+
+                // Cache the content with lock
+                lock (_cacheLock)
                 {
-                    content = cachedContent;
-                }
-                else
-                {
-                    // Read file outside of lock to avoid async/await in lock
-                    content = await ReadFileAsync(physicalPath);
                     CacheContent(cacheKey, content, TimeSpan.FromMinutes(10));
                 }
             }

@@ -63,7 +63,7 @@ namespace NetForge.Simulation.HttpHandlers.Common
             }
 
             // Initialize handler if needed
-            if (context.GetItem<bool>("HandlerInitialized") != true)
+            if (context.GetItem<object>("HandlerInitialized") as bool? != true)
             {
                 await handler.Initialize(_device);
                 context.SetItem("HandlerInitialized", (object)true);
