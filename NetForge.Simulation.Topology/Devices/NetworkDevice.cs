@@ -17,7 +17,7 @@ namespace NetForge.Simulation.Topology.Devices;
 public abstract class NetworkDevice : INetworkDevice
 {
     // Core services
-    private readonly DeviceConfigurationManager _configurationManager;
+    protected readonly DeviceConfigurationManager _configurationManager;
     private readonly DeviceConnectivityService _connectivityService;
     private readonly DeviceInterfaceManager _interfaceManager;
     private readonly DeviceProtocolHost _protocolHost;
@@ -68,6 +68,8 @@ public abstract class NetworkDevice : INetworkDevice
         _configurationManager.SetSystemSetting("hostname", hostname);
         Name = hostname;
     }
+
+    public virtual string? GetVersion() => _configurationManager.GetSystemSetting("version");
 
     #endregion
 

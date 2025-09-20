@@ -143,14 +143,10 @@ namespace NetForge.Simulation.Topology.Devices.Cisco
                     // VLAN configuration for switch interfaces
                     if (iface.VlanId > 0)
                     {
-                        if (iface.IsTrunk)
+                        if (iface.SwitchportMode == "trunk")
                         {
                             config.AppendLine(" switchport mode trunk");
-                            if (iface.AllowedVlans?.Any() == true)
-                            {
-                                var vlanList = string.Join(",", iface.AllowedVlans);
-                                config.AppendLine($" switchport trunk allowed vlan {vlanList}");
-                            }
+                            // Note: AllowedVlans not available in current interface - would need separate VLAN management
                         }
                         else
                         {
@@ -199,7 +195,7 @@ namespace NetForge.Simulation.Topology.Devices.Cisco
                     config.AppendLine($" bgp router-id {bgpConfig.RouterId}");
                 }
 
-                foreach (var neighbor in bgpConfig.Neighbors ?? new Dictionary<string, NeighborConfig>())
+                foreach (var neighbor in bgpConfig.Neighbors ?? new Dictionary<string, BgpNeighbor>()
                 {
                     config.AppendLine($" neighbor {neighbor.Key} remote-as {neighbor.Value.RemoteAs}");
 
@@ -208,7 +204,7 @@ namespace NetForge.Simulation.Topology.Devices.Cisco
                         config.AppendLine($" neighbor {neighbor.Key} description {neighbor.Value.Description}");
                     }
 
-                    if (neighbor.Value.State == "Idle (Admin)")
+                    if (!neighbor.Value.IsEnabled)
                     {
                         config.AppendLine($" neighbor {neighbor.Key} shutdown");
                     }
