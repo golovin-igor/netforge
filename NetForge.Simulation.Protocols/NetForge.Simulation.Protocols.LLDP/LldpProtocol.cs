@@ -1,8 +1,8 @@
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
+using NetForge.Interfaces.Devices;
 
 namespace NetForge.Simulation.Protocols.LLDP
 {
