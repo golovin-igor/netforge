@@ -2,8 +2,8 @@ using NetForge.Interfaces.Devices;
 using NetForge.Interfaces.Events;
 using NetForge.Simulation.Protocols.Common.Base;
 using NetForge.Simulation.HttpHandlers.Common.Services;
-using NetForge.Simulation.HttpHandlers.Common.Models;
-using NetForge.Simulation.DataTypes.Protocols;
+using NetForge.Simulation.HttpHandlers.Common;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Protocols.HTTP
 {
