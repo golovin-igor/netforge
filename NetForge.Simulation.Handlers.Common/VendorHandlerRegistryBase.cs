@@ -1,7 +1,7 @@
-﻿using NetForge.Interfaces.CLI;
+using NetForge.Interfaces.CLI;
 using NetForge.Interfaces.Handlers;
 using NetForge.Interfaces.Vendors;
-using NetForge.Simulation.Common.Common;
+using NetForge.Interfaces.Devices;
 
 namespace NetForge.Simulation.Handlers.Common;
 

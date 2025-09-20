@@ -6,8 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\NetForge.Interfaces\NetForge.Interfaces.csproj" />
-    </ItemGroup>
+     <ItemGroup>
+       <ProjectReference Include="..\NetForge.Interfaces\NetForge.Interfaces.csproj" />
+       <ProjectReference Include="..\NetForge.Simulation.DataTypes\NetForge.Simulation.DataTypes.csproj" />
+     </ItemGroup>
 
 </Project>

@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\NetForge.Interfaces\NetForge.Interfaces.csproj" />
+    <ProjectReference Include="..\..\NetForge.Simulation.DataTypes\NetForge.Simulation.DataTypes.csproj" />
   </ItemGroup>
 
   <ItemGroup>

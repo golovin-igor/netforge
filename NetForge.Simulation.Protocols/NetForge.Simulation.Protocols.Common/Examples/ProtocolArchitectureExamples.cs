@@ -1,9 +1,9 @@
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 using NetForge.Simulation.Protocols.Common.Configuration;
 using NetForge.Simulation.Protocols.Common.Dependencies;
 using System.ComponentModel.DataAnnotations;
 using NetForge.Simulation.DataTypes;
+using NetForge.Interfaces.Devices;
 
 namespace NetForge.Simulation.Protocols.Examples
 {
