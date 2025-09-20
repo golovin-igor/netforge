@@ -4,6 +4,8 @@ using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common.Base;
 using NetForge.Simulation.HttpHandlers.Common.Services;
 using NetForge.Simulation.HttpHandlers.Common.Models;
+using NetForge.Simulation.Protocols.Common.Base;
+using NetForge.Simulation.DataTypes.Protocols;
 
 namespace NetForge.Simulation.Protocols.HTTP
 {
