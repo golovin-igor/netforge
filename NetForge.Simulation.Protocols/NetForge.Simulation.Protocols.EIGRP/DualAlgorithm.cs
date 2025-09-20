@@ -1,7 +1,7 @@
 using NetForge.Simulation.DataTypes.ValueObjects;
 using NetForge.Interfaces.Devices;
+using NetForge.Interfaces.Events;
 using System.Collections.Concurrent;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Protocols;
 
 namespace NetForge.Simulation.Protocols.EIGRP
