@@ -1,7 +1,8 @@
 using NetForge.Simulation.Protocols.Common.Base;
 using System.Net;
 using System.Net.Sockets;
-using NetForge.Simulation.Common.Common;
+using NetForge.Interfaces.Devices;
+using NetForge.Interfaces.Events;
 
 namespace NetForge.Simulation.Protocols.HTTP
 {
