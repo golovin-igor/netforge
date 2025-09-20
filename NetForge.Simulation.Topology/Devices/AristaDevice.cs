@@ -197,6 +197,16 @@ namespace NetForge.Simulation.Topology.Devices
         public string GetMode() => GetCurrentModeEnum().ToModeString();
 
         /// <summary>
+        /// Show the running configuration in Arista EOS format
+        /// </summary>
+        public string ShowRunningConfig()
+        {
+            // Use the new configuration builder
+            var configBuilder = new Arista.AristaConfigurationBuilder(this, _configurationManager);
+            return configBuilder.BuildRunningConfiguration();
+        }
+
+        /// <summary>
         /// Get interface by name with alias support
         /// </summary>
         public override IInterfaceConfig? GetInterface(string name)
