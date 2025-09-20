@@ -7,6 +7,7 @@ using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Common.Security;
 using NetForge.Simulation.DataTypes.Cli;
 using NetForge.Simulation.Topology.Services;
+using NetForge.Simulation.Protocols.HTTP;
 
 namespace NetForge.Simulation.Topology.Devices;
 
@@ -114,8 +115,8 @@ public abstract class NetworkDevice : INetworkDevice
     public void SetSshConfiguration(object config) => _configurationManager.SetSshConfiguration(config);
     public object GetSnmpConfiguration() => _configurationManager.GetSnmpConfiguration();
     public void SetSnmpConfiguration(object config) => _configurationManager.SetSnmpConfiguration(config);
-    public object GetHttpConfiguration() => _configurationManager.GetHttpConfiguration();
-    public void SetHttpConfiguration(object config) => _configurationManager.SetHttpConfiguration(config);
+    public HttpConfig GetHttpConfiguration() => _configurationManager.GetHttpConfiguration();
+    public void SetHttpConfiguration(HttpConfig config) => _configurationManager.SetHttpConfiguration(config);
 
     #endregion
 
