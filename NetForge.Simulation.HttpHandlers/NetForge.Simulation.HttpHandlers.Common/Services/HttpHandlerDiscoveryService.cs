@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace NetForge.Simulation.HttpHandlers.Common.Services
 {
     /// <summary>

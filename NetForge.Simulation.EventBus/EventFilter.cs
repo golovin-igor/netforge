@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using NetForge.Simulation.DataTypes.Events;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.EventBus
 {

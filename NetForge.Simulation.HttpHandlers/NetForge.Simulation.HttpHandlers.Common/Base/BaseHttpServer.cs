@@ -66,7 +66,7 @@ namespace NetForge.Simulation.HttpHandlers.Common
             if (context.GetItem<bool>("HandlerInitialized") != true)
             {
                 await handler.Initialize(_device);
-                context.SetItem("HandlerInitialized", true);
+                context.SetItem("HandlerInitialized", (object)true);
             }
 
             // Process request based on HTTP method

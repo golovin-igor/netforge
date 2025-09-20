@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace NetForge.Simulation.HttpHandlers.Common.Services
 {
     /// <summary>

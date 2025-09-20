@@ -49,6 +49,7 @@ namespace NetForge.Simulation.HttpHandlers.Common.Services
                 }
                 else
                 {
+                    // Read file outside of lock to avoid async/await in lock
                     content = await ReadFileAsync(physicalPath);
                     CacheContent(cacheKey, content, TimeSpan.FromMinutes(10));
                 }

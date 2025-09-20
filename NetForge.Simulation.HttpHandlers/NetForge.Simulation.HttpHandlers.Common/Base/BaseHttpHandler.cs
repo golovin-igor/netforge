@@ -75,7 +75,8 @@ namespace NetForge.Simulation.HttpHandlers.Common
             }
             else
             {
-                return await GenerateWebInterface(context);
+                var content = await GenerateWebInterface(context);
+                return HttpResult.Ok(content, "text/html");
             }
         }
 
