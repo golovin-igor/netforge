@@ -44,6 +44,7 @@ NetForge.Player serves as the primary user interface and runtime environment for
 - **Virtual network interface creation** for seamless host integration
 - **Multi-protocol support** (Telnet, SSH, SNMP, HTTP) on actual IP addresses
 - **Bridge mode** for connecting simulated networks to real infrastructure
+- **Web-based device management** with vendor-specific HTTP handlers
 
 ## Getting Started
 
@@ -628,6 +629,9 @@ Access the built-in web interface at `http://localhost:8080` for:
 - **Web-based terminal** for device access
 - **Real-time monitoring** dashboards
 - **Configuration wizards** for common scenarios
+- **Vendor-specific web management** interfaces (Cisco IOS-style, Juniper J-Web, Arista EOS, etc.)
+- **REST API access** with OpenAPI documentation
+- **Authentication and session management**
 
 ## Troubleshooting
 

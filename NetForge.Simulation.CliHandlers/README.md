@@ -74,6 +74,13 @@ NetForge.Simulation.CliHandlers.{Vendor}/
 - **Discovery protocols** (CDP, LLDP)
 - **Security features** (ACLs, authentication)
 
+### HTTP Handler Integration
+CLI handlers work seamlessly with HTTP handlers to provide both command-line and web-based device management:
+- **Configuration synchronization** between CLI and web interfaces
+- **Real-time state updates** across both management methods
+- **Unified command processing** with vendor-specific formatting
+- **Event-driven architecture** for protocol state changes
+
 ### Device Operations
 - **Interface management** (status, configuration, counters)
 - **System operations** (reboot, file management)

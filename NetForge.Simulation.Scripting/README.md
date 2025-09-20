@@ -37,6 +37,7 @@ NetForge.Simulation.Scripting enables network engineers and developers to:
 
 ### 🔧 Integration and Extensibility
 - **NetForge.Player integration** for seamless script execution
+- **HTTP Handler integration** for web-based device management
 - **External tool integration** (REST APIs, databases, file I/O)
 - **Plugin system** for custom functions and commands
 - **Import/export** capabilities for script modularity
@@ -189,6 +190,53 @@ function configure_basic_security($device, $enable_password) {
 }
 ```
 
+### HTTP Handler Integration
+
+```netsim
+# Web interface testing
+test web_interface {
+  # Test HTTP connectivity
+  http_test R1 {
+    url: "http://192.168.1.1/api/devices/info",
+    method: "GET",
+    expect_status: 200
+  }
+
+  # Test REST API configuration
+  http_configure R1 {
+    endpoint: "/api/interfaces/configure",
+    method: "POST",
+    data: {
+      interfaceName: "GigabitEthernet0/0",
+      ipAddress: "192.168.1.1",
+      subnetMask: "255.255.255.0"
+    }
+  }
+
+  # Test web interface accessibility
+  assert web_accessible(R1) and web_accessible(R2)
+}
+
+# Combined CLI and HTTP testing
+test hybrid_management {
+  # Configure via CLI
+  configure R1 {
+    "interface GigabitEthernet0/0"
+    "ip address 192.168.1.1 255.255.255.0"
+    "no shutdown"
+  }
+
+  # Verify via HTTP API
+  http_test R1 {
+    url: "http://192.168.1.1/api/interfaces/GigabitEthernet0/0",
+    expect_data: {
+      ipAddress: "192.168.1.1",
+      isUp: true
+    }
+  }
+}
+```
+
 ### Testing Framework
 
 ```netsim
@@ -197,11 +245,11 @@ test network_validation {
   # Connectivity tests
   ping R1 R2 --count 5 --timeout 1000
   assert ping.success and ping.avg_time < 50
-  
+
   # Protocol validation
   assert ospf_neighbors(R1).count >= 2
   assert bgp_sessions(R1).all(s => s.state == "Established")
-  
+
   # Configuration compliance
   assert snmp_enabled(R1) and ntp_configured(R1)
 }
@@ -214,7 +262,7 @@ test performance {
     bandwidth: "10Mbps",
     duration: 60
   }
-  
+
   measure throughput R1 R2 {
     min_throughput: "8Mbps",
     max_latency: "10ms"
@@ -235,6 +283,7 @@ test performance {
 ### Integration Layer
 
 - **NetForge.Player Integration**: Direct integration with simulation engine
+- **HTTP Handler Integration**: Web-based device management and REST API access
 - **Device Abstraction**: Vendor-agnostic device management
 - **Protocol Support**: Full protocol configuration and monitoring
 - **External APIs**: REST, database, and file system integration
