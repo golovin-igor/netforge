@@ -18,10 +18,12 @@ namespace NetForge.Simulation.Protocols.HTTP
 
         private HttpServer? _httpServer;
         private readonly HttpHandlerManager _handlerManager;
+        private readonly HttpSessionManager _sessionManager;
 
         public HttpProtocol()
         {
             _handlerManager = new HttpHandlerManager();
+            _sessionManager = new HttpSessionManager(30); // 30 minute timeout
         }
 
         protected override BaseProtocolState CreateInitialState()
@@ -64,9 +66,8 @@ namespace NetForge.Simulation.Protocols.HTTP
         {
             try
             {
-                _httpServer = new HttpServer(_device, config, _handlerManager);
+                _httpServer = new HttpServer(_device, config, _sessionManager);
                 _httpServer.RequestReceived += OnHttpRequestReceived;
-                _httpServer.ConnectionEstablished += OnHttpConnectionEstablished;
                 _httpServer.Start();
 
                 LogProtocolEvent($"HTTP server started on port {config.Port} (HTTPS: {config.HttpsPort})");
@@ -81,48 +82,51 @@ namespace NetForge.Simulation.Protocols.HTTP
 
         private async void OnHttpRequestReceived(object sender, HttpRequestEventArgs e)
         {
-            var context = e.Context;
-            var request = context.Request;
+            var request = e.Request;
+            var response = e.Response;
 
-            LogProtocolEvent($"HTTP {request.Method} {request.Path} from {context.RemoteEndpoint}");
+            LogProtocolEvent($"HTTP {request.Method} {request.Url} from {request.ClientEndpoint}");
 
             try
             {
                 // Route to appropriate handler
-                var response = await ProcessHttpRequest(context);
-                await context.SendResponse(response);
+                var result = await ProcessHttpRequest(request, response);
+                await response.WriteResponse(new HttpResponseContent(result.StatusCode, result.StatusText, result.Content, result.ContentType));
             }
             catch (Exception ex)
             {
-                await context.SendResponse(HttpResult.Error(500, $"Internal Server Error: {ex.Message}"));
+                await response.WriteErrorResponse(500, "Internal Server Error", ex.Message);
                 LogProtocolEvent($"Error processing HTTP request: {ex.Message}");
             }
         }
 
-        private async Task<HttpResult> ProcessHttpRequest(HttpContext context)
+        private async Task<HttpResult> ProcessHttpRequest(HttpRequest request, HttpResponse response)
         {
             // Find appropriate handler for the device vendor
-            var handler = _handlerManager.GetHandler(_device.Vendor, context.Request.Path);
+            var handler = _handlerManager.GetHandler(_device.Vendor, request.Url);
             if (handler == null)
             {
                 return HttpResult.NotFound("Handler not found for this vendor/path combination");
             }
 
+            // Create a simple HttpContext-like object for the handler
+            var context = new SimpleHttpContext(request, response, _device);
+
             // Route based on HTTP method
-            return context.Request.Method.ToUpper() switch
+            return request.Method.ToUpper() switch
             {
                 "GET" => await handler.HandleGetRequest(context),
                 "POST" => await handler.HandlePostRequest(context),
                 "PUT" => await handler.HandlePutRequest(context),
                 "DELETE" => await handler.HandleDeleteRequest(context),
                 "PATCH" => await handler.HandlePatchRequest(context),
-                _ => HttpResult.BadRequest($"Method {context.Request.Method} not supported")
+                _ => HttpResult.BadRequest($"Method {request.Method} not supported")
             };
         }
 
         private HttpConfig GetHttpConfig()
         {
-            return _device?.GetHttpConfiguration() ?? new HttpConfig();
+            return (_device?.GetHttpConfiguration() as HttpConfig) ?? new HttpConfig();
         }
 
         protected override object GetProtocolConfiguration()
@@ -157,7 +161,7 @@ namespace NetForge.Simulation.Protocols.HTTP
         {
             if (_httpServer != null)
             {
-                await _httpServer.StopAsync();
+                await _httpServer.Stop();
                 _httpServer = null;
             }
         }
@@ -166,9 +170,9 @@ namespace NetForge.Simulation.Protocols.HTTP
         {
             if (_httpServer != null)
             {
-                state.ActiveConnections = _httpServer.ActiveConnections;
-                state.TotalRequests = _httpServer.TotalRequests;
-                state.RequestsPerSecond = _httpServer.RequestsPerSecond;
+                state.ActiveSessions = _sessionManager.GetActiveSessions().Count;
+                state.TotalRequests = _sessionManager.GetTotalRequestCount();
+                state.LastActivity = _sessionManager.GetLastActivity();
             }
         }
 

@@ -329,4 +329,105 @@ namespace NetForge.Simulation.Protocols.HTTP
 
         public bool IsExpired => (DateTime.Now - LastActivity).TotalMinutes > TimeoutMinutes;
     }
+
+    /// <summary>
+    /// HTTP result model
+    /// </summary>
+    public class HttpResult
+    {
+        public int StatusCode { get; set; } = 200;
+        public string StatusText { get; set; } = "OK";
+        public object? Content { get; set; }
+        public string ContentType { get; set; } = "text/html";
+
+        /// <summary>
+        /// Create success result
+        /// </summary>
+        public static HttpResult Ok(object content = null, string contentType = "application/json")
+        {
+            return new HttpResult
+            {
+                StatusCode = 200,
+                StatusText = "OK",
+                Content = content,
+                ContentType = contentType
+            };
+        }
+
+        /// <summary>
+        /// Create bad request result
+        /// </summary>
+        public static HttpResult BadRequest(string message = "Bad Request")
+        {
+            return new HttpResult
+            {
+                StatusCode = 400,
+                StatusText = "Bad Request",
+                Content = new { error = message },
+                ContentType = "application/json"
+            };
+        }
+
+        /// <summary>
+        /// Create not found result
+        /// </summary>
+        public static HttpResult NotFound(string message = "Not Found")
+        {
+            return new HttpResult
+            {
+                StatusCode = 404,
+                StatusText = "Not Found",
+                Content = new { error = message },
+                ContentType = "application/json"
+            };
+        }
+
+        /// <summary>
+        /// Create internal server error result
+        /// </summary>
+        public static HttpResult Error(int statusCode, string message)
+        {
+            return new HttpResult
+            {
+                StatusCode = statusCode,
+                StatusText = $"Error {statusCode}",
+                Content = new { error = message },
+                ContentType = "application/json"
+            };
+        }
+    }
+
+    /// <summary>
+    /// HTTP context interface
+    /// </summary>
+    public interface IHttpContext
+    {
+        HttpRequest Request { get; }
+        HttpResponse Response { get; }
+        INetworkDevice Device { get; }
+        Task SendResponse(HttpResult result);
+    }
+
+    /// <summary>
+    /// Simple HTTP context for protocol handlers
+    /// </summary>
+    public class SimpleHttpContext : IHttpContext
+    {
+        public HttpRequest Request { get; }
+        public HttpResponse Response { get; }
+        public INetworkDevice Device { get; }
+
+        public SimpleHttpContext(HttpRequest request, HttpResponse response, INetworkDevice device)
+        {
+            Request = request;
+            Response = response;
+            Device = device;
+        }
+
+        public async Task SendResponse(HttpResult result)
+        {
+            var content = new HttpResponseContent(result.StatusCode, result.StatusText, result.Content, result.ContentType);
+            await Response.WriteResponse(content);
+        }
+    }
 }
