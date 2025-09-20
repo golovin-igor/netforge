@@ -1,6 +1,5 @@
 using NetForge.Interfaces.CLI;
 using NetForge.Interfaces.Devices;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Interfaces;
 using NetForge.Simulation.Common.Protocols;
