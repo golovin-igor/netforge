@@ -12,10 +12,10 @@ namespace NetForge.Simulation.Topology.Devices.Juniper
     /// </summary>
     public class JuniperConfigurationBuilder
     {
-        private readonly INetworkDevice _device;
+        private readonly JuniperDevice _device;
         private readonly IConfigurationProvider _configProvider;
 
-        public JuniperConfigurationBuilder(INetworkDevice device, IConfigurationProvider configProvider)
+        public JuniperConfigurationBuilder(JuniperDevice device, IConfigurationProvider configProvider)
         {
             _device = device ?? throw new ArgumentNullException(nameof(device));
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
@@ -30,7 +30,7 @@ namespace NetForge.Simulation.Topology.Devices.Juniper
 
             // Juniper uses hierarchical configuration structure
             config.AppendLine("## Last commit: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zzz"));
-            config.AppendLine("version " + (_device.GetSoftwareVersion() ?? "21.1R1"));
+            config.AppendLine("version " + (_device.GetVersion() ?? "21.1R1"));
 
             // System configuration
             BuildSystemConfiguration(config);

@@ -12,10 +12,10 @@ namespace NetForge.Simulation.Topology.Devices.Arista
     /// </summary>
     public class AristaConfigurationBuilder
     {
-        private readonly INetworkDevice _device;
+        private readonly AristaDevice _device;
         private readonly IConfigurationProvider _configProvider;
 
-        public AristaConfigurationBuilder(INetworkDevice device, IConfigurationProvider configProvider)
+        public AristaConfigurationBuilder(AristaDevice device, IConfigurationProvider configProvider)
         {
             _device = device ?? throw new ArgumentNullException(nameof(device));
             _configProvider = configProvider ?? throw new ArgumentNullException(nameof(configProvider));
@@ -30,7 +30,7 @@ namespace NetForge.Simulation.Topology.Devices.Arista
 
             // Header
             config.AppendLine("! Command: show running-config");
-            config.AppendLine($"! device: {_device.GetHostname()} (vEOS, EOS-{_device.GetSoftwareVersion() ?? "4.27.1F"})");
+            config.AppendLine($"! device: {_device.GetHostname()} (vEOS, EOS-{_device.GetVersion() ?? "4.27.1F"})");
             config.AppendLine("!");
             config.AppendLine("! boot system flash:/vEOS-lab.swi");
             config.AppendLine("!");
@@ -226,9 +226,11 @@ namespace NetForge.Simulation.Topology.Devices.Arista
                 }
 
                 // Process each network
-                foreach (var network in ospfConfig.Networks ?? Enumerable.Empty<NetworkConfig>())
+                foreach (var network in ospfConfig.Networks ?? Enumerable.Empty<string>())
                 {
-                    config.AppendLine($"   network {network.Network} {network.Wildcard} area {network.Area}");
+                    // Get area for this network from NetworkAreas dictionary
+                    var area = ospfConfig.NetworkAreas.TryGetValue(network, out var areaValue) ? areaValue : 0;
+                    config.AppendLine($"   network {network} area {area}");
                 }
 
                 // Default information originate
