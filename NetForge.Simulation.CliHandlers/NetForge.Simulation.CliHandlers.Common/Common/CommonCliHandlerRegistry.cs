@@ -3,7 +3,6 @@ using NetForge.Interfaces.Vendors;
 using NetForge.Interfaces.Devices;
 using NetForge.Simulation.CliHandlers.Common.Common;
 using NetForge.Simulation.Common.CLI.CommonHandlers;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.Handlers.Common;
 
 namespace NetForge.Simulation.CliHandlers.Common
