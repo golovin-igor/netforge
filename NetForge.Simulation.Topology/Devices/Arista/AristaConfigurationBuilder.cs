@@ -197,7 +197,7 @@ namespace NetForge.Simulation.Topology.Devices.Arista
             {
                 foreach (var route in routes.Where(r => r.Protocol == "static"))
                 {
-                    config.AppendLine($"ip route {route.Destination} {route.NextHop}");
+                    config.AppendLine($"ip route {route.Network} {route.NextHop}");
                 }
                 config.AppendLine("!");
             }
@@ -258,7 +258,7 @@ namespace NetForge.Simulation.Topology.Devices.Arista
                 }
 
                 // Neighbors
-                foreach (var neighbor in bgpConfig.Neighbors ?? new Dictionary<string, BgpNeighbor>()
+                foreach (var neighbor in bgpConfig.Neighbors ?? new Dictionary<string, BgpNeighbor>())
                 {
                     config.AppendLine($"   neighbor {neighbor.Key} remote-as {neighbor.Value.RemoteAs}");
 
@@ -306,7 +306,7 @@ namespace NetForge.Simulation.Topology.Devices.Arista
 
             // LLDP
             var lldpConfig = _configProvider.GetLldpConfiguration();
-            if (lldpConfig != null && lldpConfig.Enabled)
+            if (lldpConfig != null && lldpConfig.IsEnabled)
             {
                 config.AppendLine("lldp run");
                 config.AppendLine("!");

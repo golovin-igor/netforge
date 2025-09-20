@@ -91,12 +91,12 @@ namespace NetForge.Simulation.Topology.Devices.Juniper
 
         private void BuildInterfaceConfiguration(StringBuilder config)
         {
-            var interfaces = _device.GetInterfaces();
+            var interfaces = _device.GetAllInterfaces();
             if (interfaces != null && interfaces.Any())
             {
                 config.AppendLine("interfaces {");
 
-                foreach (var iface in interfaces.OrderBy(i => i.Name))
+                foreach (var iface in interfaces.Values.OrderBy(i => i.Name))
                 {
                     config.AppendLine($"    {iface.Name} {{");
 
@@ -159,7 +159,7 @@ namespace NetForge.Simulation.Topology.Devices.Juniper
             {
                 foreach (var route in routes.Where(r => r.Protocol == "static"))
                 {
-                    config.AppendLine($"    static route {route.Destination} next-hop {route.NextHop};");
+                    config.AppendLine($"    static route {route.Network} next-hop {route.NextHop};");
                 }
             }
 
@@ -201,7 +201,7 @@ namespace NetForge.Simulation.Topology.Devices.Juniper
 
             // LLDP
             var lldpConfig = _configProvider.GetLldpConfiguration();
-            if (lldpConfig != null && lldpConfig.Enabled)
+            if (lldpConfig != null && lldpConfig.IsEnabled)
             {
                 config.AppendLine("    lldp {");
                 config.AppendLine("        interface all;");
@@ -224,16 +224,19 @@ namespace NetForge.Simulation.Topology.Devices.Juniper
                 // Group areas and interfaces
                 var areaGroups = new Dictionary<int, List<string>>();
 
-                foreach (var network in ospfConfig.Networks ?? Enumerable.Empty<NetworkConfig>())
+                foreach (var network in ospfConfig.Networks ?? Enumerable.Empty<string>())
                 {
-                    if (!areaGroups.ContainsKey(network.Area))
+                    // Get area for this network from NetworkAreas dictionary
+                    var area = ospfConfig.NetworkAreas.TryGetValue(network, out var areaValue) ? areaValue : 0;
+
+                    if (!areaGroups.ContainsKey(area))
                     {
-                        areaGroups[network.Area] = new List<string>();
+                        areaGroups[area] = new List<string>();
                     }
 
                     // In Juniper, we specify interfaces in areas
                     // This is simplified - normally would map network to interface
-                    areaGroups[network.Area].Add($"{network.Network}");
+                    areaGroups[area].Add(network);
                 }
 
                 foreach (var area in areaGroups)
@@ -342,12 +345,12 @@ namespace NetForge.Simulation.Topology.Devices.Juniper
 
         private void BuildVlanConfiguration(StringBuilder config)
         {
-            var vlans = _device.GetVlans();
+            var vlans = _device.GetAllVlans();
             if (vlans != null && vlans.Any())
             {
                 config.AppendLine("vlans {");
 
-                foreach (var vlan in vlans.OrderBy(v => v.Id))
+                foreach (var vlan in vlans.Values.OrderBy(v => v.Id))
                 {
                     config.AppendLine($"    vlan-{vlan.Id} {{");
                     if (!string.IsNullOrEmpty(vlan.Name))

@@ -195,7 +195,7 @@ namespace NetForge.Simulation.Topology.Devices.Cisco
                     config.AppendLine($" bgp router-id {bgpConfig.RouterId}");
                 }
 
-                foreach (var neighbor in bgpConfig.Neighbors ?? new Dictionary<string, BgpNeighbor>()
+                foreach (var neighbor in bgpConfig.Neighbors ?? new Dictionary<string, BgpNeighbor>())
                 {
                     config.AppendLine($" neighbor {neighbor.Key} remote-as {neighbor.Value.RemoteAs}");
 
@@ -291,7 +291,7 @@ namespace NetForge.Simulation.Topology.Devices.Cisco
             var cdpConfig = _configProvider.GetCdpConfiguration();
             if (cdpConfig != null)
             {
-                if (cdpConfig.Enabled)
+                if (cdpConfig.IsEnabled)
                 {
                     config.AppendLine("cdp run");
 
@@ -300,9 +300,9 @@ namespace NetForge.Simulation.Topology.Devices.Cisco
                         config.AppendLine($"cdp timer {cdpConfig.Timer}");
                     }
 
-                    if (cdpConfig.Holdtime != 180) // Default CDP holdtime
+                    if (cdpConfig.HoldTime != 180) // Default CDP holdtime
                     {
-                        config.AppendLine($"cdp holdtime {cdpConfig.Holdtime}");
+                        config.AppendLine($"cdp holdtime {cdpConfig.HoldTime}");
                     }
                 }
                 else
