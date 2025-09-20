@@ -1,6 +1,5 @@
 using NetForge.Interfaces.CLI;
 using NetForge.Interfaces.Devices;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.DataTypes.Cli;
 
 namespace NetForge.Simulation.Topology.Services;

@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using NetForge.Interfaces.Devices;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.DataTypes;
 using NetForge.Simulation.Protocols.Common.Services;
 
