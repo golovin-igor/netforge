@@ -223,7 +223,7 @@ namespace NetForge.Simulation.HttpHandlers.Generic
             return new DeviceInfo
             {
                 Vendor = _device.Vendor,
-                Hostname = _device.Hostname ?? _device.Name,
+                Hostname = _device.GetHostname() ?? _device.Name,
                 Model = _device.DeviceType,
                 SoftwareVersion = "1.0.0", // Generic version
                 Uptime = GetUptime(),

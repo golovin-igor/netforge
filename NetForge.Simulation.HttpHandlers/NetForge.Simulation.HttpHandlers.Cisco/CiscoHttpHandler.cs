@@ -307,7 +307,7 @@ namespace NetForge.Simulation.HttpHandlers.Cisco
         {
             return new DeviceInfo
             {
-                Hostname = _device.Hostname ?? _device.Name,
+                Hostname = _device.GetHostname() ?? _device.Name,
                 Model = _device.DeviceType,
                 SoftwareVersion = "15.1(4)M12a", // Simulated IOS version
                 Uptime = GetUptime(),
