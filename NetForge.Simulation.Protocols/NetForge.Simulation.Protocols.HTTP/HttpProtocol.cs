@@ -2,6 +2,8 @@ using NetForge.Interfaces.Devices;
 using NetForge.Interfaces.Events;
 using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Protocols.Common.Base;
+using NetForge.Simulation.HttpHandlers.NetForge.Simulation.HttpHandlers.Common.Services;
+using NetForge.Simulation.HttpHandlers.NetForge.Simulation.HttpHandlers.Common.Models;
 
 namespace NetForge.Simulation.Protocols.HTTP
 {
@@ -11,7 +13,7 @@ namespace NetForge.Simulation.Protocols.HTTP
     public class HttpProtocol : BaseProtocol
     {
         public override string Name => "Hypertext Transfer Protocol";
-        public override ProtocolType Type => ProtocolType.HTTP;
+        public override NetworkProtocolType Type => NetworkProtocolType.HTTP;
 
         private HttpServer? _httpServer;
         private readonly HttpHandlerManager _handlerManager;
