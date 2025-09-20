@@ -1,4 +1,4 @@
-using NetForge.Interfaces.CLI;
+using NetForge.Interfaces.Cli;
 
 namespace NetForge.Simulation.Common.CLI.Extensions
 {
