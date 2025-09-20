@@ -1,6 +1,9 @@
 using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.Configuration;
 using NetForge.Simulation.Common.Protocols;
+using NetForge.Simulation.Common.Events;
+using NetForge.Simulation.Protocols.Common.Events;
+using NetForge.Simulation.DataTypes;
 
 namespace NetForge.Simulation.Topology.Services;
 
@@ -12,6 +15,8 @@ public class DeviceConfigurationManager : IConfigurationProvider
 {
     private readonly Dictionary<string, string> _systemSettings = new();
     private readonly DeviceConfiguration _runningConfig = new();
+    private readonly INetworkEventBus? _eventBus;
+    private readonly string _deviceName;
     
     private OspfConfig _ospfConfig = new(1);
     private BgpConfig _bgpConfig = new(65000);
@@ -27,6 +32,17 @@ public class DeviceConfigurationManager : IConfigurationProvider
     private object _sshConfig = new();
     private object _snmpConfig = new();
     private object _httpConfig = new();
+
+    /// <summary>
+    /// Initializes a new instance of DeviceConfigurationManager.
+    /// </summary>
+    /// <param name="deviceName">Name of the device for event publishing</param>
+    /// <param name="eventBus">Optional event bus for publishing configuration changes</param>
+    public DeviceConfigurationManager(string deviceName, INetworkEventBus? eventBus = null)
+    {
+        _deviceName = deviceName ?? throw new ArgumentNullException(nameof(deviceName));
+        _eventBus = eventBus;
+    }
 
     /// <summary>
     /// Gets or sets whether the NVRAM configuration has been loaded.
@@ -78,14 +94,24 @@ public class DeviceConfigurationManager : IConfigurationProvider
     
     public void SetOspfConfiguration(OspfConfig config)
     {
+        bool wasNull = _ospfConfig == null;
         _ospfConfig = config ?? throw new ArgumentNullException(nameof(config));
+
+        // Publish configuration change event
+        _eventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(_deviceName, NetworkProtocolType.OSPF,
+            wasNull ? "OSPF configuration initialized" : "OSPF configuration updated"));
     }
 
     public BgpConfig? GetBgpConfiguration() => _bgpConfig;
     
     public void SetBgpConfiguration(BgpConfig config)
     {
+        bool wasNull = _bgpConfig == null;
         _bgpConfig = config ?? throw new ArgumentNullException(nameof(config));
+
+        // Publish configuration change event
+        _eventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(_deviceName, NetworkProtocolType.BGP,
+            wasNull ? "BGP configuration initialized" : "BGP configuration updated"));
     }
 
     public RipConfig? GetRipConfiguration() => _ripConfig;

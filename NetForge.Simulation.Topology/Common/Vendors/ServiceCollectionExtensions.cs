@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NetForge.Interfaces.Vendors;
 using NetForge.Simulation.Protocols.Common.Services;
 using NetForge.Simulation.Protocols.Common.Registration;
+using NetForge.Simulation.Common.Events;
 
 namespace NetForge.Simulation.Common.Vendors
 {
@@ -24,6 +25,9 @@ namespace NetForge.Simulation.Common.Vendors
             // Register protocol-related services
             services.AddSingleton<VendorBasedProtocolService>();
             services.AddSingleton<IProtocolRegistrationService, StaticProtocolRegistrationService>();
+
+            // Register EventBus
+            services.AddSingleton<INetworkEventBus, NetworkEventBus>();
 
             // Register the initialization callback
             services.AddSingleton(provider =>
