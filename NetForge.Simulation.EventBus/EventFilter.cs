@@ -90,12 +90,4 @@ namespace NetForge.Simulation.Common.Events
             return new EventFilter { CustomFilter = filter };
         }
     }
-
-    /// <summary>
-    /// Interface for events that have a device name
-    /// </summary>
-    public interface IDeviceEvent
-    {
-        string DeviceName { get; }
-    }
 }

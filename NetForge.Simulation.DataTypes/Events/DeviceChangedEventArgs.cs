@@ -8,9 +8,9 @@ namespace NetForge.Simulation.Common.Events
         Removed
     }
 
-    public class DeviceChangedEventArgs(string deviceName, object device, DeviceChangeType changeType) : NetworkEventArgs
+    public class DeviceChangedEventArgs(string deviceName, object device, DeviceChangeType changeType) : NetworkEventArgs, IDeviceEvent
     {
-        public string? DeviceName { get; } = deviceName;
+        public string DeviceName { get; } = deviceName;
         public object Device { get; } = device; // Reference to the device instance
         public DeviceChangeType ChangeType { get; } = changeType;
     }
