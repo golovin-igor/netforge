@@ -1,4 +1,5 @@
 using NetForge.Simulation.DataTypes;
+using NetForge.Simulation.Common.Vendors;
 
 namespace NetForge.Interfaces.Vendors
 {

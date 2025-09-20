@@ -1,4 +1,5 @@
 using NetForge.Simulation.DataTypes;
+using NetForge.Simulation.Common.Vendors;
 
 namespace NetForge.Interfaces.Vendors
 {
@@ -66,89 +67,5 @@ namespace NetForge.Interfaces.Vendors
         /// Get device model descriptor by name
         /// </summary>
         DeviceModelDescriptor? GetModelDescriptor(string modelName);
-    }
-
-    /// <summary>
-    /// Describes a device model supported by a vendor
-    /// </summary>
-    public class DeviceModelDescriptor
-    {
-        public string ModelName { get; set; } = "";
-        public string ModelFamily { get; set; } = "";
-        public string Description { get; set; } = "";
-        public DeviceType DeviceType { get; set; }
-        public IList<string> Features { get; set; } = new List<string>();
-        public IDictionary<string, object> Capabilities { get; set; } = new Dictionary<string, object>();
-    }
-
-    /// <summary>
-    /// Describes a protocol supported by a vendor
-    /// </summary>
-    public class ProtocolDescriptor
-    {
-        public NetworkProtocolType ProtocolType { get; set; }
-        public string ImplementationClass { get; set; } = "";
-        public string AssemblyName { get; set; } = "";
-        public bool IsEnabled { get; set; } = true;
-        public int Priority { get; set; } = 0;
-        public IDictionary<string, object> Configuration { get; set; } = new Dictionary<string, object>();
-        public IList<string> RequiredFeatures { get; set; } = new List<string>();
-    }
-
-    /// <summary>
-    /// Describes a CLI handler for a vendor
-    /// </summary>
-    public class HandlerDescriptor
-    {
-        public string HandlerName { get; set; } = "";
-        public string CommandPattern { get; set; } = "";
-        public string ImplementationClass { get; set; } = "";
-        public string AssemblyName { get; set; } = "";
-        public HandlerType Type { get; set; }
-        public bool IsEnabled { get; set; } = true;
-        public int Priority { get; set; } = 0;
-        public IList<string> RequiredModes { get; set; } = new List<string>();
-    }
-
-    /// <summary>
-    /// Types of CLI handlers
-    /// </summary>
-    public enum HandlerType
-    {
-        Basic,
-        Configuration,
-        Show,
-        Interface,
-        Routing,
-        Security,
-        System,
-        Diagnostic
-    }
-
-    /// <summary>
-    /// Vendor-specific configuration
-    /// </summary>
-    public class VendorConfiguration
-    {
-        public string DefaultPrompt { get; set; } = ">";
-        public string EnabledPrompt { get; set; } = "#";
-        public string ConfigPrompt { get; set; } = "(config)#";
-        public IDictionary<string, string> PromptModes { get; set; } = new Dictionary<string, string>();
-        public IDictionary<string, object> CustomSettings { get; set; } = new Dictionary<string, object>();
-    }
-
-    /// <summary>
-    /// Device types
-    /// </summary>
-    public enum DeviceType
-    {
-        Router,
-        Switch,
-        Firewall,
-        LoadBalancer,
-        AccessPoint,
-        Server,
-        Workstation,
-        Other
     }
 }
