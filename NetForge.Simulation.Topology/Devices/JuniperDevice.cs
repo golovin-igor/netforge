@@ -522,6 +522,16 @@ namespace NetForge.Simulation.Topology.Devices
             return output.ToString();
         }
 
+        /// <summary>
+        /// Show the running configuration in Junos format
+        /// </summary>
+        public string ShowRunningConfig()
+        {
+            // Use the new configuration builder
+            var configBuilder = new Juniper.JuniperConfigurationBuilder(this, _configurationManager);
+            return configBuilder.BuildRunningConfiguration();
+        }
+
         // ProcessShowCommand removed - now handled by ShowCommandHandler
 
         // Additional methods needed by tests
