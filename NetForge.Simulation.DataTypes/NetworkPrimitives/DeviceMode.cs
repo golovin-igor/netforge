@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Common.Common
+namespace NetForge.Simulation.DataTypes.NetworkPrimitives
 {
     /// <summary>
     /// Strongly typed device modes for compile-time safety and reduced typos

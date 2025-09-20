@@ -1,7 +1,8 @@
 ﻿using NetForge.Interfaces.Vendors;
-using NetForge.Simulation.Common.Common;
+using NetForge.Interfaces.Devices;
 
-namespace NetForge.Interfaces.CLI;
+namespace NetForge.Interfaces.Cli
+{
 
 public interface ICliContext
 {
@@ -37,4 +38,5 @@ public interface ICliContext
 
     IVendorContext? VendorContext { get; set; }
     T GetService<T>() where T : class;
+}
 }

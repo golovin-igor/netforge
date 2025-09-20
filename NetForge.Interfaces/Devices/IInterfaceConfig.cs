@@ -1,6 +1,7 @@
-﻿using NetForge.Simulation.Common.Common;
+﻿using NetForge.Interfaces.Devices;
 
-namespace NetForge.Simulation.Common.Configuration;
+namespace NetForge.Interfaces.Devices
+{
 
 public interface IInterfaceConfig
 {
@@ -33,4 +34,5 @@ public interface IInterfaceConfig
     bool IsShutdown { get; set; }
     string GetStatus();
     void SetParentDevice(INetworkDevice device);
+}
 }

@@ -1,6 +1,5 @@
-using NetForge.Interfaces.Devices;
-
-namespace NetForge.Simulation.Common.Common;
+namespace NetForge.Interfaces.Devices
+{
 
 /// <summary>
 /// Composite interface for network devices that inherits from all segregated interfaces.
@@ -17,6 +16,7 @@ public interface INetworkDevice :
     IPhysicalConnectivity,
     IDeviceLogging,
     INetworkContext
-{
+    {
 
+    }
 }

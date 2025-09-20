@@ -1,3 +1,5 @@
+using NetForge.Interfaces.Devices;
+
 namespace NetForge.Simulation.HttpHandlers.Common
 {
     /// <summary>
@@ -89,6 +91,54 @@ namespace NetForge.Simulation.HttpHandlers.Common
         }
 
         protected abstract Task<HttpResult> OnHandlePostRequest(HttpContext context);
+
+        public virtual async Task<HttpResult> HandlePutRequest(HttpContext context)
+        {
+            var authResult = await _authenticator.AuthenticateRequest(context);
+            if (!authResult.IsAuthenticated)
+            {
+                return await _authenticator.GenerateChallenge(context, VendorName);
+            }
+
+            return await OnHandlePutRequest(context);
+        }
+
+        protected virtual async Task<HttpResult> OnHandlePutRequest(HttpContext context)
+        {
+            return HttpResult.Error(405, "PUT method not supported");
+        }
+
+        public virtual async Task<HttpResult> HandleDeleteRequest(HttpContext context)
+        {
+            var authResult = await _authenticator.AuthenticateRequest(context);
+            if (!authResult.IsAuthenticated)
+            {
+                return await _authenticator.GenerateChallenge(context, VendorName);
+            }
+
+            return await OnHandleDeleteRequest(context);
+        }
+
+        protected virtual async Task<HttpResult> OnHandleDeleteRequest(HttpContext context)
+        {
+            return HttpResult.Error(405, "DELETE method not supported");
+        }
+
+        public virtual async Task<HttpResult> HandlePatchRequest(HttpContext context)
+        {
+            var authResult = await _authenticator.AuthenticateRequest(context);
+            if (!authResult.IsAuthenticated)
+            {
+                return await _authenticator.GenerateChallenge(context, VendorName);
+            }
+
+            return await OnHandlePatchRequest(context);
+        }
+
+        protected virtual async Task<HttpResult> OnHandlePatchRequest(HttpContext context)
+        {
+            return HttpResult.Error(405, "PATCH method not supported");
+        }
 
         public abstract Task<string> GenerateWebInterface(HttpContext context);
         public abstract IEnumerable<HttpEndpoint> GetSupportedEndpoints();

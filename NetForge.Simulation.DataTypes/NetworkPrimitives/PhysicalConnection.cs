@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common.Events;
 
-namespace NetForge.Simulation.Common.Common
+namespace NetForge.Simulation.DataTypes.NetworkPrimitives
 {
     /// <summary>
     /// Represents the physical connection state between interfaces

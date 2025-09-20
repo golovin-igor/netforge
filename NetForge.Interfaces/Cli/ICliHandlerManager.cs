@@ -1,6 +1,7 @@
 ﻿using NetForge.Simulation.Common.CLI.Base;
 
-namespace NetForge.Interfaces.CLI;
+namespace NetForge.Interfaces.Cli
+{
 
 public interface ICliHandlerManager
 {
@@ -24,4 +25,5 @@ public interface ICliHandlerManager
     /// Gets help text for a specific command
     /// </summary>
     string GetCommandHelp(string command);
+}
 }

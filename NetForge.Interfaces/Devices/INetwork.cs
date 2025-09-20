@@ -1,7 +1,9 @@
 ﻿using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.DataTypes.NetworkPrimitives;
+using NetForge.Interfaces.Devices;
 
-namespace NetForge.Simulation.Common.Common;
+namespace NetForge.Interfaces.Devices
+{
 
 public interface INetwork
 {
@@ -128,4 +130,5 @@ public interface INetwork
     /// Update all protocol states (legacy method - protocols now update via events)
     /// </summary>
     void UpdateProtocols();
+}
 }

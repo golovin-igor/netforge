@@ -1,3 +1,5 @@
+using NetForge.Interfaces.Devices;
+
 namespace NetForge.Simulation.HttpHandlers.Common
 {
     /// <summary>
@@ -44,6 +46,11 @@ namespace NetForge.Simulation.HttpHandlers.Common
         /// Handle HTTP DELETE request
         /// </summary>
         Task<HttpResult> HandleDeleteRequest(HttpContext context);
+
+        /// <summary>
+        /// Handle HTTP PATCH request
+        /// </summary>
+        Task<HttpResult> HandlePatchRequest(HttpContext context);
 
         /// <summary>
         /// Get supported endpoints for this vendor

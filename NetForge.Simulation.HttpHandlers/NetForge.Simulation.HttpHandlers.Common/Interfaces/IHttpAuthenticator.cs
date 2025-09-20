@@ -1,3 +1,5 @@
+using NetForge.Interfaces.Devices;
+
 namespace NetForge.Simulation.HttpHandlers.Common
 {
     /// <summary>

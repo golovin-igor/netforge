@@ -1,4 +1,4 @@
-namespace NetForge.Simulation.Common.Common
+namespace NetForge.Simulation.DataTypes.NetworkPrimitives
 {
     /// <summary>
     /// Represents physical connection quality metrics that protocols can use for decision making

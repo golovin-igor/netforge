@@ -6,4 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\..\NetForge.Interfaces\NetForge.Interfaces.csproj" />
+        <ProjectReference Include="..\..\NetForge.Simulation.DataTypes\NetForge.Simulation.DataTypes.csproj" />
+        <ProjectReference Include="..\NetForge.Simulation.HttpHandlers.Common\NetForge.Simulation.HttpHandlers.Common.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -1,3 +1,5 @@
+using NetForge.Simulation.HttpHandlers.Common;
+
 namespace NetForge.Simulation.HttpHandlers.Generic
 {
     /// <summary>

@@ -1,6 +1,6 @@
 using NetForge.Simulation.Common.CLI.Base;
 
-namespace NetForge.Interfaces.CLI
+namespace NetForge.Interfaces.Cli
 {
     /// <summary>
     /// Interface for CLI command handlers
