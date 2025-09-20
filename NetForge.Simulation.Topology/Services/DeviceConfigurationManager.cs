@@ -4,6 +4,7 @@ using NetForge.Simulation.Common.Protocols;
 using NetForge.Simulation.Common.Events;
 using NetForge.Simulation.Protocols.Common.Events;
 using NetForge.Simulation.DataTypes;
+using NetForge.Simulation.Protocols.HTTP;
 
 namespace NetForge.Simulation.Topology.Services;
 
@@ -17,7 +18,7 @@ public class DeviceConfigurationManager : IConfigurationProvider
     private readonly DeviceConfiguration _runningConfig = new();
     private readonly string _deviceName;
     private readonly Func<INetworkEventBus?> _eventBusProvider;
-    
+
     private OspfConfig _ospfConfig = new(1);
     private BgpConfig _bgpConfig = new(65000);
     private RipConfig _ripConfig = new();
@@ -31,7 +32,7 @@ public class DeviceConfigurationManager : IConfigurationProvider
     private object _telnetConfig = new();
     private object _sshConfig = new();
     private object _snmpConfig = new();
-    private object _httpConfig = new();
+    private HttpConfig _httpConfig = new();
 
     /// <summary>
     /// Initializes a new instance of DeviceConfigurationManager.
@@ -92,7 +93,7 @@ public class DeviceConfigurationManager : IConfigurationProvider
     #region Protocol Configuration Methods
 
     public OspfConfig? GetOspfConfiguration() => _ospfConfig;
-    
+
     public void SetOspfConfiguration(OspfConfig config)
     {
         bool wasNull = _ospfConfig == null;
@@ -104,7 +105,7 @@ public class DeviceConfigurationManager : IConfigurationProvider
     }
 
     public BgpConfig? GetBgpConfiguration() => _bgpConfig;
-    
+
     public void SetBgpConfiguration(BgpConfig config)
     {
         bool wasNull = _bgpConfig == null;
@@ -116,85 +117,85 @@ public class DeviceConfigurationManager : IConfigurationProvider
     }
 
     public RipConfig? GetRipConfiguration() => _ripConfig;
-    
+
     public void SetRipConfiguration(RipConfig config)
     {
         _ripConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
     public EigrpConfig? GetEigrpConfiguration() => _eigrpConfig;
-    
+
     public void SetEigrpConfiguration(EigrpConfig config)
     {
         _eigrpConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
     public StpConfig GetStpConfiguration() => _stpConfig;
-    
+
     public void SetStpConfiguration(StpConfig config)
     {
         _stpConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
     public IgrpConfig? GetIgrpConfiguration() => _igrpConfig;
-    
+
     public void SetIgrpConfiguration(IgrpConfig config)
     {
         _igrpConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
     public VrrpConfig? GetVrrpConfiguration() => _vrrpConfig;
-    
+
     public void SetVrrpConfiguration(VrrpConfig config)
     {
         _vrrpConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
     public HsrpConfig? GetHsrpConfiguration() => _hsrpConfig;
-    
+
     public void SetHsrpConfiguration(HsrpConfig config)
     {
         _hsrpConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
     public CdpConfig? GetCdpConfiguration() => _cdpConfig;
-    
+
     public void SetCdpConfiguration(CdpConfig config)
     {
         _cdpConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
     public LldpConfig? GetLldpConfiguration() => _lldpConfig;
-    
+
     public void SetLldpConfiguration(LldpConfig config)
     {
         _lldpConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
     public object GetTelnetConfiguration() => _telnetConfig;
-    
+
     public void SetTelnetConfiguration(object config)
     {
         _telnetConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
     public object GetSshConfiguration() => _sshConfig;
-    
+
     public void SetSshConfiguration(object config)
     {
         _sshConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
     public object GetSnmpConfiguration() => _snmpConfig;
-    
+
     public void SetSnmpConfiguration(object config)
     {
         _snmpConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
 
-    public object GetHttpConfiguration() => _httpConfig;
-    
-    public void SetHttpConfiguration(object config)
+    public HttpConfig GetHttpConfiguration() => _httpConfig;
+
+    public void SetHttpConfiguration(HttpConfig config)
     {
         _httpConfig = config ?? throw new ArgumentNullException(nameof(config));
     }
