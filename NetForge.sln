@@ -89,9 +89,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Protocols.HTTP", "NetForge.Simulation.Protocols\NetForge.Simulation.Protocols.HTTP\NetForge.Simulation.Protocols.HTTP.csproj", "{E00370E4-046D-46DB-B006-78EEC58E1E8A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NetForge.Simulation.HttpHandlers", "NetForge.Simulation.HttpHandlers", "{352DC46B-D102-4687-89F9-BB7E632E27E2}"
-	ProjectSection(SolutionItems) = preProject
-		NetForge.Simulation.HttpHandlers\HTTP_HANDLERS_IMPLEMENTATION_PLAN.md = NetForge.Simulation.HttpHandlers\HTTP_HANDLERS_IMPLEMENTATION_PLAN.md
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Interfaces", "NetForge.Interfaces\NetForge.Interfaces.csproj", "{2B7645DD-21B1-43CC-B763-3492310E5756}"
 EndProject
@@ -104,6 +101,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.Topology", "NetForge.Simulation.Topology\NetForge.Simulation.Topology.csproj", "{493F2C3A-BCAA-40B8-986C-3917272D88DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Tests", "Tests\NetForge.Tests\NetForge.Tests.csproj", "{5422AF98-BE12-4A52-8689-5F0C28AB34A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.HttpHandlers.Arista", "NetForge.Simulation.HttpHandlers\NetForge.Simulation.HttpHandlers.Arista\NetForge.Simulation.HttpHandlers.Arista.csproj", "{DB69A9E5-6FD8-4F52-AC0E-DFE41E56A9AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.HttpHandlers.Cisco", "NetForge.Simulation.HttpHandlers\NetForge.Simulation.HttpHandlers.Cisco\NetForge.Simulation.HttpHandlers.Cisco.csproj", "{7B337B60-2EAE-404A-8B85-D80E736C5996}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.HttpHandlers.Common", "NetForge.Simulation.HttpHandlers\NetForge.Simulation.HttpHandlers.Common\NetForge.Simulation.HttpHandlers.Common.csproj", "{3178DF96-5C39-48D1-96AB-857995B5E822}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.HttpHandlers.Dell", "NetForge.Simulation.HttpHandlers\NetForge.Simulation.HttpHandlers.Dell\NetForge.Simulation.HttpHandlers.Dell.csproj", "{BE8BDD99-2901-416F-8C47-3F9B6606956A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.HttpHandlers.Generic", "NetForge.Simulation.HttpHandlers\NetForge.Simulation.HttpHandlers.Generic\NetForge.Simulation.HttpHandlers.Generic.csproj", "{F61A3C17-2507-49A8-8705-CA9A87F5F5CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetForge.Simulation.HttpHandlers.Juniper", "NetForge.Simulation.HttpHandlers\NetForge.Simulation.HttpHandlers.Juniper\NetForge.Simulation.HttpHandlers.Juniper.csproj", "{53AEF3A4-72BF-4235-803D-B7282F408078}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -275,6 +284,30 @@ Global
 		{5422AF98-BE12-4A52-8689-5F0C28AB34A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5422AF98-BE12-4A52-8689-5F0C28AB34A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5422AF98-BE12-4A52-8689-5F0C28AB34A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB69A9E5-6FD8-4F52-AC0E-DFE41E56A9AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB69A9E5-6FD8-4F52-AC0E-DFE41E56A9AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB69A9E5-6FD8-4F52-AC0E-DFE41E56A9AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB69A9E5-6FD8-4F52-AC0E-DFE41E56A9AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B337B60-2EAE-404A-8B85-D80E736C5996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B337B60-2EAE-404A-8B85-D80E736C5996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B337B60-2EAE-404A-8B85-D80E736C5996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B337B60-2EAE-404A-8B85-D80E736C5996}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3178DF96-5C39-48D1-96AB-857995B5E822}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3178DF96-5C39-48D1-96AB-857995B5E822}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3178DF96-5C39-48D1-96AB-857995B5E822}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3178DF96-5C39-48D1-96AB-857995B5E822}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE8BDD99-2901-416F-8C47-3F9B6606956A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE8BDD99-2901-416F-8C47-3F9B6606956A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE8BDD99-2901-416F-8C47-3F9B6606956A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE8BDD99-2901-416F-8C47-3F9B6606956A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F61A3C17-2507-49A8-8705-CA9A87F5F5CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F61A3C17-2507-49A8-8705-CA9A87F5F5CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F61A3C17-2507-49A8-8705-CA9A87F5F5CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F61A3C17-2507-49A8-8705-CA9A87F5F5CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53AEF3A4-72BF-4235-803D-B7282F408078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53AEF3A4-72BF-4235-803D-B7282F408078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53AEF3A4-72BF-4235-803D-B7282F408078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53AEF3A4-72BF-4235-803D-B7282F408078}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -321,5 +354,11 @@ Global
 		{2944CDCC-F87E-4C51-878D-EBED72AA7482} = {66969522-17B7-42DC-BA5C-993840AF25BC}
 		{F5F4619F-6C3E-48EA-B2FC-7F0115BAE263} = {9052BD1E-7B4A-45CB-952E-A7E1FED3333A}
 		{5422AF98-BE12-4A52-8689-5F0C28AB34A7} = {868FD21A-97B3-4991-8411-FB9763469FC4}
+		{DB69A9E5-6FD8-4F52-AC0E-DFE41E56A9AA} = {352DC46B-D102-4687-89F9-BB7E632E27E2}
+		{7B337B60-2EAE-404A-8B85-D80E736C5996} = {352DC46B-D102-4687-89F9-BB7E632E27E2}
+		{3178DF96-5C39-48D1-96AB-857995B5E822} = {352DC46B-D102-4687-89F9-BB7E632E27E2}
+		{BE8BDD99-2901-416F-8C47-3F9B6606956A} = {352DC46B-D102-4687-89F9-BB7E632E27E2}
+		{F61A3C17-2507-49A8-8705-CA9A87F5F5CE} = {352DC46B-D102-4687-89F9-BB7E632E27E2}
+		{53AEF3A4-72BF-4235-803D-B7282F408078} = {352DC46B-D102-4687-89F9-BB7E632E27E2}
 	EndGlobalSection
 EndGlobal
