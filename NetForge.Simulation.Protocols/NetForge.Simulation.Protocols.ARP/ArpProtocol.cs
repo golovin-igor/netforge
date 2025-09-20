@@ -1,8 +1,8 @@
 using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 using System.Net;
-using NetForge.Simulation.Common.Common;
 using NetForge.Simulation.DataTypes;
+using NetForge.Interfaces.Devices;
 
 namespace NetForge.Simulation.Protocols.ARP
 {
