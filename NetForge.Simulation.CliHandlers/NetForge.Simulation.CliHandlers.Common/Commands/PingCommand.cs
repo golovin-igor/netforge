@@ -1,6 +1,6 @@
 using NetForge.Interfaces.CLI;
+using NetForge.Interfaces.Devices;
 using NetForge.Simulation.Common.CLI.Services;
-using NetForge.Simulation.Common.Common;
 
 namespace NetForge.Simulation.Common.CLI.Commands
 {
