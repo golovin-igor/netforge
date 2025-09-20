@@ -127,18 +127,10 @@ namespace NetForge.Simulation.Topology.Devices.Juniper
                         config.AppendLine("        unit 0 {");
                         config.AppendLine("            family ethernet-switching {");
 
-                        if (iface.IsTrunk)
+                        if (iface.SwitchportMode == "trunk")
                         {
                             config.AppendLine("                interface-mode trunk;");
-                            if (iface.AllowedVlans?.Any() == true)
-                            {
-                                config.AppendLine("                vlan {");
-                                foreach (var vlan in iface.AllowedVlans)
-                                {
-                                    config.AppendLine($"                    members {vlan};");
-                                }
-                                config.AppendLine("                }");
-                            }
+                            // Note: AllowedVlans not available in current interface - would need separate VLAN management
                         }
                         else
                         {
@@ -268,7 +260,7 @@ namespace NetForge.Simulation.Topology.Devices.Juniper
                 config.AppendLine("            type internal;");
                 config.AppendLine($"            local-address {bgpConfig.RouterId};");
 
-                foreach (var neighbor in bgpConfig.Neighbors ?? new Dictionary<string, NeighborConfig>())
+                foreach (var neighbor in bgpConfig.Neighbors ?? new Dictionary<string, BgpNeighbor>())
                 {
                     if (neighbor.Value.RemoteAs == bgpConfig.LocalAs)
                     {
