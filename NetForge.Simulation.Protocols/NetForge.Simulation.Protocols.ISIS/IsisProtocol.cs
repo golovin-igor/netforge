@@ -5,6 +5,7 @@ using NetForge.Simulation.Protocols.Common;
 using NetForge.Simulation.Protocols.Common.Base;
 using NetForge.Simulation.Protocols.Common.Events;
 using NetForge.Interfaces.Devices;
+using NetForge.Interfaces.Events;
 
 // TODO: Replace with local Route class in next migration phase
 
