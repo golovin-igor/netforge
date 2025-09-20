@@ -48,7 +48,7 @@ public abstract class NetworkDevice : INetworkDevice
 
         // Initialize services
         _interfaceManager = new DeviceInterfaceManager();
-        _configurationManager = new DeviceConfigurationManager();
+        _configurationManager = new DeviceConfigurationManager(name, () => ParentNetwork?.EventBus);
         _connectivityService = new DeviceConnectivityService(_interfaceManager, this);
         _protocolHost = new DeviceProtocolHost(this);
         _commandProcessor = new DeviceCommandProcessor(this, commandManager);

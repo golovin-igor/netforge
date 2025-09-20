@@ -15,8 +15,8 @@ public class DeviceConfigurationManager : IConfigurationProvider
 {
     private readonly Dictionary<string, string> _systemSettings = new();
     private readonly DeviceConfiguration _runningConfig = new();
-    private readonly INetworkEventBus? _eventBus;
     private readonly string _deviceName;
+    private readonly Func<INetworkEventBus?> _eventBusProvider;
     
     private OspfConfig _ospfConfig = new(1);
     private BgpConfig _bgpConfig = new(65000);
@@ -37,17 +37,18 @@ public class DeviceConfigurationManager : IConfigurationProvider
     /// Initializes a new instance of DeviceConfigurationManager.
     /// </summary>
     /// <param name="deviceName">Name of the device for event publishing</param>
-    /// <param name="eventBus">Optional event bus for publishing configuration changes</param>
-    public DeviceConfigurationManager(string deviceName, INetworkEventBus? eventBus = null)
+    /// <param name="eventBusProvider">Function to get the current event bus (e.g., from parent network)</param>
+    public DeviceConfigurationManager(string deviceName, Func<INetworkEventBus?> eventBusProvider)
     {
         _deviceName = deviceName ?? throw new ArgumentNullException(nameof(deviceName));
-        _eventBus = eventBus;
+        _eventBusProvider = eventBusProvider ?? throw new ArgumentNullException(nameof(eventBusProvider));
     }
 
     /// <summary>
     /// Gets or sets whether the NVRAM configuration has been loaded.
     /// </summary>
     public bool IsNvramLoaded { get; set; }
+
 
     /// <summary>
     /// Gets all system settings for the device.
@@ -98,7 +99,7 @@ public class DeviceConfigurationManager : IConfigurationProvider
         _ospfConfig = config ?? throw new ArgumentNullException(nameof(config));
 
         // Publish configuration change event
-        _eventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(_deviceName, NetworkProtocolType.OSPF,
+        _eventBusProvider()?.PublishAsync(new ProtocolConfigChangedEventArgs(_deviceName, NetworkProtocolType.OSPF,
             wasNull ? "OSPF configuration initialized" : "OSPF configuration updated"));
     }
 
@@ -110,7 +111,7 @@ public class DeviceConfigurationManager : IConfigurationProvider
         _bgpConfig = config ?? throw new ArgumentNullException(nameof(config));
 
         // Publish configuration change event
-        _eventBus?.PublishAsync(new ProtocolConfigChangedEventArgs(_deviceName, NetworkProtocolType.BGP,
+        _eventBusProvider()?.PublishAsync(new ProtocolConfigChangedEventArgs(_deviceName, NetworkProtocolType.BGP,
             wasNull ? "BGP configuration initialized" : "BGP configuration updated"));
     }
 
