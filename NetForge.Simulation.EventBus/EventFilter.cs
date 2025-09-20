@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
+using NetForge.Simulation.DataTypes.Events;
 
-namespace NetForge.Simulation.Common.Events
+namespace NetForge.Simulation.EventBus
 {
     /// <summary>
     /// Filter for selective event subscription

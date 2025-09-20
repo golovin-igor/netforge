@@ -1,7 +1,9 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using NetForge.Interfaces.Events;
+using NetForge.Simulation.DataTypes.Events;
 
-namespace NetForge.Simulation.Common.Events
+namespace NetForge.Simulation.EventBus
 {
     /// <summary>
     /// Enhanced NetworkEventBus with batch processing, filtering, and metrics
