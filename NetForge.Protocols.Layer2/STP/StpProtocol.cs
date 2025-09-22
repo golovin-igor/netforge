@@ -12,6 +12,7 @@ public class StpProtocol : INetworkProtocol
     private Timer? _bpduTimer;
     private bool _isRunning;
 
+    public string Id { get; }
     public string Name => "STP";
     public ProtocolLayer Layer => ProtocolLayer.DataLink;
     public IProtocolState State { get; private set; }
@@ -54,7 +55,7 @@ public class StpProtocol : INetworkProtocol
         _isRunning = false;
         _bpduTimer?.Dispose();
         UnsubscribeFromEvents();
-        State = new StpState { Status = ProtocolStatus.Inactive };
+        State = new StpState { Status = ProtocolStatus.Disabled };
     }
 
     public void Reset()
@@ -104,16 +105,16 @@ public class StpProtocol : INetworkProtocol
 
     public void SubscribeToEvents()
     {
-        EventBus.Subscribe<BpduReceivedEvent>(OnEventReceived);
-        EventBus.Subscribe<PortAddedEvent>(OnEventReceived);
-        EventBus.Subscribe<PortRemovedEvent>(OnEventReceived);
+        EventBus.Subscribe<BpduReceivedEvent>(Id, OnEventReceived);
+        EventBus.Subscribe<PortAddedEvent>(Id, OnEventReceived);
+        EventBus.Subscribe<PortRemovedEvent>(Id, OnEventReceived);
     }
 
     public void UnsubscribeFromEvents()
     {
-        EventBus.Unsubscribe<BpduReceivedEvent>(OnEventReceived);
-        EventBus.Unsubscribe<PortAddedEvent>(OnEventReceived);
-        EventBus.Unsubscribe<PortRemovedEvent>(OnEventReceived);
+        EventBus.Unsubscribe<BpduReceivedEvent>(Id);
+        EventBus.Unsubscribe<PortAddedEvent>(Id);
+        EventBus.Unsubscribe<PortRemovedEvent>(Id);
     }
 
     private void ProcessBpdu(BpduReceivedEvent bpduEvent)
@@ -171,7 +172,7 @@ public class StpProtocol : INetworkProtocol
                     ForwardDelay = 15
                 };
 
-                EventBus.PublishEvent(new BpduSendEvent
+                EventBus.Publish(new BpduSendEvent
                 {
                     Bpdu = bpdu,
                     EgressPort = port.Key,
@@ -282,6 +283,24 @@ public enum PortState
 public class StpState : IProtocolState
 {
     public ProtocolStatus Status { get; set; }
+    public DateTime LastStateChange { get; }
+    public IReadOnlyDictionary<string, object> StateVariables { get; }
+    public IReadOnlyCollection<IProtocolEvent> RecentEvents { get; }
+    public void UpdateState(string variable, object value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public T GetStateValue<T>(string variable)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AddEvent(IProtocolEvent protocolEvent)
+    {
+        throw new NotImplementedException();
+    }
+
     public DateTime LastUpdate { get; set; }
     public Dictionary<string, object> Metrics { get; set; } = new();
 }
