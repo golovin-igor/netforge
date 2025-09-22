@@ -54,59 +54,52 @@ NetForge is a comprehensive C# .NET 9.0 framework for simulating enterprise netw
 - **Performance Optimized**: Support for 1000+ concurrent connections
 
 ### Modern Architecture
-- **Declarative Vendor System**: Vendor capabilities defined in descriptor classes
-- **Auto-Registration**: Protocols and CLI handlers automatically registered based on vendor capabilities
+- **Clean Architecture**: Separation of data contracts (SimulationModel) from implementation
+- **Interface-Driven Design**: All components implement well-defined interfaces from SimulationModel
 - **Dependency Injection**: Full IoC container support with service registration
-- **Interface Segregation**: Clean separation of concerns with 9 focused interfaces
+- **Layered Protocol Stack**: Protocol implementations organized by OSI layers
+- **Component-Based Handlers**: Separate projects for CLI, HTTP, NETCONF, and SNMP handlers
 - **Value Objects**: Type-safe network primitives (IpAddress, MacAddress, NetworkPrefix)
-- **Command Pattern**: Shared business logic with vendor-specific formatting
 
 ## 🏗️ Solution Structure
 
 ```
 NetForge/
-├── NetForge.Interfaces/                    # Core interface definitions
-├── NetForge.Simulation.Common/             # Shared models and base classes
-├── NetForge.Simulation.DataTypes/          # Value objects and validation
-├── NetForge.Simulation.EventBus/           # Event-driven messaging
-├── NetForge.Simulation.Topology/           # Network topology and devices
-│   ├── Common/Vendors/                     # Vendor system implementation
-│   ├── Vendors/                            # Vendor descriptors (Cisco, Juniper, Arista)
-│   └── Devices/                            # Device implementations
-├── NetForge.Simulation.Protocols/          # Protocol implementations
-│   ├── NetForge.Simulation.Protocols.Common/      # Protocol base classes
-│   ├── NetForge.Simulation.Protocols.OSPF/        # OSPF with SPF algorithm
-│   ├── NetForge.Simulation.Protocols.BGP/         # BGP with path selection
-│   ├── NetForge.Simulation.Protocols.CDP/         # CDP with TLV processing
-│   └── [14 other protocol implementations]
-├── NetForge.Simulation.CliHandlers/        # CLI implementations
-│   ├── NetForge.Simulation.CliHandlers.Common/    # Shared CLI services
-│   ├── NetForge.Simulation.CliHandlers.Cisco/     # Cisco IOS CLI
-│   └── [14 other vendor CLI handlers]
-├── NetForge.Simulation.HttpHandlers/       # HTTP web management implementations
-│   ├── NetForge.Simulation.HttpHandlers.Common/   # HTTP handler infrastructure
-│   ├── NetForge.Simulation.HttpHandlers.Cisco/    # Cisco web interface
-│   ├── NetForge.Simulation.HttpHandlers.Juniper/  # Juniper web interface
-│   ├── NetForge.Simulation.HttpHandlers.Arista/   # Arista web interface
-│   ├── NetForge.Simulation.HttpHandlers.Dell/     # Dell web interface
-│   └── NetForge.Simulation.HttpHandlers.Generic/  # Generic web interface
-├── NetForge.Simulation.Handlers.Common/    # Handler infrastructure
-├── NetForge.Tests/                         # Unit and integration tests
-└── NetForge.Player/                        # CLI tool for network simulation
+├── NetForge.SimulationModel/               # Core interfaces, data contracts, and requirements
+│   ├── Builders/                           # Builder interfaces for device and topology creation
+│   ├── Configuration/                      # Configuration interfaces (ARP, routing, protocols)
+│   ├── Core/                              # Core simulation interfaces (packets, topology, connections)
+│   ├── Devices/                           # Device and network interface definitions
+│   ├── Engine/                            # Simulation engine interfaces
+│   ├── Events/                            # Event-driven messaging interfaces
+│   ├── Management/                        # Management protocol interfaces (CLI, HTTP, SNMP)
+│   ├── Protocols/                         # Network protocol interfaces
+│   └── Types/                             # Type definitions and enums
+├── NetForge.Simulation/                    # Core simulation implementation
+│   ├── Core/                              # Topology and connection implementations
+│   ├── Engine/                            # Simulation engine implementation
+│   └── Events/                            # Event bus and subscription implementations
+├── NetForge.CliHandlers/                  # CLI handler implementations
+├── NetForge.HttpHandlers/                 # HTTP web management implementations
+├── NetForge.NetconfHandlers/              # NETCONF protocol implementations
+├── NetForge.SnmpHandlers/                 # SNMP protocol implementations
+├── NetForge.Protocols.Layer1/             # Physical layer protocol implementations
+├── NetForge.Protocols.Layer2/             # Data link layer protocol implementations (STP, CDP, LLDP)
+├── NetForge.Protocols.Layer3/             # Network layer protocol implementations (OSPF, BGP, RIP)
+└── NetForge.Protocols.Layer4/             # Transport layer protocol implementations
 ```
 
 ## 📊 Implementation Status
 
 ### ✅ Completed Components
-- **Vendor System**: Declarative vendor architecture with descriptors for Cisco, Juniper, Arista
-- **Auto-Registration System**: Protocols and CLI handlers automatically registered based on vendor capabilities
-- **CLI Handlers**: All 15 vendor implementations complete with command processing
-- **HTTP Handlers**: Complete web-based device management for all vendors with REST API
-- **Protocols**: All 17 protocols implemented with full state management
-- **Interface Segregation**: INetworkDevice split into 9 focused interfaces
-- **Value Objects**: Network primitives with validation (IpAddress, MacAddress, etc.)
-- **Test Infrastructure**: Comprehensive testing with MockDeviceBuilder
-- **Service Delegation**: NetworkDevice refactored with specialized service classes
+- **SimulationModel**: Complete interface definitions and data contracts (113 interfaces)
+- **Clean Architecture**: Separation of contracts from implementation with proper project structure
+- **Protocol Layer Organization**: Protocols organized by OSI layers (Layer 1-4)
+- **Handler Components**: Separate projects for CLI, HTTP, NETCONF, and SNMP handlers
+- **Core Simulation**: Event-driven simulation engine with topology management
+- **Interface-Driven Design**: All implementations reference SimulationModel contracts
+- **Build System**: Complete solution that builds successfully with proper dependencies
+- **Type Safety**: Comprehensive type definitions and enums in SimulationModel
 
 ### 📈 Protocol Details
 
@@ -155,64 +148,64 @@ dotnet run --project NetForge.Player
 ### Basic Usage Example
 
 ```csharp
-using NetForge.Simulation.Topology;
-using NetForge.Interfaces.Devices;
+using NetForge.Simulation.Core;
+using NetForge.SimulationModel.Devices;
+using NetForge.SimulationModel.Configuration;
 
-// Create a network device
-var ciscoRouter = new NetworkDevice
+// Create a network topology
+var topology = new Topology();
+
+// Create network devices using the interface contracts
+var router1 = new NetworkDevice("Router1")
 {
-    Name = "Router1",
-    Vendor = "Cisco",
-    DeviceType = "Router"
+    Vendor = new CiscoVendor(),
+    Configuration = new DeviceConfiguration()
 };
 
-// Initialize with vendor system (auto-registers protocols and CLI handlers)
-var serviceProvider = new ServiceCollection()
-    .ConfigureVendorSystem()
-    .BuildServiceProvider();
-
-await VendorSystemStartup.InitializeDeviceWithVendorSystemAsync(ciscoRouter, serviceProvider);
-
-// Add interfaces
-var gi0 = new InterfaceConfig
+var router2 = new NetworkDevice("Router2")
 {
-    Name = "GigabitEthernet0/0",
-    IpAddress = "192.168.1.1",
-    SubnetMask = "255.255.255.0",
-    IsUp = true
+    Vendor = new JuniperVendor(),
+    Configuration = new DeviceConfiguration()
 };
-ciscoRouter.GetInterfaceManager().AddInterface(gi0);
 
-// Process CLI commands
-var output = await ciscoRouter.ProcessCommand("show ip interface brief");
-Console.WriteLine(output);
+// Add devices to topology
+topology.AddDevice(router1);
+topology.AddDevice(router2);
+
+// Create physical connection between devices
+var connection = new PhysicalConnection(
+    router1.Id, "GigabitEthernet0/0",
+    router2.Id, "ge-0/0/0"
+);
+topology.AddConnection(connection);
+
+// Start the simulation
+await topology.Start();
 ```
 
-### Using Declarative API
+### Protocol Implementation Example
 
 ```csharp
-using NetForge.Simulation.Common.Declarative;
+using NetForge.SimulationModel.Protocols;
+using NetForge.Protocols.Layer3; // OSPF implementation
 
-// Build topology declaratively
-var topology = new DeclarativeTopologyFactory(serviceProvider)
-    .CreateTopology(spec => spec
-        .WithName("Test Network")
-        .AddDevice(device => device
-            .WithName("Router1")
-            .WithVendor("Cisco")
-            .WithModel("ISR4451")
-            .AddInterface("GigabitEthernet0/0", "192.168.1.1", "255.255.255.0")
-            .AddProtocol("OSPF", config => config.ProcessId = 1))
-        .AddDevice(device => device
-            .WithName("Router2")
-            .WithVendor("Juniper")
-            .WithModel("MX204")
-            .AddInterface("ge-0/0/0", "192.168.1.2", "255.255.255.0")
-            .AddProtocol("OSPF", config => config.ProcessId = 1))
-        .ConnectDevices("Router1", "GigabitEthernet0/0", "Router2", "ge-0/0/0"));
+// Add OSPF protocol to a device
+var ospfProtocol = new OspfProtocol();
+router1.RegisterProtocol(ospfProtocol);
 
-// Network is ready with OSPF running
-await topology.StartAsync();
+// Configure OSPF
+var ospfConfig = new OspfConfiguration
+{
+    ProcessId = 1,
+    RouterId = "192.168.1.1",
+    Areas = new List<OspfArea>
+    {
+        new OspfArea { AreaId = "0.0.0.0", AreaType = AreaType.Backbone }
+    }
+};
+
+ospfProtocol.ApplyConfiguration(ospfConfig);
+ospfProtocol.Start();
 ```
 
 ## 🎯 Use Cases
@@ -235,18 +228,18 @@ await topology.StartAsync();
 ## 🛠️ Development
 
 ### Architecture Highlights
-- **SOLID Principles**: Clean architecture with dependency injection
-- **Event-Driven**: Protocol events and state changes
-- **Async/Await**: Non-blocking operations throughout
-- **Memory Efficient**: Automatic cleanup and resource management
-- **Performance Optimized**: Sub-second CLI responses, fast protocol convergence
+- **Clean Architecture**: Interface contracts separated from implementation
+- **Dependency Inversion**: All implementations depend on SimulationModel abstractions
+- **Event-Driven**: Protocol events and state changes through event bus
+- **Layered Design**: Protocol stack organized by OSI model layers
+- **Component Modularity**: Handler implementations in separate projects
 
 ### Key Design Patterns
-- **Vendor Descriptor Pattern**: Declarative vendor capability definition
-- **Service Delegation**: Separation of concerns in NetworkDevice
-- **Command Pattern**: CLI command processing with vendor formatters
-- **State Machine**: Protocol state management
-- **Value Objects**: Type-safe network primitives
+- **Interface Segregation**: 113 focused interfaces in SimulationModel
+- **Repository Pattern**: Configuration and state management interfaces
+- **Observer Pattern**: Event-driven communication between components
+- **Strategy Pattern**: Protocol and handler implementations
+- **Builder Pattern**: Device and topology construction interfaces
 
 ### Testing
 The project includes comprehensive testing:
